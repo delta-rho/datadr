@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>vdb R Function Reference</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="css/pygment.css" rel="stylesheet">
+    <link href='css/highlight.css' rel='stylesheet'>
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+      }
+
+      /* Custom container */
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 900px;
+      }
+      .container-narrow > hr {
+        margin: 15px 0 20px 0;
+      }
+      
+      #next {
+         font-size: 14px;
+      }
+
+      #previous {
+         font-size: 14px;
+      }
+
+      .myHeader {
+         font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif; font-weight: 400;
+         letter-spacing: -1px;
+         font-size: 28px;
+         line-height: 40px;
+         color: #d14;
+         text-shadow: 8px 2px 6 rgba(55, 55, 55, 0.5);
+      }
+
+/*      #main-content {
+         margin-top: -15px;
+      }
+*/
+    </style>
+    
+    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+                                   <!-- <link rel="shortcut icon" href="ico/favicon.png"> -->
+  </head>
+
+  <body>
+
+    <div class="container-narrow">
+
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li class=""><a href="index.html">Docs</a></li>
+          <li class="active"><a href="functionref.html">Function Ref</a></li>
+          <li><a href="https://www.github.com/hafen/datadr">Github</a></li>
+        </ul>
+        <p class="myHeader">datadr: R Function Reference</p>
+      </div>
+
+      <hr>
+
+<div class="container-fluid">
+   <div class="row-fluid">
+   
+   <div class="span3 well">
+   <ul class = "nav nav-list" id="toc">
+   <li class='nav-header'>Contents</li> <li class="active">
+   <a target="_self" class="nav-not-header" href="#packagemain">Package Info</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#conddiv">condDiv</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#divexample">divExample</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#dividedataframe">divide.data.frame</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#divide">divide</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#dividerhdf">divide.rhDF</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#divjoin">divJoin</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#drglm">drGLM</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#getkeyslocaldiv">getKeys.localDiv</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#getkeys">getKeys</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#getkeysrhdata">getKeys.rhData</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#makekeys">makeKeys</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#printlocaldiv">print.localDiv</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#printrhdata">print.rhData</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#recombine">recombine</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#rhdata">rhData</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#rhdf">rhDF</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#rrdiv">rrDiv</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#strrhdata">str.rhData</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#updateattributes">updateAttributes</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#wmeancoef">wMeanCoef</a>
+</li>
+   </ul>
+   </div>
+
+<div class="span9 tab-content" id="main-content">
+
+<!-- packagemain -->   
+<div class="tab-pane active" id="packagemain">
+
+<h3>Divide and Recombine for Large, Complex Data</h3>
+
+<p><strong>Author:</strong> Ryan Hafen</p>
+<p><strong>Version:</strong> 0.1</p>
+<p><strong>Date:</strong> 2012-03-03</p>
+<p><strong>License:</strong> BSD</p>
+
+<h4>Description</h4>
+<p>Methods for dividing data into subsets, applying analytical
+methods to the subsets, and recombining the results.  Works with local
+data.frames or very large datasets using the R and Hadoop Integrated
+Programming Environment (RHIPE).</p>
+
+<h4>Depends</h4>
+<p>
+R (&gt;= 2.15.0),</p>
+
+<h4>Suggests</h4>
+<p>
+Rhipe</p>
+
+</div>
+<!-- condDiv -->   
+<div class="tab-pane" id="conddiv">
+
+<h3>Conditioning Variable Division</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#conddiv'>condDiv</a></span><span class="keyword">(</span><span class="symbol">vars</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>vars</dt>
+  <dd>a character string or vector of character
+  strings specifying the variables of the input data across
+  which to divide</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>a list to be used for the "by" argument to
+  <code><a href='#divide'>divide</a></code></p>
+
+
+  <h4>Description</h4>
+
+  <p>Specify conditioning variable division parameters for
+  data division</p>
+
+
+  <h4>Details</h4>
+
+  <p>Currently each unique combination of values of
+  <code>vars</code> constitutes a subset.  In the future,
+  specifying shingles for numeric conditioning variables
+  will be implemented.</p>
+
+
+  <h4>References</h4>
+
+  <p><ul>
+<li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
+<li>
+  <a href = 'http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full'>Guha,
+  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+  Cleveland, W. S. (2012). Large complex data: divide and
+  recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
+</ul></p>
+
+  <p></p>
+
+
+
+<h4>Examples</h4>
+<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#rhdf'>rhDF</a></code>,
+  <code><a href='#rrdiv'>rrDiv</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- divExample -->   
+<div class="tab-pane" id="divexample">
+
+<h3>Get An Example Subset of Divided Data</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#divexample'>divExample</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>data</dt>
+  <dd>object of class "localDiv" or "rhDdata"</dd>
+  <dt>should</dt>
+  <dd>the transformation function specified when
+  the data was created be applied?</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>one subset of the divided data</p>
+
+
+  <h4>Description</h4>
+
+  <p>Get a subset of an object of class "localDiv", "rhData"
+  or "rhDF" to test test functions on prior to doing
+  computation across the entire data set</p>
+
+
+  <h4>Note</h4>
+
+  <p><code>divExample(data)</code> returns the value from one
+  key/value pair.  This is the form of the data when used
+  in functions like <code>plotFn</code> or <code>cogFn</code> in
+  <code>vdbPlot</code> or what it will look like when used
+  in <code><a href='#recombine'>recombine</a></code>.  If you want some sample
+  key/value pairs to test some MapReduce code, simply use
+  <code>data$example</code>.</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code>rhipeDiv</code>,
+  <code>vdbPlot</code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- divide.data.frame -->   
+<div class="tab-pane" id="dividedataframe">
+
+<h3>Divide a data.frame</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#dividedataframe'>divide.data.frame</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">by</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">orderBy</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">postTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span>
+  <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>data</dt>
+  <dd>data frame to be split</dd>
+  <dt>by</dt>
+  <dd>a vector of column names of <code>dat</code> to split
+  by</dd>
+  <dt>orderBy</dt>
+  <dd>within each division, how should the data
+  be sorted?  Either a vector of variable names (which will
+  be sorted in ascending order) or a list such as the
+  following: <code>list(c("var1", "desc"), c("var2",
+  "asc"))</code>, which would sort the data first by <code>var1</code>
+  in descending order, and then by <code>var2</code> in ascending
+  order</dd>
+  <dt>postTrans</dt>
+  <dd>a transformation function (if desired)
+  to apply to each subset after it has been formed</dd>
+  <dt>trans</dt>
+  <dd>transformation function to coerce data
+  transformed with postTrans back into a data.frame, so the
+  result can behave like a data.frame (if desired)</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>list of data frames split according to "by", of class
+  "localDiv", with names denoting the current split Objects
+  of class "localDiv" are lists where each list element has
+  the following: <span class='describe'> split:a list of the
+  splitVars corresponding to the current split
+  splitKey:the current splitVars concatenate into a
+  single string data:The rows of the dat that
+  correspond to the current split (with the splitVar
+  columns omitted) </span></p>
+
+
+  <h4>Description</h4>
+
+  <p>Divide a data.frame into subsets based on different
+  criteria</p>
+
+
+
+<h4>Examples</h4>
+<pre class="examples"><div class='input'><span class="symbol">irisSplit1</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divide.html'>divide</a></span><span class="keyword">(</span><span class="symbol">iris</span><span class="keyword">,</span> <span class="string">"Species"</span><span class="keyword">)</span></div>
+<p><img src='divide.data.frame-2.png' alt='' width='400' height='400' /></p></pre>
+
+<h4>See also</h4>
+
+  <code><a href='#divjoin'>divJoin</a></code>, <code><a href='#divexample'>divExample</a></code>,
+  <code>SplitExampleKey</code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- divide -->   
+<div class="tab-pane" id="divide">
+
+<h3>Divide</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#divide'>divide</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="symbol">...</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>data</dt>
+  <dd>data to divide</dd>
+  <dt>...</dt>
+  <dd>other arguments passed to the specific
+  divide method</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Divide data into subsets based on different criteria</p>
+
+
+  <h4>Details</h4>
+
+  <p>See the following for specific details for different data
+  objects: <ul>
+<li><code><a href='#dividedataframe'>divide.data.frame</a></code>:
+  for data.frames </li>
+<li><code><a href='#dividerhdf'>divide.rhDF</a></code>: for
+  RHIPE data.frames </li>
+</ul></p>
+
+  <p></p>
+
+
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- divide.rhDF -->   
+<div class="tab-pane" id="dividerhdf">
+
+<h3>Divide a RHIPE 'rhDF' Object</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#dividerhdf'>divide.rhDF</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">by</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">orderBy</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">output</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">,</span>
+  <span class="argument">postTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">update</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>data</dt>
+  <dd>an object of class 'rhDF'</dd>
+  <dt>by</dt>
+  <dd>specification of how to divide the data -
+  conditional (factor-level or shingles), random replicate,
+  or near-exact replicate -- see details</dd>
+  <dt>orderBy</dt>
+  <dd>within each division, how should the data
+  be sorted?  Either a vector of variable names (which will
+  be sorted in ascending order) or a list such as the
+  following: <code>list(c("var1", "desc"), c("var2",
+  "asc"))</code>, which would sort the data first by <code>var1</code>
+  in descending order, and then by <code>var2</code> in ascending
+  order</dd>
+  <dt>output</dt>
+  <dd>where on HDFS the output data should
+  reside</dd>
+  <dt>mapred</dt>
+  <dd>mapreduce-specific parameters to send to
+  RHIPE job that creates the division (see
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+  <dt>postTrans</dt>
+  <dd>a transformation function (if desired)
+  to apply to each final subset</dd>
+  <dt>trans</dt>
+  <dd>transformation function to coerce data
+  transformed with postTrans back into a data.frame, so the
+  result can behave like an object of class 'rhDF' (if
+  desired)</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>an object of class 'rhData', 'rhDF', and 'rhDiv' which
+  points to the divided data on HDFS</p>
+
+
+  <h4>Description</h4>
+
+  <p>Divide a RHIPE 'rhDF' object into subsets based on
+  different criteria</p>
+
+
+  <h4>Details</h4>
+
+  <p>The division methods this function will support include
+  conditioning variable division for factors (implemented
+  -- see <code><a href='#conddiv'>condDiv</a></code>), conditioning variable
+  division for numerical variables through shingles, random
+  replicate, and near-exact replicate.  If <code>by</code> is a
+  vector of variable names, the data will be divided by
+  these variables.  Alternatively, this can be specified by
+  e.g.  <code>condDiv(c("var1", "var2"))</code>.</p>
+
+
+  <h4>References</h4>
+
+  <p><ul>
+<li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
+<li>
+  <a href = 'http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full'>Guha,
+  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+  Cleveland, W. S. (2012). Large complex data: divide and
+  recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
+</ul></p>
+
+  <p></p>
+
+
+
+<h4>Examples</h4>
+<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
+
+<h4>See also</h4>
+
+  <code><a href='#rhdf'>rhDF</a></code>, <code><a href='#conddiv'>condDiv</a></code>,
+  <code><a href='#rrdiv'>rrDiv</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- divJoin -->   
+<div class="tab-pane" id="divjoin">
+
+<h3>Join New Data to a "localDiv" object</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#divjoin'>divJoin</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">,</span> <span class="symbol">newDat</span><span class="keyword">,</span> <span class="symbol">elemName</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>obj</dt>
+  <dd>an object of class "localDiv"</dd>
+  <dt>newDat</dt>
+  <dd>new data / list / function with which to
+  join to <code>obj</code> (see details)</dd>
+  <dt>elemName</dt>
+  <dd>the name of the new element created by
+  the join for each split</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>the input object "obj" with the joined data</p>
+
+
+  <h4>Description</h4>
+
+  <p>Join new data to a "localDiv" object</p>
+
+
+  <h4>Details</h4>
+
+  <p><code>newDat</code> must be either a list of lists where the
+  first element of each sublist matches those keys of
+  localDiv, a data.frame with columns with the same names
+  as splitVars, or a function that takes an element of
+  localDiv as its argument and what it returns gets
+  assigned to <code>elemName</code> of that split.</p>
+
+
+
+<h4>Examples</h4>
+<pre class="examples"><div class='input'><span class="symbol">irisSplit</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divide.html'>divide</a></span><span class="keyword">(</span><span class="symbol">iris</span><span class="keyword">,</span> <span class="string">"Species"</span><span class="keyword">)</span>
+
+<span class="comment"># join a data.frame</span>
+<span class="symbol">newDatDF</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/data.frame'>data.frame</a></span><span class="keyword">(</span>
+   <span class="argument">Species</span><span class="argument">=</span><span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/rep'>rep</a></span><span class="keyword">(</span><span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/unique'>unique</a></span><span class="keyword">(</span><span class="symbol">iris</span><span class="keyword">$</span><span class="symbol">Species</span><span class="keyword">)</span><span class="keyword">,</span> <span class="number">3</span><span class="keyword">)</span><span class="keyword">,</span>
+   <span class="argument">val</span><span class="argument">=</span><span class="number">1</span><span class="keyword">:</span><span class="number">9</span>
+<span class="keyword">)</span>
+<span class="symbol">irisSplit</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divJoin.html'>divJoin</a></span><span class="keyword">(</span><span class="symbol">irisSplit</span><span class="keyword">,</span> <span class="symbol">newDatDF</span><span class="keyword">,</span> <span class="string">"testDF"</span><span class="keyword">)</span>
+
+<span class="comment"># join a list</span>
+<span class="symbol">newDatList</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/lapply'>lapply</a></span><span class="keyword">(</span><span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/paste'>paste</a></span><span class="keyword">(</span><span class="string">"Species="</span><span class="keyword">,</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/unique'>unique</a></span><span class="keyword">(</span><span class="symbol">iris</span><span class="keyword">$</span><span class="symbol">Species</span><span class="keyword">)</span><span class="keyword">,</span> <span class="argument">sep</span><span class="argument">=</span><span class="string">""</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">function</span><span class="keyword">(</span><span class="formalargs">x</span><span class="keyword">)</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/list'>list</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">,</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/stats/Normal'>rnorm</a></span><span class="keyword">(</span><span class="number">5</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="symbol">irisSplit</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divJoin.html'>divJoin</a></span><span class="keyword">(</span><span class="symbol">irisSplit</span><span class="keyword">,</span> <span class="symbol">newDatList</span><span class="keyword">,</span> <span class="string">"testList"</span><span class="keyword">)</span>
+
+<span class="comment"># "join" using a function</span>
+<span class="symbol">newDatFun</span> <span class="assignement">&lt;-</span> <span class="keyword">function</span><span class="keyword">(</span><span class="formalargs">x</span><span class="keyword">)</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/Extremes'>max</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">$</span><span class="symbol">rows</span><span class="keyword">$</span><span class="symbol">Sepal.Length</span><span class="keyword">)</span>
+<span class="symbol">irisSplit</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divJoin.html'>divJoin</a></span><span class="keyword">(</span><span class="symbol">irisSplit</span><span class="keyword">,</span> <span class="symbol">newDatFun</span><span class="keyword">,</span> <span class="string">"testFun"</span><span class="keyword">)</span></div></pre>
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- drGLM -->   
+<div class="tab-pane" id="drglm">
+
+<h3>GLM Recombination Method</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#drglm'>drGLM</a></span><span class="keyword">(</span><span class="symbol">...</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>ldots</dt>
+  <dd>arguments you would pass to the
+  <code><a href='http://www.inside-r.org/r-doc/stats/glm'>glm</a></code> function</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>GLM recombination method</p>
+
+
+  <h4>Details</h4>
+
+  <p>This is an experimental prototype.  It provides an
+  expression to be evaluated for each subset in a
+  recombination MapReduce job that applies R's glm method
+  and outputs the coefficients.  It is to be passed as the
+  argument <code>method</code> to <code><a href='#recombine'>recombine</a></code>.</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
+  <code><a href='#rrdiv'>rrDiv</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- getKeys.localDiv -->   
+<div class="tab-pane" id="getkeyslocaldiv">
+
+<h3>Get Split Keys</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#getkeyslocaldiv'>getKeys.localDiv</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>obj</dt>
+  <dd>data object class "localDiv"</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Get split keys for divided data</p>
+
+
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- getKeys -->   
+<div class="tab-pane" id="getkeys">
+
+<h3>Get Split Keys</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#getkeys'>getKeys</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>obj</dt>
+  <dd>data object of either class "localDiv" or
+  "rhData"</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Get split keys for divided data</p>
+
+
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- getKeys.rhData -->   
+<div class="tab-pane" id="getkeysrhdata">
+
+<h3>Get Split Keys</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#getkeysrhdata'>getKeys.rhData</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>obj</dt>
+  <dd>data object of "rhData"</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Get split keys for divided data</p>
+
+
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- makeKeys -->   
+<div class="tab-pane" id="makekeys">
+
+<h3>Construct Split Keys</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#makekeys'>makeKeys</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">,</span> <span class="symbol">vals</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>obj</dt>
+  <dd>an object of class 'rhDiv'</dd>
+  <dt>vals</dt>
+  <dd>a data.frame of values to use to construct
+  keys</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Construct split keys for divided data</p>
+
+
+  <h4>Details</h4>
+
+  <p>A split key for divided data is a string that identifies
+  the split.  For example, if a data set was conditioned on
+  "var1" and "var2", then a split corresponding to var1="a"
+  and var2="b" would have the key "var1=a|var2=b".  This
+  function constructs a vector of keys based on an input
+  data.frame specifying the key levels you want to extract
+  data for.</p>
+
+
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- print.localDiv -->   
+<div class="tab-pane" id="printlocaldiv">
+
+<h3>Print a "localDiv" Object</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#printlocaldiv'>print.localDiv</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>x</dt>
+  <dd>object to be printed</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Print a "localDiv" object</p>
+
+
+  <h4>Details</h4>
+
+  <p>Prints overview of attributes in objects of class
+  "localDiv"</p>
+
+
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- print.rhData -->   
+<div class="tab-pane" id="printrhdata">
+
+<h3>Print an "rhData" or "rhDF" Object</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#printrhdata'>print.rhData</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>x</dt>
+  <dd>object to be printed</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Print an "rhData" or "rhDF" object</p>
+
+
+  <h4>Details</h4>
+
+  <p>Prints overview of attributes in objects of class
+  "rhData", "rhDF", as well as "rhDiv"</p>
+
+
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- recombine -->   
+<div class="tab-pane" id="recombine">
+
+<h3>Recombine a RHIPE 'rhDiv' Object</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#recombine'>recombine</a></span><span class="keyword">(</span><span class="argument">data</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">method</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">recomb</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>data</dt>
+  <dd>an object of class 'rhDF'</dd>
+  <dt>method</dt>
+  <dd>the analytic method to apply to each
+  subset</dd>
+  <dt>recomb</dt>
+  <dd>the method to combine output from the
+  analytic method on each subset</dd>
+  <dt>mapred</dt>
+  <dd>mapreduce-specific parameters to send to
+  RHIPE job that performs the recombination (see
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>depends on <code>recomb</code> - should be a final set of model
+  coefficients, etc.</p>
+
+
+  <h4>Description</h4>
+
+  <p>Apply an analytic method to a RHIPE 'rhDiv' object and
+  combine the results</p>
+
+
+  <h4>Details</h4>
+
+  <p>This is an experimental prototype - subject to change and
+  be more flexible.</p>
+
+
+  <h4>References</h4>
+
+  <p><ul>
+<li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
+<li>
+  <a href = 'http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full'>Guha,
+  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+  Cleveland, W. S. (2012). Large complex data: divide and
+  recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
+</ul></p>
+
+  <p></p>
+
+
+
+<h4>Examples</h4>
+<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#rrdiv'>rrDiv</a></code>,
+  <code><a href='#drglm'>drGLM</a></code>, <code><a href='#wmeancoef'>wMeanCoef</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- rhData -->   
+<div class="tab-pane" id="rhdata">
+
+<h3>Load a RHIPE 'rhData' Object</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#rhdata'>rhData</a></span><span class="keyword">(</span><span class="symbol">loc</span><span class="keyword">,</span> <span class="argument">type</span> <span class="argument">=</span> <span class="string">"sequence"</span><span class="keyword">,</span> <span class="argument">reset</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span> <span class="argument">update</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span>
+  <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>loc</dt>
+  <dd>location on HDFS where the data resides (can
+  be a relative path if using <code><a href='http://www.inside-r.org/r-doc/Rhipe/hdfs.setwd'>hdfs.setwd</a></code>)</dd>
+  <dt>type</dt>
+  <dd>the type of data (map, sequence, text)</dd>
+  <dt>reset</dt>
+  <dd>should existing metadata for this object be
+  overwritten?</dd>
+  <dt>update</dt>
+  <dd>should a RHIPE job be run to obtain
+  additional attributes for the data prior to returning?</dd>
+  <dt>mapred</dt>
+  <dd>mapreduce-specific parameters to send to
+  RHIPE job that performs the update (see
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>an object of class 'rhData'</p>
+
+
+  <h4>Description</h4>
+
+  <p>Load / initialize a RHIPE 'rhData' object</p>
+
+
+  <h4>Details</h4>
+
+  <p>This function creates an R object representation of any
+  arbitrary set of key/value pair data on HDFS.  See
+  <code><a href='#rhdf'>rhDF</a></code> for HDFS data objects that behave like
+  distributed data.frames.  Several pieces of metadata are
+  stored in a subdirectory of "loc" called "_rh_meta",
+  including attributes such as the number of key/value
+  pairs, the distribution of their size, data related to
+  the job that created this data (if any), etc. (call
+  <code>print</code> on one of these objects to see the
+  attributes).  These attributes are useful for subsequent
+  computations that might rely on them.  Some attributes
+  can't be computed in just one pass, in which case
+  <code><a href='#updateattributes'>updateAttributes</a></code> can be called.</p>
+
+
+  <h4>References</h4>
+
+  <p><ul>
+<li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
+<li>
+  <a href = 'http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full'>Guha,
+  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+  Cleveland, W. S. (2012). Large complex data: divide and
+  recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
+</ul></p>
+
+  <p></p>
+
+
+
+<h4>Examples</h4>
+<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
+
+<h4>See also</h4>
+
+  <code><a href='#rhdf'>rhDF</a></code>, <code><a href='#updateattributes'>updateAttributes</a></code>,
+  <code><a href='#getkeys'>getKeys</a></code>, <code>divide.rhData</code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- rhDF -->   
+<div class="tab-pane" id="rhdf">
+
+<h3>Load a RHIPE 'rhDF' Object</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#rhdf'>rhDF</a></span><span class="keyword">(</span><span class="symbol">loc</span><span class="keyword">,</span> <span class="argument">type</span> <span class="argument">=</span> <span class="string">"sequence"</span><span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">reset</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span> <span class="argument">update</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span>
+  <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>loc</dt>
+  <dd>location on HDFS where the data resides (can
+  be a relative path if using <code><a href='http://www.inside-r.org/r-doc/Rhipe/hdfs.setwd'>hdfs.setwd</a></code>)</dd>
+  <dt>type</dt>
+  <dd>the type of data (map, sequence, text)</dd>
+  <dt>trans</dt>
+  <dd>a transformation to be applied to the data
+  to coerce it into a data.frame</dd>
+  <dt>reset</dt>
+  <dd>should existing metadata for this object be
+  overwritten?</dd>
+  <dt>update</dt>
+  <dd>should a RHIPE job be run to obtain
+  additional attributes for the data prior to returning?</dd>
+  <dt>mapred</dt>
+  <dd>mapreduce-specific parameters to send to
+  RHIPE job that performs the update (see
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>an object of class 'rhDF'</p>
+
+
+  <h4>Description</h4>
+
+  <p>Load / initialize a RHIPE 'rhDF' (RHIPE data.frame)
+  object</p>
+
+
+  <h4>Details</h4>
+
+  <p>This function creates an R object representation of
+  collections of key/value pairs data on HDFS where the
+  values are data.frames or easily coerced into
+  data.frames.  The more general case of structureless
+  key/value pair representation in R can be done with
+  <code>rhDdata</code>, upon which this class builds.
+  Several pieces of metadata are stored in an HDFS
+  subdirectory of "loc" called "_rh_meta", including the
+  variables in the data.frame, the total number of rows,
+  the distribution of number of rows, etc. (call
+  <code>print</code> on one of these objects to see the
+  attributes).  These attributes are useful for subsequent
+  computations that might rely on them.  Some attributes
+  can't be computed in just one pass, in which case
+  <code><a href='#updateattributes'>updateAttributes</a></code> can be called.</p>
+
+
+  <h4>References</h4>
+
+  <p><ul>
+<li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
+<li>
+  <a href = 'http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full'>Guha,
+  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+  Cleveland, W. S. (2012). Large complex data: divide and
+  recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
+</ul></p>
+
+  <p></p>
+
+
+
+<h4>Examples</h4>
+<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
+
+<h4>See also</h4>
+
+  <code><a href='#rhdata'>rhData</a></code>, <code><a href='#updateattributes'>updateAttributes</a></code>,
+  <code><a href='#getkeys'>getKeys</a></code>, <code>divide.rhData</code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- rrDiv -->   
+<div class="tab-pane" id="rrdiv">
+
+<h3>Random Replicate Division</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#rrdiv'>rrDiv</a></span><span class="keyword">(</span><span class="argument">nrows</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">seed</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>nrows</dt>
+  <dd>number of rows each subset should have</dd>
+  <dt>seed</dt>
+  <dd>the random seed to use (experimental)</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>a list to be used for the "by" argument to
+  <code><a href='#divide'>divide</a></code></p>
+
+
+  <h4>Description</h4>
+
+  <p>Specify random replicate division parameters for data
+  division</p>
+
+
+  <h4>Details</h4>
+
+  <p>The random replicate division method currently gets the
+  total number of rows of the data.frame and divides it by
+  <code>nrows</code> to get the number of subsets.  Then it
+  randomly assigns each row of the input data to one of the
+  subsets, resulting in subsets with approximately
+  <code>nrows</code> rows.  A future implementation will make
+  each subset have exactly <code>nrows</code> rows.</p>
+
+
+  <h4>References</h4>
+
+  <p><ul>
+<li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
+<li>
+  <a href = 'http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full'>Guha,
+  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+  Cleveland, W. S. (2012). Large complex data: divide and
+  recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
+</ul></p>
+
+  <p></p>
+
+
+
+<h4>Examples</h4>
+<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#rhdf'>rhDF</a></code>,
+  <code><a href='#conddiv'>condDiv</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- str.rhData -->   
+<div class="tab-pane" id="strrhdata">
+
+<h3>str Method for 'rhData'</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#strrhdata'>str.rhData</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">,</span> <span class="symbol">...</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>x</dt>
+  <dd>'rhData' object</dd>
+  <dt>...</dt>
+  <dd>additional parameters</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>str method for 'rhData'</p>
+
+
+  <h4>Details</h4>
+
+  <p>Avoids clutter with <code><a href='http://www.inside-r.org/r-doc/utils/str'>str</a></code>, hiding
+  <code>sourceJobData</code> and <code>example</code>, whose structure
+  can be seen with, e.g. <code>str(obj$example)</code></p>
+
+
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- updateAttributes -->   
+<div class="tab-pane" id="updateattributes">
+
+<h3>Update Attributes of a 'rhData' or 'rhDF' Object</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#updateattributes'>updateAttributes</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>obj</dt>
+  <dd>an object of class 'rhData' or 'rhDF'</dd>
+  <dt>mapred</dt>
+  <dd>mapreduce-specific parameters to send to
+  RHIPE job that creates the division (see
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>an object of class 'rhData' or 'rhDF'</p>
+
+
+  <h4>Description</h4>
+
+  <p>Update attributes of a 'rhData' or 'rhDF' object</p>
+
+
+  <h4>Details</h4>
+
+  <p>This function looks for missing attributes related to a
+  RHIPE data object and runs a MapReduce job to update
+  them.  These attributes include "splitSizeDistn",
+  "hasKeys", "ndiv", "nrow", and "splitRowDistn".  These
+  attributes are useful for subsequent computations that
+  might rely on them.  The result is the input modified to
+  reflect the updated attributes, and thus it should be
+  used as <code>obj <- updateAttributes(obj)</code>.  Metadata
+  files on HDFS are also updated.</p>
+
+
+
+<h4>Examples</h4>
+<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
+
+<h4>See also</h4>
+
+  <code><a href='#rhdata'>rhData</a></code>, <code><a href='#rhdf'>rhDF</a></code>,
+  <code>divide.rhData</code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- wMeanCoef -->   
+<div class="tab-pane" id="wmeancoef">
+
+<h3>Weighted Coefficient Mean Recombination</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#wmeancoef'>wMeanCoef</a></span><span class="keyword">(</span><span class="keyword">)</span></pre>
+
+  <h4>Description</h4>
+
+  <p>Weighted coefficient mean recombination</p>
+
+
+  <h4>Details</h4>
+
+  <p>This is an experimental prototype.  It is to be passed as
+  the argument <code>recomb</code> to <code><a href='#recombine'>recombine</a></code>.</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
+  <code><a href='#rrdiv'>rrDiv</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+   
+   
+   <ul class="pager">
+      <li><a href="#" id="previous">&larr; Previous</a></li> 
+      <li><a href="#" id="next">Next &rarr;</a></li> 
+   </ul>
+</div>
+
+
+</div>
+</div>
+
+<hr>
+
+<div class="footer">
+   <p>&copy; Ryan Hafen, 2013</p>
+</div>
+</div> <!-- /container -->
+
+<script src="js/jquery.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+<script src="js/jquery.ba-hashchange.min.js"></script>
+<script>
+function manageNextPrev() {
+   $('a#next').parent().toggleClass('disabled', $('#toc.nav li.active').nextAll('li:not(.nav-header)').size() == 0);
+   $('a#previous').parent().toggleClass('disabled', $('#toc.nav li.active').prevAll('li:not(.nav-header)').size() == 0);
+}
+manageNextPrev();
+
+$('a#next').click(function(e) {
+   e.preventDefault();
+   location.href = $('#toc.nav li.active').nextAll('li:not(.nav-header)').first().find('a').attr('href');
+   manageNextPrev();
+});
+$('a#previous').click(function(e) {
+   e.preventDefault();
+   location.href = $('#toc.nav li.active').prevAll('li:not(.nav-header)').first().find('a').attr('href');
+   manageNextPrev();
+});
+
+$(window).hashchange(function() {
+  $('.tab-pane').hide();
+  var tab = location.hash || '#packagemain';
+  $(tab + '.tab-pane').show();
+
+  $('#toc.nav li.active').removeClass('active');
+  $('#toc.nav li a[href="' + tab + '"]').parent().addClass('active');
+  manageNextPrev();
+});
+$(window).hashchange();
+</script>
+</body>
+</html>

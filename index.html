@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>datadr R Function Reference</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="css/pygment.css" rel="stylesheet">
+    
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+      }
+
+      /* Custom container */
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 900px;
+      }
+      .container-narrow > hr {
+        margin: 15px 0 20px 0;
+      }
+      
+      #next {
+         font-size: 14px;
+      }
+
+      #previous {
+         font-size: 14px;
+      }
+
+      .myHeader {
+         font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif; font-weight: 400;
+         letter-spacing: -1px;
+         font-size: 28px;
+         line-height: 40px;
+         color: #d14;
+         text-shadow: 8px 2px 6 rgba(55, 55, 55, 0.5);
+      }
+
+/*      #main-content {
+         margin-top: -15px;
+      }
+*/
+    </style>
+        <style type="text/css">
+       pre .operator,
+       pre .paren { color: #555555 }
+
+       pre .literal {
+         color: rgb(88, 72, 246); font-weight: bold;
+       }
+/*       pre .literal { color: #006699; font-weight: bold } */
+
+       pre .number { color: #FF6600 }
+/*       pre .comment { color: #0099FF; font-style: italic }*/
+       pre .comment { color: #999; font-style: italic }
+       pre .keyword { color: #006699; font-weight: bold }
+
+       pre .identifier {
+         color: rgb(0, 0, 0);
+       }
+
+       pre .string { color: #CC3300 }
+    </style>
+
+    <!-- R syntax highlighter -->
+    <script type="text/javascript">
+    var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+    hljs.initHighlightingOnLoad();
+    </script>
+
+    <!-- MathJax scripts -->
+    <script type="text/javascript" src="js/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({    
+      extensions: ["tex2jax.js"],    
+      "HTML-CSS": { scale: 100}    
+    });    
+    </script>
+    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+                                   <!-- <link rel="shortcut icon" href="ico/favicon.png"> -->
+  </head>
+
+  <body>
+
+    <div class="container-narrow">
+
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="index.html">Docs</a></li>
+          <li class=""><a href="functionref.html">Function Ref</a></li>
+          <li><a href="https://www.github.com/hafen/datadr">Github</a></li>
+        </ul>
+        <p class="myHeader">datadr: Divide and Recombine Methods in R</p>
+      </div>
+
+      <hr>
+
+<div class="container-fluid">
+   <div class="row-fluid">
+   
+   <div class="span3 well">
+   <ul class = "nav nav-list" id="toc">
+   <li class='nav-header'>Intro</li>
+      
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#background'>Background</a>
+      </li>
+
+
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#dr-simple-example'>D&R: Simple Example</a>
+      </li>
+
+
+<li class='nav-header'>RHIPE data as R objects</li>
+      
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#object-representation'>Object Representation</a>
+      </li>
+
+
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#rhdata-objects'>'rhData' Objects</a>
+      </li>
+
+
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#rhdf-objects'>'rhDF' Objects</a>
+      </li>
+
+
+<li class='nav-header'>Division</li>
+      
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#division-framework'>Division Framework</a>
+      </li>
+
+
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#conddiv-examples'>condDiv() Examples</a>
+      </li>
+
+
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#rrdiv-example'>rrDiv() Example</a>
+      </li>
+
+
+<li class='nav-header'>Recombination</li>
+      
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#recombination-framework'>Recombination Framework</a>
+      </li>
+
+
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#the-recombine-method'>The recombine() Method</a>
+      </li>
+
+
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#the-drglm-implementation'>The drGLM Implementation</a>
+      </li>
+
+
+<li class='nav-header'>General Methods</li>
+      
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#division-agnostic-methods'>Division-Agnostic Methods</a>
+      </li>
+
+
+<li class='nav-header'>D&R With data.frames</li>
+      
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#localdiv-objects'>'localDiv' Objects</a>
+      </li>
+
+   </ul>
+   </div>
+
+<div class="span9 tab-content" id="main-content">
+
+<div class='tab-pane active' id='background'>
+<h3>Background</h3>
+
+<p>This document provides the specification of a domain-specific language for Divide and Recombine (D&amp;R), made available in the <code>datadr</code> R package, and provides examples of the specification.  It&#39;s intended purpose is not to be a tutorial, but to help explain the design.  As the package matures, this will turn more into a tutorial.  </p>
+
+<p>Currently, the package represents a framework for D&amp;R, but the most exciting and useful part of the package -- the analytical recombination methods -- have not been implemented.  For visualization recombination methods, see the <a href="http://github.com/hafen/vdb">vdb</a> package.</p>
+
+<!-- #### Motivation
+
+The goal of D&R is to provide an environment for statistical data analysts to be able to carry out detailed, comprehensive analysis of large, complex data with as much ease and flexibility as is possible with small datasets. 
+
+When the data arrive, they rarely come with an algorithm or method.  The appropriate model that describes the behavior in the data typically must be discovered through an iterative process of the application of visual and numeric methods, and is usually much more involved than computing summaries or .
+
+The iterative analysis process is best achieved through a programming environment with the following attributes:
+ 
+- interactive high-level language
+- flexibility and coding efficiency, both in terms of algorithm development and visualization, take the highest precedence
+- all of the tools, both for numeric and visual methods, exist inside the same framework
+- allows for rapid prototyping of methods
+- access to thousands of statistical and machine learning methods
+
+[R](http://cran.r-project.org) is an effective environment for this when the data is small enough to be easily handled in memory.  It has thousands of statistical and machine learning methods available and flexible visualization capabilities.  Most importantly, it was designed from the beginning to be a language for data analysis with analyst efficiency in mind, and is a truly interactive language.
+
+Detailed, comprehensive analysis becomes difficult with large, complex data.  
+
+[RHIPE](www.datadr.org)
+[Hadoop](http://hadoop.apache.org)
+
+D&R provides a layer that sits on top of RHIPE that ... -->
+
+<h4>Reference</h4>
+
+<p>Related projects:</p>
+
+<ul>
+<li><a href="http://github.com/saptarshiguha/RHIPE">RHIPE</a>: the engine that makes D&amp;R work with large, complex data</li>
+<li><a href="http://github.com/hafen/vdb">vdb</a>: visualization recombination methods</li>
+</ul>
+
+<p>References:</p>
+
+<ul>
+<li><a href="http://datadr.org">datadr.org</a></li>
+<li><a href="http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full">Large complex data: divide and recombine (D&amp;R) with RHIPE. <em>Stat</em>, 1(1), 53-67</a></li>
+</ul>
+
+</div>
+
+
+<div class='tab-pane' id='dr-simple-example'>
+<h3>D&amp;R: Simple Example</h3>
+
+<p>The main purpose of this document is to provide some details about ideas for how to implement division and recombination methods in R.  However, to help get a feel for what will be discussed in much more detail later on, here I provide a quick example of the current state of implementation.</p>
+
+<h4>The Data</h4>
+
+<p>Since this is an example of the implementation and I&#39;m not as concerned with results, the example used here is one for which the theoretical results will not be valid, in that the data set is too small.  But small data sets are easy to share and think about.  Here I use the <code>infert</code> dataset that comes with R (see <code>?infert</code>).  It is a good example because we can use it to illustrate conditioning variable division and random replicate division.</p>
+
+<!-- ```r
+str(infert)
+```
+
+```
+## 'data.frame':  248 obs. of  8 variables:
+##  $ education     : Factor w/ 3 levels "0-5yrs","6-11yrs",..: 1 1 1 1 2 2 2 2 2 2 ...
+##  $ age           : num  26 42 39 34 35 36 23 32 21 28 ...
+##  $ parity        : num  6 1 6 4 3 4 1 2 1 2 ...
+##  $ induced       : num  1 1 2 2 1 2 0 0 0 0 ...
+##  $ case          : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ spontaneous   : num  2 0 0 0 1 1 0 0 1 0 ...
+##  $ stratum       : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ pooled.stratum: num  3 1 4 2 32 36 6 22 5 19 ...
+``` -->
+
+<p>The dataset has only 284 observations.</p>
+
+<h4>The Code</h4>
+
+<p>Here is some example code that shows how this data can be written to HDFS, split into subsets using random replicate division, and then have a logistic regression recombination procedure applied to it:</p>
+
+<pre><code class="r">library(datadr)
+library(Rhipe)
+rhinit()
+hdfs.setwd(&quot;/tmp&quot;)
+
+# (1) write the data to HDFS
+rhwrite(infert, file = &quot;infertRaw&quot;, chunk = 248, style = &quot;new&quot;)
+
+# (2) represent it as a RHIPE data.frame (**&#39;rhDF&#39;**) object
+infDF &lt;- rhDF(&quot;infertRaw&quot;, update = TRUE)
+
+# (3) apply random-replicate division to the data
+infRR &lt;- divide(infDF, by = rrDiv(nrows = 25), output = &quot;infertRR&quot;)
+
+# (4) perform glm weighted coefficient recombination
+recombine(
+   data = infRR, 
+   method = drGLM(case ~ spontaneous + induced, family = binomial()), 
+   recomb = wMeanCoef())
+</code></pre>
+
+<pre><code>## (Intercept) spontaneous     induced 
+##  -2.0598729   1.5846892   0.4548141
+</code></pre>
+
+<p>A brief explanation of what occurred in the above code:</p>
+
+<ol>
+<li>The data is written to HDFS as a single key/value pair, with the value being the <code>infert</code> data.frame.</li>
+<li>The <code>rhDF()</code> (for &quot;RHIPE data.frame&quot;) function in the <code>datadr</code> package initializes an R object, <code>infDF</code> that points to the data on HDFS.  This object has associated methods for division and recombination procedures.</li>
+<li>We apply random replicate division to the <code>infDF</code> dataset, specifying that we want 25 rows of data in each split of the division, resulting in 10 divisions.  A MapReduce job is run to create the new division.</li>
+<li>We apply a recombination method to the data, with the analytical method being <code>drGLM</code>, a GLM interface for D&amp;R, and the recombination strategy being <code>wMeanCoef</code>, a weighted mean of the coefficients.  A MapReduce job is run to apply the method to each subset and recombine the results.</li>
+</ol>
+
+<h4>Notes</h4>
+
+<p>Note that this example can mislead the reader into thinking that the typical approach is divide, recombine, divide, recombine, ...  Usually <code>divide</code> will only be called once or a handful of times to get the data divided in different ways that are meaningful for a certain type of analysis.  Then multiple iterations of different recombination methods, both numerical and visual, will be applied to the divided data.</p>
+
+<p>Also note that most recombine methods will not return the exact result, but an approximation.  This is the tradeoff between writing a distributed exact algorithm for every scenario you might encounter vs. leveraging all of the existing algorithms available in R.  Theoretical and empirical results show very good performance of the approximations.  &lt;!-- Bag of little bootstraps --&gt;</p>
+
+<p>Another thing to take note of is the difference between D&amp;R and MapReduce.  It is tempting to think of D&amp;R simply as MapReduce, but that is not the case.  The divide step typically involves both a map and reduce, and the recombine step can involve just a map, or a map and reduce, depending on the recombination method.  MapReduce is completely hidden from the user in D&amp;R.  While D&amp;R is a much more simple interface than MapReduce, it is not anticipated that D&amp;R can cover every task an analyst may want to perform, but the goal is for a wide variety of things to be possible with D&amp;R.</p>
+
+<p>In the following sections I will discuss in greater detail the current design.</p>
+
+</div>
+
+
+<div class='tab-pane' id='object-representation'>
+<h3>Object Representation</h3>
+
+<p>To create a general framework for D&amp;R, it is useful for data objects to be expressed as more than a collection of data files on HDFS.  If R is aware of specific attributes of the data, it is easier to create methods that know what to do with the data with minimal effort from the user.  Here we discuss two classes of data objects, their attributes, and how they are currently implemented.  The objects are: <strong>&#39;rhData&#39;</strong> for arbitrary collections of key/value pairs on HDFS, and a subclass of this, <strong>&#39;rhDF&#39;</strong> for data that can be represented and thought of as a large distributed data.frame.  </p>
+
+<h4>Where data attributes go</h4>
+
+<p>Various attributes of these object classes are permanently stored on HDFS.  The purpose for this is so that attributes remain persistent from one R session to another.  Suppose I have a sequence file on HDFS:</p>
+
+<pre><code>/user/tmp/mydata
+   _logs
+   _SUCCESS
+   part-r-00000
+   part-r-00001
+   part-r-00002
+   ...
+</code></pre>
+
+<p>The <code>part-r</code> files represent where the actual data resides, while other information related to the job that produced the data resides in <code>_logs</code> an <code>_SUCCESS</code>.  Additional information that describes attributes of the RHIPE data represented as R objects (described below) will be stored in an additional directory, <code>_rh_meta</code>.</p>
+
+<pre><code>/user/tmp/mydata
+   _logs
+   _rh_meta # &lt;&lt;-- rhData and rhDF attributes go here
+   _SUCCESS
+   part-r-00000
+   part-r-00001
+   part-r-00002
+   ...
+</code></pre>
+
+<h4>How objects are instantiated</h4>
+
+<p>An R representation of data located on HDFS is instantiated simply by calling a function (either <code>rhData()</code> or <code>rhDF()</code> - described in the following sections) and pointing it to the location on HDFS, e.g.:</p>
+
+<pre><code class="r">mydataObj &lt;- rhData(&quot;/user/tmp/mydata&quot;)
+</code></pre>
+
+<p><code>mydataObj</code> is now an R object that points to this data.  Details of how this works follow.  </p>
+
+<p>Depending on its class, this object can now have various methods applied to it, such as <code>rhwatch()</code> or methods for other special operations that abstract away MapReduce (such as <code>divide()</code>, <code>recombine()</code> <code>summary()</code>, <code>vdbPlot()</code>, etc.).</p>
+
+</div>
+
+
+<div class='tab-pane' id='rhdata-objects'>
+<h3>&#39;rhData&#39; Objects</h3>
+
+<!-- Note: currently this implementation is using `S3` classes for simplicity. -->
+
+<p>Objects of class <strong>&#39;rhData&#39;</strong> are the most basic type of objects and <strong>&#39;rhData&#39;</strong> is a superclass for all other data types.  <strong>&#39;rhData&#39;</strong> makes no assumption about the structure of the data inside of each key/value pair.</p>
+
+<h4>Attributes</h4>
+
+<p>An <strong>&#39;rhData&#39;</strong> object has the following attributes:</p>
+
+<ul>
+<li><code>loc</code>: location of data on hdfs</li>
+<li><code>type</code>: type of data file (&quot;map&quot;, &quot;sequence&quot;, etc.)</li>
+<li><code>ndiv</code>: number of key/value pairs</li>
+<li><code>nfile</code>: number of files on HDFS</li>
+<li><code>totSize</code>: size of the entire data set</li>
+<li><code>kvSizeDistn</code>: quantiles of the distribution of the size of key/value pairs</li>
+<li><code>sourceData</code>: list with loc and type of data it was created from, NULL if unknown or original data</li>
+<li><code>sourceJobData</code>: the job info (map, reduce, etc.) from the job that created it, <code>NULL</code> if unknown or original data</li>
+<li><code>example</code>: some sample key/value pairs from this data set (for quick inspection and testing map code) - data is read in using <code>rhread(..., max=k)</code> (k is currently hard-coded to 2) - data is stored as R objects so you don&#39;t have to keep calling <code>rhread()</code></li>
+<li><code>hasKeys</code>: if ndiv is less than some large number, a list of all keys is stored in a separate data file, available with <code>getKeys()</code></li>
+</ul>
+
+<p>Most of these attributes are available at the time <code>rhData()</code> is called, without doing any computation on the data, particularly if some of the other attributes were populated as a by-product the MapReduce job that created the data</p>
+
+<p><strong>&#39;rhData&#39;</strong> attributes are stored in the data&#39;s HDFS directory as:</p>
+
+<pre><code>/user/tmp/mydata
+   _rh_meta/rhDataAttr.Rdata  # all attributes but keys and examples
+   _rh_meta/keys.Rdata        # R list of keys
+   _rh_meta/examples.Rdata    # R list of examples
+   ...
+</code></pre>
+
+<h4>updateAttributes()</h4>
+
+<p>For both <strong>&#39;rhData&#39;</strong> and <strong>&#39;rhDF&#39;</strong> data objects, attributes that can&#39;t be determined without computation, such as <code>keys</code>, require a MapReduce job to be run.  A general function, <code>updateAttributes()</code> it checks to see which attributes are missing and only computes those ones, all inside a single MapReduce job.</p>
+
+<h4>&#39;rhData&#39; Example</h4>
+
+<p>Objects of class <strong>&#39;rhData&#39;</strong> are instantiated using the <code>rhData()</code> function.  This simply requires the user to point it to the location of the data on HDFS, specify its <code>type</code> (default is &quot;sequence&quot;) and whether you want it to automatically <code>update</code> any missing attributes (default is <code>FALSE</code> as it requires a MapReduce job).  The function looks for existing attributes stored in the <code>_rh_meta</code> directory and reads them in, or if they don&#39;t exist, it infers all the attributes it can.  There is a <code>reset</code> parameter that tells the procedure to remove all attributes files and start over.</p>
+
+<p>For the <code>infert</code> dataset we showed an example of in the beginning (recall it resides at &quot;/tmp/infertRaw&quot;), we represent it as an <strong>&#39;rhData&#39;</strong> object by the following:</p>
+
+<pre><code class="r">hdfs.setwd(&quot;/tmp&quot;)
+
+infertRaw &lt;- rhData(&quot;infertRaw&quot;)
+</code></pre>
+
+<p>To see what this did to the <code>_rm_meta</code> directory:</p>
+
+<pre><code class="r">rhls(&quot;infertRaw/_rh_meta&quot;)
+</code></pre>
+
+<pre><code>  permission  owner      group  size          modtime
+1 -rw-r--r--   user supergroup  1167 2013-03-26 00:42
+2 -rw-r--r--   user supergroup 37973 2013-03-26 00:43
+                                      file
+1    /tmp/infertRaw/_rh_meta/example.Rdata
+2 /tmp/infertRaw/_rh_meta/rhDataAttr.Rdata
+</code></pre>
+
+<p>There is a print method for <strong>&#39;rhData&#39;</strong> objects:</p>
+
+<pre><code class="r">infertRaw
+</code></pre>
+
+<pre><code>An object of class rhData with the following attributes: 
+
+&#39;rhData&#39; attr    : value
+----------------------------------------------------------------------------
+* hasKeys        : [empty] call updateAttributes(dat) to get this value
+* loc            : /tmp/infertRaw
+* type           : sequence
+* nfile          : 1
+* totSize        : 13.83 KB
+* ndiv           : [empty] call updateAttributes(dat) to get this value
+* splitSizeDistn : [empty] call updateAttributes(dat) to get this value
+* sourceData     : [empty] - no source job
+* sourceJobData  : [empty] - no source job
+* example        : use divExample(dat) to get an example subset or dat$example to get examples as key/value pairs
+</code></pre>
+
+<p>Note that there are missing attributes, <code>ndiv</code>, <code>splitSizeDistn</code>, and <code>hasKeys</code>.  We can get this by the following:</p>
+
+<pre><code class="r">infertRaw &lt;- updateAttributes(infertRaw)
+</code></pre>
+
+<p>This runs a MapReduce job that in one job computes all missing attributes.  The user can pass in an argument <code>mapred</code> to control some of the parameters of the MapReduce job that is run (future work: make some intelligent choice of this based on known attributes).</p>
+
+<!-- [Tue Mar 26 00:43:22 2013] Name:2013-03-26 00:42:52 Job: job_201303252314_0007  State: RUNNING Duration: 30.181
+URL: http://localhost:50030/jobdetails.jsp?jobid=job_201303252314_0007
+       pct numtasks pending running complete killed failed_attempts killed_attempts
+map      1        1       0       0        1      0               0               0
+reduce   1        1       0       0        1      0               0               0
+Waiting 5 seconds -->
+
+<p>Now if we print our object:</p>
+
+<pre><code class="r">infertRaw
+</code></pre>
+
+<pre><code>An object of class rhData with the following attributes: 
+
+&#39;rhData&#39; attr    : value
+----------------------------------------------------------------------------
+* hasKeys        : keys are available through getKeys(dat)
+* loc            : /tmp/infertRaw
+* type           : sequence
+* nfile          : 1
+* totSize        : 13.83 KB
+* ndiv           : 1
+* splitSizeDistn : use dat$splitSizeDistn to get distribution
+* sourceData     : [empty] - no source job
+* sourceJobData  : [empty] - no source job
+* example        : use divExample(dat) to get an example subset (value only) or dat$example to get example key/value pairs
+</code></pre>
+
+<p>Now we know that there is only one key/value pair (<code>ndiv=1</code>) and we can get the key using <code>getKeys()</code> (note that because of the way we wrote the data, the keys are <code>NULL</code>.  We&#39;ll see a more interesting example of <code>getKeys()</code> shortly).</p>
+
+</div>
+
+
+<div class='tab-pane' id='rhdf-objects'>
+<h3>&#39;rhDF&#39; Objects</h3>
+
+<p>The <strong>&#39;rhDF&#39;</strong> (&quot;RHIPE data.frame&quot;) class is for data that behaves like a data.frame and has the same &quot;schema&quot; across all key/value pairs.  It is a subclass of <strong>&#39;rhData&#39;</strong>.  While this class is more restrictive than <strong>&#39;rhData&#39;</strong>, it provides a much cleaner structure for applying division and recombination methods.</p>
+
+<h4>Attributes</h4>
+
+<ul>
+<li>[same as <strong>&#39;rhData&#39;</strong> plus:]</li>
+<li><code>vars</code>: list of column names and their types</li>
+<li><code>trans</code>: a transformation function to get the data into a data.frame (this is to allow for flexibility in what is actually stored).  Default is <code>identity()</code> (assumes it really is a data.frame).  If not specified and is not a data.frame, it tries <code>as.data.frame()</code> to see if it is coercible (e.g. <code>as.data.frame(list(var1=1:10, var2=&quot;a&quot;))</code>).</li>
+<li><code>badSchema</code>: a list of &quot;schemas&quot; (variable names and column types) with associated keys that do not meet the schema of the majority of key/value pairs (if any) <em>(not implemented)</em>.  If <code>NULL</code>, we are ok - all key/value pairs have the same schema <em>(not implemented)</em></li>
+<li><code>nrow</code>: number of rows in the entire dataset</li>
+<li><code>splitRowDistn</code>: distribution of number of rows within each key/value pair</li>
+<li><code>summary</code>: list with one element per variable <em>(not implemented)</em>
+
+<ul>
+<li>if numeric var, list with 5-num summary, nunique, nna, quantile estimate (quantile may take one more run)</li>
+<li>if categorical, frequency table (this will allow to identify unique levels and how possible it will be to do conditioning variable division)</li>
+<li>other data types??</li>
+</ul></li>
+</ul>
+
+<p>The attributes are stored in the data&#39;s HDFS directory under:</p>
+
+<ul>
+<li><code>_rh_meta/rhDFAttr.Rdata</code></li>
+</ul>
+
+<p>The attributes <code>nrow</code>, <code>splitRowDistn</code>, and <code>summary</code> require additional computation to obtain, and the <code>updateAttributes()</code> method works here too.  Initially, missing attributes are <code>NULL</code> and will remain so unless the user calls <code>updateAttributes()</code> or encounters a method that requires them to be populated.</p>
+
+<p>Storing this information such as <code>summary</code> in the object will be useful as a one-time up-front cost in that many algorithms can benefit from knowing more about each variable (such as division, etc.), as well as other things like knowing all possible values of factor levels for factors, etc.  Keeping track of this in the object will ensure that it only has to happen once.</p>
+
+<h4>&#39;rhDF&#39; Example</h4>
+
+<p>The <code>infertRaw</code> data we previously read in as a <strong>&#39;rhData&#39;</strong> object actually is a data.frame.  The <strong>&#39;rhData&#39;</strong> function should detect this and suggest to the user that they call <code>rhDF()</code> instead of <code>rhData()</code> to get a richer representation of the data object.</p>
+
+<p>To represent <code>infertRaw</code> as a <strong>&#39;rhDF&#39;</strong> object:</p>
+
+<pre><code class="r">infertRaw &lt;- rhDF(&quot;infertRaw&quot;)
+</code></pre>
+
+<p>This takes the existing work we&#39;ve done for the <strong>&#39;rhData&#39;</strong> attributes and addes the <strong>&#39;rhDF&#39;</strong> ones.  If we called this without first calling <code>rhData()</code>, it would build up both the <strong>&#39;rhData&#39;</strong> and <strong>&#39;rhDF&#39;</strong> attributes (i.e. it is not necessary to call <code>rhData()</code> prior to <code>rhDF()</code>).</p>
+
+<p>Let&#39;s see what meta files we have now:</p>
+
+<pre><code class="r">rhls(&quot;infertRaw/_rh_meta/&quot;)
+</code></pre>
+
+<pre><code>  permission  owner      group  size          modtime
+1 -rw-r--r--   user supergroup  1167 2013-03-26 00:42
+2 -rw-r--r--   user supergroup    58 2013-03-26 00:43
+3 -rw-r--r--   user supergroup 25110 2013-03-26 00:47
+4 -rw-r--r--   user supergroup 37973 2013-03-26 00:43
+                                      file
+1    /tmp/infertRaw/_rh_meta/example.Rdata
+2       /tmp/infertRaw/_rh_meta/keys.Rdata
+3   /tmp/infertRaw/_rh_meta/rhDFattr.Rdata
+4 /tmp/infertRaw/_rh_meta/rhDataAttr.Rdata
+</code></pre>
+
+<p>Our print method builds upon the <strong>&#39;rhData&#39;</strong> print method:</p>
+
+<pre><code class="r">infertRaw
+</code></pre>
+
+<pre><code>An object of class rhDF, rhData with the following attributes: 
+
+&#39;rhData&#39; attr    : value
+------------------------------------------------------------------------------
+* hasKeys        : keys are available through getKeys(dat)
+* loc            : /tmp/infertRaw
+* type           : sequence
+* nfile          : 1
+* totSize        : 13.83 KB
+* ndiv           : 1
+* splitSizeDistn : use dat$splitSizeDistn to get distribution
+* sourceData     : [empty] - no source job
+* sourceJobData  : [empty] - no source job
+* example        : use divExample(dat) to get an example subset (value only) or dat$example to get example key/value pairs
+
+**&#39;rhDF&#39;** attr     : value
+--------------------------------------------------------------------------------
+* vars          : education(fac), age(num), parity(num), induced(num), case(num), spontaneous(num), stratum(int), pooled.stratum(num)
+* trans         : identity transformation (original data is a data.frame)
+* badSchema     : (not implemented)
+* nrow          : [empty] call updateAttributes(dat) to get this value
+* splitRowDistn : [empty] call updateAttributes(dat) to get this value
+* summary       : (not implemented)
+</code></pre>
+
+<p>Note that while we have updated <strong>&#39;rhData&#39;</strong> attributes, we now need to update the <strong>&#39;rhDF&#39;</strong> attributes:</p>
+
+<pre><code class="r">infertRaw &lt;- updateAttributes(infertRaw)
+</code></pre>
+
+<p>And now look at the object:</p>
+
+<pre><code class="r">infertRaw
+</code></pre>
+
+<pre><code>An object of class rhDF, rhData with the following attributes: 
+
+&#39;rhData&#39; attr    : value
+------------------------------------------------------------------------------
+* hasKeys        : keys are available through getKeys(dat)
+* loc            : /tmp/infertRaw
+* type           : sequence
+* nfile          : 1
+* totSize        : 13.83 KB
+* ndiv           : 1
+* splitSizeDistn : use dat$splitSizeDistn to get distribution
+* sourceData     : [empty] - no source job
+* sourceJobData  : [empty] - no source job
+* example        : use divExample(dat) to get an example subset (value only) or dat$example to get example key/value pairs
+
+**&#39;rhDF&#39;** attr     : value
+--------------------------------------------------------------------------------
+* vars          : education(fac), age(num), parity(num), induced(num), case(num), spontaneous(num), stratum(int), pooled.stratum(num)
+* trans         : identity transformation (original data is a data.frame)
+* badSchema     : (not implemented)
+* nrow          : 248
+* splitRowDistn : use dat$splitRowDistn to get distribution
+* summary       : (not implemented)
+</code></pre>
+
+<p>Things to think about:</p>
+
+<ul>
+<li>It would be good to think of some alternatives to reading in all keys - or least a threshold for how many key/value pairs it is a good idea to do this for and do something else otherwise.</li>
+<li>How to handle data that keeps getting added to.</li>
+</ul>
+
+</div>
+
+
+<div class='tab-pane' id='division-framework'>
+<h3>Division Framework</h3>
+
+<p>With RHIPE data objects defined, we can now talk about division and recombination methods.</p>
+
+<p>Division methods take an input dataset and repartition it into subsets based on user-defined criteria.  The purpose is to get the data into a format suitable for D&amp;R recombination methods.  For example we might divide the data into random partitions, or split it up by factor levels of conditioning variables.</p>
+
+<p>Division is achieved simply with the <code>divide()</code> method.  It is currently only implemented for data objects of class <strong>&#39;rhDF&#39;</strong>.  The syntax is simple, and looks like this:</p>
+
+<pre><code class="r">divData &lt;- divide(inputRhDFdata, by=...)
+</code></pre>
+
+<h4>Division Types</h4>
+
+<p>We are considering the following division methods:</p>
+
+<ul>
+<li><strong>Conditioning variable</strong>: create subsets based on unique values of one or more categorical or numeric variables - if numeric, either binning based on quantiles or &quot;shingle&quot; methods are applied</li>
+<li><strong>Random replicate (RR)</strong>: create uniformly random subsets</li>
+<li><strong>Near-exact replicate (NER)</strong>: for a specified set of variables, create subsets such that each subset is representative of the space spanned by these variables - using some kind of approximate k-d tree or clustering algorithm <em>(not implemented)</em></li>
+</ul>
+
+<h4>Specifying a Division Type</h4>
+
+<p>Specifying a division type is done through some control functions whose results are passed to the <code>by</code> argument of <code>divide()</code>.</p>
+
+<h5>Random replicate</h5>
+
+<p>To specify random subsets with 10000 rows in each specify:</p>
+
+<pre><code class="r">by=rrDiv(rows=10000)
+</code></pre>
+
+<p>The <code>rrDiv()</code> function sets up parameters that the <code>divide()</code> method knows how to deal with.  <code>rows</code> specifies how many rows you want in each subset (if not specified, defaults to something like <code>min(100000, sqrt(nrow))</code> where <code>nrow</code> is the total number of rows in the dataset).  You can also specify a parameter <code>seed</code>.</p>
+
+<p>The random replicate division method currently gets the total number of rows of the data.frame and divides it by <code>nrows</code> to get the number of subsets.  Then it randomly assigns each row of the input data to one of the subsets, resulting in subsets with approximately <code>nrows</code> rows.  A future implementation will make each subset have exactly <code>nrows</code> rows. </p>
+
+<h5>Conditioning variable</h5>
+
+<p>To break up the data into subsets specified by unique combinations of variables <code>var1</code> and <code>var2</code>, specify:</p>
+
+<pre><code class="r">by=condDiv(c(&quot;var1&quot;, &quot;var2&quot;))
+</code></pre>
+
+<p>It actually also works to do:</p>
+
+<pre><code class="r">by=c(&quot;var1&quot;, &quot;var2&quot;)
+</code></pre>
+
+<p>Currently, treatment of numerical variable conditioning is not implemented, but it is proposed to work in a way like the following:</p>
+
+<ul>
+<li>A function, <code>dr.shingle()</code> is used for turning numeric variables into categorical, two possible uses:
+
+<ul>
+<li><code>dr.shingle(varName, number=100, overlap=0.1)</code></li>
+<li><code>dr.shingle(varName, intervals=NULL, right=TRUE)</code></li>
+</ul></li>
+<li>in the case of <code>number=, overlap=</code>, it uses the estimated quantiles of the variable (from the <strong>&#39;rhData&#39;</strong> attributes) to construct the <code>intervals</code> matrix
+
+<ul>
+<li>if <code>intervals</code> is a 2-column matrix, each row defines start and end for a given split</li>
+<li>if <code>intervals</code> is a vector, it cuts the data into mutually exclusive splits defined by the </li>
+<li>for now, if shingles are nested within other divisions, they will be treated as marginal (do not recompute the distribution within each subset - this is too complicated)</li>
+</ul></li>
+</ul>
+
+<h5>Near-exact replicate</h5>
+
+<p>This is not implemented and will require a lot of thought and work.  Specification might look something like this:</p>
+
+<pre><code class="r">nerDiv(&quot;Sepal.Length&quot;, &quot;Petal.Length&quot;) 
+</code></pre>
+
+<p>Or:</p>
+
+<pre><code class="r">nerDiv(&quot;*&quot;)
+</code></pre>
+
+<h4>Nested divisions</h4>
+
+<p>In many cases, it may make a lot of sense to have a hierarchy of divisions, for example:</p>
+
+<pre><code class="r">by=condDiv(&quot;Species&quot;, dr.shingle(&quot;Sepal.Length&quot;, 10, 0.2))
+</code></pre>
+
+<p>Or:</p>
+
+<pre><code class="r">by=list(condDiv(&quot;Species&quot;), rrDiv(5000))
+</code></pre>
+
+<p>Which hasn&#39;t been implemented but things like this are under consideration.</p>
+
+<h4>Arguments for <code>divide()</code></h4>
+
+<p>See the function refs for more details.</p>
+
+<ul>
+<li><code>by</code>: a division specification function or list of division specification  functions, as seen previously</li>
+<li><code>orderBy</code>: how to sort the data within each split after it has been finally put together</li>
+<li><code>output</code>: where the new dataset should go on HDFS - it would be nice by default for it to go in the HDFS working directory with the directory name being the name of the object the result of the call to <code>divide()</code> is going to (don&#39;t know if this is possible).</li>
+<li><code>postTrans</code>: a transformation function (if desired) to apply to each final subset (I suppose <code>orderBy</code> could be done here)</li>
+<li><code>trans</code>: transformation function to coerce data transformed with postTrans back into a data.frame, so the result can behave like an object of class &#39;rhDF&#39; (if desired)</li>
+</ul>
+
+<p>An example of a division invocation looks like this:</p>
+
+<pre><code class="r">divData &lt;- divide(myData, by=rrDiv(1000), output=&quot;outfile&quot;,
+   orderBy=list(c(&quot;var1&quot;, &quot;asc&quot;), c(&quot;var2&quot;, &quot;desc&quot;))
+</code></pre>
+
+<p>The next couple of sections show some examples of <code>divide()</code> to get a better feel for how it works and what it returns.</p>
+
+<h4>divide() output</h4>
+
+<p>The output of divide is an object of class <strong>&#39;rhData&#39;</strong> and <strong>&#39;rhDiv&#39;</strong>, and if the <code>postTrans</code> argument did not make the data unable to be coerced into a data.frame, it will also have class <strong>&#39;rhDF&#39;</strong>.</p>
+
+<p>They key for a subset is a string that identifies the split.  For example, if a data set was conditioned on &quot;var1&quot; and &quot;var2&quot;, then a split corresponding to var1=&quot;a&quot; and var2=&quot;b&quot; would have the key &quot;var1=a|var2=b&quot;.</p>
+
+<p><code>divide()</code> always outputs data using the mapfile format.  This is done because some recombine methods, such as visualization databases, require fast random access to targeted subsets.</p>
+
+<!-- #### Output of divide()
+
+
+#### Things to be done
+
+There is a large list of things that need to be done here that have already been mentioned
+
+- Check division sizes based on attributes
+
+
+
+- key will be a vector of the current level of the conditioning variables that make up the subsetting
+
+
+Args for `divide()`:
+
+
+This will create a new division of the input data on HDFS - also of class `rhDF`, and store its reference in divData.  If the division does not transform variables and does not subset the data, the summary object for kept variables will be maintained, as it is still valid
+
+If `by` is a list, hierarchical subsetting will occur.  For example: 
+
+```{r}
+by=list(condDiv("var1"), rrDiv(100))
+```
+
+will first split up the data by the `var1` conditioning variable and then make random subsets with 10 rows within each conditioning (all in the same map/reduce job).
+
+In the simple case of conditioning variable division, we can simply to:
+
+```{r}
+by=c("var1", "var2")
+```
+
+The data object has classes
+1. "division"
+2. "condDiv", "nerDiv", "rrDiv"
+3. "localDF", "rhDF"
+
+And has attributes:
+- `divby`: list of variables by which it is divided (and division method), or NULL if it wasn't created from a divide() method
+
+- `by`: cond=c("var1", "var2", ...)
+        rr=rows
+        ner=c("var1", "var2", ...) -->
+
+</div>
+
+
+<div class='tab-pane' id='conddiv-examples'>
+<h3>condDiv() Examples</h3>
+
+<p>Here are some examples of conditioning variable division.</p>
+
+<h4>A single conditioning variable</h4>
+
+<p>Dividing <code>infertRaw</code> by eduction (conditioning):</p>
+
+<pre><code class="r">infertRaw &lt;- rhDF(&quot;infertRaw&quot;)
+
+byEd &lt;- divide(infertRaw, by=&quot;education&quot;, output=&quot;infertByEd&quot;, update=TRUE)
+byEd
+</code></pre>
+
+<pre><code>An object of class rhDF, rhData, rhDiv with the following attributes: 
+
+&#39;rhData&#39; attr    : value
+------------------------------------------------------------------------------
+* hasKeys        : keys are available through getKeys(dat)
+* loc            : /tmp/infertByEd
+* type           : map
+* nfile          : 6
+* totSize        : 15.03 KB
+* ndiv           : 3
+* splitSizeDistn : use dat$splitSizeDistn to get distribution
+* sourceData     : /tmp/infertRaw
+* sourceJobData  : use dat$sourceJobData to get job info data
+* example        : use divExample(dat) to get an example subset (value only) or dat$example to get example key/value pairs
+
+**&#39;rhDF&#39;** attr     : value
+--------------------------------------------------------------------------------
+* vars          : education(fac), age(num), parity(num), induced(num), case(num), spontaneous(num), stratum(int), pooled.stratum(num)
+* trans         : identity transformation (original data is a data.frame)
+* badSchema     : (not implemented)
+* nrow          : 248
+* splitRowDistn : use dat$splitRowDistn to get distribution
+* summary       : (not implemented)
+
+First-order division:
+  Type: Conditioning variable division
+    Conditioning variables: education
+</code></pre>
+
+<p>The output is of class <strong>&#39;rhData&#39;</strong>, <strong>&#39;rhDF&#39;</strong>, and <strong>&#39;rhDiv&#39;</strong>.  The <strong>&#39;rhData&#39;</strong> print method checks to see if the data is divided and prints the relevant information if it is.</p>
+
+<p><strong>&#39;rhData&#39;</strong> and <strong>&#39;rhDF&#39;</strong> objects are division-aware.  This means that if we close our R session and go back in and do this:</p>
+
+<pre><code class="r">byEd &lt;- rhDF(&quot;infertByEd&quot;)
+</code></pre>
+
+<p>we have not lost the <strong>&#39;rhDiv&#39;</strong> object attributes.</p>
+
+<p>Let&#39;s see what keys look like for </p>
+
+<pre><code class="r">keys &lt;- getKeys(byEd)
+keys
+</code></pre>
+
+<pre><code>[1] &quot;education=6-11yrs&quot; &quot;education=0-5yrs&quot;  &quot;education=12+ yrs&quot;
+</code></pre>
+
+<p>We see that the keys define the conditioning that has been done and identify which conditioning variable levels the subset represents.</p>
+
+<p>We can retrieve data by key by simply doing what we would naturally do with a list in R:</p>
+
+<pre><code class="r">byEd[[keys[1]]]
+</code></pre>
+
+<pre><code>    education age parity induced case spontaneous stratum pooled.stratum
+5     6-11yrs  35      3       1    1           1       5             32
+6     6-11yrs  36      4       2    1           1       6             36
+7     6-11yrs  23      1       0    1           0       7              6
+8     6-11yrs  32      2       0    1           0       8             22
+...
+</code></pre>
+
+<p>We can also grab a collection of subsets:</p>
+
+<pre><code class="r">byEd[keys[1:2]]
+</code></pre>
+
+<pre><code>[[1]]
+    education age parity induced case spontaneous stratum pooled.stratum
+5     6-11yrs  35      3       1    1           1       5             32
+6     6-11yrs  36      4       2    1           1       6             36
+7     6-11yrs  23      1       0    1           0       7              6
+8     6-11yrs  32      2       0    1           0       8             22
+...
+
+[[2]]
+    education age parity induced case spontaneous stratum pooled.stratum
+1      0-5yrs  26      6       1    1           2       1              3
+2      0-5yrs  42      1       1    1           0       2              1
+3      0-5yrs  39      6       2    1           0       3              4
+4      0-5yrs  34      4       2    1           0       4              2
+84     0-5yrs  26      6       2    0           0       1              3
+</code></pre>
+
+<h4>Multiple conditioning variables</h4>
+
+<p>Now we condition by education and age:</p>
+
+<pre><code class="r">byEdAge &lt;- divide(infertRaw, by=c(&quot;education&quot;, &quot;age&quot;), 
+   output=&quot;byEdAge&quot;, update=TRUE)
+byEdAge
+</code></pre>
+
+<pre><code>An object of class rhDF, rhData, rhDiv with the following attributes: 
+
+&#39;rhData&#39; attr    : value
+----------------------------------------------------------------------------
+* hasKeys        : keys are available through getKeys(dat)
+* loc            : /tmp/byEdAge
+* type           : map
+* nfile          : 6
+* totSize        : 26.81 KB
+* ndiv           : 40
+* splitSizeDistn : use dat$splitSizeDistn to get distribution
+* sourceData     : /tmp/infertRaw
+* sourceJobData  : use dat$sourceJobData to get job info data
+* example        : use divExample(dat) to get an example subset (value only) or dat$example to get example key/value pairs
+
+&#39;rhDF&#39; attr     : value
+--------------------------------------------------------------------------------
+* vars          : education(fac), age(num), parity(num), induced(num), case(num), spontaneous(num), stratum(int), pooled.stratum(num)
+* trans         : identity transformation (original data is a data.frame)
+* badSchema     : (not implemented)
+* nrow          : 248
+* splitRowDistn : use dat$splitRowDistn to get distribution
+* summary       : (not implemented)
+
+First-order division:
+  Type: Conditioning variable division
+    Conditioning variables: education, age
+</code></pre>
+
+<p>Note we could have used <code>byEd</code> as the input if we wanted to.</p>
+
+<pre><code class="r">keys &lt;- getKeys(byEdAge)
+keys
+</code></pre>
+
+<pre><code>[1] &quot;education=12+ yrs|age=36&quot; &quot;education=6-11yrs|age=39&quot;
+[3] &quot;education=12+ yrs|age=21&quot; &quot;education=12+ yrs|age=27&quot;
+[5] &quot;education=6-11yrs|age=42&quot; &quot;education=12+ yrs|age=30&quot;
+[7] &quot;education=6-11yrs|age=27&quot; &quot;education=6-11yrs|age=30&quot;
+...
+</code></pre>
+
+<!-- There is a function, `makeKeys()`, which builds a list of keys - for example:
+
+makeKeys(byEdAge, data.frame(education=c("12+ yrs", "0-5yrs"))) -->
+
+</div>
+
+
+<div class='tab-pane' id='rrdiv-example'>
+<h3>rrDiv() Example</h3>
+
+<p>Now let&#39;s divide the data into random subsets with 25 rows in each subset (for now, the actual number of rows varies around desired number of rows - in the future, it will be exact).</p>
+
+<pre><code class="r">infRR &lt;- divide(infertRaw, by = rrDiv(nrows = 25), 
+   output = &quot;infertRR&quot;, update=TRUE)
+</code></pre>
+
+<pre><code>An object of class rhDF, rhData, rhDiv with the following attributes: 
+
+&#39;rhData&#39; attr    : value
+------------------------------------------------------------------------------
+* hasKeys        : keys are available through getKeys(dat)
+* loc            : /tmp/infertRR
+* type           : map
+* nfile          : 6
+* totSize        : 17.32 KB
+* ndiv           : 10
+* splitSizeDistn : use dat$splitSizeDistn to get distribution
+* sourceData     : /tmp/infertRaw
+* sourceJobData  : use dat$sourceJobData to get job info data
+* example        : use divExample(dat) to get an example subset (value only) or dat$example to get example key/value pairs
+
+**&#39;rhDF&#39;** attr     : value
+--------------------------------------------------------------------------------
+* vars          : education(fac), age(num), parity(num), induced(num), case(num), spontaneous(num), stratum(int), pooled.stratum(num)
+* trans         : identity transformation (original data is a data.frame)
+* badSchema     : (not implemented)
+* nrow          : 248
+* splitRowDistn : use dat$splitRowDistn to get distribution
+* summary       : (not implemented)
+
+First-order division:
+  Type: Random replicate divison
+    Approx. number of rows in each division: 25
+</code></pre>
+
+<p>See that it isn&#39;t exactly 25 rows:</p>
+
+<pre><code class="r">plot(infRR$splitRowDistn)
+</code></pre>
+
+<p>See what keys look like for RR division:</p>
+
+<pre><code class="r">getKeys(infRR)
+</code></pre>
+
+<pre><code>[1] &quot;rr_6&quot;  &quot;rr_4&quot;  &quot;rr_2&quot;  &quot;rr_8&quot;  &quot;rr_1&quot;  &quot;rr_7&quot;  &quot;rr_10&quot; &quot;rr_3&quot;  &quot;rr_9&quot; 
+[10] &quot;rr_5&quot;
+</code></pre>
+
+</div>
+
+
+<div class='tab-pane' id='recombination-framework'>
+<h3>Recombination Framework</h3>
+
+<p>This is the most experimental piece of the implementation as it has received the least attention.  </p>
+
+<p>The general idea for recombination methods is that they should operate based on the data objects and division methods described above.  Only certain recombination methods might work for certain division methods (e.g. a logistic regression recombination should only work for RR division or NER division provided the variables in the regression are in the set of variables the NER division was done across).  Recombination methods must be division-aware.</p>
+
+<p>Recombination can be thought of as a 2-part process:</p>
+
+<ol>
+<li>Apply an analytic or visual method to each subset</li>
+<li>Combine the results from (1)</li>
+</ol>
+
+<p>The combination could be as simple as computing the mean of model coefficients returned from each subset, or it could be gathering all coefficients back to study their distribution.  For visualization recombination methods, see the <a href="http://github.com/hafen/vdb">vdb</a> package.</p>
+
+</div>
+
+
+<div class='tab-pane' id='the-recombine-method'>
+<h3>The recombine() Method</h3>
+
+<p>The <code>recombine()</code> method is to be a general interface for a large variety of user-defined procedures, and should allow the user to specify recombination methods that leverage the vast library of R&#39;s built-in methods.</p>
+
+<p>To specify a recombination method, the user needs to provide the 2 components described above: a <code>method</code>, and a <code>recomb</code> argument.  The <code>method</code> argument is a function to be applied to each subset.  The <code>recomb</code> argument is a function that returns a reduce expression that tells how the results from <code>method</code> should be combined.  </p>
+
+<p>An optional third component, <code>verify</code>, will be implemented, in which code can be written that accesses attributes of the data object and ensures the division, size of subsets, etc. meets the requirements of the division method so that errors or warnings can be given prior to trying to do anything.</p>
+
+<p>As we saw at the beginning of this document, a pre-written GLM recombination method can be applied as follows:</p>
+
+<pre><code class="r">recombine(
+   data = infRR, 
+   method = drGLM(case ~ spontaneous + induced, family = binomial()), 
+   recomb = wMeanCoef())
+</code></pre>
+
+<p>Here, we have a recombination method <code>drGLM()</code> which takes the same parameters as R&#39;s built-in <code>glm</code> function (with the data argument missing - the internals of the function pass the current subset as the data), and we use another function <code>wMeanCoef()</code>, which provides instructions on how to take a weighted mean of coefficients of the fits computed from each subset.</p>
+
+</div>
+
+
+<div class='tab-pane' id='the-drglm-implementation'>
+<h3>The drGLM Implementation</h3>
+
+<p>An example provides greater detail as to how <code>method</code> and <code>recomb</code> are to behave.  Here we discuss the implementation of <code>drGLM()</code> and <code>wMeanCoef()</code> as used above.  Note that these are for illustrative purposes only.  Much more sophisticated recombination methods will be implemented in the future.</p>
+
+<h4>drGLM()</h4>
+
+<p>The <code>method</code> argument passed to <code>recombine()</code> must return 2 things: a list of arguments, called <code>args</code>, and an expression, called <code>expr</code>, which is to operate on those arguments.  </p>
+
+<pre><code class="r">drGLM &lt;- function(...) {
+   args &lt;- list(...)
+
+   expr &lt;- function(args) {
+      fit &lt;- do.call(glm, args)
+      res &lt;- list(
+         names=names(coef(fit)),
+         coef=as.numeric(coef(fit)),
+         n=nrow(args$data)
+      )
+      class(res) &lt;- c(&quot;drCoef&quot;, &quot;list&quot;)
+      list(key=&quot;1&quot;, val=res)      
+   }
+
+   list(args=args, expr=expr)
+}
+</code></pre>
+
+<h4>wMeanCoef()</h4>
+
+<p>For now, this is simply a reduce expression that is passed to the MapReduce job that is doing the recombination.  In the future, we may generalize this more.  This would particularly be good so that recombine methods can be applied unchanged to <strong>&#39;localDiv&#39;</strong> objects (in-memory divided data -- see last section of this document).</p>
+
+<pre><code class="r">wMeanCoef &lt;- function() {
+   expression(
+      pre = {
+         res &lt;- NULL
+         n &lt;- as.numeric(0)
+         coefNames &lt;- NULL
+      },
+      reduce = {
+         if(is.null(coefNames))
+            coefNames &lt;- reduce.values[[1]]$names
+
+         n &lt;- sum(c(n, unlist(lapply(reduce.values, function(x) x$n))), na.rm=TRUE)
+         res &lt;- do.call(rbind, c(list(res), lapply(reduce.values, function(x) {
+            x$coef * x$n
+         })))
+         res &lt;- apply(res, 2, sum)
+      },
+      post = {
+         res &lt;- res / n
+         names(res) &lt;- coefNames
+         rhcollect(&quot;final&quot;, res)
+      }
+   )
+}
+</code></pre>
+
+<!-- `method` refers to 
+
+
+
+#' @param data an object of class 'rhDF'
+#' @param method the analytic method to apply to each subset
+#' @param recomb the method to combine output from the analytic method on each
+
+# "method" should be a function that expects two parameters to already be present in the environment and uses them: curSplit and divType
+# - curSplit is the data.frame for the current split being processed
+# - divType is the division type (to ensure that the method is appropriate for this division type and that the method can be applied correctly)
+# "method" should return a list "args" and "expr", where for each subset, we call x$expr(x$args)
+# "expr" should return an object of class "drCoef" or others...
+
+# "recomb" should be a function that returns a reduce expression that will be used to recombine the results in the MapReduce job
+
+
+#### Ideas
+
+While much of the theory for D&R recombination methods is under way, there are some readily implementable analytical recombination methods.
+
+- Bag of Little Bootstraps
+- 
+
+
+
+
+
+to be able to operate hierarchically - for example, fit a regression to each unique level of a conditioning variable that is randomly divided within each.  Perhaps we can come up with an abstract way of specifying this. -->
+
+</div>
+
+
+<div class='tab-pane' id='division-agnostic-methods'>
+<h3>Division-Agnostic Methods</h3>
+
+<p>There are plans to implement general division-agnostic methods.  I have preliminary versions of functions <code>rhSummary()</code> and <code>rhTabulate()</code>, and plan to do more here.</p>
+
+</div>
+
+
+<div class='tab-pane' id='localdiv-objects'>
+<h3>&#39;localDiv&#39; Objects</h3>
+
+<p>It is worth noting that (most) all methods described thus far also work on data of class <strong>&#39;data.frame&#39;</strong>.  This is useful for testing approaches on data in memory when a Hadoop cluster is not available.  It is also useful for visualization methods because sometimes even relatively small datasets (hundreds of megabytes) that can be operated on in memory still are too difficult to visualize in great detail without D&amp;R.</p>
+
+<p>Divided local data has class <strong>&#39;localDiv&#39;</strong>.  Here are some examples:</p>
+
+<h4>Conditioning division</h4>
+
+<pre><code class="r">dfByEd &lt;- divide(infert, by=&quot;education&quot;)
+dfByEd
+</code></pre>
+
+<pre><code>An object of class localDiv with the following attributes: 
+
+&#39;localDiv&#39;  attr: value
+--------------------------------------------------------------------------------
+* vars          : education(fac), age(num), parity(num), induced(num), case(num), spontaneous(num), stratum(int), pooled.stratum(num)
+* totSize       : 22.89 KB
+* ndiv          : 3
+* trans         : identity transformation (original data is a data.frame)
+* nrow          : 248
+* splitRowDistn : use dat$splitRowDistn to get distribution
+
+First-order division:
+  Type: Conditioning variable division
+    Conditioning variables: condDiv, education
+</code></pre>
+
+<h4>RR division</h4>
+
+<pre><code class="r">dfByRR &lt;- divide(infert, by=rrDiv(nrows=25, seed=1234))
+dfByRR
+</code></pre>
+
+<pre><code>An object of class localDiv with the following attributes: 
+
+&#39;localDiv&#39;  attr: value
+--------------------------------------------------------------------------------
+* vars          : education(fac), age(num), parity(num), induced(num), case(num), spontaneous(num), stratum(int), pooled.stratum(num)
+* totSize       : 37.34 KB
+* ndiv          : 10
+* trans         : identity transformation (original data is a data.frame)
+* nrow          : 248
+* splitRowDistn : use dat$splitRowDistn to get distribution
+
+First-order division:
+  Type: Random replicate divison
+    Approx. number of rows in each division: 25
+</code></pre>
+
+<pre><code class="r">dfByEdAge &lt;- divide(infert, by=c(&quot;education&quot;, &quot;age&quot;))
+keys &lt;- getKeys(dfByEdAge)
+keys
+</code></pre>
+
+<pre><code>[1] &quot;education=0-5yrs|age=26&quot;  &quot;education=0-5yrs|age=34&quot; 
+[3] &quot;education=0-5yrs|age=39&quot;  &quot;education=0-5yrs|age=42&quot; 
+[5] &quot;education=12+ yrs|age=21&quot; &quot;education=12+ yrs|age=23&quot;
+[7] &quot;education=12+ yrs|age=24&quot; &quot;education=12+ yrs|age=25&quot;
+[9] &quot;education=12+ yrs|age=26&quot; &quot;education=12+ yrs|age=27&quot;
+...
+</code></pre>
+
+<h4>Recombination methods</h4>
+
+<p>Recombination methods can be applied just the same with objects of class <strong>&#39;localDiv&#39;</strong>.</p>
+
+<pre><code class="r">recombine(
+   data = infRR, 
+   method = drGLM(case ~ spontaneous + induced, family = binomial()), 
+   recomb = wMeanCoef())
+</code></pre>
+
+<pre><code>(Intercept) spontaneous     induced 
+ -1.9897636   1.3260829   0.5728801
+</code></pre>
+
+</div>
+
+   
+   
+   <ul class="pager">
+      <li><a href="#" id="previous">&larr; Previous</a></li> 
+      <li><a href="#" id="next">Next &rarr;</a></li> 
+   </ul>
+</div>
+
+
+</div>
+</div>
+
+<hr>
+
+<div class="footer">
+   <p>&copy; Ryan Hafen, 2013</p>
+</div>
+</div> <!-- /container -->
+
+<script src="js/jquery.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+<script src="js/jquery.ba-hashchange.min.js"></script>
+<script>
+function manageNextPrev() {
+   $('a#next').parent().toggleClass('disabled', $('#toc.nav li.active').nextAll('li:not(.nav-header)').size() == 0);
+   $('a#previous').parent().toggleClass('disabled', $('#toc.nav li.active').prevAll('li:not(.nav-header)').size() == 0);
+}
+manageNextPrev();
+
+$('a#next').click(function(e) {
+   e.preventDefault();
+   location.href = $('#toc.nav li.active').nextAll('li:not(.nav-header)').first().find('a').attr('href');
+   manageNextPrev();
+});
+$('a#previous').click(function(e) {
+   e.preventDefault();
+   location.href = $('#toc.nav li.active').prevAll('li:not(.nav-header)').first().find('a').attr('href');
+   manageNextPrev();
+});
+
+$(window).hashchange(function() {
+  $('.tab-pane').hide();
+  var tab = location.hash || '#background';
+  $(tab + '.tab-pane').show();
+
+  $('#toc.nav li.active').removeClass('active');
+  $('#toc.nav li a[href="' + tab + '"]').parent().addClass('active');
+  manageNextPrev();
+});
+$(window).hashchange();
+</script>
+</body>
+</html>
