@@ -1,0 +1,36 @@
+Package: datadr
+Type: Package
+Title: Divide and Recombine for Large, Complex Data
+Version: 0.1
+Date: 2012-03-03
+Author: Ryan Hafen
+Maintainer: Ryan Hafen <ryan.hafen@pnnl.gov>
+Description: Methods for dividing data into subsets, applying analytical
+    methods to the subsets, and recombining the results.  Works with local
+    data.frames or very large datasets using the R and Hadoop Integrated
+    Programming Environment (RHIPE).
+License: BSD
+LazyLoad: yes
+LazyData: yes
+Depends:
+    R (>= 2.15.0),
+Suggests:
+    Rhipe
+Collate:
+    'divExample.R'
+    'divide.data.frame.R'
+    'divide.generic.R'
+    'divide.rhDF.R'
+    'divJoin.R'
+    'divSpecs.R'
+    'getKeys.R'
+    'localDiv.methods.R'
+    'makeKeys.R'
+    'misc.R'
+    'print.localDiv.R'
+    'print.rhData.R'
+    'recombine.R'
+    'rhData.methods.R'
+    'rhData.R'
+    'rhDF.R'
+    'updateAttributes.R'

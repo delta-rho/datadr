@@ -1,0 +1,48 @@
+\name{rrDiv}
+\alias{rrDiv}
+\title{Random Replicate Division}
+\usage{
+  rrDiv(nrows = NULL, seed = NULL)
+}
+\arguments{
+  \item{nrows}{number of rows each subset should have}
+
+  \item{seed}{the random seed to use (experimental)}
+}
+\value{
+  a list to be used for the "by" argument to
+  \code{\link{divide}}
+}
+\description{
+  Specify random replicate division parameters for data
+  division
+}
+\details{
+  The random replicate division method currently gets the
+  total number of rows of the data.frame and divides it by
+  \code{nrows} to get the number of subsets.  Then it
+  randomly assigns each row of the input data to one of the
+  subsets, resulting in subsets with approximately
+  \code{nrows} rows.  A future implementation will make
+  each subset have exactly \code{nrows} rows.
+}
+\examples{
+\dontrun{
+
+}
+}
+\author{
+  Ryan Hafen
+}
+\references{
+  \itemize{ \item \url{http://www.datadr.org} \item
+  \href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha,
+  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+  Cleveland, W. S. (2012). Large complex data: divide and
+  recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
+}
+\seealso{
+  \code{\link{divide}}, \code{\link{rhDF}},
+  \code{\link{condDiv}}
+}
+
