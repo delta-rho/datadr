@@ -25,34 +25,34 @@ prettySize <- function(x) {
 # internal
 loadRhDataAttr <- function(loc) {
    rhload(paste(loc, "/_rh_meta/rhDataAttr.Rdata", sep=""))
-   data
+   dat
 }
 
 # internal
-saveRhDataAttr <- function(data, loc) {
-   rhsave(data, file=paste(loc, "/_rh_meta/rhDataAttr.Rdata", sep=""))
+saveRhDataAttr <- function(dat, loc) {
+   rhsave(dat, file=paste(loc, "/_rh_meta/rhDataAttr.Rdata", sep=""))
 }
 
 # internal
-saveRhDivAttr <- function(data, loc) {
-   rhsave(data, file=paste(loc, "/_rh_meta/rhDivAttr.Rdata", sep=""))
+saveRhDivAttr <- function(dat, loc) {
+   rhsave(dat, file=paste(loc, "/_rh_meta/rhDivAttr.Rdata", sep=""))
 }
 
 # internal
 loadRhDivAttr <- function(loc) {
    rhload(paste(loc, "/_rh_meta/rhDivAttr.Rdata", sep=""))
-   data
+   dat
 }
 
 # internal
 loadRhDFattr <- function(loc) {
    rhload(paste(loc, "/_rh_meta/rhDFattr.Rdata", sep=""))   
-   data
+   dat
 }
 
 # internal
-saveRhDFattr <- function(data, loc) {
-   rhsave(data, file=paste(loc, "/_rh_meta/rhDFattr.Rdata", sep=""))
+saveRhDFattr <- function(dat, loc) {
+   rhsave(dat, file=paste(loc, "/_rh_meta/rhDFattr.Rdata", sep=""))
 }
 
 
@@ -137,7 +137,7 @@ printVars <- function(x) {
 printTrans <- function(x) {
    text <- "custom user-defined function - see dat$trans and see dat$transExample for example of a subset post-transformation"
    if(identical(x, identity)) {
-      text <- "identity transformation (original data is a data.frame)"         
+      text <- "identity transformation (original data is a data.frame)"
    } else if(identical(x, as.data.frame)) {
       text <- "data is coerced into a data.frame using as.data.frame - see dat$transExample for example of a subset post-transformation"
    }
