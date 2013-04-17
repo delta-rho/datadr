@@ -284,7 +284,7 @@ str(infert)
 
 <p>The dataset has only 284 observations.</p>
 
-<h4>The Code</h4>
+<h4>The Code (using RHIPE)</h4>
 
 <p>Here is some example code that shows how this data can be written to HDFS, split into subsets using random replicate division, and then have a logistic regression recombination procedure applied to it:</p>
 
@@ -321,6 +321,22 @@ recombine(
 <li>We apply random replicate division to the <code>infDF</code> dataset, specifying that we want 25 rows of data in each split of the division, resulting in 10 divisions.  A MapReduce job is run to create the new division.</li>
 <li>We apply a recombination method to the data, with the analytical method being <code>drGLM</code>, a GLM interface for D&amp;R, and the recombination strategy being <code>wMeanCoef</code>, a weighted mean of the coefficients.  A MapReduce job is run to apply the method to each subset and recombine the results.</li>
 </ol>
+
+<h4>The Code (using data.frame)</h4>
+
+<p>You can also do in-memory divisions of R data.frames, which is useful for testing, etc, particularly if you don&#39;t have a Hadoop cluster handy.</p>
+
+<pre><code class="r">library(datadr)
+
+# (1) apply random-replicate division to the data
+infRR &lt;- divide(infert, by = rrDiv(nrows = 25))
+
+# (2) perform glm weighted coefficient recombination
+recombine(
+   data = infRR, 
+   method = drGLM(case ~ spontaneous + induced, family = binomial()), 
+   recomb = wMeanCoef())
+</code></pre>
 
 <h4>Notes</h4>
 
