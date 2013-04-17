@@ -309,8 +309,8 @@ recombine(
    recomb = wMeanCoef())
 </code></pre>
 
-<pre><code>## (Intercept) spontaneous     induced 
-##  -2.0598729   1.5846892   0.4548141
+<pre><code>(Intercept) spontaneous     induced 
+ -2.0598729   1.5846892   0.4548141
 </code></pre>
 
 <p>A brief explanation of what occurred in the above code:</p>
@@ -342,7 +342,9 @@ recombine(
 
 <p>Note that this example can mislead the reader into thinking that the typical approach is divide, recombine, divide, recombine, ...  Usually <code>divide</code> will only be called once or a handful of times to get the data divided in different ways that are meaningful for a certain type of analysis.  Then multiple iterations of different recombination methods, both numerical and visual, will be applied to the divided data.</p>
 
-<p>Also note that most recombine methods will not return the exact result, but an approximation.  This is the tradeoff between writing a distributed exact algorithm for every scenario you might encounter vs. leveraging all of the existing algorithms available in R.  Theoretical and empirical results show very good performance of the approximations.  &lt;!-- Bag of little bootstraps --&gt;</p>
+<p>Also note that most recombine methods will not return the exact result, but an approximation.  This is the tradeoff between writing a distributed exact algorithm for every scenario you might encounter vs. leveraging all of the existing algorithms available in R.  Theoretical and empirical results show very good performance of the approximations.  </p>
+
+<!-- Bag of little bootstraps -->
 
 <p>Another thing to take note of is the difference between D&amp;R and MapReduce.  It is tempting to think of D&amp;R simply as MapReduce, but that is not the case.  The divide step typically involves both a map and reduce, and the recombine step can involve just a map, or a map and reduce, depending on the recombination method.  MapReduce is completely hidden from the user in D&amp;R.  While D&amp;R is a much more simple interface than MapReduce, it is not anticipated that D&amp;R can cover every task an analyst may want to perform, but the goal is for a wide variety of things to be possible with D&amp;R.</p>
 
