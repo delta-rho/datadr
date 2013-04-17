@@ -34,6 +34,10 @@
          font-size: 14px;
       }
 
+      .fref_title {
+         border-bottom:1px solid #EEE;
+      }
+
       .myHeader {
          font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif; font-weight: 400;
          letter-spacing: -1px;
@@ -201,15 +205,23 @@
 <div class='tab-pane active' id='background'>
 <h3>Background</h3>
 
-<p>This document provides the specification of a domain-specific language for Divide and Recombine (D&amp;R), made available in the <code>datadr</code> R package, and provides examples of the specification.  It&#39;s intended purpose is not to be a tutorial, but to help explain the design.  As the package matures, this will turn more into a tutorial.  </p>
+<p>This document provides the specification of a domain-specific language for Divide and Recombine (D&amp;R), made available in the <code>datadr</code> R package, and provides examples of the specification.  It&#39;s intended purpose is not to be a tutorial, but to help explain the design.  As the package matures, this will turn more into a tutorial.</p>
 
 <p>Currently, the package represents a framework for D&amp;R, but the most exciting and useful part of the package -- the analytical recombination methods -- have not been implemented.  For visualization recombination methods, see the <a href="http://github.com/hafen/vdb">vdb</a> package.</p>
 
-<!-- #### Motivation
+<p>For more information and background about D&amp;R, please visit <a href="http://www.datadr.org">datadr.org</a>.</p>
+
+<!-- #### Goal: Simple, Flexible Environment for Large-Scale Data Analysis
 
 The goal of D&R is to provide an environment for statistical data analysts to be able to carry out detailed, comprehensive analysis of large, complex data with as much ease and flexibility as is possible with small datasets. 
 
-When the data arrive, they rarely come with an algorithm or method.  The appropriate model that describes the behavior in the data typically must be discovered through an iterative process of the application of visual and numeric methods, and is usually much more involved than computing summaries or .
+#### The Data Analysis Problem
+
+When the data arrive, they rarely come with an algorithm or method.  The appropriate model that describes the behavior in the data typically must be discovered through an iterative process involving the application of visual and numeric methods, and is usually much more involved than computing summaries or choosing an algorithm out of nowhere and applying it to the data.  
+
+#### Programming Environments for Data Analysis
+
+To achieve this process, data analysts need a programming environment that allows them to 
 
 The iterative analysis process is best achieved through a programming environment with the following attributes:
  
@@ -221,12 +233,10 @@ The iterative analysis process is best achieved through a programming environmen
 
 [R](http://cran.r-project.org) is an effective environment for this when the data is small enough to be easily handled in memory.  It has thousands of statistical and machine learning methods available and flexible visualization capabilities.  Most importantly, it was designed from the beginning to be a language for data analysis with analyst efficiency in mind, and is a truly interactive language.
 
-Detailed, comprehensive analysis becomes difficult with large, complex data.  
+#### Programming Environment for D&R
 
 [RHIPE](www.datadr.org)
-[Hadoop](http://hadoop.apache.org)
-
-D&R provides a layer that sits on top of RHIPE that ... -->
+[Hadoop](http://hadoop.apache.org) -->
 
 <h4>Reference</h4>
 

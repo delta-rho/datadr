@@ -34,6 +34,10 @@
          font-size: 14px;
       }
 
+      .fref_title {
+         border-bottom:1px solid #EEE;
+      }
+
       .myHeader {
          font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif; font-weight: 400;
          letter-spacing: -1px;
@@ -180,7 +184,7 @@ Rhipe</p>
 <!-- condDiv -->   
 <div class="tab-pane" id="conddiv">
 
-<h3>Conditioning Variable Division</h3>
+<h3 class="fref_title">Conditioning Variable Division</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#conddiv'>condDiv</a></span><span class="keyword">(</span><span class="symbol">vars</span><span class="keyword">)</span></pre>
@@ -228,8 +232,6 @@ Rhipe</p>
 
 
 
-<h4>Examples</h4>
-<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
 
 <h4>See also</h4>
 
@@ -247,7 +249,7 @@ Rhipe</p>
 <!-- divExample -->   
 <div class="tab-pane" id="divexample">
 
-<h3>Get An Example Subset of Divided Data</h3>
+<h3 class="fref_title">Get An Example Subset of Divided Data</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#divexample'>divExample</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">)</span></pre>
@@ -302,7 +304,7 @@ Rhipe</p>
 <!-- divide.data.frame -->   
 <div class="tab-pane" id="dividedataframe">
 
-<h3>Divide a data.frame</h3>
+<h3 class="fref_title">Divide a data.frame</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#dividedataframe'>divide.data.frame</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">by</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">orderBy</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">postTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span>
@@ -352,9 +354,6 @@ Rhipe</p>
 
 
 
-<h4>Examples</h4>
-<pre class="examples"><div class='input'><span class="symbol">irisSplit1</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divide.html'>divide</a></span><span class="keyword">(</span><span class="symbol">iris</span><span class="keyword">,</span> <span class="string">"Species"</span><span class="keyword">)</span></div>
-<p><img src='divide.data.frame-2.png' alt='' width='400' height='400' /></p></pre>
 
 <h4>See also</h4>
 
@@ -372,7 +371,7 @@ Rhipe</p>
 <!-- divide -->   
 <div class="tab-pane" id="divide">
 
-<h3>Divide</h3>
+<h3 class="fref_title">Divide</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#divide'>divide</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="symbol">...</span><span class="keyword">)</span></pre>
@@ -416,7 +415,7 @@ Rhipe</p>
 <!-- divide.rhDF -->   
 <div class="tab-pane" id="dividerhdf">
 
-<h3>Divide a RHIPE 'rhDF' Object</h3>
+<h3 class="fref_title">Divide a RHIPE 'rhDF' Object</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#dividerhdf'>divide.rhDF</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">by</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">orderBy</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">output</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">,</span>
@@ -444,7 +443,7 @@ Rhipe</p>
   <dt>mapred</dt>
   <dd>mapreduce-specific parameters to send to
   RHIPE job that creates the division (see
-  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+  <code>rhwatch</code>)</dd>
   <dt>postTrans</dt>
   <dd>a transformation function (if desired)
   to apply to each final subset</dd>
@@ -494,8 +493,6 @@ Rhipe</p>
 
 
 
-<h4>Examples</h4>
-<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
 
 <h4>See also</h4>
 
@@ -513,7 +510,7 @@ Rhipe</p>
 <!-- divJoin -->   
 <div class="tab-pane" id="divjoin">
 
-<h3>Join New Data to a "localDiv" object</h3>
+<h3 class="fref_title">Join New Data to a "localDiv" object</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#divjoin'>divJoin</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">,</span> <span class="symbol">newDat</span><span class="keyword">,</span> <span class="symbol">elemName</span><span class="keyword">)</span></pre>
@@ -551,23 +548,6 @@ Rhipe</p>
 
 
 
-<h4>Examples</h4>
-<pre class="examples"><div class='input'><span class="symbol">irisSplit</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divide.html'>divide</a></span><span class="keyword">(</span><span class="symbol">iris</span><span class="keyword">,</span> <span class="string">"Species"</span><span class="keyword">)</span>
-
-<span class="comment"># join a data.frame</span>
-<span class="symbol">newDatDF</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/data.frame'>data.frame</a></span><span class="keyword">(</span>
-   <span class="argument">Species</span><span class="argument">=</span><span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/rep'>rep</a></span><span class="keyword">(</span><span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/unique'>unique</a></span><span class="keyword">(</span><span class="symbol">iris</span><span class="keyword">$</span><span class="symbol">Species</span><span class="keyword">)</span><span class="keyword">,</span> <span class="number">3</span><span class="keyword">)</span><span class="keyword">,</span>
-   <span class="argument">val</span><span class="argument">=</span><span class="number">1</span><span class="keyword">:</span><span class="number">9</span>
-<span class="keyword">)</span>
-<span class="symbol">irisSplit</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divJoin.html'>divJoin</a></span><span class="keyword">(</span><span class="symbol">irisSplit</span><span class="keyword">,</span> <span class="symbol">newDatDF</span><span class="keyword">,</span> <span class="string">"testDF"</span><span class="keyword">)</span>
-
-<span class="comment"># join a list</span>
-<span class="symbol">newDatList</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/lapply'>lapply</a></span><span class="keyword">(</span><span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/paste'>paste</a></span><span class="keyword">(</span><span class="string">"Species="</span><span class="keyword">,</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/unique'>unique</a></span><span class="keyword">(</span><span class="symbol">iris</span><span class="keyword">$</span><span class="symbol">Species</span><span class="keyword">)</span><span class="keyword">,</span> <span class="argument">sep</span><span class="argument">=</span><span class="string">""</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">function</span><span class="keyword">(</span><span class="formalargs">x</span><span class="keyword">)</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/list'>list</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">,</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/stats/Normal'>rnorm</a></span><span class="keyword">(</span><span class="number">5</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
-<span class="symbol">irisSplit</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divJoin.html'>divJoin</a></span><span class="keyword">(</span><span class="symbol">irisSplit</span><span class="keyword">,</span> <span class="symbol">newDatList</span><span class="keyword">,</span> <span class="string">"testList"</span><span class="keyword">)</span>
-
-<span class="comment"># "join" using a function</span>
-<span class="symbol">newDatFun</span> <span class="assignement">&lt;-</span> <span class="keyword">function</span><span class="keyword">(</span><span class="formalargs">x</span><span class="keyword">)</span> <span class="functioncall"><a href='http://www.inside-r.org/r-doc/base/Extremes'>max</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">$</span><span class="symbol">rows</span><span class="keyword">$</span><span class="symbol">Sepal.Length</span><span class="keyword">)</span>
-<span class="symbol">irisSplit</span> <span class="assignement">&lt;-</span> <span class="functioncall"><a href='divJoin.html'>divJoin</a></span><span class="keyword">(</span><span class="symbol">irisSplit</span><span class="keyword">,</span> <span class="symbol">newDatFun</span><span class="keyword">,</span> <span class="string">"testFun"</span><span class="keyword">)</span></div></pre>
 
 <h4>See also</h4>
 
@@ -584,7 +564,7 @@ Rhipe</p>
 <!-- drGLM -->   
 <div class="tab-pane" id="drglm">
 
-<h3>GLM Recombination Method</h3>
+<h3 class="fref_title">GLM Recombination Method</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#drglm'>drGLM</a></span><span class="keyword">(</span><span class="symbol">...</span><span class="keyword">)</span></pre>
@@ -628,7 +608,7 @@ Rhipe</p>
 <!-- getKeys.localDiv -->   
 <div class="tab-pane" id="getkeyslocaldiv">
 
-<h3>Get Split Keys</h3>
+<h3 class="fref_title">Get Split Keys</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#getkeyslocaldiv'>getKeys.localDiv</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">)</span></pre>
@@ -656,7 +636,7 @@ Rhipe</p>
 <!-- getKeys -->   
 <div class="tab-pane" id="getkeys">
 
-<h3>Get Split Keys</h3>
+<h3 class="fref_title">Get Split Keys</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#getkeys'>getKeys</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">)</span></pre>
@@ -685,7 +665,7 @@ Rhipe</p>
 <!-- getKeys.rhData -->   
 <div class="tab-pane" id="getkeysrhdata">
 
-<h3>Get Split Keys</h3>
+<h3 class="fref_title">Get Split Keys</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#getkeysrhdata'>getKeys.rhData</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">)</span></pre>
@@ -713,7 +693,7 @@ Rhipe</p>
 <!-- makeKeys -->   
 <div class="tab-pane" id="makekeys">
 
-<h3>Construct Split Keys</h3>
+<h3 class="fref_title">Construct Split Keys</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#makekeys'>makeKeys</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">,</span> <span class="symbol">vals</span><span class="keyword">)</span></pre>
@@ -755,7 +735,7 @@ Rhipe</p>
 <!-- print.localDiv -->   
 <div class="tab-pane" id="printlocaldiv">
 
-<h3>Print a "localDiv" Object</h3>
+<h3 class="fref_title">Print a "localDiv" Object</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#printlocaldiv'>print.localDiv</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">)</span></pre>
@@ -789,7 +769,7 @@ Rhipe</p>
 <!-- print.rhData -->   
 <div class="tab-pane" id="printrhdata">
 
-<h3>Print an "rhData" or "rhDF" Object</h3>
+<h3 class="fref_title">Print an "rhData" or "rhDF" Object</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#printrhdata'>print.rhData</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">)</span></pre>
@@ -823,7 +803,7 @@ Rhipe</p>
 <!-- recombine -->   
 <div class="tab-pane" id="recombine">
 
-<h3>Recombine a RHIPE 'rhDiv' Object</h3>
+<h3 class="fref_title">Recombine a RHIPE 'rhDiv' Object</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#recombine'>recombine</a></span><span class="keyword">(</span><span class="argument">data</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">method</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">recomb</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
@@ -841,7 +821,7 @@ Rhipe</p>
   <dt>mapred</dt>
   <dd>mapreduce-specific parameters to send to
   RHIPE job that performs the recombination (see
-  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+  <code>rhwatch</code>)</dd>
 </dl>
 
   <h4>Value</h4>
@@ -877,8 +857,6 @@ Rhipe</p>
 
 
 
-<h4>Examples</h4>
-<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
 
 <h4>See also</h4>
 
@@ -896,7 +874,7 @@ Rhipe</p>
 <!-- rhData -->   
 <div class="tab-pane" id="rhdata">
 
-<h3>Load a RHIPE 'rhData' Object</h3>
+<h3 class="fref_title">Load a RHIPE 'rhData' Object</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#rhdata'>rhData</a></span><span class="keyword">(</span><span class="symbol">loc</span><span class="keyword">,</span> <span class="argument">type</span> <span class="argument">=</span> <span class="string">"sequence"</span><span class="keyword">,</span> <span class="argument">reset</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span> <span class="argument">update</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span>
@@ -906,7 +884,7 @@ Rhipe</p>
 <dl>
   <dt>loc</dt>
   <dd>location on HDFS where the data resides (can
-  be a relative path if using <code><a href='http://www.inside-r.org/r-doc/Rhipe/hdfs.setwd'>hdfs.setwd</a></code>)</dd>
+  be a relative path if using <code>hdfs.setwd</code>)</dd>
   <dt>type</dt>
   <dd>the type of data (map, sequence, text)</dd>
   <dt>reset</dt>
@@ -918,7 +896,7 @@ Rhipe</p>
   <dt>mapred</dt>
   <dd>mapreduce-specific parameters to send to
   RHIPE job that performs the update (see
-  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+  <code>rhwatch</code>)</dd>
 </dl>
 
   <h4>Value</h4>
@@ -963,8 +941,6 @@ Rhipe</p>
 
 
 
-<h4>Examples</h4>
-<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
 
 <h4>See also</h4>
 
@@ -982,7 +958,7 @@ Rhipe</p>
 <!-- rhDF -->   
 <div class="tab-pane" id="rhdf">
 
-<h3>Load a RHIPE 'rhDF' Object</h3>
+<h3 class="fref_title">Load a RHIPE 'rhDF' Object</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#rhdf'>rhDF</a></span><span class="keyword">(</span><span class="symbol">loc</span><span class="keyword">,</span> <span class="argument">type</span> <span class="argument">=</span> <span class="string">"sequence"</span><span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">reset</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span> <span class="argument">update</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span>
@@ -992,7 +968,7 @@ Rhipe</p>
 <dl>
   <dt>loc</dt>
   <dd>location on HDFS where the data resides (can
-  be a relative path if using <code><a href='http://www.inside-r.org/r-doc/Rhipe/hdfs.setwd'>hdfs.setwd</a></code>)</dd>
+  be a relative path if using <code>hdfs.setwd</code>)</dd>
   <dt>type</dt>
   <dd>the type of data (map, sequence, text)</dd>
   <dt>trans</dt>
@@ -1007,7 +983,7 @@ Rhipe</p>
   <dt>mapred</dt>
   <dd>mapreduce-specific parameters to send to
   RHIPE job that performs the update (see
-  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+  <code>rhwatch</code>)</dd>
 </dl>
 
   <h4>Value</h4>
@@ -1055,8 +1031,6 @@ Rhipe</p>
 
 
 
-<h4>Examples</h4>
-<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
 
 <h4>See also</h4>
 
@@ -1074,7 +1048,7 @@ Rhipe</p>
 <!-- rrDiv -->   
 <div class="tab-pane" id="rrdiv">
 
-<h3>Random Replicate Division</h3>
+<h3 class="fref_title">Random Replicate Division</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#rrdiv'>rrDiv</a></span><span class="keyword">(</span><span class="argument">nrows</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">seed</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
@@ -1125,8 +1099,6 @@ Rhipe</p>
 
 
 
-<h4>Examples</h4>
-<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
 
 <h4>See also</h4>
 
@@ -1144,7 +1116,7 @@ Rhipe</p>
 <!-- str.rhData -->   
 <div class="tab-pane" id="strrhdata">
 
-<h3>str Method for 'rhData'</h3>
+<h3 class="fref_title">str Method for 'rhData'</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#strrhdata'>str.rhData</a></span><span class="keyword">(</span><span class="symbol">x</span><span class="keyword">,</span> <span class="symbol">...</span><span class="keyword">)</span></pre>
@@ -1181,7 +1153,7 @@ Rhipe</p>
 <!-- updateAttributes -->   
 <div class="tab-pane" id="updateattributes">
 
-<h3>Update Attributes of a 'rhData' or 'rhDF' Object</h3>
+<h3 class="fref_title">Update Attributes of a 'rhData' or 'rhDF' Object</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#updateattributes'>updateAttributes</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
@@ -1193,7 +1165,7 @@ Rhipe</p>
   <dt>mapred</dt>
   <dd>mapreduce-specific parameters to send to
   RHIPE job that creates the division (see
-  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
+  <code>rhwatch</code>)</dd>
 </dl>
 
   <h4>Value</h4>
@@ -1220,8 +1192,6 @@ Rhipe</p>
 
 
 
-<h4>Examples</h4>
-<pre class="examples"><div class='input'>## <strong>Not run</strong>: # # ## <strong>End(Not run)</strong></div></pre>
 
 <h4>See also</h4>
 
@@ -1239,7 +1209,7 @@ Rhipe</p>
 <!-- wMeanCoef -->   
 <div class="tab-pane" id="wmeancoef">
 
-<h3>Weighted Coefficient Mean Recombination</h3>
+<h3 class="fref_title">Weighted Coefficient Mean Recombination</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#wmeancoef'>wMeanCoef</a></span><span class="keyword">(</span><span class="keyword">)</span></pre>
