@@ -1,0 +1,160 @@
+#' str Method for 'rhData'
+#'
+#' str method for 'rhData'
+#'
+#' @param x 'rhData' object
+#' @param \ldots additional parameters
+#' 
+#' @details Avoids clutter with \code{\link{str}}, hiding \code{sourceJobData} and \code{example}, whose structure can be seen with, e.g. \code{str(obj$example)}
+#' 
+#' @author Ryan Hafen
+#' 
+#' @export
+str.rhData <- function(x, ...) {
+   if(!all(is.na(x$sourceJobData)))
+      x$sourceJobData <- "hidden list"
+
+   if(!all(is.na(x$example)))
+      x$example <- "hidden list"
+
+   utils:::str.default(x, ...)
+}
+
+#' `[[` Extract Method for 'rhData'
+#' 
+#' `[[` extrac method for 'rhData'
+#' 
+#' @param x 'rhData' object
+#' @param ind index value
+#' 
+#' @details By default, we want obj[[key]] to extract a key/value pair from 'rhData' objects, but still want to extract metadata if specified by name.
+#' 
+#' @author Ryan Hafen
+#' 
+#' @export
+"[[.rhData" <- function(x, ind) {
+   # preserve subsetting if it isn't a key
+   if(ind %in% c("vars", "isDF", "badSchema", "nrow", "splitRowDistn", "summary", "hasKeys", "loc", "type", "nfile", "totSize", "ndiv", "splitSizeDistn", "sourceData", "sourceJobData", "trans", "mapfile", "example", "divBy") || is.numeric(ind)) {
+      class(x) <- "list"
+      return(x[[ind]])
+   }
+   
+   if(x$type != "map")
+      stop("Subset operation only works if data is in map format.")
+   
+   if(suppressWarnings(is.na(x$mapfile)) || is.null(x$mapfile)) {
+      warning("mapfile for subsetting was not available - re-initializing...")
+      x$mapfile <- rhmapfile(rhDataAttr$loc)
+   }
+   x$mapfile[[ind]]
+}
+
+#' `[` Extract Method for 'rhData'
+#' 
+#' `[` extrac method for 'rhData'
+#' 
+#' @param x 'rhData' object
+#' @param ind index value
+#' 
+#' @details By default, we want obj[keys] to extract key/value pairs from 'rhData' objects, but still want to extract metadata if specified by name.
+#' 
+#' @author Ryan Hafen
+#' 
+#' @export
+"[.rhData" <- function(x, ind) {
+   # preserve subsetting if it isn't a key
+   if(ind %in% c("vars", "isDF", "badSchema", "nrow", "splitRowDistn", "summary", "hasKeys", "loc", "type", "nfile", "totSize", "ndiv", "splitSizeDistn", "sourceData", "sourceJobData", "trans", "mapfile", "example", "divBy") || is.numeric(ind)) {
+      class(x) <- "list"
+      return(x[ind])
+   }
+
+   if(x$type != "map")
+      stop("Subset operation only works if data is in map format.")
+   
+   if(suppressWarnings(is.na(x$mapfile)) || is.null(x$mapfile)) {
+      warning("mapfile for subsetting was not available - re-initializing...")
+      x$mapfile <- rhmapfile(rhDataAttr$loc)
+   }
+   x$mapfile[ind]
+}
+
+divExample.rhData <- function(data, trans=FALSE) {
+   if(trans) {
+      return(data$trans(data$example[[1]][[2]]))
+   } else {
+      return(data$example[[1]][[2]])
+   }
+}
+
+divExampleKey.rhDiv <- function(data, trans=FALSE) {
+   data$example[[1]][[1]]
+}
+
+
+#' @export
+getKeys.rhData <- function(obj) {
+   keys <- NULL
+   if(existsOnHDFS(obj$loc, "_rh_meta", "keys.Rdata"))
+      rhload(paste(obj$loc, "/_rh_meta/keys.Rdata", sep=""))
+   keys
+}
+
+
+getDivType.rhDiv <- function(x) {
+   x$divBy$type
+}
+
+getDivAttr.rhDiv <- function(x) {
+   x
+}
+
+
+divApply.rhDiv <- function(data, apply) {
+   rhmap({
+      tmp <- apply$applyFn(c(apply$args, list(data=r)), key=k)
+      rhcollect(tmp$key, tmp$val)
+   })      
+}
+
+divCombine.rhDiv <- function(data, map, apply, combine) {
+   reduce <- combine$reduce
+   
+   type <- combine$type
+   if(is.null(type)) {
+      type <- "map"
+      if(combine$readback)
+         type <- "sequence"
+   }
+   
+   output <- combine$output
+   if(!is.null(output)) {
+      output1 <- rhfmt(output, type=type)
+   } else {
+      output1 <- NULL
+   }
+   
+   res <- rhwatch(
+      input=rhfmt(data$loc, type=data$type),
+      output=output1,
+      map=map,
+      reduce=reduce,
+      mapred=combine$mapred,
+      parameters=list(apply=apply),
+      readback=FALSE
+   )
+   
+   if(res[[1]]$state=="FAILED")
+      stop("There was an error in the MapReduce job...")
+      
+   if(combine$readback) {
+      if(is.null(output)) {
+         res <- rhread(res[[2]]$lines$rhipe_output_folder)         
+      } else {
+         res <- rhread(output, type=type)
+      }
+   }
+   
+   res
+}
+
+
