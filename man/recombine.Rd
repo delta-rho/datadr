@@ -2,25 +2,18 @@
 \alias{recombine}
 \title{Recombine a RHIPE 'rhDiv' Object}
 \usage{
-  recombine(data = NULL, method = NULL, recomb = NULL,
-    mapred = NULL)
+  recombine(data = NULL, apply = NULL,
+    combine = combCollect(), mapred = NULL)
 }
 \arguments{
   \item{data}{an object of class 'rhDF'}
 
-  \item{method}{the analytic method to apply to each
-  subset}
+  \item{apply}{the analytic method to apply to each subset}
 
-  \item{recomb}{the method to combine output from the
-  analytic method on each subset}
-
-  \item{mapred}{mapreduce-specific parameters to send to
-  RHIPE job that performs the recombination (see
-  \code{\link{rhwatch}})}
+  \item{combine}{the method to combine the results}
 }
 \value{
-  depends on \code{recomb} - should be a final set of model
-  coefficients, etc.
+  depends on \code{combine}
 }
 \description{
   Apply an analytic method to a RHIPE 'rhDiv' object and

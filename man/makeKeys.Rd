@@ -5,7 +5,7 @@
   makeKeys(obj, vals)
 }
 \arguments{
-  \item{obj}{an object of class 'rhDiv'}
+  \item{obj}{an object of class 'rhDiv' or 'localDiv'}
 
   \item{vals}{a data.frame of values to use to construct
   keys}

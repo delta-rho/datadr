@@ -2,7 +2,7 @@
 #'
 #' Construct split keys for divided data
 #'
-#' @param obj an object of class 'rhDiv'
+#' @param obj an object of class 'rhDiv' or 'localDiv'
 #' @param vals a data.frame of values to use to construct keys
 #' 
 #' @details A split key for divided data is a string that identifies the split.  For example, if a data set was conditioned on "var1" and "var2", then a split corresponding to var1="a" and var2="b" would have the key "var1=a|var2=b".  This function constructs a vector of keys based on an input data.frame specifying the key levels you want to extract data for.
@@ -14,22 +14,8 @@ makeKeys <- function(obj, vals) {
    if(!is.data.frame(vals))
       stop("'vals' must be a data.frame")
 
-   type <- NULL
-   if(inherits(obj, "rhDiv")) {
-      type <- "rhDiv"
-   } else if(inherits(obj, "localDiv")) {
-      type <- "localDiv"
-   }
-   if(is.null(type))
-      stop("'obj' must be an object of class 'rhDiv' or 'localDiv'")
-
-
-   if(type=="rhDiv") {
-      objAttr <- obj
-   } else {
-      objAttr <- attributes(obj)
-   }
-
+   objAttr <- getDivAttr(obj)
+   
    if(objAttr$divBy$type != "condDiv")
       stop("This method only works for conditioning variable division")
 
@@ -66,6 +52,7 @@ makeKeys <- function(obj, vals) {
    
    res
 }
+
 
 # irisSplit <- divide(iris, by="Species")
 # makeKeys(irisSplit, data.frame(Species="virginica"))

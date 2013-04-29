@@ -1,6 +1,6 @@
 \name{drGLM}
 \alias{drGLM}
-\title{GLM Recombination Method}
+\title{GLM Recombination 'apply' Method}
 \usage{
   drGLM(...)
 }
@@ -13,10 +13,10 @@
 }
 \details{
   This is an experimental prototype.  It provides an
-  expression to be evaluated for each subset in a
-  recombination MapReduce job that applies R's glm method
-  and outputs the coefficients.  It is to be passed as the
-  argument \code{method} to \code{\link{recombine}}.
+  function to be called for each subset in a recombination
+  MapReduce job that applies R's glm method and outputs the
+  coefficients.  It is to be passed as the argument
+  \code{method} to \code{\link{recombine}}.
 }
 \author{
   Ryan Hafen

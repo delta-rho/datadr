@@ -1,11 +1,13 @@
 \name{divExample}
 \alias{divExample}
-\title{Get An Example Subset of Divided Data}
+\title{Get An Example Subset of Divided Data
+Get a subset of a divided data object to test functions on prior to doing computation across the entire data set}
 \usage{
-  divExample(data, trans = FALSE)
+  divExample(data, ...)
 }
 \arguments{
-  \item{data}{object of class "localDiv" or "rhDdata"}
+  \item{divided}{data object (e.g. of class "localDiv",
+  "rhDdata", etc.)}
 
   \item{should}{the transformation function specified when
   the data was created be applied?}
@@ -14,8 +16,8 @@
   one subset of the divided data
 }
 \description{
-  Get a subset of an object of class "localDiv", "rhData"
-  or "rhDF" to test test functions on prior to doing
+  Get An Example Subset of Divided Data Get a subset of a
+  divided data object to test functions on prior to doing
   computation across the entire data set
 }
 \note{

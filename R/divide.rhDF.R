@@ -32,6 +32,9 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, p
    if(is.null(output))
       stop("Must provide location on HDFS for output data")
    
+   if(is.null(trans))
+      trans <- identity
+      
    # validate "by"
    if(!is.list(by)) { # by should be a list
       by <- condDiv(by)
@@ -66,90 +69,111 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, p
       datadr:::setupRNGStream(seed)
    }))
    
-   map <- rhmap({
-      # TODO: pass factor levels of any factor variables through and in the reduce, assign this, to preserve factor levels across subsets
-      data <- trans(r)
-      
-      if(by$type == "condDiv") {
-         splitVars <- by$vars
-         cuts <- apply(data[,splitVars,drop=FALSE], 1, function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))      
-      } else if(by$type=="rrDiv") {
-         # get the number of splits necessary for specified nrows
-         nr <- by$nrows
-         ndiv <- ceiling(n / nr)
-         cuts <- paste("rr_", sample(1:ndiv, n, replace=TRUE), sep="")
-      }
-      
-      cutDat <- split(data, cuts)
-      cdn <- names(cutDat)
-      
-      for(i in seq_along(cutDat)) {
-         rhcollect(cdn[i], cutDat[[i]])
-      }
-   })
-   
-   reduce <- expression(
-      pre={
-         res <- list()
-      },
-      reduce={
-         res[[length(res) + 1]] <- reduce.values
-      },
-      post={
-         # TODO: use rbindlist from data.table for speed
-         # TODO: spill records to new key/value if too many rows?
-         res <- do.call(rbind, unlist(res, recursive=FALSE))
-         if(!is.null(orderBy)) {
-            res <- orderData(res, orderBy)
-         }
-         # add conditioning variable current split vals
-         if(by$type=="condDiv") {
-            splitVars <- by$vars
-            for(i in seq_along(res)) {
-               tmp <- res[1,splitVars, drop=FALSE]
-               tmp <- lapply(tmp, as.character)
-               tmp <- data.frame(tmp, stringsAsFactors=FALSE)
-               attr(res, "split") <- tmp
-            }
-         }
+   if(rhabsolute.hdfs.path(output) == data$loc) {
+      if(by$type != "condDiv") {
+         stop("\"output\" is the same as location of input data")
+      } else {
+         message("* \"output\" is same as location of input data.  Verifying on a subset that the input data already appears to be divided by the specified conditioning variables")
          
-         rhcounter("rhDF", "nrow", nrow(res))
-         rhcollect(reduce.key, res)
+         tmp <- trans(divExample(data))
+         
+         # data has all columns of "by"
+         if(all(by$vars %in% names(tmp))) {
+            # all "by" columns have a single value
+            if(!all(sapply(tmp[by$vars], function(x) length((unique(x))) == 1))) {
+               stop("Columns of 'by' variables are not unique")
+            }
+         } else {
+            stop("Not all 'by' variables present in data")
+         }
+         message("* Subset passed - only one subset was tested... continue at your own risk")
       }
-   )
-   
-   # set write.job.info to TRUE
-   wji <- rhoptions()$write.job.info
-   rhoptions(write.job.info=TRUE)
-   
-   tmp <- rhwatch(
-      setup=setup,
-      map=map, 
-      reduce=reduce, 
-      input=rhfmt(data$loc, type=data$type),
-      output=rhfmt(output, type="map"),
-      mapred=mapred, 
-      readback=FALSE, 
-      parameters=list(
-         by = by,
-         n = n,
-         orderBy = NULL,
-         trans = data$trans,
-         seed = seed
-         # orderData = orderData,
-         # getUID = getUID,
-         # setupRNGStream = setupRNGStream
+   } else {
+      map <- rhmap({
+         # TODO: pass factor levels of any factor variables through and in the reduce, assign this, to preserve factor levels across subsets
+         data <- trans(r)
+
+         if(by$type == "condDiv") {
+            splitVars <- by$vars
+            cuts <- apply(data[,splitVars,drop=FALSE], 1, function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))      
+         } else if(by$type=="rrDiv") {
+            # get the number of splits necessary for specified nrows
+            nr <- by$nrows
+            ndiv <- ceiling(n / nr)
+            cuts <- paste("rr_", sample(1:ndiv, n, replace=TRUE), sep="")
+         }
+
+         cutDat <- split(data, cuts)
+         cdn <- names(cutDat)
+
+         for(i in seq_along(cutDat)) {
+            rhcollect(cdn[i], cutDat[[i]])
+         }
+      })
+      
+      reduce <- expression(
+         pre={
+            res <- list()
+         },
+         reduce={
+            res[[length(res) + 1]] <- reduce.values
+         },
+         post={
+            # TODO: use rbindlist from data.table for speed
+            # TODO: spill records to new key/value if too many rows?
+            res <- do.call(rbind, unlist(res, recursive=FALSE))
+            if(!is.null(orderBy)) {
+               res <- orderData(res, orderBy)
+            }
+            # add conditioning variable current split vals
+            if(by$type=="condDiv") {
+               splitVars <- by$vars
+               for(i in seq_along(res)) {
+                  tmp <- res[1,splitVars, drop=FALSE]
+                  tmp <- lapply(tmp, as.character)
+                  tmp <- data.frame(tmp, stringsAsFactors=FALSE)
+                  attr(res, "split") <- tmp
+               }
+            }
+            
+            rhcounter("rhDF", "nrow", nrow(res))
+            rhcollect(reduce.key, res)
+         }
       )
-   )
-   
-   # set write.job.info back to what it was
-   rhoptions(write.job.info=wji)
-   
+      
+      # set write.job.info to TRUE
+      wji <- rhoptions()$write.job.info
+      rhoptions(write.job.info=TRUE)
+      
+      tmp <- rhwatch(
+         setup=setup,
+         map=map, 
+         reduce=reduce, 
+         input=rhfmt(data$loc, type=data$type),
+         output=rhfmt(output, type="map"),
+         mapred=mapred, 
+         readback=FALSE, 
+         parameters=list(
+            by = by,
+            n = n,
+            orderBy = NULL,
+            trans = data$trans,
+            seed = seed
+            # orderData = orderData,
+            # getUID = getUID,
+            # setupRNGStream = setupRNGStream
+         )
+      )
+
+      # set write.job.info back to what it was
+      rhoptions(write.job.info=wji)      
+   }
+
    if(is.null(postTrans)) { # result is a data.frame
       res <- rhDF(output, type="map")
    } else {
       # check to see if it can either be 
-      tmp <- try(rhDF(output, type="map", trans=trans))
+      tmp <- try(rhDF(output, type="map", trans=postTrans))
       if(inherits(tmp, "try-error")) {
          res <- rhData(output, type="map")
       } else {

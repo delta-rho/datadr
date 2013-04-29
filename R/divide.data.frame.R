@@ -42,7 +42,7 @@ divide.data.frame <- function(data, by=NULL, orderBy=NULL, postTrans=NULL, trans
    if(by$type == "condDiv") {
       splitVars <- by$vars
       cuts <- apply(data[,splitVars,drop=FALSE], 1, function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))      
-
+      
       uniqueValues <- lapply(splitVars, function(x) {
          tmp <- unique(data[,x])
          if(class(tmp) == "factor")
@@ -54,9 +54,10 @@ divide.data.frame <- function(data, by=NULL, orderBy=NULL, postTrans=NULL, trans
       # get the number of splits necessary for specified nrows
       n <- nrow(data)
       nr <- by$nrows
-      ndiv <- ceiling(n / nr)
+      ndiv <- round(n / nr, 0)
       if(!is.null(by$seed)) set.seed(by$seed)
-      cuts <- paste("rr_", sample(1:ndiv, n, replace=TRUE), sep="")
+      # cuts <- paste("rr_", sample(1:ndiv, n, replace=TRUE), sep="")
+      cuts <- paste("rr_", rep(1:ndiv, each=ceiling(n / ndiv))[1:n][sample(1:n, replace=FALSE)], sep="")
    } else {
       stop("Only 'condDiv' and 'rrDiv' divisions have been implemented.")
    }
@@ -85,6 +86,5 @@ divide.data.frame <- function(data, by=NULL, orderBy=NULL, postTrans=NULL, trans
    attr(tmp, "divBy") <- by
    tmp
 }
-
 
 
