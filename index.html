@@ -133,6 +133,25 @@
       </li>
 
 
+<li class='nav-header'>Using datadr</li>
+      
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#examples'>Examples</a>
+      </li>
+
+
+<li class='nav-header'>Extending datadr</li>
+      
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#extending-recombination-methods'>Extending Recombination Methods</a>
+      </li>
+
+
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#extending-data-objects'>Extending Data Objects</a>
+      </li>
+
+
 <li class='nav-header'>RHIPE data as R objects</li>
       
       <li class='active'>
@@ -207,7 +226,7 @@
 
 <p>This document provides the specification of a domain-specific language for Divide and Recombine (D&amp;R), made available in the <code>datadr</code> R package, and provides examples of the specification.  It&#39;s intended purpose is not to be a tutorial, but to help explain the design.  As the package matures, this will turn more into a tutorial.</p>
 
-<p>Currently, the package represents a framework for D&amp;R, but the most exciting and useful part of the package -- the analytical recombination methods -- have not been implemented.  For visualization recombination methods, see the <a href="http://github.com/hafen/vdb">vdb</a> package.</p>
+<p>For visualization recombination methods, see the <a href="http://github.com/hafen/vdb">vdb</a> package.</p>
 
 <p>For more information and background about D&amp;R, please visit <a href="http://www.datadr.org">datadr.org</a>.</p>
 
@@ -305,8 +324,8 @@ infRR &lt;- divide(infDF, by = rrDiv(nrows = 25), output = &quot;infertRR&quot;)
 # (4) perform glm weighted coefficient recombination
 recombine(
    data = infRR, 
-   method = drGLM(case ~ spontaneous + induced, family = binomial()), 
-   recomb = wMeanCoef())
+   apply = drGLM(case ~ spontaneous + induced, family = binomial()), 
+   combine = combMeanCoef())
 </code></pre>
 
 <pre><code>(Intercept) spontaneous     induced 
@@ -334,8 +353,8 @@ infRR &lt;- divide(infert, by = rrDiv(nrows = 25))
 # (2) perform glm weighted coefficient recombination
 recombine(
    data = infRR, 
-   method = drGLM(case ~ spontaneous + induced, family = binomial()), 
-   recomb = wMeanCoef())
+   apply = drGLM(case ~ spontaneous + induced, family = binomial()), 
+   combine = combMeanCoef())
 </code></pre>
 
 <h4>Notes</h4>
@@ -344,11 +363,191 @@ recombine(
 
 <p>Also note that most recombine methods will not return the exact result, but an approximation.  This is the tradeoff between writing a distributed exact algorithm for every scenario you might encounter vs. leveraging all of the existing algorithms available in R.  Theoretical and empirical results show very good performance of the approximations.  </p>
 
-<!-- Bag of little bootstraps -->
-
 <p>Another thing to take note of is the difference between D&amp;R and MapReduce.  It is tempting to think of D&amp;R simply as MapReduce, but that is not the case.  The divide step typically involves both a map and reduce, and the recombine step can involve just a map, or a map and reduce, depending on the recombination method.  MapReduce is completely hidden from the user in D&amp;R.  While D&amp;R is a much more simple interface than MapReduce, it is not anticipated that D&amp;R can cover every task an analyst may want to perform, but the goal is for a wide variety of things to be possible with D&amp;R.</p>
 
 <p>In the following sections I will discuss in greater detail the current design.</p>
+
+</div>
+
+
+<div class='tab-pane' id='examples'>
+<h3>Examples</h3>
+
+<p>This will be a more extensive tutorial but for now is just a few examples.  These examples use local data.frames just so it is more accessible to users who don&#39;t have RHIPE installed.  Just keep in mind that the same code will work with RHIPE objects that can be much, much larger.</p>
+
+<h4>Generic &quot;apply&quot; functions</h4>
+
+<p><code>drApply</code> takes a function which has one argument, which is the current subset of the data to apply the function to.</p>
+
+<pre><code class="r">library(datadr)
+
+recombine(dfByEd,
+   apply=drApply(function(x) max(x$age))
+)
+</code></pre>
+
+<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
+* Testing the division method on a subset...
+* Applying to all subsets...
+[[1]]
+[[1]][[1]]
+[1] &quot;education=0-5yrs&quot;
+
+[[1]][[2]]
+[1] 42
+...
+</code></pre>
+
+<p>Output is list of lists (each sublist is a key and value).  For prettier output:</p>
+
+<pre><code class="r">recombine(dfByEd,
+   apply=drApply(function(x) data.frame(max=max(x$age)), group=TRUE),
+   combine=combRbind()
+)
+</code></pre>
+
+<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
+* Testing the division method on a subset...
+* Applying to all subsets...
+  max               key
+1  42  education=0-5yrs
+2  38 education=12+ yrs
+3  44 education=6-11yrs
+</code></pre>
+
+<h4>Bag of little bootstraps</h4>
+
+<p>The <code>drBLB()</code> apply function allows you to do little bag of bootstraps.  You must specify a <code>statistic</code> function that has arguments <code>data</code> and <code>weights</code>.  For BLB to work efficiently, it must resample each time with a sample of size \(n\).  To make this computationally possible for very large \(n\), we can use <code>weights</code>.</p>
+
+<p>The <code>statistic</code> function should return a vector the length of how many statistics are being computed for each sample.  Then, you must also specify a <code>metric</code> function, which is applied to the collection of \(R\) bootstrap samples of each statistic returned by <code>statistic</code>.</p>
+
+<pre><code class="r">recombine(dfByRR,
+   apply=drBLB(
+      statistic = function(x, weights)
+         coef(glm(case ~ spontaneous + induced, data=x, weights=weights, family=binomial())),
+      metric = function(x)
+         quantile(x, c(0.05, 0.95)),
+      R = 200,
+      n = dfByRR$nrow
+   ),
+   combine=combMean()
+)
+</code></pre>
+
+<pre><code>X.Intercept..5% X.Intercept..95%   spontaneous.5%  spontaneous.95% 
+     -2.5817068       -1.5867799        1.0290932        1.8320260 
+     induced.5%      induced.95% 
+      0.1401932        0.9014204
+</code></pre>
+
+<h4>Returning a div object</h4>
+
+<p>Get a new div object with just the first 6 obs. in each subset.</p>
+
+<pre><code class="r">dfByEdSub &lt;- recombine(dfByEd,
+   apply=drApply(head),
+   combine=combDiv()
+)
+dfByEdSub
+</code></pre>
+
+<pre><code>An object of class localDiv with the following attributes: 
+
+&#39;localDiv&#39; attr : value
+-------------------------------------------------------------------------------
+* vars          : education(fac), age(num), parity(num), induced(num), case(num), spontaneous(num), stratum(int), pooled.stratum(num)
+* totSize       : 25.22 KB
+* ndiv          : 3
+* trans         : identity transformation (original data is a data.frame)
+* nrow          : 248
+* splitRowDistn : use dat$splitRowDistn to get distribution
+
+First-order division:
+  Type: Conditioning variable division
+    Conditioning variables: education
+</code></pre>
+
+<h4>Validation example</h4>
+
+<p>Try running GLM with conditional division data:</p>
+
+<pre><code class="r">recombine(
+   data = dfByEd, 
+   apply = drGLM(case ~ spontaneous + induced, family = binomial()), 
+   combine = combMeanCoef()
+)
+</code></pre>
+
+<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
+* Testing the division method on a subset...
+* Applying to all subsets...
+(Intercept) spontaneous     induced 
+ -1.7180245   1.1798604   0.3959227 
+Warning message:
+In combine$validate(divType) :
+  The combMeanCoef() combine method is designed to be used with data random replicate division data.  Interpret the results at your own risk.
+</code></pre>
+
+</div>
+
+
+<div class='tab-pane' id='extending-recombination-methods'>
+<h3>Extending Recombination Methods</h3>
+
+<p>Under construction...</p>
+
+<p>All recombination methods are designed to be simple applys, in that the user should not expect a recombination method to result in a different division (or reshuffling of records) of the input data.  To do so, apply another divide.</p>
+
+<h4>Custom apply method:</h4>
+
+<p><strong>inputs:</strong></p>
+
+<ul>
+<li>...</li>
+<li>groupBy - a character vector of variable names according to which the apply method should be applied</li>
+</ul>
+
+<p><strong>outputs:</strong></p>
+
+<ul>
+<li>args - a list of arguments to be passed to expr</li>
+<li>applyFn - a function that will be applied to each subset that takes args and key as arguments</li>
+<li>validate - a function that takes a character vector &quot;divType&quot; ensures this apply method is compatible with the type of division. Should either stop or issue a warning.</li>
+</ul>
+
+<h4>Custom combine method:</h4>
+
+<ul>
+<li>reduce - a RHIPE reduce expression (if not specified, no reduce)</li>
+<li>readback - (for RHIPE data) should results of reduce be read back into memory?</li>
+<li>final - a function to be applied to the result of the reduce</li>
+<li>copyDivAttr -</li>
+</ul>
+
+</div>
+
+
+<div class='tab-pane' id='extending-data-objects'>
+<h3>Extending Data Objects</h3>
+
+<p>This package was designed to be extensible to new data backends.  It currently works with local data.frames (localDiv) and RHIPE data objects (rhDiv).  Below are a list of methods that must be implemented (more here soon...).</p>
+
+<p><strong>Methods:</strong></p>
+
+<ul>
+<li>divide</li>
+<li><code>[</code></li>
+<li><code>$</code></li>
+<li>divExample</li>
+<li>divExampleKey</li>
+<li>getKeys</li>
+<li>getDivType</li>
+<li>getDivAttr</li>
+<li>divApply</li>
+<li>divCombine</li>
+</ul>
+
+<p>A requirement for a data backend is that some type of MapReduce is supported on it.</p>
 
 </div>
 
@@ -1064,14 +1263,14 @@ First-order division:
 
 <p>To specify a recombination method, the user needs to provide the 2 components described above: a <code>method</code>, and a <code>recomb</code> argument.  The <code>method</code> argument is a function to be applied to each subset.  The <code>recomb</code> argument is a function that returns a reduce expression that tells how the results from <code>method</code> should be combined.  </p>
 
-<p>An optional third component, <code>verify</code>, will be implemented, in which code can be written that accesses attributes of the data object and ensures the division, size of subsets, etc. meets the requirements of the division method so that errors or warnings can be given prior to trying to do anything.</p>
+<p>An optional third component, <code>validate</code>, will be implemented, in which code can be written that accesses attributes of the data object and ensures the division, size of subsets, etc. meets the requirements of the division method so that errors or warnings can be given prior to trying to do anything.</p>
 
 <p>As we saw at the beginning of this document, a pre-written GLM recombination method can be applied as follows:</p>
 
 <pre><code class="r">recombine(
    data = infRR, 
-   method = drGLM(case ~ spontaneous + induced, family = binomial()), 
-   recomb = wMeanCoef())
+   apply = drGLM(case ~ spontaneous + induced, family = binomial()), 
+   combine = wMeanCoef())
 </code></pre>
 
 <p>Here, we have a recombination method <code>drGLM()</code> which takes the same parameters as R&#39;s built-in <code>glm</code> function (with the data argument missing - the internals of the function pass the current subset as the data), and we use another function <code>wMeanCoef()</code>, which provides instructions on how to take a weighted mean of coefficients of the fits computed from each subset.</p>
@@ -1091,79 +1290,59 @@ First-order division:
 <pre><code class="r">drGLM &lt;- function(...) {
    args &lt;- list(...)
 
-   expr &lt;- function(args) {
+   args &lt;- list(...)
+   applyFn &lt;- function(args, key) {
       fit &lt;- do.call(glm, args)
       res &lt;- list(
-         names=names(coef(fit)),
-         coef=as.numeric(coef(fit)),
-         n=nrow(args$data)
-      )
+         names = names(coef(fit)), 
+         coef = as.numeric(coef(fit)), n = nrow(args$data))
       class(res) &lt;- c(&quot;drCoef&quot;, &quot;list&quot;)
-      list(key=&quot;1&quot;, val=res)      
+      list(key = &quot;1&quot;, val = res)
    }
-
-   list(args=args, expr=expr)
+   list(args = args, applyFn = applyFn)
 }
 </code></pre>
 
-<h4>wMeanCoef()</h4>
+<h4>combMeanCoef()</h4>
 
-<p>For now, this is simply a reduce expression that is passed to the MapReduce job that is doing the recombination.  In the future, we may generalize this more.  This would particularly be good so that recombine methods can be applied unchanged to <strong>&#39;localDiv&#39;</strong> objects (in-memory divided data -- see last section of this document).</p>
+<p>For now, <code>combine</code> methods are simply a reduce expression that is passed to the MapReduce job that is doing the recombination.  In the future, we may generalize this more.  This would particularly be good so that recombine methods can be applied unchanged to <strong>&#39;localDiv&#39;</strong> objects (in-memory divided data -- see last section of this document).</p>
 
-<pre><code class="r">wMeanCoef &lt;- function() {
-   expression(
-      pre = {
-         res &lt;- NULL
-         n &lt;- as.numeric(0)
-         coefNames &lt;- NULL
+<pre><code class="r">combMeanCoef &lt;- function(...) {
+   list(
+      reduce=expression(
+         pre = {
+            res &lt;- NULL
+            n &lt;- as.numeric(0)
+            coefNames &lt;- NULL
+         },
+         reduce = {
+            if(is.null(coefNames))
+               coefNames &lt;- reduce.values[[1]]$names
+
+            n &lt;- sum(c(n, unlist(lapply(reduce.values, function(x) x$n))), na.rm=TRUE)
+            res &lt;- do.call(rbind, c(list(res), lapply(reduce.values, function(x) {
+               x$coef * x$n
+            })))
+            res &lt;- apply(res, 2, sum)
+         },
+         post = {
+            res &lt;- res / n
+            names(res) &lt;- coefNames
+            rhcollect(&quot;final&quot;, res)
+         }
+      ),
+      final=function(x, ...) x[[1]][[2]],
+      readback=TRUE,
+      validate=function(divType) {
+         if(divType != &quot;rrDiv&quot;)
+            warning(&quot;The combMeanCoef() combine method is designed to be used with data random replicate division data.  Interpret the results at your own risk.&quot;)
       },
-      reduce = {
-         if(is.null(coefNames))
-            coefNames &lt;- reduce.values[[1]]$names
-
-         n &lt;- sum(c(n, unlist(lapply(reduce.values, function(x) x$n))), na.rm=TRUE)
-         res &lt;- do.call(rbind, c(list(res), lapply(reduce.values, function(x) {
-            x$coef * x$n
-         })))
-         res &lt;- apply(res, 2, sum)
-      },
-      post = {
-         res &lt;- res / n
-         names(res) &lt;- coefNames
-         rhcollect(&quot;final&quot;, res)
-      }
+      ...
    )
 }
 </code></pre>
 
-<!-- `method` refers to 
-
-
-
-#' @param data an object of class 'rhDF'
-#' @param method the analytic method to apply to each subset
-#' @param recomb the method to combine output from the analytic method on each
-
-# "method" should be a function that expects two parameters to already be present in the environment and uses them: curSplit and divType
-# - curSplit is the data.frame for the current split being processed
-# - divType is the division type (to ensure that the method is appropriate for this division type and that the method can be applied correctly)
-# "method" should return a list "args" and "expr", where for each subset, we call x$expr(x$args)
-# "expr" should return an object of class "drCoef" or others...
-
-# "recomb" should be a function that returns a reduce expression that will be used to recombine the results in the MapReduce job
-
-
-#### Ideas
-
-While much of the theory for D&R recombination methods is under way, there are some readily implementable analytical recombination methods.
-
-- Bag of Little Bootstraps
-- 
-
-
-
-
-
+<!--
 to be able to operate hierarchically - for example, fit a regression to each unique level of a conditioning variable that is randomly divided within each.  Perhaps we can come up with an abstract way of specifying this. -->
 
 </div>
@@ -1247,8 +1426,8 @@ keys
 
 <pre><code class="r">recombine(
    data = infRR, 
-   method = drGLM(case ~ spontaneous + induced, family = binomial()), 
-   recomb = wMeanCoef())
+   apply = drGLM(case ~ spontaneous + induced, family = binomial()), 
+   combine = wMeanCoef())
 </code></pre>
 
 <pre><code>(Intercept) spontaneous     induced 

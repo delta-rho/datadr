@@ -92,10 +92,28 @@
    <a target="_self" class="nav-not-header" href="#packagemain">Package Info</a>
 </li>
 <li class="">
+   <a target="_self" class="nav-not-header" href="#combcollect">combCollect</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#combdiv">combDiv</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#combmean">combMean</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#combmeancoef">combMeanCoef</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#combrbind">combRbind</a>
+</li>
+<li class="">
    <a target="_self" class="nav-not-header" href="#conddiv">condDiv</a>
 </li>
 <li class="">
    <a target="_self" class="nav-not-header" href="#divexample">divExample</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#divexamplekey">divExampleKey</a>
 </li>
 <li class="">
    <a target="_self" class="nav-not-header" href="#dividedataframe">divide.data.frame</a>
@@ -108,6 +126,12 @@
 </li>
 <li class="">
    <a target="_self" class="nav-not-header" href="#divjoin">divJoin</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#drapply">drApply</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#drblb">drBLB</a>
 </li>
 <li class="">
    <a target="_self" class="nav-not-header" href="#drglm">drGLM</a>
@@ -162,8 +186,8 @@
 <h3>Divide and Recombine for Large, Complex Data</h3>
 
 <p><strong>Author:</strong> Ryan Hafen</p>
-<p><strong>Version:</strong> 0.1</p>
-<p><strong>Date:</strong> 2012-03-03</p>
+<p><strong>Version:</strong> 0.2</p>
+<p><strong>Date:</strong> 2013-04-19</p>
 <p><strong>License:</strong> BSD</p>
 
 <h4>Description</h4>
@@ -181,6 +205,206 @@ R (&gt;= 2.15.0),</p>
 Rhipe</p>
 
 </div>
+<!-- combCollect -->   
+<div class="tab-pane" id="combcollect">
+
+<h3 class="fref_title">"Collect" Recombination</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#combcollect'>combCollect</a></span><span class="keyword">(</span><span class="symbol">...</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>...</dt>
+  <dd>...</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>"Collect" recombination</p>
+
+
+  <h4>Details</h4>
+
+  <p>This is an experimental prototype.  It is to be passed as
+  the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- combDiv -->   
+<div class="tab-pane" id="combdiv">
+
+<h3 class="fref_title">Division Recombination</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#combdiv'>combDiv</a></span><span class="keyword">(</span><span class="symbol">...</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>...</dt>
+  <dd>...</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Division recombination (output of recombine is an object
+  of class localDiv or rhDiv)</p>
+
+
+  <h4>Details</h4>
+
+  <p>This is an experimental prototype.  It is to be passed as
+  the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- combMean -->   
+<div class="tab-pane" id="combmean">
+
+<h3 class="fref_title">Mean Recombination</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#combmean'>combMean</a></span><span class="keyword">(</span><span class="symbol">...</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>...</dt>
+  <dd>...</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Mean recombination</p>
+
+
+  <h4>Details</h4>
+
+  <p>This is an experimental prototype.  It is to be passed as
+  the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- combMeanCoef -->   
+<div class="tab-pane" id="combmeancoef">
+
+<h3 class="fref_title">Mean Coefficient Recombination</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#combmeancoef'>combMeanCoef</a></span><span class="keyword">(</span><span class="symbol">...</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>...</dt>
+  <dd>...</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Mean coefficient recombination</p>
+
+
+  <h4>Details</h4>
+
+  <p>This is an experimental prototype.  It is to be passed as
+  the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.
+  It expects to be dealing with named vectors including an
+  element <code>n</code> specifying the number of rows in that
+  subset.</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
+  <code><a href='#rrdiv'>rrDiv</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- combRbind -->   
+<div class="tab-pane" id="combrbind">
+
+<h3 class="fref_title">"rbind" Recombination</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#combrbind'>combRbind</a></span><span class="keyword">(</span><span class="symbol">...</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>...</dt>
+  <dd>...</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>"rbind" recombination</p>
+
+
+  <h4>Details</h4>
+
+  <p>This is an experimental prototype.  It is to be passed as
+  the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
 <!-- condDiv -->   
 <div class="tab-pane" id="conddiv">
 
@@ -249,15 +473,17 @@ Rhipe</p>
 <!-- divExample -->   
 <div class="tab-pane" id="divexample">
 
-<h3 class="fref_title">Get An Example Subset of Divided Data</h3>
+<h3 class="fref_title">Get An Example Subset of Divided Data
+Get a subset of a divided data object to test functions on prior to doing computation across the entire data set</h3>
 
 <h4>Usage</h4>
-<pre><span class="functioncall"><a href='#divexample'>divExample</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">)</span></pre>
+<pre><span class="functioncall"><a href='#divexample'>divExample</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="symbol">...</span><span class="keyword">)</span></pre>
 
 <h4>Arguments</h4>
 <dl>
-  <dt>data</dt>
-  <dd>object of class "localDiv" or "rhDdata"</dd>
+  <dt>divided</dt>
+  <dd>data object (e.g. of class "localDiv",
+  "rhDdata", etc.)</dd>
   <dt>should</dt>
   <dd>the transformation function specified when
   the data was created be applied?</dd>
@@ -270,8 +496,8 @@ Rhipe</p>
 
   <h4>Description</h4>
 
-  <p>Get a subset of an object of class "localDiv", "rhData"
-  or "rhDF" to test test functions on prior to doing
+  <p>Get An Example Subset of Divided Data Get a subset of a
+  divided data object to test functions on prior to doing
   computation across the entire data set</p>
 
 
@@ -284,6 +510,50 @@ Rhipe</p>
   in <code><a href='#recombine'>recombine</a></code>.  If you want some sample
   key/value pairs to test some MapReduce code, simply use
   <code>data$example</code>.</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code>rhipeDiv</code>,
+  <code>vdbPlot</code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- divExampleKey -->   
+<div class="tab-pane" id="divexamplekey">
+
+<h3 class="fref_title">Get An Example Key of a Subset of Divided Data
+Get the key for a subset of a divided data object to test functions on prior to doing computation across the entire data set</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#divexamplekey'>divExampleKey</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>divided</dt>
+  <dd>data object (e.g. of class "localDiv",
+  "rhDdata", etc.)</dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>one subset of the divided data</p>
+
+
+  <h4>Description</h4>
+
+  <p>Get An Example Key of a Subset of Divided Data Get the
+  key for a subset of a divided data object to test
+  functions on prior to doing computation across the entire
+  data set</p>
 
 
 
@@ -561,10 +831,105 @@ Rhipe</p>
 </div>
 
 
+<!-- drApply -->   
+<div class="tab-pane" id="drapply">
+
+<h3 class="fref_title">Generic Recombination 'apply' Method</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#drapply'>drApply</a></span><span class="keyword">(</span><span class="symbol">fn</span><span class="keyword">,</span> <span class="argument">group</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>fn</dt>
+  <dd>a function to apply to each subset</dd>
+  <dt>group</dt>
+  <dd>should results of function applied to each
+  subset be grouped?</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Generic recombination 'apply' method</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
+<!-- drBLB -->   
+<div class="tab-pane" id="drblb">
+
+<h3 class="fref_title">Bag of Little Bootstraps Recombination 'apply' Method</h3>
+
+<h4>Usage</h4>
+<pre><span class="functioncall"><a href='#drblb'>drBLB</a></span><span class="keyword">(</span><span class="symbol">statistic</span><span class="keyword">,</span> <span class="symbol">metric</span><span class="keyword">,</span> <span class="symbol">R</span><span class="keyword">,</span> <span class="symbol">n</span><span class="keyword">)</span></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>statistic</dt>
+  <dd>a function to apply to each subset
+  specifying the statistic to compute.  Must have arguments
+  'data' and 'weights' - see details).  Must return a
+  vector, where each element is a statistic of interest.</dd>
+  <dt>metric</dt>
+  <dd>a function specifying the metric to be
+  applied to the <code>R</code> bootstrap samples of each
+  statistic returned by <code>statistic</code>.  Expects an input
+  vector and should output a vector.</dd>
+  <dt>R</dt>
+  <dd>the number of bootstrap samples</dd>
+</dl>
+
+  <h4>Description</h4>
+
+  <p>Bag of little bootstraps recombination 'apply' method</p>
+
+
+  <h4>Details</h4>
+
+  <p>It is necessary to specify <code>weights</code> as a parameter
+  to the <code>statistic</code> function because for BLB to work
+  efficiently, it must resample each time with a sample of
+  size <code>n</code>.  To make this computationally possible for
+  very large <code>n</code>, we can use <code>weights</code> (see
+  reference for details).  Therefore, only methods with a
+  weights option can legitimately be used here.</p>
+
+
+  <h4>References</h4>
+
+  <p>BLB paper</p>
+
+
+
+
+<h4>See also</h4>
+
+  <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>
+
+
+<h4>Author</h4>
+
+  Ryan Hafen
+
+</div>
+
+
 <!-- drGLM -->   
 <div class="tab-pane" id="drglm">
 
-<h3 class="fref_title">GLM Recombination Method</h3>
+<h3 class="fref_title">GLM Recombination 'apply' Method</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#drglm'>drGLM</a></span><span class="keyword">(</span><span class="symbol">...</span><span class="keyword">)</span></pre>
@@ -578,14 +943,13 @@ Rhipe</p>
 
   <h4>Description</h4>
 
-  <p>GLM recombination method</p>
+  <p>GLM recombination 'apply' method</p>
 
 
   <h4>Details</h4>
 
-  <p>This is an experimental prototype.  It provides an
-  expression to be evaluated for each subset in a
-  recombination MapReduce job that applies R's glm method
+  <p>This provides a function to be called for each subset in
+  a recombination MapReduce job that applies R's glm method
   and outputs the coefficients.  It is to be passed as the
   argument <code>method</code> to <code><a href='#recombine'>recombine</a></code>.</p>
 
@@ -636,7 +1000,8 @@ Rhipe</p>
 <!-- getKeys -->   
 <div class="tab-pane" id="getkeys">
 
-<h3 class="fref_title">Get Split Keys</h3>
+<h3 class="fref_title">Get Split Keys
+Get split keys for divided data</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#getkeys'>getKeys</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">)</span></pre>
@@ -644,13 +1009,13 @@ Rhipe</p>
 <h4>Arguments</h4>
 <dl>
   <dt>obj</dt>
-  <dd>data object of either class "localDiv" or
-  "rhData"</dd>
+  <dd>divided data object (e.g. of class "localDiv",
+  "rhData", etc.)</dd>
 </dl>
 
   <h4>Description</h4>
 
-  <p>Get split keys for divided data</p>
+  <p>Get Split Keys Get split keys for divided data</p>
 
 
 
@@ -701,7 +1066,7 @@ Rhipe</p>
 <h4>Arguments</h4>
 <dl>
   <dt>obj</dt>
-  <dd>an object of class 'rhDiv'</dd>
+  <dd>an object of class 'rhDiv' or 'localDiv'</dd>
   <dt>vals</dt>
   <dd>a data.frame of values to use to construct
   keys</dd>
@@ -806,28 +1171,22 @@ Rhipe</p>
 <h3 class="fref_title">Recombine a RHIPE 'rhDiv' Object</h3>
 
 <h4>Usage</h4>
-<pre><span class="functioncall"><a href='#recombine'>recombine</a></span><span class="keyword">(</span><span class="argument">data</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">method</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">recomb</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+<pre><span class="functioncall"><a href='#recombine'>recombine</a></span><span class="keyword">(</span><span class="argument">data</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">apply</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">combine</span> <span class="argument">=</span> <span class="functioncall"><a href='#combcollect'>combCollect</a></span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span>
+  <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
 
 <h4>Arguments</h4>
 <dl>
   <dt>data</dt>
   <dd>an object of class 'rhDF'</dd>
-  <dt>method</dt>
-  <dd>the analytic method to apply to each
-  subset</dd>
-  <dt>recomb</dt>
-  <dd>the method to combine output from the
-  analytic method on each subset</dd>
-  <dt>mapred</dt>
-  <dd>mapreduce-specific parameters to send to
-  RHIPE job that performs the recombination (see
-  <code>rhwatch</code>)</dd>
+  <dt>apply</dt>
+  <dd>the analytic method to apply to each subset</dd>
+  <dt>combine</dt>
+  <dd>the method to combine the results</dd>
 </dl>
 
   <h4>Value</h4>
 
-  <p>depends on <code>recomb</code> - should be a final set of model
-  coefficients, etc.</p>
+  <p>depends on <code>combine</code></p>
 
 
   <h4>Description</h4>
