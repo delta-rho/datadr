@@ -381,6 +381,8 @@ recombine(
 
 <pre><code class="r">library(datadr)
 
+dfByEd &lt;- divide(infert, by=&quot;education&quot;)
+
 recombine(dfByEd,
    apply=drApply(function(x) max(x$age))
 )
@@ -421,7 +423,9 @@ recombine(dfByEd,
 
 <p>The <code>statistic</code> function should return a vector the length of how many statistics are being computed for each sample.  Then, you must also specify a <code>metric</code> function, which is applied to the collection of \(R\) bootstrap samples of each statistic returned by <code>statistic</code>.</p>
 
-<pre><code class="r">recombine(dfByRR,
+<pre><code class="r">dfByRR &lt;- divide(infert, by=rrDiv(nrows=25, seed=1234))
+
+recombine(dfByRR,
    apply=drBLB(
       statistic = function(x, weights)
          coef(glm(case ~ spontaneous + induced, data=x, weights=weights, family=binomial())),
@@ -442,7 +446,7 @@ recombine(dfByEd,
 
 <h4>Returning a div object</h4>
 
-<p>Get a new div object with just the first 6 obs. in each subset.</p>
+<p>Ex: get a new div object with just the first 6 obs. in each subset:</p>
 
 <pre><code class="r">dfByEdSub &lt;- recombine(dfByEd,
    apply=drApply(head),
