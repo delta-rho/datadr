@@ -1,0 +1,23 @@
+\name{combRbind}
+\alias{combRbind}
+\title{"rbind" Recombination}
+\usage{
+  combRbind(...)
+}
+\arguments{
+  \item{\ldots}{...}
+}
+\description{
+  "rbind" recombination
+}
+\details{
+  This is an experimental prototype.  It is to be passed as
+  the argument \code{combine} to \code{\link{recombine}}.
+}
+\author{
+  Ryan Hafen
+}
+\seealso{
+  \code{\link{divide}}, \code{\link{recombine}}
+}
+

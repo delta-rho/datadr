@@ -2,7 +2,9 @@
 #' 
 #' Mean coefficient recombination
 #' 
-#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' @param \ldots ...
+#'
+#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.  It expects to be dealing with named vectors including an element \code{n} specifying the number of rows in that subset.
 #' 
 #' @author Ryan Hafen
 #' 
@@ -43,6 +45,56 @@ combMeanCoef <- function(...) {
    )
 }
 
+#' Mean Recombination
+#' 
+#' Mean recombination
+#' 
+#' @param \ldots ...
+#' 
+#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' 
+#' @author Ryan Hafen
+#' 
+#' @seealso \code{\link{divide}}, \code{\link{recombine}}
+#' 
+#' @export
+combMean <- function(...) {
+   list(
+      reduce=expression(
+         pre = {
+            res <- NULL
+            n <- as.numeric(0)
+         },
+         reduce = {
+            n <- sum(c(n, length(reduce.values)))
+            res <- do.call(rbind, c(list(res), lapply(reduce.values, function(x) {
+               x
+            })))
+            res <- apply(res, 2, sum)
+         },
+         post = {
+            res <- res / n
+            rhcollect("final", res)
+         }
+      ),
+      final=function(x, ...) x[[1]][[2]],
+      readback=TRUE,
+      ...
+   )
+}
+
+#' "Collect" Recombination
+#' 
+#' "Collect" recombination
+#' 
+#' @param \ldots ...
+#' 
+#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' 
+#' @author Ryan Hafen
+#' 
+#' @seealso \code{\link{divide}}, \code{\link{recombine}}
+#' 
 #' @export
 combCollect <- function(...) {
    list(
@@ -55,6 +107,18 @@ combCollect <- function(...) {
    )
 }
 
+#' "rbind" Recombination
+#' 
+#' "rbind" recombination
+#' 
+#' @param \ldots ...
+#' 
+#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' 
+#' @author Ryan Hafen
+#' 
+#' @seealso \code{\link{divide}}, \code{\link{recombine}}
+#' 
 #' @export
 combRbind <- function(...) {
    red <- expression(pre = {
@@ -87,7 +151,19 @@ combRbind <- function(...) {
    )
 }
 
-# combine output by returning a division object
+#' Division Recombination
+#' 
+#' Division recombination (output of recombine is an object of class localDiv or rhDiv)
+#' 
+#' @param \ldots ...
+#' 
+#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' 
+#' @author Ryan Hafen
+#' 
+#' @seealso \code{\link{divide}}, \code{\link{recombine}}
+#' 
+#' @export
 combDiv <- function(...) {
    list(
       reduce=expression(reduce = {
@@ -124,7 +200,6 @@ combDivFinal.localDiv <- function(data, x) {
    attr(res, "divBy") <- attr(data, "divBy")
    res
 }
-
 
 combDivFinal.rhDiv <- function(data, x) {
    # TODO: validate - this only works when readback is FALSE

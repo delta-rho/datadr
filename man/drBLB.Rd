@@ -1,0 +1,41 @@
+\name{drBLB}
+\alias{drBLB}
+\title{Bag of Little Bootstraps Recombination 'apply' Method}
+\usage{
+  drBLB(statistic, metric, R, n)
+}
+\arguments{
+  \item{statistic}{a function to apply to each subset
+  specifying the statistic to compute.  Must have arguments
+  'data' and 'weights' - see details).  Must return a
+  vector, where each element is a statistic of interest.}
+
+  \item{metric}{a function specifying the metric to be
+  applied to the \code{R} bootstrap samples of each
+  statistic returned by \code{statistic}.  Expects an input
+  vector and should output a vector.}
+
+  \item{R}{the number of bootstrap samples}
+}
+\description{
+  Bag of little bootstraps recombination 'apply' method
+}
+\details{
+  It is necessary to specify \code{weights} as a parameter
+  to the \code{statistic} function because for BLB to work
+  efficiently, it must resample each time with a sample of
+  size \code{n}.  To make this computationally possible for
+  very large \code{n}, we can use \code{weights} (see
+  reference for details).  Therefore, only methods with a
+  weights option can legitimately be used here.
+}
+\author{
+  Ryan Hafen
+}
+\references{
+  BLB paper
+}
+\seealso{
+  \code{\link{divide}}, \code{\link{recombine}}
+}
+
