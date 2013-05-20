@@ -29,7 +29,7 @@
       return(attr(x, val))
 }
 
-
+#' @export
 divExample.localDiv <- function(data, trans=FALSE) {
    if(trans) {
       return(attributes(data)$trans(data[[1]]))
@@ -38,6 +38,7 @@ divExample.localDiv <- function(data, trans=FALSE) {
    }
 }
 
+#' @export
 divExampleKey.localDiv <- function(data, trans=FALSE) {
    names(data)[1]
 }

@@ -24,8 +24,8 @@ Get a subset of a divided data object to test functions on prior to doing comput
   \code{divExample(data)} returns the value from one
   key/value pair.  This is the form of the data when used
   in functions like \code{plotFn} or \code{cogFn} in
-  \code{\link{vdbPlot}} or what it will look like when used
-  in \code{\link{recombine}}.  If you want some sample
+  \code{\link{makeDisplay}} or what it will look like when
+  used in \code{\link{recombine}}.  If you want some sample
   key/value pairs to test some MapReduce code, simply use
   \code{data$example}.
 }
@@ -34,6 +34,6 @@ Get a subset of a divided data object to test functions on prior to doing comput
 }
 \seealso{
   \code{\link{divide}}, \code{\link{rhipeDiv}},
-  \code{\link{vdbPlot}}
+  \code{\link{makeDisplay}}
 }
 

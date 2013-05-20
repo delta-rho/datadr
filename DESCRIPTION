@@ -1,7 +1,7 @@
 Package: datadr
 Type: Package
 Title: Divide and Recombine for Large, Complex Data
-Version: 0.2
+Version: 0.3
 Date: 2013-04-19
 Author: Ryan Hafen
 Maintainer: Ryan Hafen <ryan.hafen@pnnl.gov>
@@ -35,3 +35,6 @@ Collate:
     'divMethods.rh.R'
     'recApplyMethods.R'
     'recCombineMethods.R'
+    'divide.R'
+    'moments.R'
+    'tabulate.R'

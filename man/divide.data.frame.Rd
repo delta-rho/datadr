@@ -19,6 +19,9 @@
   in descending order, and then by \code{var2} in ascending
   order}
 
+  \item{preTrans}{a transformation function (if desired) to
+  applied prior to division}
+
   \item{postTrans}{a transformation function (if desired)
   to apply to each subset after it has been formed}
 

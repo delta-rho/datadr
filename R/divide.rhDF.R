@@ -1,12 +1,13 @@
 #' Divide a RHIPE 'rhDF' Object
 #'
 #' Divide a RHIPE 'rhDF' object into subsets based on different criteria
-#'
+#' 
 #' @param data an object of class 'rhDF'
 #' @param by specification of how to divide the data - conditional (factor-level or shingles), random replicate, or near-exact replicate -- see details
 #' @param orderBy within each division, how should the data be sorted?  Either a vector of variable names (which will be sorted in ascending order) or a list such as the following: \code{list(c("var1", "desc"), c("var2", "asc"))}, which would sort the data first by \code{var1} in descending order, and then by \code{var2} in ascending order
 #' @param output where on HDFS the output data should reside
 #' @param mapred mapreduce-specific parameters to send to RHIPE job that creates the division (see \code{\link{rhwatch}})
+#' @param preTrans a transformation function (if desired) to applied prior to division
 #' @param postTrans a transformation function (if desired) to apply to each final subset
 #' @param trans transformation function to coerce data transformed with postTrans back into a data.frame, so the result can behave like an object of class 'rhDF' (if desired)
 #' 
@@ -27,14 +28,14 @@
 #' 
 #' }
 #' @export
-divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, postTrans=NULL, trans=NULL, update=FALSE) {
+divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, preTrans=NULL, postTrans=NULL, trans=NULL, update=FALSE) {
    
    if(is.null(output))
       stop("Must provide location on HDFS for output data")
    
    if(is.null(trans))
       trans <- identity
-      
+
    # validate "by"
    if(!is.list(by)) { # by should be a list
       by <- condDiv(by)
@@ -47,7 +48,7 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, p
    
    if(! by$type %in% c("condDiv", "rrDiv"))
       stop("Only 'condDiv' and 'rrDiv' divisions have been implemented.")
-
+      
    n <- data$nrow
    if(is.null(n) && by$type == "rrDiv")
       stop("To do random replicate division, must know the total number of rows.  Call updateAttributes() on your data.")
@@ -55,7 +56,7 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, p
    seed <- NULL
    if(by$type == "rrDiv")
       seed <- by$seed
-   
+      
    if(is.null(seed))
       seed <- as.integer(runif(1)*1000000)
       
@@ -69,7 +70,7 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, p
       datadr:::setupRNGStream(seed)
    }))
    
-   if(rhabsolute.hdfs.path(output) == data$loc) {
+   if(rhabsolute.hdfs.path(output) == data$loc) { # data already exists
       if(by$type != "condDiv") {
          stop("\"output\" is the same as location of input data")
       } else {
@@ -91,21 +92,27 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, p
    } else {
       map <- rhmap({
          # TODO: pass factor levels of any factor variables through and in the reduce, assign this, to preserve factor levels across subsets
-         data <- trans(r)
-
+         if(!is.null(preTrans)) {
+            r <- preTrans(r)            
+         }
+         
+         if(!is.null(trans)) {
+            r <- trans(r)
+         }
+         
          if(by$type == "condDiv") {
             splitVars <- by$vars
-            cuts <- apply(data[,splitVars,drop=FALSE], 1, function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))      
+            cuts <- apply(r[,splitVars,drop=FALSE], 1, function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))
          } else if(by$type=="rrDiv") {
             # get the number of splits necessary for specified nrows
             nr <- by$nrows
             ndiv <- ceiling(n / nr)
             cuts <- paste("rr_", sample(1:ndiv, n, replace=TRUE), sep="")
          }
-
-         cutDat <- split(data, cuts)
+         
+         cutDat <- split(r, cuts)
          cdn <- names(cutDat)
-
+         
          for(i in seq_along(cutDat)) {
             rhcollect(cdn[i], cutDat[[i]])
          }
@@ -125,11 +132,16 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, p
             if(!is.null(orderBy)) {
                res <- orderData(res, orderBy)
             }
+            
+            if(!is.null(postTrans)) {
+               res <- postTrans(res)
+            }
+            
             # add conditioning variable current split vals
             if(by$type=="condDiv") {
                splitVars <- by$vars
                for(i in seq_along(res)) {
-                  tmp <- res[1,splitVars, drop=FALSE]
+                  tmp <- res[1, splitVars, drop=FALSE]
                   tmp <- lapply(tmp, as.character)
                   tmp <- data.frame(tmp, stringsAsFactors=FALSE)
                   attr(res, "split") <- tmp
@@ -158,22 +170,24 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, mapred=NULL, p
             n = n,
             orderBy = NULL,
             trans = data$trans,
+            preTrans = preTrans,
+            postTrans = postTrans,
             seed = seed
             # orderData = orderData,
             # getUID = getUID,
             # setupRNGStream = setupRNGStream
          )
       )
-
+      
       # set write.job.info back to what it was
       rhoptions(write.job.info=wji)      
    }
-
-   if(is.null(postTrans)) { # result is a data.frame
+   
+   if(is.null(trans)) { # result is a data.frame
       res <- rhDF(output, type="map")
    } else {
       # check to see if it can either be 
-      tmp <- try(rhDF(output, type="map", trans=postTrans))
+      tmp <- try(rhDF(output, type="map", trans=trans))
       if(inherits(tmp, "try-error")) {
          res <- rhData(output, type="map")
       } else {

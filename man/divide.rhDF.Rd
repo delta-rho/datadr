@@ -3,8 +3,8 @@
 \title{Divide a RHIPE 'rhDF' Object}
 \usage{
   divide.rhDF(data, by = NULL, orderBy = NULL,
-    output = NULL, mapred = NULL, postTrans = NULL,
-    trans = NULL, update = FALSE)
+    output = NULL, mapred = NULL, preTrans = NULL,
+    postTrans = NULL, trans = NULL, update = FALSE)
 }
 \arguments{
   \item{data}{an object of class 'rhDF'}
@@ -27,6 +27,9 @@
   \item{mapred}{mapreduce-specific parameters to send to
   RHIPE job that creates the division (see
   \code{\link{rhwatch}})}
+
+  \item{preTrans}{a transformation function (if desired) to
+  applied prior to division}
 
   \item{postTrans}{a transformation function (if desired)
   to apply to each final subset}

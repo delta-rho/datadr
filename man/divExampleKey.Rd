@@ -23,6 +23,6 @@ Get the key for a subset of a divided data object to test functions on prior to 
 }
 \seealso{
   \code{\link{divide}}, \code{\link{rhipeDiv}},
-  \code{\link{vdbPlot}}
+  \code{\link{makeDisplay}}
 }
 

@@ -78,6 +78,7 @@ str.rhData <- function(x, ...) {
    x$mapfile[ind]
 }
 
+#' @export
 divExample.rhData <- function(data, trans=FALSE) {
    if(trans) {
       return(data$trans(data$example[[1]][[2]]))
@@ -86,6 +87,7 @@ divExample.rhData <- function(data, trans=FALSE) {
    }
 }
 
+#' @export
 divExampleKey.rhDiv <- function(data, trans=FALSE) {
    data$example[[1]][[1]]
 }

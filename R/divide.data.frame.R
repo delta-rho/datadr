@@ -5,6 +5,7 @@
 #' @param data data frame to be split 
 #' @param by a vector of column names of \code{dat} to split by
 #' @param orderBy within each division, how should the data be sorted?  Either a vector of variable names (which will be sorted in ascending order) or a list such as the following: \code{list(c("var1", "desc"), c("var2", "asc"))}, which would sort the data first by \code{var1} in descending order, and then by \code{var2} in ascending order
+#' @param preTrans a transformation function (if desired) to applied prior to division
 #' @param postTrans a transformation function (if desired) to apply to each subset after it has been formed
 #' @param trans transformation function to coerce data transformed with postTrans back into a data.frame, so the result can behave like a data.frame (if desired)
 #'
@@ -33,6 +34,9 @@ divide.data.frame <- function(data, by=NULL, orderBy=NULL, postTrans=NULL, trans
    
    if(is.null(trans))
       trans <- identity
+   
+   if(!is.null(preTrans))
+      data <- preTrans(data)
    
    if(!inherits(by, "divSpecList")) {
       if(length(by) > 1)
@@ -63,6 +67,11 @@ divide.data.frame <- function(data, by=NULL, orderBy=NULL, postTrans=NULL, trans
    }
    
    tmp <- split(data, cuts)
+
+   # TODO: ensure that postTrans retains conditioning variables
+   if(!is.null(postTrans)) {
+      tmp <- lapply(tmp, postTrans)
+   }
    
    # add conditioning variable current split vals
    if(by$type=="condDiv") {

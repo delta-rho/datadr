@@ -30,7 +30,7 @@ updateAttributes <- function(obj, mapred=NULL) {
    })
    needList[!names(needList) %in% names(obj)] <- FALSE
    
-   implemented <- c("splitSizeDistn", "hasKeys", "ndiv", "nrow", "splitRowDistn")
+   implemented <- c("splitSizeDistn", "hasKeys", "ndiv", "nrow", "splitRowDistn", "summary")
    needList <- needList[names(needList) %in% implemented]
    
    if(any(needList)) {
@@ -43,10 +43,31 @@ updateAttributes <- function(obj, mapred=NULL) {
          
          ### rhDF
          if(!is.null(trans)) {
-            rDF <- trans(r)
-            if(needs["nrow"]) rhcollect("nrow", nrow(rDF))
-            if(needs["splitRowDistn"]) rhcollect("splitRowDistn", nrow(rDF))
-            # deal with summary stuff later...            
+            r <- trans(r)
+         }
+         if(needs["nrow"]) rhcollect("nrow", nrow(r))
+         if(needs["splitRowDistn"]) rhcollect("splitRowDistn", nrow(r))
+         if(needs["summary"]) {
+            dfNames <- names(r)
+            quantTypes <- c("integer", "numeric", "double")
+            categTypes <- c("character", "factor")
+            
+            for(i in seq_along(r)) {
+               var <- r[[i]]
+               if(inherits(var, quantTypes)) {
+                  rhcollect(paste("summary_quant_", dfNames[i], sep="_"), list(
+                     nna=length(which(is.na(r[[i]]))),
+                     moments=calculateMoments(r[[i]], order=4),
+                     min=min(var, na.rm=TRUE),
+                     max=max(var, na.rm=TRUE)                     
+                  ))
+               } else if(inherits(var, categTypes)) {
+                  rhcollect(paste("summary_categ_", dfNames[i], sep="_"), list(
+                     nna=length(which(is.na(var))),
+                     freqTable=rhTabulateMap(~ var, data=data.frame(var))
+                  ))
+               }
+            }
          }
       })
       
@@ -59,6 +80,9 @@ updateAttributes <- function(obj, mapred=NULL) {
             ### rhDF
             nrow <- as.numeric(0)
             splitRowDistn <- NULL
+            ### rhDF summary
+            resQuant <- list(nobs=NULL, nna=NULL, moments=NULL, min=NULL, max=NULL)
+            resCateg <- list(nobs=NULL, nna=NULL, freqTable=NULL)
          },
          reduce={
             ### rhData
@@ -74,6 +98,18 @@ updateAttributes <- function(obj, mapred=NULL) {
                nrow <- nrow + sum(unlist(reduce.values), na.rm = TRUE)
             if(reduce.key=="splitRowDistn")
                splitRowDistn <- c(splitRowDistn, do.call(c, reduce.values))
+            
+            if(grepl("^summary_quant", reduce.key)) {
+               resQuant$nna       <- sum(c(resQuant$nna, sapply(reduce.values, function(x) x$nna)), na.rm=TRUE)
+               resQuant$moments   <- do.call(combineMultipleMoments, lapply(reduce.values, function(x) x$moments))
+               resQuant$min       <- min(c(resQuant$min, sapply(reduce.values, function(x) x$min)), na.rm=TRUE)
+               resQuant$max       <- max(c(resQuant$max, sapply(reduce.values, function(x) x$max)), na.rm=TRUE)            
+            }
+            
+            if(grepl("^summary_categ", reduce.key)) {
+               resCateg$nna       <- sum(c(resCateg$nna, sapply(reduce.values, function(x) x$nna)), na.rm=TRUE)
+               resCateg$freqTable <- rhTabulateReduce(resCateg$freqTable, lapply(reduce.values, function(x) x$freqTable))
+            }
          },
          post={
             ### rhData
@@ -91,6 +127,12 @@ updateAttributes <- function(obj, mapred=NULL) {
                   quantile(splitRowDistn, probs=seq(0, 1, by=0.0001), na.rm=TRUE))
             if(reduce.key=="nrow")
                rhcollect("nrow", nrow)
+            
+            if(grepl("^summary_quant", reduce.key))
+               rhcollect(reduce.key, resQuant)
+            
+            if(grepl("^summary_categ", reduce.key))
+               rhcollect(reduce.key, resCateg)
          }
       )
       
@@ -104,9 +146,10 @@ updateAttributes <- function(obj, mapred=NULL) {
       )
       
       tmpNames <- sapply(tmp, "[[", 1)
-
+      
       dataInd <- which(tmpNames %in% rhDataVars)
       dfInd <- which(tmpNames %in% rhDFvars)
+      hasSummary <- any(grepl("^summary", tmpNames))
       
       # update rhData attributes, if necessary
       if(length(dataInd) > 0) {
@@ -126,11 +169,33 @@ updateAttributes <- function(obj, mapred=NULL) {
       }
 
       # update rhDF attributes, if necessary
-      if(length(dfInd) > 0) {
+      if(length(dfInd) > 0 || hasSummary) {
          rhDFattr <- loadRhDFattr(obj$loc)
          for(i in dfInd) {
             rhDFattr[[tmpNames[i]]] <- tmp[[i]][[2]]
             obj[[tmpNames[i]]] <- tmp[[i]][[2]]
+         }
+         if(hasSummary) {
+            if(is.na(rhDFattr$summary)) {
+               summaryList <- list()
+            } else {
+               summaryList <- rhDFattr$summary
+            }
+            summaryInd <- which(grepl("^summary", tmpNames))
+            for(i in summaryInd) {
+               k <- tmp[[i]][[1]]
+               v <- tmp[[i]][[2]]
+               varType <- gsub("^summary_(quant|categ).*", "\\1", k)
+               varName <- gsub("^summary_(quant|categ)__(.*)", "\\2", k)
+               if(varType=="quant") {
+                  stats <- moments2statistics(v$moments)
+                  summaryList[[varName]] <- list(nna=v$nna, stats=stats, range=c(v$min, v$max))
+               } else {
+                  summaryList[[varName]] <- v
+               }
+            }
+            rhDFattr$summary <- summaryList
+            obj[["summary"]] <- summaryList
          }
          saveRhDFattr(rhDFattr, obj$loc)
       }

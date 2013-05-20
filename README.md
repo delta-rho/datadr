@@ -4,7 +4,7 @@ datadr is an experimantal R package that leverages [RHIPE](https://github.com/sa
 
 To get started, see the package documentation and function reference located [here](http://hafen.github.com/datadr). 
 
-Visualization tools based on D&R can be found [here](https://github.com/hafen/vdb).
+Visualization tools based on D&R can be found [here](https://github.com/hafen/trelliscope).
 
 ## Installation
 
