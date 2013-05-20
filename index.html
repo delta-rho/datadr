@@ -226,7 +226,7 @@
 
 <p>This document provides the specification of a domain-specific language for Divide and Recombine (D&amp;R), made available in the <code>datadr</code> R package, and provides examples of the specification.  It&#39;s intended purpose is not to be a tutorial, but to help explain the design.  As the package matures, this will turn more into a tutorial.</p>
 
-<p>For visualization recombination methods, see the <a href="http://github.com/hafen/vdb">vdb</a> package.</p>
+<p>For visualization recombination methods, see the <a href="http://github.com/hafen/trelliscope">trelliscope</a> package.</p>
 
 <p>For more information and background about D&amp;R, please visit <a href="http://www.datadr.org">datadr.org</a>.</p>
 
@@ -263,7 +263,7 @@ The iterative analysis process is best achieved through a programming environmen
 
 <ul>
 <li><a href="http://github.com/saptarshiguha/RHIPE">RHIPE</a>: the engine that makes D&amp;R work with large, complex data</li>
-<li><a href="http://github.com/hafen/vdb">vdb</a>: visualization recombination methods</li>
+<li><a href="http://github.com/hafen/trelliscope">trelliscope</a>: visualization recombination methods</li>
 </ul>
 
 <p>References:</p>
@@ -599,7 +599,7 @@ In combine$validate(divType) :
 
 <p><code>mydataObj</code> is now an R object that points to this data.  Details of how this works follow.  </p>
 
-<p>Depending on its class, this object can now have various methods applied to it, such as <code>rhwatch()</code> or methods for other special operations that abstract away MapReduce (such as <code>divide()</code>, <code>recombine()</code> <code>summary()</code>, <code>vdbPlot()</code>, etc.).</p>
+<p>Depending on its class, this object can now have various methods applied to it, such as <code>rhwatch()</code> or methods for other special operations that abstract away MapReduce (such as <code>divide()</code>, <code>recombine()</code> <code>summary()</code>, <code>makeDisplay()</code>, etc.).</p>
 
 </div>
 
@@ -1259,7 +1259,7 @@ First-order division:
 <li>Combine the results from (1)</li>
 </ol>
 
-<p>The combination could be as simple as computing the mean of model coefficients returned from each subset, or it could be gathering all coefficients back to study their distribution.  For visualization recombination methods, see the <a href="http://github.com/hafen/vdb">vdb</a> package.</p>
+<p>The combination could be as simple as computing the mean of model coefficients returned from each subset, or it could be gathering all coefficients back to study their distribution.  For visualization recombination methods, see the <a href="http://github.com/hafen/trelliscope">trelliscope</a> package.</p>
 
 </div>
 

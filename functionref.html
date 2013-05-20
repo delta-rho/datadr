@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>vdb R Function Reference</title>
+    <title>trelliscope R Function Reference</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -186,7 +186,7 @@
 <h3>Divide and Recombine for Large, Complex Data</h3>
 
 <p><strong>Author:</strong> Ryan Hafen</p>
-<p><strong>Version:</strong> 0.2</p>
+<p><strong>Version:</strong> 0.3</p>
 <p><strong>Date:</strong> 2013-04-19</p>
 <p><strong>License:</strong> BSD</p>
 
@@ -506,8 +506,8 @@ Get a subset of a divided data object to test functions on prior to doing comput
   <p><code>divExample(data)</code> returns the value from one
   key/value pair.  This is the form of the data when used
   in functions like <code>plotFn</code> or <code>cogFn</code> in
-  <code>vdbPlot</code> or what it will look like when used
-  in <code><a href='#recombine'>recombine</a></code>.  If you want some sample
+  <code>makeDisplay</code> or what it will look like when
+  used in <code><a href='#recombine'>recombine</a></code>.  If you want some sample
   key/value pairs to test some MapReduce code, simply use
   <code>data$example</code>.</p>
 
@@ -517,7 +517,7 @@ Get a subset of a divided data object to test functions on prior to doing comput
 <h4>See also</h4>
 
   <code><a href='#divide'>divide</a></code>, <code>rhipeDiv</code>,
-  <code>vdbPlot</code>
+  <code>makeDisplay</code>
 
 
 <h4>Author</h4>
@@ -561,7 +561,7 @@ Get the key for a subset of a divided data object to test functions on prior to 
 <h4>See also</h4>
 
   <code><a href='#divide'>divide</a></code>, <code>rhipeDiv</code>,
-  <code>vdbPlot</code>
+  <code>makeDisplay</code>
 
 
 <h4>Author</h4>
@@ -595,6 +595,9 @@ Get the key for a subset of a divided data object to test functions on prior to 
   "asc"))</code>, which would sort the data first by <code>var1</code>
   in descending order, and then by <code>var2</code> in ascending
   order</dd>
+  <dt>preTrans</dt>
+  <dd>a transformation function (if desired) to
+  applied prior to division</dd>
   <dt>postTrans</dt>
   <dd>a transformation function (if desired)
   to apply to each subset after it has been formed</dd>
@@ -689,7 +692,7 @@ Get the key for a subset of a divided data object to test functions on prior to 
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#dividerhdf'>divide.rhDF</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">by</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">orderBy</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">output</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">,</span>
-  <span class="argument">postTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">update</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">)</span></pre>
+  <span class="argument">preTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">postTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">update</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">)</span></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -714,6 +717,9 @@ Get the key for a subset of a divided data object to test functions on prior to 
   <dd>mapreduce-specific parameters to send to
   RHIPE job that creates the division (see
   <code>rhwatch</code>)</dd>
+  <dt>preTrans</dt>
+  <dd>a transformation function (if desired) to
+  applied prior to division</dd>
   <dt>postTrans</dt>
   <dd>a transformation function (if desired)
   to apply to each final subset</dd>
