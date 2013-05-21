@@ -37,3 +37,4 @@ Collate:
     'recCombineMethods.R'
     'moments.R'
     'tabulate.R'
+    'backendControls.R'

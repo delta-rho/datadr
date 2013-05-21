@@ -66,7 +66,7 @@ divApply.localDiv <- function(data, apply) {
    })
 }
 
-divCombine.localDiv <- function(data, map, apply, combine) {
+divCombine.localDiv <- function(data, map, apply, combine, backendOpts) {
    keys <- sapply(map, function(x) x$key)
    uKeys <- unique(keys)
 

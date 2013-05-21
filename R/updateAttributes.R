@@ -3,7 +3,7 @@
 #' Update attributes of a 'rhData' or 'rhDF' object
 #' 
 #' @param obj an object of class 'rhData' or 'rhDF'
-#' @param mapred mapreduce-specific parameters to send to RHIPE job that creates the division (see \code{\link{rhwatch}})
+#' @param backendOpts parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}}
 #' 
 #' @return an object of class 'rhData' or 'rhDF'
 #' 
@@ -18,7 +18,9 @@
 #' 
 #' }
 #' @export
-updateAttributes <- function(obj, mapred=NULL) {
+updateAttributes <- function(obj, backendOpts=NULL) {
+   if(is.null(backendOpts))
+      backendOpts <- defaultControl(obj)
    
    rhDataVars <- c("hasKeys", "ndiv", "splitSizeDistn")
    rhDFvars <- c("nrow", "splitRowDistn", "summary", "badSchema")
@@ -26,8 +28,10 @@ updateAttributes <- function(obj, mapred=NULL) {
    updateableVars <- c(rhDataVars, rhDFvars)
    
    needList <- sapply(updateableVars, function(a) {
-      ifelse(is.null(obj[[a]]) || is.na(obj[[a]]) || !obj[[a]], TRUE, FALSE)
+      ifelse(is.null(obj[[a]]) || is.na(obj[[a]]), TRUE, FALSE)
    })
+   needList["hasKeys"] <- !obj[["hasKeys"]]
+   
    needList[!names(needList) %in% names(obj)] <- FALSE
    
    implemented <- c("splitSizeDistn", "hasKeys", "ndiv", "nrow", "splitRowDistn", "summary")
@@ -140,7 +144,8 @@ updateAttributes <- function(obj, mapred=NULL) {
          map=map, 
          reduce=reduce, 
          input=rhfmt(obj$loc, type=obj$type), 
-         mapred=mapred, 
+         mapred=backendOpts$mapred, 
+         combiner=backendOpts$combiner, 
          readback=TRUE, 
          parameters=list(needs = needList, trans=obj$trans)
       )

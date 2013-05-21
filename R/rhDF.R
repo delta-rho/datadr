@@ -7,7 +7,7 @@
 #' @param trans a transformation to be applied to the data to coerce it into a data.frame
 #' @param reset should existing metadata for this object be overwritten?
 #' @param update should a RHIPE job be run to obtain additional attributes for the data prior to returning?
-#' @param mapred mapreduce-specific parameters to send to RHIPE job that performs the update (see \code{\link{rhwatch}})
+#' @param backendOpts parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}}
 #' 
 #' @return an object of class 'rhDF'
 #' 
@@ -28,7 +28,7 @@
 #' 
 #' }
 #' @export
-rhDF <- function(loc, type="sequence", trans=NULL, reset=FALSE, update=FALSE, mapred=NULL) {
+rhDF <- function(loc, type="sequence", trans=NULL, reset=FALSE, update=FALSE, backendOpts=NULL) {
    loc <- rhabsolute.hdfs.path(loc)
    
    # first get data attributes
@@ -100,7 +100,7 @@ rhDF <- function(loc, type="sequence", trans=NULL, reset=FALSE, update=FALSE, ma
    class(res) <- c("rhDF", class(dataObj))
 
    if(update)
-      res <- updateAttributes(res, mapred=mapred)
+      res <- updateAttributes(res, backendOpts=backendOpts)
       
    res
 }

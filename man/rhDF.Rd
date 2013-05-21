@@ -3,7 +3,7 @@
 \title{Load a RHIPE 'rhDF' Object}
 \usage{
   rhDF(loc, type = "sequence", trans = NULL, reset = FALSE,
-    update = FALSE, mapred = NULL)
+    update = FALSE, backendOpts = NULL)
 }
 \arguments{
   \item{loc}{location on HDFS where the data resides (can
@@ -20,9 +20,10 @@
   \item{update}{should a RHIPE job be run to obtain
   additional attributes for the data prior to returning?}
 
-  \item{mapred}{mapreduce-specific parameters to send to
-  RHIPE job that performs the update (see
-  \code{\link{rhwatch}})}
+  \item{backendOpts}{parameters specifying how the backend
+  should handle things (most-likely parameters to
+  \code{\link{rhwatch}} in RHIPE) - see
+  \code{\link{rhipeControl}}}
 }
 \value{
   an object of class 'rhDF'

@@ -2,14 +2,15 @@
 \alias{updateAttributes}
 \title{Update Attributes of a 'rhData' or 'rhDF' Object}
 \usage{
-  updateAttributes(obj, mapred = NULL)
+  updateAttributes(obj, backendOpts = NULL)
 }
 \arguments{
   \item{obj}{an object of class 'rhData' or 'rhDF'}
 
-  \item{mapred}{mapreduce-specific parameters to send to
-  RHIPE job that creates the division (see
-  \code{\link{rhwatch}})}
+  \item{backendOpts}{parameters specifying how the backend
+  should handle things (most-likely parameters to
+  \code{\link{rhwatch}} in RHIPE) - see
+  \code{\link{rhipeControl}}}
 }
 \value{
   an object of class 'rhData' or 'rhDF'

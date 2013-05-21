@@ -7,11 +7,11 @@
 #' @note \code{divExample(data)} returns the value from one key/value pair.  This is the form of the data when used in functions like \code{plotFn} or \code{cogFn} in \code{\link{makeDisplay}} or what it will look like when used in \code{\link{recombine}}.  If you want some sample key/value pairs to test some MapReduce code, simply use \code{data$example}.
 #' 
 #' @return one subset of the divided data
-#'
+#' 
 #' @author Ryan Hafen
 #' 
 #' @seealso \code{\link{divide}}, \code{\link{rhipeDiv}}, \code{\link{makeDisplay}}
-#'
+#' 
 #' @export
 divExample <- function(data, ...) {
    UseMethod("divExample", data)

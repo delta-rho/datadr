@@ -80,10 +80,15 @@ str.rhData <- function(x, ...) {
 
 #' @export
 divExample.rhData <- function(data, trans=FALSE) {
-   if(trans) {
-      return(data$trans(data$example[[1]][[2]]))
+   if(data$type == "text") {
+      ex <- data$example[1]
    } else {
-      return(data$example[[1]][[2]])
+      ex <- data$example[[1]][[2]]
+   }
+   if(trans) {
+      return(data$trans(ex))
+   } else {
+      return(ex)
    }
 }
 
@@ -118,7 +123,10 @@ divApply.rhDiv <- function(data, apply) {
    })      
 }
 
-divCombine.rhDiv <- function(data, map, apply, combine) {
+divCombine.rhDiv <- function(data, map, apply, combine, backendOpts) {
+   if(is.null(backendOpts))
+      backendOpts <- defaultControl(data)
+   
    reduce <- combine$reduce
    
    type <- combine$type
@@ -140,7 +148,8 @@ divCombine.rhDiv <- function(data, map, apply, combine) {
       output=output1,
       map=map,
       reduce=reduce,
-      mapred=combine$mapred,
+      mapred=backendOpts$mapred,
+      combiner=backendOpts$combiner, 
       parameters=list(apply=apply),
       readback=FALSE
    )

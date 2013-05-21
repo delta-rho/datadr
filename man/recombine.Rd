@@ -3,7 +3,7 @@
 \title{Recombine a RHIPE 'rhDiv' Object}
 \usage{
   recombine(data = NULL, apply = NULL,
-    combine = combCollect(), mapred = NULL)
+    combine = combCollect(), backendOpts = NULL)
 }
 \arguments{
   \item{data}{an object of class 'rhDF'}
@@ -11,6 +11,11 @@
   \item{apply}{the analytic method to apply to each subset}
 
   \item{combine}{the method to combine the results}
+
+  \item{backendOpts}{parameters specifying how the backend
+  should handle things (most-likely parameters to
+  \code{\link{rhwatch}} in RHIPE) - see
+  \code{\link{rhipeControl}}}
 }
 \value{
   depends on \code{combine}
