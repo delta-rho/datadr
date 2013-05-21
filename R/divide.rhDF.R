@@ -161,9 +161,9 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
       rhoptions(write.job.info=TRUE)
       
       tmp <- rhwatch(
-         setup=setup,
-         map=map, 
-         reduce=reduce, 
+         setup=nullAttributes(setup),
+         map=nullAttributes(map), 
+         reduce=nullAttributes(reduce), 
          input=rhfmt(data$loc, type=data$type),
          output=rhfmt(output, type="map"),
          mapred=control$mapred, 

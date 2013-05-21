@@ -26,8 +26,8 @@ rhText2DF <- function(x, output=NULL, trans=NULL, control=NULL, update=FALSE) {
    control$mapred$mapred.reduce.tasks <- 0
    
    tmp <- rhwatch(
-      setup=setup,
-      map=map, 
+      setup=nullAttributes(setup),
+      map=nullAttributes(map), 
       input=rhfmt(x$loc, type=x$type),
       output=rhfmt(output, type="sequence"),
       mapred=control$mapred, 

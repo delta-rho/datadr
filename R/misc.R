@@ -167,3 +167,11 @@ buildPrintTable <- function(x, attrList, class) {
    )
    paste(c(header, tab), collapse="\n")
 }
+
+
+# internal
+nullAttributes <- function(e) { 
+   for(i in seq_along(e)) 
+      attributes(e[[i]]) <- NULL
+   e
+}

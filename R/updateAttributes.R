@@ -48,7 +48,11 @@ updateAttributes <- function(obj, control=NULL) {
          
          ### rhDF
          if(!is.null(trans)) {
-            r <- trans(r)
+            if(length(formals(trans))==1) {
+               r <- trans(r)
+            } else {
+               r <- trans(k, r)
+            }
          }
          if(needs["nrow"]) rhcollect("nrow", nrow(r))
          if(needs["splitRowDistn"]) rhcollect("splitRowDistn", nrow(r))
@@ -146,9 +150,9 @@ updateAttributes <- function(obj, control=NULL) {
       })
       
       tmp <- rhwatch(
-         setup=setup,
-         map=map, 
-         reduce=reduce, 
+         setup=nullAttributes(setup),
+         map=nullAttributes(map), 
+         reduce=nullAttributes(reduce), 
          input=rhfmt(obj$loc, type=obj$type), 
          mapred=control$mapred, 
          combiner=control$combiner, 
