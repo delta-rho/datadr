@@ -3,7 +3,7 @@
 \title{Divide a data.frame}
 \usage{
   divide.data.frame(data, by = NULL, orderBy = NULL,
-    postTrans = NULL, trans = NULL)
+    preTrans = NULL, postTrans = NULL, trans = NULL)
 }
 \arguments{
   \item{data}{data frame to be split}

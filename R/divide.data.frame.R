@@ -26,7 +26,7 @@
 #' irisSplit1 <- divide(iris, "Species")
 #' 
 #' @export
-divide.data.frame <- function(data, by=NULL, orderBy=NULL, postTrans=NULL, trans=NULL) {
+divide.data.frame <- function(data, by=NULL, orderBy=NULL, preTrans=NULL, postTrans=NULL, trans=NULL) {
    
    if(!is.list(by)) { # by should be a list
       by <- condDiv(by)
