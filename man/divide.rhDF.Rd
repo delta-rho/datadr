@@ -3,7 +3,7 @@
 \title{Divide a RHIPE 'rhDF' Object}
 \usage{
   divide.rhDF(data, by = NULL, orderBy = NULL,
-    output = NULL, backendOpts = NULL, preTrans = NULL,
+    output = NULL, control = NULL, preTrans = NULL,
     postTrans = NULL, trans = NULL, update = FALSE)
 }
 \arguments{
@@ -24,7 +24,7 @@
   \item{output}{where on HDFS the output data should
   reside}
 
-  \item{backendOpts}{parameters specifying how the backend
+  \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
   \code{\link{rhwatch}} in RHIPE) - see
   \code{\link{rhipeControl}}}

@@ -6,7 +6,7 @@
 #' @param by specification of how to divide the data - conditional (factor-level or shingles), random replicate, or near-exact replicate -- see details
 #' @param orderBy within each division, how should the data be sorted?  Either a vector of variable names (which will be sorted in ascending order) or a list such as the following: \code{list(c("var1", "desc"), c("var2", "asc"))}, which would sort the data first by \code{var1} in descending order, and then by \code{var2} in ascending order
 #' @param output where on HDFS the output data should reside
-#' @param backendOpts parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}}
+#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}}
 #' @param preTrans a transformation function (if desired) to applied prior to division
 #' @param postTrans a transformation function (if desired) to apply to each final subset
 #' @param trans transformation function to coerce data transformed with postTrans back into a data.frame, so the result can behave like an object of class 'rhDF' (if desired)
@@ -28,10 +28,10 @@
 #' 
 #' }
 #' @export
-divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, backendOpts=NULL, preTrans=NULL, postTrans=NULL, trans=NULL, update=FALSE) {
+divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, preTrans=NULL, postTrans=NULL, trans=NULL, update=FALSE) {
    
-   if(is.null(backendOpts))
-      backendOpts <- defaultControl(data)
+   if(is.null(control))
+      control <- defaultControl(data)
       
    if(is.null(output))
       stop("Must provide location on HDFS for output data")
@@ -166,8 +166,8 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, backendOpts=NU
          reduce=reduce, 
          input=rhfmt(data$loc, type=data$type),
          output=rhfmt(output, type="map"),
-         mapred=backendOpts$mapred, 
-         combiner=backendOpts$combiner,
+         mapred=control$mapred, 
+         combiner=control$combiner,
          readback=FALSE, 
          parameters=list(
             by = by,
@@ -208,7 +208,7 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, backendOpts=NU
    class(res) <- c(classes, "rhDiv", "list")
    
    if(update)
-      res <- updateAttributes(res, backendOpts=backendOpts)
+      res <- updateAttributes(res, control=control)
    
    res
 }

@@ -3,7 +3,7 @@
 #' Update attributes of a 'rhData' or 'rhDF' object
 #' 
 #' @param obj an object of class 'rhData' or 'rhDF'
-#' @param backendOpts parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}}
+#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}}
 #' 
 #' @return an object of class 'rhData' or 'rhDF'
 #' 
@@ -18,10 +18,10 @@
 #' 
 #' }
 #' @export
-updateAttributes <- function(obj, backendOpts=NULL) {
-   if(is.null(backendOpts))
-      backendOpts <- defaultControl(obj)
-   
+updateAttributes <- function(obj, control=NULL) {
+   if(is.null(control))
+      control <- defaultControl(obj)
+      
    rhDataVars <- c("hasKeys", "ndiv", "splitSizeDistn")
    rhDFvars <- c("nrow", "splitRowDistn", "summary", "badSchema")
    
@@ -31,6 +31,7 @@ updateAttributes <- function(obj, backendOpts=NULL) {
       ifelse(is.null(obj[[a]]) || is.na(obj[[a]]), TRUE, FALSE)
    })
    needList["hasKeys"] <- !obj[["hasKeys"]]
+   needList[is.na(needList)] <- TRUE
    
    needList[!names(needList) %in% names(obj)] <- FALSE
    
@@ -149,8 +150,8 @@ updateAttributes <- function(obj, backendOpts=NULL) {
          map=map, 
          reduce=reduce, 
          input=rhfmt(obj$loc, type=obj$type), 
-         mapred=backendOpts$mapred, 
-         combiner=backendOpts$combiner, 
+         mapred=control$mapred, 
+         combiner=control$combiner, 
          readback=TRUE, 
          parameters=list(needs = needList, trans=obj$trans)
       )

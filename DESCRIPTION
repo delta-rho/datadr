@@ -38,3 +38,4 @@ Collate:
     'moments.R'
     'tabulate.R'
     'backendControls.R'
+    'rhText2DF.R'

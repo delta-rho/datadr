@@ -133,7 +133,7 @@ rhData <- function(loc, type="sequence", reset=FALSE, update=FALSE, mapred=NULL)
    class(res) <- c("rhData", divClass, "list")
    
    if(update)
-      res <- updateAttributes(res, backendOpts=backendOpts)
+      res <- updateAttributes(res, control=control)
       
    res
 }

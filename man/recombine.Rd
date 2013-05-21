@@ -3,7 +3,7 @@
 \title{Recombine a RHIPE 'rhDiv' Object}
 \usage{
   recombine(data = NULL, apply = NULL,
-    combine = combCollect(), backendOpts = NULL)
+    combine = combCollect(), control = NULL)
 }
 \arguments{
   \item{data}{an object of class 'rhDF'}
@@ -12,7 +12,7 @@
 
   \item{combine}{the method to combine the results}
 
-  \item{backendOpts}{parameters specifying how the backend
+  \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
   \code{\link{rhwatch}} in RHIPE) - see
   \code{\link{rhipeControl}}}

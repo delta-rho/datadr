@@ -5,7 +5,7 @@
 #' @param data an object of class 'rhDF'
 #' @param apply the analytic method to apply to each subset
 #' @param combine the method to combine the results
-#' @param backendOpts parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}}
+#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}}
 #' 
 #' @return depends on \code{combine}
 #' 
@@ -24,7 +24,7 @@
 #' 
 #' }
 #' @export
-recombine <- function(data=NULL, apply=NULL, combine=combCollect(), backendOpts=NULL) {
+recombine <- function(data=NULL, apply=NULL, combine=combCollect(), control=NULL) {
    
    divType <- getDivType(data)
    curSplit <- divExample(data)
@@ -46,7 +46,7 @@ recombine <- function(data=NULL, apply=NULL, combine=combCollect(), backendOpts=
    message("* Applying to all subsets...")
    
    map <- divApply(data, apply)
-   res <- divCombine(data, map, apply, combine, backendOpts)
+   res <- divCombine(data, map, apply, combine, control)
    
    combine$final(res, data)
 }

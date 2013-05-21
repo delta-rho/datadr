@@ -2,12 +2,12 @@
 \alias{updateAttributes}
 \title{Update Attributes of a 'rhData' or 'rhDF' Object}
 \usage{
-  updateAttributes(obj, backendOpts = NULL)
+  updateAttributes(obj, control = NULL)
 }
 \arguments{
   \item{obj}{an object of class 'rhData' or 'rhDF'}
 
-  \item{backendOpts}{parameters specifying how the backend
+  \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
   \code{\link{rhwatch}} in RHIPE) - see
   \code{\link{rhipeControl}}}

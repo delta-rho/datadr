@@ -123,9 +123,9 @@ divApply.rhDiv <- function(data, apply) {
    })      
 }
 
-divCombine.rhDiv <- function(data, map, apply, combine, backendOpts) {
-   if(is.null(backendOpts))
-      backendOpts <- defaultControl(data)
+divCombine.rhDiv <- function(data, map, apply, combine, control) {
+   if(is.null(control))
+      control <- defaultControl(data)
    
    reduce <- combine$reduce
    
@@ -148,8 +148,8 @@ divCombine.rhDiv <- function(data, map, apply, combine, backendOpts) {
       output=output1,
       map=map,
       reduce=reduce,
-      mapred=backendOpts$mapred,
-      combiner=backendOpts$combiner, 
+      mapred=control$mapred,
+      combiner=control$combiner, 
       parameters=list(apply=apply),
       readback=FALSE
    )
