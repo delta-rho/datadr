@@ -61,14 +61,14 @@ updateAttributes <- function(obj, backendOpts=NULL) {
                if(inherits(var, quantTypes)) {
                   rhcollect(paste("summary_quant_", dfNames[i], sep="_"), list(
                      nna=length(which(is.na(r[[i]]))),
-                     moments=calculateMoments(r[[i]], order=4),
+                     moments=datadr:::calculateMoments(r[[i]], order=4),
                      min=min(var, na.rm=TRUE),
                      max=max(var, na.rm=TRUE)                     
                   ))
                } else if(inherits(var, categTypes)) {
                   rhcollect(paste("summary_categ_", dfNames[i], sep="_"), list(
                      nna=length(which(is.na(var))),
-                     freqTable=rhTabulateMap(~ var, data=data.frame(var))
+                     freqTable=datadr:::rhTabulateMap(~ var, data=data.frame(var))
                   ))
                }
             }
@@ -105,14 +105,14 @@ updateAttributes <- function(obj, backendOpts=NULL) {
             
             if(grepl("^summary_quant", reduce.key)) {
                resQuant$nna       <- sum(c(resQuant$nna, sapply(reduce.values, function(x) x$nna)), na.rm=TRUE)
-               resQuant$moments   <- do.call(combineMultipleMoments, lapply(reduce.values, function(x) x$moments))
+               resQuant$moments   <- do.call(datadr:::combineMultipleMoments, lapply(reduce.values, function(x) x$moments))
                resQuant$min       <- min(c(resQuant$min, sapply(reduce.values, function(x) x$min)), na.rm=TRUE)
                resQuant$max       <- max(c(resQuant$max, sapply(reduce.values, function(x) x$max)), na.rm=TRUE)            
             }
             
             if(grepl("^summary_categ", reduce.key)) {
                resCateg$nna       <- sum(c(resCateg$nna, sapply(reduce.values, function(x) x$nna)), na.rm=TRUE)
-               resCateg$freqTable <- rhTabulateReduce(resCateg$freqTable, lapply(reduce.values, function(x) x$freqTable))
+               resCateg$freqTable <- datadr:::rhTabulateReduce(resCateg$freqTable, lapply(reduce.values, function(x) x$freqTable))
             }
          },
          post={
@@ -140,7 +140,12 @@ updateAttributes <- function(obj, backendOpts=NULL) {
          }
       )
       
+      setup <- expression({
+         suppressMessages(require(datadr))
+      })
+      
       tmp <- rhwatch(
+         setup=setup,
          map=map, 
          reduce=reduce, 
          input=rhfmt(obj$loc, type=obj$type), 

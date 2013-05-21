@@ -10,7 +10,7 @@
 #' 
 #' @export
 print.rhData <- function(x) {
-   
+
    # to get the name of the x:
    # http://jackman.stanford.edu/blog/?p=800
    
@@ -50,7 +50,7 @@ print.rhData <- function(x) {
    )
    
    ### now for rhDF-specific attributes
-   
+
    dfAttrList <- list(
       "vars"=list(
          desc="variables in the data.frame",
@@ -69,7 +69,7 @@ print.rhData <- function(x) {
          render=function(x) NArender(x, "use dat$splitRowDistn to get distribution", updateAttrText)),
       "summary"=list(
          desc="summary statistics for each variable",
-         render=function(x) "(not implemented)")
+         render=function(x) NArender(x, "use dat$summary to see summaries (print method to come)", updateAttrText))
    )
    
    objClass <- class(x)
