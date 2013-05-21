@@ -35,6 +35,5 @@ Collate:
     'divMethods.rh.R'
     'recApplyMethods.R'
     'recCombineMethods.R'
-    'divide.R'
     'moments.R'
     'tabulate.R'
