@@ -94,6 +94,8 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
       }
    } else {
       map <- rhmap({
+         rhcounter("datadrDivide", "mapsProcessed", 1)
+         
          # TODO: pass factor levels of any factor variables through and in the reduce, assign this, to preserve factor levels across subsets
          if(!is.null(preTrans)) {
             r <- preTrans(r)            
@@ -124,6 +126,7 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
       reduce <- expression(
          pre={
             res <- list()
+            rhcounter("datadrDivide", "reducesProcessed", 1)
          },
          reduce={
             res[[length(res) + 1]] <- reduce.values
@@ -209,7 +212,7 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
    
    if(update)
       res <- updateAttributes(res, control=control)
-   
+      
    res
 }
 
