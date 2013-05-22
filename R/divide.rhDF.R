@@ -94,7 +94,6 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
       }
    } else {
       map <- rhmap({
-         rhcounter("datadrDivide", "mapsProcessed", 1)
          
          # TODO: pass factor levels of any factor variables through and in the reduce, assign this, to preserve factor levels across subsets
          if(!is.null(preTrans)) {
@@ -103,6 +102,13 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
          
          if(!is.null(trans)) {
             r <- trans(r)
+         }
+         
+         # remove factor levels, if any
+         # TODO: keep track of factor levels
+         factorInd <- which(sapply(r, is.factor))
+         for(i in seq_along(factorInd)) {
+            r[[factorInd[i]]] <- as.character(r[[factorInd[i]]])
          }
          
          if(by$type == "condDiv") {
@@ -118,15 +124,20 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
          cutDat <- split(r, cuts)
          cdn <- names(cutDat)
          
+         rhcounter("datadr", "Divide map k/v processed", 1)
+         
          for(i in seq_along(cutDat)) {
             rhcollect(cdn[i], cutDat[[i]])
          }
+         rhcounter("datadr", "Divide map k/v emitted", length(cutDat))
+         rhcounter("datadr", "Divide map pre-division bytes", as.integer(object.size(r)))
+         rhcounter("datadr", "Divide map post-division bytes", sum(sapply(cutDat, function(x) as.integer(object.size(x)))))
       })
       
       reduce <- expression(
          pre={
             res <- list()
-            rhcounter("datadrDivide", "reducesProcessed", 1)
+            rhcounter("datadr", "Divide reduce k/v processed", 1)
          },
          reduce={
             res[[length(res) + 1]] <- reduce.values
