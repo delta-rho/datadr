@@ -577,8 +577,8 @@ Get the key for a subset of a divided data object to test functions on prior to 
 <h3 class="fref_title">Divide a data.frame</h3>
 
 <h4>Usage</h4>
-<pre><span class="functioncall"><a href='#dividedataframe'>divide.data.frame</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">by</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">orderBy</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">postTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span>
-  <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+<pre><span class="functioncall"><a href='#dividedataframe'>divide.data.frame</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">by</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">orderBy</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">preTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span>
+  <span class="argument">postTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -691,7 +691,7 @@ Get the key for a subset of a divided data object to test functions on prior to 
 <h3 class="fref_title">Divide a RHIPE 'rhDF' Object</h3>
 
 <h4>Usage</h4>
-<pre><span class="functioncall"><a href='#dividerhdf'>divide.rhDF</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">by</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">orderBy</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">output</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">,</span>
+<pre><span class="functioncall"><a href='#dividerhdf'>divide.rhDF</a></span><span class="keyword">(</span><span class="symbol">data</span><span class="keyword">,</span> <span class="argument">by</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">orderBy</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">output</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">control</span> <span class="argument">=</span> NULL<span class="keyword">,</span>
   <span class="argument">preTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">postTrans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">update</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">)</span></pre>
 
 <h4>Arguments</h4>
@@ -713,10 +713,11 @@ Get the key for a subset of a divided data object to test functions on prior to 
   <dt>output</dt>
   <dd>where on HDFS the output data should
   reside</dd>
-  <dt>mapred</dt>
-  <dd>mapreduce-specific parameters to send to
-  RHIPE job that creates the division (see
-  <code>rhwatch</code>)</dd>
+  <dt>control</dt>
+  <dd>parameters specifying how the backend
+  should handle things (most-likely parameters to
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code> in RHIPE) - see
+  <code>rhipeControl</code></dd>
   <dt>preTrans</dt>
   <dd>a transformation function (if desired) to
   applied prior to division</dd>
@@ -1178,7 +1179,7 @@ Get split keys for divided data</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#recombine'>recombine</a></span><span class="keyword">(</span><span class="argument">data</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">apply</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">combine</span> <span class="argument">=</span> <span class="functioncall"><a href='#combcollect'>combCollect</a></span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span>
-  <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+  <span class="argument">control</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1188,6 +1189,11 @@ Get split keys for divided data</h3>
   <dd>the analytic method to apply to each subset</dd>
   <dt>combine</dt>
   <dd>the method to combine the results</dd>
+  <dt>control</dt>
+  <dd>parameters specifying how the backend
+  should handle things (most-likely parameters to
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code> in RHIPE) - see
+  <code>rhipeControl</code></dd>
 </dl>
 
   <h4>Value</h4>
@@ -1249,7 +1255,7 @@ Get split keys for divided data</h3>
 <dl>
   <dt>loc</dt>
   <dd>location on HDFS where the data resides (can
-  be a relative path if using <code>hdfs.setwd</code>)</dd>
+  be a relative path if using <code><a href='http://www.inside-r.org/r-doc/Rhipe/hdfs.setwd'>hdfs.setwd</a></code>)</dd>
   <dt>type</dt>
   <dd>the type of data (map, sequence, text)</dd>
   <dt>reset</dt>
@@ -1261,7 +1267,7 @@ Get split keys for divided data</h3>
   <dt>mapred</dt>
   <dd>mapreduce-specific parameters to send to
   RHIPE job that performs the update (see
-  <code>rhwatch</code>)</dd>
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code>)</dd>
 </dl>
 
   <h4>Value</h4>
@@ -1327,13 +1333,13 @@ Get split keys for divided data</h3>
 
 <h4>Usage</h4>
 <pre><span class="functioncall"><a href='#rhdf'>rhDF</a></span><span class="keyword">(</span><span class="symbol">loc</span><span class="keyword">,</span> <span class="argument">type</span> <span class="argument">=</span> <span class="string">"sequence"</span><span class="keyword">,</span> <span class="argument">trans</span> <span class="argument">=</span> NULL<span class="keyword">,</span> <span class="argument">reset</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span> <span class="argument">update</span> <span class="argument">=</span> <span class="number">FALSE</span><span class="keyword">,</span>
-  <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+  <span class="argument">control</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
 
 <h4>Arguments</h4>
 <dl>
   <dt>loc</dt>
   <dd>location on HDFS where the data resides (can
-  be a relative path if using <code>hdfs.setwd</code>)</dd>
+  be a relative path if using <code><a href='http://www.inside-r.org/r-doc/Rhipe/hdfs.setwd'>hdfs.setwd</a></code>)</dd>
   <dt>type</dt>
   <dd>the type of data (map, sequence, text)</dd>
   <dt>trans</dt>
@@ -1345,10 +1351,11 @@ Get split keys for divided data</h3>
   <dt>update</dt>
   <dd>should a RHIPE job be run to obtain
   additional attributes for the data prior to returning?</dd>
-  <dt>mapred</dt>
-  <dd>mapreduce-specific parameters to send to
-  RHIPE job that performs the update (see
-  <code>rhwatch</code>)</dd>
+  <dt>control</dt>
+  <dd>parameters specifying how the backend
+  should handle things (most-likely parameters to
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code> in RHIPE) - see
+  <code>rhipeControl</code></dd>
 </dl>
 
   <h4>Value</h4>
@@ -1521,16 +1528,17 @@ Get split keys for divided data</h3>
 <h3 class="fref_title">Update Attributes of a 'rhData' or 'rhDF' Object</h3>
 
 <h4>Usage</h4>
-<pre><span class="functioncall"><a href='#updateattributes'>updateAttributes</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">,</span> <span class="argument">mapred</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
+<pre><span class="functioncall"><a href='#updateattributes'>updateAttributes</a></span><span class="keyword">(</span><span class="symbol">obj</span><span class="keyword">,</span> <span class="argument">control</span> <span class="argument">=</span> NULL<span class="keyword">)</span></pre>
 
 <h4>Arguments</h4>
 <dl>
   <dt>obj</dt>
   <dd>an object of class 'rhData' or 'rhDF'</dd>
-  <dt>mapred</dt>
-  <dd>mapreduce-specific parameters to send to
-  RHIPE job that creates the division (see
-  <code>rhwatch</code>)</dd>
+  <dt>control</dt>
+  <dd>parameters specifying how the backend
+  should handle things (most-likely parameters to
+  <code><a href='http://www.inside-r.org/r-doc/Rhipe/rhwatch'>rhwatch</a></code> in RHIPE) - see
+  <code>rhipeControl</code></dd>
 </dl>
 
   <h4>Value</h4>
