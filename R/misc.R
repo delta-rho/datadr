@@ -181,5 +181,6 @@ nullAttributes <- function(e) {
    # get rid of attributes of each element of expression
    for(i in seq_along(e)) 
       attributes(e[[i]]) <- NULL
-   e
+
+   eval(parse(text=deparse(e)))
 }
