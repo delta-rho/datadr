@@ -170,7 +170,15 @@ buildPrintTable <- function(x, attrList, class) {
 
 
 # internal
-nullAttributes <- function(e) { 
+nullAttributes <- function(e) {
+   # get rid of attributes of the expression except for class
+   aNames <- names(attributes(e))
+   aNames <- setdiff(aNames, "class")
+   for (nm in aNames) {
+      attributes(e)[[nm]] <- NULL
+   }
+   
+   # get rid of attributes of each element of expression
    for(i in seq_along(e)) 
       attributes(e[[i]]) <- NULL
    e
