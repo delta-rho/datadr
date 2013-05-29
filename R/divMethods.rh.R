@@ -146,6 +146,7 @@ divCombine.rhDiv <- function(data, map, apply, combine, control) {
    res <- rhwatch(
       input=rhfmt(data$loc, type=data$type),
       output=output1,
+      setup=control$setup,
       map=nullAttributes(map),
       reduce=nullAttributes(reduce),
       mapred=control$mapred,

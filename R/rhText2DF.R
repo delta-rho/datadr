@@ -19,6 +19,8 @@ rhText2DF <- function(x, output=NULL, trans=NULL, control=NULL, update=FALSE) {
       suppressMessages(require(digest))
    })
    
+   setup <- appendExpression(control$setup, setup)
+   
    # set write.job.info to TRUE
    wji <- rhoptions()$write.job.info
    rhoptions(write.job.info=TRUE)

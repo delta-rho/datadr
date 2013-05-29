@@ -1,7 +1,7 @@
 
 #' @export
-rhipeControl <- function(mapred=NULL, combiner=FALSE) {
-   res <- list(mapred=mapred, combiner=combiner)
+rhipeControl <- function(mapred=NULL, combiner=FALSE, setup=NULL) {
+   res <- list(mapred=mapred, combiner=combiner, setup=setup)
    class(res) <- "rhipeControl"
    res
 }

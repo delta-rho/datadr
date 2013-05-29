@@ -149,6 +149,8 @@ updateAttributes <- function(obj, control=NULL) {
          suppressMessages(require(datadr))
       })
       
+      setup <- appendExpression(control$setup, setup)
+      
       tmp <- rhwatch(
          setup=nullAttributes(setup),
          map=nullAttributes(map), 

@@ -176,3 +176,25 @@ nullAttributes <- function (e) {
    for (i in seq_along(e)) attributes(e[[i]]) <- NULL
    eval(parse(text = deparse(e)))
 }
+
+appendExpression <- function(expr1, expr2) {
+   getLines <- function(expr) {
+      if(inherits(expr, "expression")) {
+         expr <- deparse(expr)
+         n <- length(expr)
+         if(n == 1) {
+            warning("expression must be wrapped in {}: ", expr)
+            return(expr)
+         } else {
+            return(expr[-c(1, n)])            
+         }
+      } else {
+         return("")
+      }
+   }
+   
+   eval(parse(text=paste("expression({", paste(c(getLines(expr1), getLines(expr2)), collapse="\n"), "})", sep="")))
+}
+
+
+

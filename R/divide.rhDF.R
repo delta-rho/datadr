@@ -73,6 +73,8 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
       datadr:::setupRNGStream(seed)
    }))
    
+   setup <- appendExpression(control$setup, setup)
+   
    if(rhabsolute.hdfs.path(output) == data$loc) { # data already exists
       if(by$type != "condDiv") {
          stop("\"output\" is the same as location of input data")
