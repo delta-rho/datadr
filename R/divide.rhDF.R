@@ -108,34 +108,36 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
             r <- trans(r)
          }
          
-         # remove factor levels, if any
-         # TODO: keep track of factor levels
-         factorInd <- which(sapply(r, is.factor))
-         for(i in seq_along(factorInd)) {
-            r[[factorInd[i]]] <- as.character(r[[factorInd[i]]])
+         if(!is.null(r)) {
+            # remove factor levels, if any
+            # TODO: keep track of factor levels
+            factorInd <- which(sapply(r, is.factor))
+            for(i in seq_along(factorInd)) {
+               r[[factorInd[i]]] <- as.character(r[[factorInd[i]]])
+            }
+
+            if(by$type == "condDiv") {
+               splitVars <- by$vars
+               cuts <- apply(r[,splitVars,drop=FALSE], 1, function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))
+            } else if(by$type=="rrDiv") {
+               # get the number of splits necessary for specified nrows
+               nr <- by$nrows
+               ndiv <- ceiling(n / nr)
+               cuts <- paste("rr_", sample(1:ndiv, n, replace=TRUE), sep="")
+            }
+
+            cutDat <- split(r, cuts)
+            cdn <- names(cutDat)
+
+            rhcounter("datadr", "Divide map k/v processed", 1)
+
+            for(i in seq_along(cutDat)) {
+               rhcollect(cdn[i], cutDat[[i]])
+            }
+            rhcounter("datadr", "Divide map k/v emitted", length(cutDat))
+            rhcounter("datadr", "Divide map pre-division bytes", as.integer(object.size(r)))
+            rhcounter("datadr", "Divide map post-division bytes", sum(sapply(cutDat, function(x) as.integer(object.size(x)))))
          }
-         
-         if(by$type == "condDiv") {
-            splitVars <- by$vars
-            cuts <- apply(r[,splitVars,drop=FALSE], 1, function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))
-         } else if(by$type=="rrDiv") {
-            # get the number of splits necessary for specified nrows
-            nr <- by$nrows
-            ndiv <- ceiling(n / nr)
-            cuts <- paste("rr_", sample(1:ndiv, n, replace=TRUE), sep="")
-         }
-         
-         cutDat <- split(r, cuts)
-         cdn <- names(cutDat)
-         
-         rhcounter("datadr", "Divide map k/v processed", 1)
-         
-         for(i in seq_along(cutDat)) {
-            rhcollect(cdn[i], cutDat[[i]])
-         }
-         rhcounter("datadr", "Divide map k/v emitted", length(cutDat))
-         rhcounter("datadr", "Divide map pre-division bytes", as.integer(object.size(r)))
-         rhcounter("datadr", "Divide map post-division bytes", sum(sapply(cutDat, function(x) as.integer(object.size(x)))))
       })
       
       reduce <- expression(
