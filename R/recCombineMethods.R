@@ -15,6 +15,7 @@ combMeanCoef <- function(...) {
    list(
       reduce=expression(
          pre = {
+            suppressWarnings(suppressMessages(require(data.table)))
             res <- NULL
             n <- as.numeric(0)
             coefNames <- NULL
@@ -24,7 +25,7 @@ combMeanCoef <- function(...) {
                coefNames <- reduce.values[[1]]$names
                
             n <- sum(c(n, unlist(lapply(reduce.values, function(x) x$n))), na.rm=TRUE)
-            res <- do.call(rbind, c(list(res), lapply(reduce.values, function(x) {
+            res <- rbindlist(c(list(res), lapply(reduce.values, function(x) {
                x$coef * x$n
             })))
             res <- apply(res, 2, sum)
@@ -62,12 +63,13 @@ combMean <- function(...) {
    list(
       reduce=expression(
          pre = {
+            suppressWarnings(suppressMessages(require(data.table)))
             res <- NULL
             n <- as.numeric(0)
          },
          reduce = {
             n <- sum(c(n, length(reduce.values)))
-            res <- do.call(rbind, c(list(res), lapply(reduce.values, function(x) {
+            res <- rbindlist(c(list(res), lapply(reduce.values, function(x) {
                x
             })))
             res <- apply(res, 2, sum)
@@ -121,16 +123,18 @@ combCollect <- function(...) {
 #' 
 #' @export
 combRbind <- function(...) {
-   red <- expression(pre = {
-       adata <- list()
-   }, reduce = {
-       adata[[length(adata) + 1]] <- reduce.values
-   }, post = {
-       adata <- do.call("rbind", unlist(adata, recursive = FALSE))
-       {
-           rhcollect(reduce.key, adata)
-       }
-   })
+   red <- expression(
+      pre = {
+         adata <- list()
+      }, 
+      reduce = {
+         adata[[length(adata) + 1]] <- reduce.values
+      }, 
+      post = {
+         adata <- data.frame(rbindlist(unlist(adata, recursive=FALSE)))
+         rhcollect(reduce.key, adata)
+      }
+   )
    attr(red, "combine") <- TRUE
 
    list(

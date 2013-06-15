@@ -146,20 +146,25 @@ updateAttributes <- function(obj, control=NULL) {
       )
       
       setup <- expression({
-         suppressMessages(require(datadr))
+         suppressWarnings(suppressMessages(require(datadr)))
+         .libPaths(libPaths)
       })
       
       setup <- appendExpression(control$setup, setup)
       
       tmp <- rhwatch(
-         setup=nullAttributes(setup),
+         setup=nullAttributes(setup), 
          map=nullAttributes(map), 
          reduce=nullAttributes(reduce), 
          input=rhfmt(obj$loc, type=obj$type), 
          mapred=control$mapred, 
          combiner=control$combiner, 
          readback=TRUE, 
-         parameters=list(needs = needList, trans=obj$trans)
+         parameters=list(
+            needs = needList, 
+            trans=obj$trans, 
+            libPaths = .libPaths()
+         )
       )
       
       tmpNames <- sapply(tmp, "[[", 1)

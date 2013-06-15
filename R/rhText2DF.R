@@ -1,5 +1,5 @@
 #' @export
-rhText2DF <- function(x, output=NULL, trans=NULL, control=NULL, update=FALSE) {
+rhText2DF <- function(x, output=NULL, trans=NULL, keyFn=NULL, control=NULL, update=FALSE) {
    
    if(is.null(trans))
       stop("Must specify a transformation function with 'trans'.")
@@ -12,31 +12,42 @@ rhText2DF <- function(x, output=NULL, trans=NULL, control=NULL, update=FALSE) {
       
    map <- expression({
       tmp <- paste(unlist(map.values), collapse="\n")
-      rhcollect(digest(tmp), trans(tmp))
+      if(is.null(keyFn))
+         keyFn <- digest
+      
+      rhcollect(keyFn(tmp), trans(tmp))
    })
    
    setup <- expression({
-      suppressMessages(require(digest))
+      suppressWarnings(suppressMessages(require(digest)))
+      .libPaths(libPaths)
    })
    
    setup <- appendExpression(control$setup, setup)
+   
+   if(is.null(control$mapred$mapred.reduce.tasks)) {
+      reduce <- 0
+   } else {
+      reduce <- control$mapred$mapred.reduce.tasks
+   }
    
    # set write.job.info to TRUE
    wji <- rhoptions()$write.job.info
    rhoptions(write.job.info=TRUE)
    
-   control$mapred$mapred.reduce.tasks <- 0
-   
    tmp <- rhwatch(
       setup=nullAttributes(setup),
       map=nullAttributes(map), 
+      reduce=nullAttributes(reduce), 
       input=rhfmt(x$loc, type=x$type),
       output=rhfmt(output, type="sequence"),
       mapred=control$mapred, 
       combiner=control$combiner,
       readback=FALSE, 
       parameters=list(
-         trans = trans
+         trans = trans,
+         keyFn = keyFn,
+         libPaths = .libPaths()
       )
    )
    

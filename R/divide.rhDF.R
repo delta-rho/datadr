@@ -32,13 +32,13 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
    
    if(is.null(control))
       control <- defaultControl(data)
-      
+   
    if(is.null(output))
       stop("Must provide location on HDFS for output data")
-      
+   
    if(is.null(trans))
       trans <- identity
-      
+   
    # validate "by"
    if(!is.list(by)) { # by should be a list
       by <- condDiv(by)
@@ -68,7 +68,9 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
    # TODO: should have enough summary info to know if division will result in subsets that are too large.  Good to check for and warn about this.
    
    setup <- as.expression(bquote({
-      suppressMessages(library(datadr))
+      suppressWarnings(suppressMessages(library(datadr)))
+      suppressWarnings(suppressMessages(library(data.table)))
+      .libPaths(libPaths)
    	seed <- .(seed)
       datadr:::setupRNGStream(seed)
    }))
@@ -145,9 +147,9 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
             res[[length(res) + 1]] <- reduce.values
          },
          post={
-            # TODO: use rbindlist from data.table for speed
             # TODO: spill records to new key/value if too many rows?
-            res <- do.call(rbind, unlist(res, recursive=FALSE))
+            save(res, file="/tmp/res.Rdata")
+            res <- data.frame(rbindlist(unlist(res, recursive=FALSE)))
             if(!is.null(orderBy)) {
                res <- orderData(res, orderBy)
             }
@@ -156,7 +158,7 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
                res <- postTrans(res)
             }
             
-            # add conditioning variable current split vals
+            # add conditioning variable to current split vals
             if(by$type=="condDiv") {
                splitVars <- by$vars
                for(i in seq_along(res)) {
@@ -192,7 +194,8 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
             trans = data$trans,
             preTrans = preTrans,
             postTrans = postTrans,
-            seed = seed
+            seed = seed,
+            libPaths = .libPaths()
             # orderData = orderData,
             # getUID = getUID,
             # setupRNGStream = setupRNGStream
@@ -228,5 +231,4 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
       
    res
 }
-
 

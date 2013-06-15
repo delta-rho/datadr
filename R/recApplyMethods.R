@@ -83,6 +83,7 @@ drBLB <- function(statistic, metric, R, n) {
    args <- list(statistic=statistic, metric=metric, R=R, n=n)
    
    applyFn <- function(args, key) {
+      suppressWarnings(suppressMessages(require(data.table)))
       b <- nrow(args$data)
       
       resamples <- rmultinom(args$R, args$n, rep(1/b, b))
@@ -91,7 +92,7 @@ drBLB <- function(statistic, metric, R, n) {
          weights <- resamples[,ii] / max(resamples[,ii])
          suppressWarnings(args$statistic(args$data, weights))
       })
-      res <- data.frame(do.call(rbind, res))
+      res <- data.frame(rbindlist(res))
       
       res <- do.call(c, lapply(res, args$metric))
       
