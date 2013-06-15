@@ -148,7 +148,6 @@ divide.rhDF <- function(data, by=NULL, orderBy=NULL, output=NULL, control=NULL, 
          },
          post={
             # TODO: spill records to new key/value if too many rows?
-            save(res, file="/tmp/res.Rdata")
             res <- data.frame(rbindlist(unlist(res, recursive=FALSE)))
             if(!is.null(orderBy)) {
                res <- orderData(res, orderBy)
