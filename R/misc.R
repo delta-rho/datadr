@@ -1,175 +1,52 @@
-# check to see if file exists on HDFS
-existsOnHDFS <- function(...) {
-   params <- list(...)
-   path <- rhabsolute.hdfs.path(paste(params, collapse="/"))
-   res <- try(rhls(path), silent=TRUE)
-   if(inherits(res, "try-error")) {
-      return(FALSE)      
+#' Apply Function to Key-Value Pair
+#' 
+#' Apply a function to a key-value pair
+#' 
+#' @param fn a function
+#' @param kvPair a key-value pair (a list with 2 elements)
+#' @param returnKV should the key be added to the result?
+#' 
+#' @details Determines how a function should be applied to a key-value pair and then applies it: if the function has 2 formals, it applies the function giving it the key and the value as the arguments; if the function has 1 formal, it applies the function giving it just the value.  This provides flexibility and simplicity for when a function is only meant to be applied to the value, but still allows keys to be used if desired.
+#' 
+#' @export
+kvApply <- function(fn, kvPair, returnKV=FALSE) {
+   # TODO?: also do other stuff like add splitVars back on to df, etc. prior to applying
+   if(length(formals(fn)) == 2) {
+      res <- fn(kvPair[[1]], kvPair[[2]])
    } else {
-      return(TRUE)
+      res <- fn(kvPair[[2]])
    }
-}
-
-# print size provided in bytes in nice format
-prettySize <- function(x) {
-   units <- c("KB", "MB", "GB", "TB")
-   xp <- min(which(floor((x / (1024^(1:4))) %% 1024) == 0)) - 1
-   if(is.infinite(xp))
-      xp <- 4
-   xp <- max(xp, 1)
-   
-   paste(round(x / (1024^xp), 2), units[xp])
-}
-
-#### functions to read and write rh attributes
-# internal
-loadRhDataAttr <- function(loc) {
-   rhload(paste(loc, "/_rh_meta/rhDataAttr.Rdata", sep=""))
-   dat
-}
-
-# internal
-saveRhDataAttr <- function(dat, loc) {
-   rhsave(dat, file=paste(loc, "/_rh_meta/rhDataAttr.Rdata", sep=""))
-}
-
-# internal
-saveRhDivAttr <- function(dat, loc) {
-   rhsave(dat, file=paste(loc, "/_rh_meta/rhDivAttr.Rdata", sep=""))
-}
-
-# internal
-loadRhDivAttr <- function(loc) {
-   rhload(paste(loc, "/_rh_meta/rhDivAttr.Rdata", sep=""))
-   dat
-}
-
-# internal
-loadRhDFattr <- function(loc) {
-   rhload(paste(loc, "/_rh_meta/rhDFattr.Rdata", sep=""))   
-   dat
-}
-
-# internal
-saveRhDFattr <- function(dat, loc) {
-   rhsave(dat, file=paste(loc, "/_rh_meta/rhDFattr.Rdata", sep=""))
-}
-
-
-#### functions used in divide
-
-# internal
-orderData <- function(dat, orderBy) {
-   orderCols <- lapply(orderBy, function(x) {
-      if(length(x) == 1) {
-         var <- x
-         ord <- "asc"
-      } else {
-         var <- x[1]
-         ord <- x[2]
-      }
-      if(ord == "desc") {
-         return(-xtfrm(dat[,var]))
-      } else {
-         return(dat[,var])
-      }
-   })
-   orderIndex <- do.call(order, orderCols) 
-   dat[orderIndex,]              
-}
-
-# internal
-getUID <- function(id=Sys.getenv("mapred.task.id")) {
-  a <- strsplit(id, "_")[[1]]
-  a <- as.numeric(a[c(2, 3, 5)])
-}
-
-# perhaps use key as a basis for seed:
-# sum(strtoi(charToRaw(digest(key)), 16L))
-
-# internal
-setupRNGStream <- function(iseed) {
-   ## Modified from clustersetupRNGstream in library(parallel)
-   library(parallel)
-   RNGkind("L'Ecuyer-CMRG")
-   set.seed(iseed)
-   current.task.number <- getUID()[3]
-   seed <- .Random.seed
-   if(current.task.number > 1) {
-      for(i in 2:current.task.number)
-         seed <- nextRNGStream(seed)
-      assign(".Random.seed", seed, envir = .GlobalEnv)
-   }
-}
-
-
-#### functions used in print methods
-
-NArender <- function(x, txt, alt) {
-   if(any(is.na(x))) {
-      return(alt)
+   if(returnKV) {
+      return(list(kvPair[[1]], res))
    } else {
-      return(txt)
+      return(res)
    }
 }
 
-sourceDataText <- function(x) {
-   n <- length(x)
-   if(length(x) > 1)
-      x <- c(x[1], paste("and", n-1, "more..."))
-   paste(x, collapse=", ")
+### internal
+
+# maybe hash functions should be exposed?
+keyHash <- function(key, nBins) {
+   sum(strtoi(charToRaw(digest(key)), 16L)) %% nBins
 }
 
-condDivText <- function(x) {
-   paste("Conditioning variables: ", paste(x$vars, collapse=", "), sep="")
+digestKeyHash <- function(digestKey, nBins) {
+   sum(strtoi(charToRaw(digestKey), 16L)) %% nBins   
 }
 
-rrDivText <- function(x) {
-   paste("Approx. number of rows in each division: ", x$nrows, sep="")
+validateListKV <- function(data) {
+   # make sure it is a valid k/v list
+   allLengthTwo <- !any(sapply(data, length) != 2)
+   allLists <- !any(!sapply(data, is.list))
+   if(!allLengthTwo || !allLists)
+      stop("List must be a list of lists of length two (k/v pairs)")
+
+   # # add "keyValue" class to each element
+   # for(i in seq_along(data)) {
+   #    class(data[[i]]) <- c("keyValue", "list")
+   # }
 }
 
-printVars <- function(x) {
-   names <- names(x)
-   types <- substr(unlist(x), 1, 3)
-   paste(paste(names, "(", types, ")", sep=""), collapse=", ")
-}
-
-printTrans <- function(x) {
-   text <- "custom user-defined function - see dat$trans and see dat$transExample for example of a subset post-transformation"
-   if(identical(x, identity)) {
-      text <- "identity transformation (original data is a data.frame)"
-   } else if(identical(x, as.data.frame)) {
-      text <- "data is coerced into a data.frame using as.data.frame - see dat$transExample for example of a subset post-transformation"
-   }
-}
-
-buildPrintTable <- function(x, attrList, class) {
-   xnm <- intersect(names(x), names(attrList))
-   xnm2 <- paste("*", xnm)
-   vals <- do.call(c, lapply(xnm, function(a) {
-      cur <- attrList[[a]]
-      cur$render(x[[a]])
-   }))
-   
-   namewidth <- max(nchar(xnm2)) + 1
-   valwidth <- min(max(nchar(vals)), getOption("width") - namewidth - 1)
-
-   fmt <- paste("%-", namewidth, "s: %s", sep="")
-   fmt2 <- paste("%-", namewidth, "s: %s", sep="")
-   
-   tab <- do.call(c, lapply(seq_along(xnm), function(i) {
-      sprintf(fmt, xnm2[i], vals[i])
-   }))
-   
-   header <- c(
-      sprintf(fmt, paste("'", class, "' attr", sep=""), "value"),
-      paste(rep("-", namewidth + valwidth + 2), collapse="")
-   )
-   paste(c(header, tab), collapse="\n")
-}
-
-
-# internal
 nullAttributes <- function (e) {
    environment(e) <- NULL
    
@@ -196,5 +73,13 @@ appendExpression <- function(expr1, expr2) {
    eval(parse(text=paste("expression({", paste(c(getLines(expr1), getLines(expr2)), collapse="\n"), "})", sep="")))
 }
 
-
+isAbsolutePath <- function(path) {
+   splitPath <- strsplit(path, split = "[/\\]")[[1]]
+   
+   any(
+      grepl("^~", path), 
+      grepl("^.:(/|\\\\)", path), 
+      splitPath[1] == ""
+   )
+}
 

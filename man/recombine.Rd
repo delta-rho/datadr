@@ -1,32 +1,38 @@
 \name{recombine}
 \alias{recombine}
-\title{Recombine a RHIPE 'rhDiv' Object}
+\title{Recombine}
 \usage{
-  recombine(data = NULL, apply = NULL,
-    combine = combCollect(), control = NULL)
+  recombine(data, apply = NULL, combine = NULL,
+    output = NULL, control = NULL, verbose = TRUE)
 }
 \arguments{
-  \item{data}{an object of class 'rhDF'}
+  \item{data}{an object of class "ddo" of "ddf"}
 
-  \item{apply}{the analytic method to apply to each subset}
+  \item{apply}{a function specifying the analytic method to
+  apply to each subset, or a pre-defined apply function
+  (see \code{\link{drBLB}}, \code{\link{drGLM}}, for
+  example)}
 
   \item{combine}{the method to combine the results}
+
+  \item{output}{a "kvConnection" object indicating where
+  the output data should reside (see
+  \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If
+  \code{NULL} (default), output will be an in-memory "ddo"
+  object.}
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
   \code{\link{rhwatch}} in RHIPE) - see
-  \code{\link{rhipeControl}}}
+  \code{\link{rhipeControl}} and
+  \code{\link{localDiskControl}}}
 }
 \value{
   depends on \code{combine}
 }
 \description{
-  Apply an analytic method to a RHIPE 'rhDiv' object and
-  combine the results
-}
-\details{
-  This is an experimental prototype - subject to change and
-  be more flexible.
+  Apply an analytic recombination method to a ddo/ddf
+  object and combine the results
 }
 \examples{
 \dontrun{
@@ -44,7 +50,10 @@
   recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{rrDiv}},
-  \code{\link{drGLM}}, \code{\link{wMeanCoef}}
+  \code{\link{divide}}, \code{\link{ddo}},
+  \code{\link{ddf}}, \code{\link{drGLM}},
+  \code{\link{drBLB}}, \code{\link{combMeanCoef}},
+  \code{\link{combMean}}, \code{\link{combCollect}},
+  \code{\link{combRbind}}
 }
 

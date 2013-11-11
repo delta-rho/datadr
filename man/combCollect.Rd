@@ -8,7 +8,8 @@
   \item{\ldots}{...}
 }
 \description{
-  "Collect" recombination
+  "Collect" recombination - simply collect the results into
+  a local list of key-value pairs
 }
 \details{
   This is an experimental prototype.  It is to be passed as
@@ -18,6 +19,8 @@
   Ryan Hafen
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{recombine}}
+  \code{\link{divide}}, \code{\link{recombine}},
+  \code{\link{combDdo}}, \code{\link{combMeanCoef}},
+  \code{\link{combRbind}}, \code{\link{combMean}}
 }
 

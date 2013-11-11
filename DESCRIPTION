@@ -1,42 +1,50 @@
 Package: datadr
 Type: Package
 Title: Divide and Recombine for Large, Complex Data
-Version: 0.4.1
-Date: 2013-04-19
+Version: 0.5
+Date: 2013-11-11
 Author: Ryan Hafen
 Maintainer: Ryan Hafen <ryan.hafen@pnnl.gov>
 Description: Methods for dividing data into subsets, applying analytical
-    methods to the subsets, and recombining the results.  Works with local
-    data.frames or very large datasets using the R and Hadoop Integrated
-    Programming Environment (RHIPE).
+    methods to the subsets, and recombining the results.  Comes with a generic
+    MapReduce interface as well.  Works with key-value pairs stored in memory,
+    on local disk, or on HDFS, in the latter case using the R and Hadoop
+    Integrated Programming Environment (RHIPE).
 License: BSD
 LazyLoad: yes
 LazyData: yes
 Depends:
-    R (>= 2.15.0),
-    data.table
+    R (>= 2.15.1),
+    data.table,
+    digest
 Suggests:
     Rhipe
 Collate:
-    'divide.data.frame.R'
-    'divide.generic.R'
-    'divide.rhDF.R'
-    'divJoin.R'
-    'divSpecs.R'
-    'makeKeys.R'
+    'agnostic_quantile.R'
+    'agnostic_tabulate.R'
+    'bsv.R'
+    'conn_HDFS.R'
+    'conn_localDisk.R'
+    'conn_memory.R'
+    'ddo_ddf_kvHDFS.R'
+    'ddo_ddf_kvLocalDisk.R'
+    'ddo_ddf_kvMemory.R'
+    'ddo_ddf_methods.R'
+    'ddo_ddf_print.R'
+    'ddo_ddf_updateAttrs.R'
+    'ddo_ddf.R'
+    'divide.R'
+    'divSpec.R'
+    'mapreduce_kvHDFS.R'
+    'mapreduce_kvLocalDisk.R'
+    'mapreduce_kvMemory.R'
+    'mapreduce.R'
     'misc.R'
-    'print.localDiv.R'
-    'print.rhData.R'
+    'recombine_apply.R'
+    'recombine_combine.R'
     'recombine.R'
-    'rhData.R'
-    'rhDF.R'
-    'updateAttributes.R'
-    'divMethods.generic.R'
-    'divMethods.local.R'
-    'divMethods.rh.R'
-    'recApplyMethods.R'
-    'recCombineMethods.R'
-    'moments.R'
-    'tabulate.R'
-    'backendControls.R'
-    'rhText2DF.R'
+    'zzz_constants.R'
+    'datadocs.R'
+    'divSpec_condDiv.R'
+    'divSpec_rrDiv.R'
+    'globals.R'

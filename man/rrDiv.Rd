@@ -19,7 +19,7 @@
 }
 \details{
   The random replicate division method currently gets the
-  total number of rows of the data.frame and divides it by
+  total number of rows of the input data and divides it by
   \code{nrows} to get the number of subsets.  Then it
   randomly assigns each row of the input data to one of the
   subsets, resulting in subsets with approximately
@@ -42,7 +42,7 @@
   recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{rhDF}},
+  \code{\link{divide}}, \code{\link{recombine}},
   \code{\link{condDiv}}
 }
 

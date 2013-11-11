@@ -1,0 +1,33 @@
+\name{addData}
+\alias{addData}
+\title{Add Key-Value Pairs to a Data Connection}
+\usage{
+  addData(conn, data, overwrite = FALSE)
+}
+\arguments{
+  \item{conn}{a kvConnection object}
+
+  \item{data}{a list of key-value pairs (list of lists
+  where each sub-list has two elements, the key and the
+  value)}
+
+  \item{overwrite}{if data with the same key is already
+  present in the data, should it be overwritten? (does not
+  work for HDFS connections)}
+}
+\description{
+  Add key-value pairs to a data connection
+}
+\note{
+  This is generally not recommended for HDFS as it writes a
+  new file each time it is called, and can result in more
+  individual files than Hadoop likes to deal with.
+}
+\author{
+  Ryan Hafen
+}
+\seealso{
+  \code{\link{removeData}}, \code{\link{localDiskConn}},
+  \code{\link{hdfsConn}}
+}
+

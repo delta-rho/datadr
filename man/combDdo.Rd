@@ -1,14 +1,15 @@
-\name{combMean}
-\alias{combMean}
-\title{Mean Recombination}
+\name{combDdo}
+\alias{combDdo}
+\title{"DDO" Recombination}
 \usage{
-  combMean(...)
+  combDdo(...)
 }
 \arguments{
   \item{\ldots}{...}
 }
 \description{
-  Mean recombination
+  "DDO" recombination - simply collect the results into a
+  "ddo" object
 }
 \details{
   This is an experimental prototype.  It is to be passed as
@@ -19,7 +20,7 @@
 }
 \seealso{
   \code{\link{divide}}, \code{\link{recombine}},
-  \code{\link{combCollect}}, \code{\link{combDdo}},
-  \code{\link{combRbind}}, \code{\link{combMeanCoef}}
+  \code{\link{combCollect}}, \code{\link{combMeanCoef}},
+  \code{\link{combRbind}}, \code{\link{combMean}}
 }
 

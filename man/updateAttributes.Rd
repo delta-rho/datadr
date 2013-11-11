@@ -1,11 +1,11 @@
 \name{updateAttributes}
 \alias{updateAttributes}
-\title{Update Attributes of a 'rhData' or 'rhDF' Object}
+\title{Update Attributes of a 'ddo' or 'ddf' Object}
 \usage{
   updateAttributes(obj, control = NULL)
 }
 \arguments{
-  \item{obj}{an object of class 'rhData' or 'rhDF'}
+  \item{obj}{an object of class 'ddo' or 'ddf'}
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
@@ -13,32 +13,33 @@
   \code{\link{rhipeControl}}}
 }
 \value{
-  an object of class 'rhData' or 'rhDF'
+  an object of class 'ddo' or 'ddf'
 }
 \description{
-  Update attributes of a 'rhData' or 'rhDF' object
+  Update attributes of a 'ddo' or 'ddf' object
 }
 \details{
   This function looks for missing attributes related to a
-  RHIPE data object and runs a MapReduce job to update
-  them.  These attributes include "splitSizeDistn",
-  "hasKeys", "ndiv", "nrow", and "splitRowDistn".  These
-  attributes are useful for subsequent computations that
-  might rely on them.  The result is the input modified to
-  reflect the updated attributes, and thus it should be
-  used as \code{obj <- updateAttributes(obj)}.  Metadata
-  files on HDFS are also updated.
-}
-\examples{
-\dontrun{
-
-}
+  ddo or ddf (distributed data object or data frame) object
+  and runs MapReduce to update them.  These attributes
+  include "splitSizeDistn", "keys", "nDiv", "nRow", and
+  "splitRowDistn".  These attributes are useful for
+  subsequent computations that might rely on them.  The
+  result is the input modified to reflect the updated
+  attributes, and thus it should be used as \code{obj <-
+  updateAttributes(obj)}.
 }
 \author{
   Ryan Hafen
 }
+\references{
+  Bennett, Janine, et al. "Numerically stable, single-pass,
+  parallel statistics algorithms." Cluster Computing and
+  Workshops, 2009. \emph{CLUSTER'09. IEEE International
+  Conference on.} IEEE, 2009.
+}
 \seealso{
-  \code{\link{rhData}}, \code{\link{rhDF}},
-  \code{\link{divide.rhData}}
+  \code{\link{ddo}}, \code{\link{ddf}},
+  \code{\link{divide}}
 }
 

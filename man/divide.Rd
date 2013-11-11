@@ -1,25 +1,95 @@
 \name{divide}
 \alias{divide}
-\title{Divide}
+\title{Divide a Distributed Data Object}
 \usage{
-  divide(data, ...)
+  divide(data, by = NULL, spill = 1e+06, filterFn = NULL,
+    bsvFn = NULL, output = NULL, preTransFn = NULL,
+    postTransFn = NULL, control = NULL, update = FALSE,
+    verbose = TRUE)
 }
 \arguments{
-  \item{data}{data to divide}
+  \item{data}{an object of class "ddf" or "ddo" - in the
+  latter case, need to specify \code{preTransFn} to coerce
+  each subset into a data frame}
 
-  \item{\ldots}{other arguments passed to the specific
-  divide method}
+  \item{by}{specification of how to divide the data -
+  conditional (factor-level or shingles), random replicate,
+  or near-exact replicate (to come) -- see details}
+
+  \item{bsvFn}{a function to be applied to each subset that
+  returns a list of between subset variables (BSVs)}
+
+  \item{output}{a "kvConnection" object indicating where
+  the output data should reside (see
+  \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If
+  \code{NULL} (default), output will be an in-memory "ddo"
+  object.}
+
+  \item{spill}{integer telling the division method how many
+  lines of data should be collected until spilling over
+  into a new key-value pair}
+
+  \item{filterFn}{a function that is applied to each
+  candidate output key-value pair to determine whether it
+  should be (if returns \code{TRUE}) part of the resulting
+  division}
+
+  \item{preTransFn}{a transformation function (if desired)
+  to applied to eah subset prior to division}
+
+  \item{postTransFn}{a transformation function (if desired)
+  to apply to each post-division subset}
+
+  \item{control}{parameters specifying how the backend
+  should handle things (most-likely parameters to
+  \code{\link{rhwatch}} in RHIPE) - see
+  \code{\link{rhipeControl}} and
+  \code{\link{localDiskControl}}}
+
+  \item{update}{should a MapReduce job be run to obtain
+  additional attributes for the result data prior to
+  returning?}
+
+  \item{verbose}{logical - print messages about what is
+  being done}
+}
+\value{
+  an object of class "ddf" if the resulting subsets are
+  data frames.  Otherwise, an object of class "ddo".
 }
 \description{
-  Divide data into subsets based on different criteria
+  Divide a ddo/ddf object into subsets based on different
+  criteria
 }
 \details{
-  See the following for specific details for different data
-  objects: \itemize{ \item{\code{\link{divide.data.frame}}:
-  for data.frames} \item{\code{\link{divide.rhDF}}: for
-  RHIPE data.frames} }
+  The division methods this function will support include
+  conditioning variable division for factors (implemented
+  -- see \code{\link{condDiv}}), conditioning variable
+  division for numerical variables through shingles, random
+  replicate (implemented -- see \code{\link{rrDiv}}), and
+  near-exact replicate.  If \code{by} is a vector of
+  variable names, the data will be divided by these
+  variables.  Alternatively, this can be specified by e.g.
+  \code{condDiv(c("var1", "var2"))}.
+}
+\examples{
+\dontrun{
+
+}
 }
 \author{
   Ryan Hafen
+}
+\references{
+  \itemize{ \item \url{http://www.datadr.org} \item
+  \href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha,
+  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+  Cleveland, W. S. (2012). Large complex data: divide and
+  recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
+}
+\seealso{
+  \code{\link{recombine}}, \code{\link{ddo}},
+  \code{\link{ddf}}, \code{\link{condDiv}},
+  \code{\link{rrDiv}}
 }
 

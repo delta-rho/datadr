@@ -1,18 +1,39 @@
-rhTabulateMap <- function(formula, data) {
+############################################################################
+### helper functions for updateAttributes
+############################################################################
+
+#' Functions to Compute Summary Statistics in MapReduce
+#' 
+#' Functions that are used to tabulate categorical variables and compute moments for numeric variables inside through the MapReduce framework.  Used in \code{\link{updateAttributes}}.
+#' 
+#' @export
+#' @rdname mrSummaryStats
+tabulateMap <- function(formula, data) {
    as.data.frame(xtabs(formula, data=data), stringsAsFactors=FALSE)
 }
 
-rhTabulateReduce <- function(result, reduce.values) {
+#' @export
+#' @rdname mrSummaryStats
+tabulateReduce <- function(result, reduce.values) {
    suppressWarnings(suppressMessages(require(data.table)))
    tmp <- data.frame(rbindlist(reduce.values))
    tmp <- rbind(result, tmp)
-   as.data.frame(xtabs(Freq ~ ., data=tmp), stringsAsFactors=FALSE)
+   tmp <- as.data.frame(xtabs(Freq ~ ., data=tmp), stringsAsFactors=FALSE)
+   # only tabulate top and bottom 10000 unique values
+   if(nrow(tmp) > 10000) {
+      idx <- order(tmp$Freq, tmp$var)
+      return(tmp[c(head(idx, 5000), tail(idx, 5000)),])
+   } else {
+      return(tmp)
+   }
 }
 
+#' @export
+#' @rdname mrSummaryStats
 calculateMoments <- function(y, order=1, na.rm=TRUE) {
    if(na.rm)
       y <- y[!is.na(y)]
-
+      
    if(length(y)==0)
       return(NA)
 
@@ -29,6 +50,8 @@ calculateMoments <- function(y, order=1, na.rm=TRUE) {
    res
 }
 
+#' @export
+#' @rdname mrSummaryStats
 combineMoments <- function(m1, m2) {
    if(length(m1) != length(m2))
       stop("objects not of the same length")
@@ -53,6 +76,8 @@ combineMoments <- function(m1, m2) {
    res
 }
 
+#' @export
+#' @rdname mrSummaryStats
 combineMultipleMoments <- function(...) {
    args <- list(...)
    nArgs <- length(args)
@@ -69,6 +94,8 @@ combineMultipleMoments <- function(...) {
    result
 }
 
+#' @export
+#' @rdname mrSummaryStats
 moments2statistics <- function(m) {
    order <- length(m) - 1
    n <- m$n

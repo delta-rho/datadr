@@ -39,7 +39,7 @@
   recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{rhDF}},
-  \code{\link{rrDiv}}
+  \code{\link{divide}}, \code{\link{getSplitVars}},
+  \code{\link{getSplitVar}}
 }
 

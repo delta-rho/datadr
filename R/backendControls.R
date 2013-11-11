@@ -22,3 +22,7 @@ defaultControl.rhData <- function(x) {
 defaultControl.localDiv <- function(x) {
    NULL
 }
+
+defaultControl.data.frame <- function(x) {
+   NULL
+}

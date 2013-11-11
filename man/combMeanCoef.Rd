@@ -22,6 +22,8 @@
 }
 \seealso{
   \code{\link{divide}}, \code{\link{recombine}},
-  \code{\link{rrDiv}}
+  \code{\link{rrDiv}}, \code{\link{combCollect}},
+  \code{\link{combDdo}}, \code{\link{combRbind}},
+  \code{\link{combMean}}
 }
 

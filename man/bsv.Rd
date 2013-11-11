@@ -1,0 +1,44 @@
+\name{bsv}
+\alias{bsv}
+\title{Construct Between Subset Variable (BSV)}
+\usage{
+  bsv(val = NULL, desc = "")
+}
+\arguments{
+  \item{val}{a scalar character, numeric, or date}
+
+  \item{desc}{a character string describing the BSV}
+}
+\description{
+  Construct between subset variable (BSV)
+}
+\details{
+  Should be called inside the \code{bsvFn} argument to
+  \code{divide} used for constructing a BSV list for each
+  subset of a division.
+}
+\examples{
+irisDdf <- ddf(iris)
+
+bsvFn <- function(dat) {
+   list(
+      meanSL = bsv(mean(dat$Sepal.Length), desc="mean sepal length"),
+      meanPL = bsv(mean(dat$Petal.Length), desc="mean petal length")
+   )
+}
+
+# divide the data by species
+bySpecies <- divide(irisDdf, by="Species", bsvFn=bsvFn)
+# see BSV info attached to the result
+bsvInfo(bySpecies)
+# get BSVs for a specified subset of the division
+getBsvs(bySpecies[[1]])
+}
+\author{
+  Ryan Hafen
+}
+\seealso{
+  \code{\link{divide}}, \code{\link{getBsvs}},
+  \code{\link{bsvInfo}}
+}
+
