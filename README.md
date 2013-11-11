@@ -16,13 +16,12 @@ library(devtools)
 install_github("datadr", "hafen")
 ```
 
-To use RHIPE with this package, get version 0.74 (unstable branch) from [here](https://github.com/saptarshiguha/RHIPE).
-
-## Notes
-
-This is "research-grade" software, meaning that it is prototypical, potentially buggy, and will likely be changing as design issues are addressed.  While it is being actively used in many projects, the main intent currently for sharing on github is for collaboration on development and not for distribution to the masses.  Use at your own risk.
+To use RHIPE with this package, you need RHIPE version 0.73.1-5 from [here](http://ml.stat.purdue.edu/rhipebin/Rhipe_0.73.1-5.tar.gz).
 
 ## License
 
 This software is currently under the BSD license.  Please read the [license](https://github.com/hafen/datadr/blob/master/LICENSE.md) document.
 
+# Acknowledgement
+
+datadr development is sponsored by the DARPA XDATA program.
