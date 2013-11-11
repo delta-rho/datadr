@@ -1,15 +1,14 @@
-# datadr: Divide and Recombine Methods in R
+# datadr: Divide and Recombine in R
 
-datadr is an experimantal R package that leverages [RHIPE](https://github.com/saptarshiguha/RHIPE) to provide a simple interface to division and recombination (D&R) methods for large, complex data.
-
-To get started, see the package documentation and function reference located [here](http://hafen.github.com/datadr). 
+datadr is an experimantal R package that leverages [RHIPE](https://github.com/saptarshiguha/RHIPE) to provide a simple interface to division and recombination (D&R) methods for large complex data.
 
 Visualization tools based on D&R can be found [here](https://github.com/hafen/trelliscope).
 
 ## Installation
 
 This package will not be submitted to CRAN until it has matured.
- To install this package from github, do the following from the R console:
+
+To install this package from github, do the following from the R console:
 
 ```s
 library(devtools)
@@ -17,6 +16,10 @@ install_github("datadr", "hafen")
 ```
 
 To use RHIPE with this package, you need RHIPE version 0.73.1-5 from [here](http://ml.stat.purdue.edu/rhipebin/Rhipe_0.73.1-5.tar.gz).
+
+## Tutorial
+
+To get started, see the package documentation and function reference located [here](http://hafen.github.com/datadr). 
 
 ## License
 
