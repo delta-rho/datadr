@@ -25,6 +25,6 @@ To get started, see the package documentation and function reference located [he
 
 This software is currently under the BSD license.  Please read the [license](https://github.com/hafen/datadr/blob/master/LICENSE.md) document.
 
-# Acknowledgement
+## Acknowledgement
 
 datadr development is sponsored by the DARPA XDATA program.
