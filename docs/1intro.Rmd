@@ -1,0 +1,98 @@
+```{r echo=FALSE, purl=FALSE}
+options(max.print=10)
+set.seed(1234)
+cache.path <- file.path(getwd(), "cache")
+opts_chunk$set(cache.path=cache.path)
+# opts_chunk$set(cache=TRUE, autodep=TRUE)
+```
+
+# datadr: Divide and Recombine in R #
+
+## Intro ##
+
+### Background ###
+
+This tutorial covers an implementation of Divide and Recombine (D&R) in the R statistical programming environment, called `datadr`.
+
+The goal of D&R is to provide an environment for data analysts to carry out deep statistical analysis of large, complex data with as much ease and flexibility as is possible with small datasets.  
+
+D&R is accomplished by dividing data into meaningful subsets, applying analytical methods to those subsets, and recombining the results.  Recombinations can be numerical or visual.  For visualization in the D&R framework, see [trelliscope](http://github.com/hafen/trelliscope).  
+
+The diagram below is a visual representation of the D&R process.
+
+<img src="image/drdiagram.svg" width="650px" alt="drdiagram" style="display:block; margin:auto"/>
+<!-- ![drdiagram](image/drdiagram.png) -->
+
+The raw data is stored in some arbitrary structure.  We apply a division method to it to obtain a meaningful partitioning.  Then we attack this partitioning with several visual and numerical recombination methods, where we apply the method independently to each subset and combine the results.  There are many forms of divisions and recombinations, many of which will be covered in this tutorial.
+
+<!-- In this approach, results of several numerical routines might not match an exact all-data result, but we seek division and recombination schemes that provide approximations that are.   -->
+
+A clearer picture of how D&R works should be reached by reading and trying out the examples in the documentation.  It is also recommended to read the references below.
+
+#### Outline
+
+- First, we cover the foundational D&R data structure, key-value pairs, and how they are used to build distributed data objects and distributed data frames.
+- Next, we provide an introduction to the high-level division and recombination methods in `datadr`.
+- Then we discuss MapReduce -- the lower-level language for accomplishing D&R tasks -- which is the engine for the higher-level D&R methods.  It is anticipated that the high-level language will be sufficient for most analysis tasks, but the lower-level approach is also exposed for special cases.  
+- We then cover some division-agnostic methods that do various computations across the entire data set, regardless of how it is divided, such as all-data quantiles.  
+- For all of these discussions, we use small data sets that fit in memory for illustrative purposes.  This way everyone can follow along without having a large-scale backend like Hadoop running and configured.  However, the true power of D&R is with large data sets, and after introducing all of this material, we cover different backends for computation and storage that are currently supported for D&R.  The interface always remains the same regardless of the backend, but there are various things to discuss for each case.  The backends discussed are:
+   - **in-memory / single core R:** ideal for small data
+   - **local disk / multicore R:** ideal for medium-sized data (too big for memory, small enough for local disk)
+   - **Hadoop Distributed File System (HDFS) / RHIPE / Hadoop MapReduce:** ideal for very large data sets
+- We also provide R source files for all of the examples throughout the documentation.
+
+<div class="alert alert-warning"><strong>Note:</strong> Throughout the tutorial, the examples cover very small, simple datasets.  This is by design, as the focus is on getting familiar with the available commands.  Keep in mind that the same interface works for very large datasets, and that design choices have been made with scalability in mind.</div>
+
+#### Reference
+
+Related projects:
+   - [RHIPE](http://github.com/saptarshiguha/RHIPE): the engine that makes D&R work for large datasets
+   - [trelliscope](http://github.com/hafen/trelliscope): the visualization companion to `datadr`
+
+References:
+   - [datadr.org](http://datadr.org)
+   - [Large complex data: divide and recombine (D&R) with RHIPE. *Stat*, 1(1), 53-67](http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full)
+
+### Getting Started ###
+
+It is easy to get up and running with `datadr`.  One needs to have the `devtools` package installed (available on CRAN), after which the `datadr` package can simply be installed with the following:
+
+```r
+library(devtools)
+install_github("datadr", "hafen")
+```
+
+Then we load the package:
+
+```{r echo=FALSE, include=FALSE}
+# require(digest)
+# require(data.table)
+# ff <- list.files("/Users/hafe647/Documents/Code/datadr/R", full.names=TRUE)
+# for(f in ff) {
+#    cat(f, "\n"); source(f)
+# }
+# load("/Users/hafe647/Documents/Code/datadr/inst/data/adult.rda")
+```
+
+```{r load_datadr}
+library(datadr)
+```
+
+and we are ready to go.
+
+#### RHIPE
+
+Simply installing `datadr` on a local workstation is sufficient for trying out the framework with small and medium-sized data sets.  For very large data sets, however, the RHIPE backend is necessary.  
+
+RHIPE is the R and Hadoop Integrated Programming Environment.  It provides a way to execute Hadoop MapReduce jobs completely from within R and with R data structures.
+
+To install and use RHIPE, the following are required:
+
+1. A cluster of machines (a single node can be used but it pointless outside of testing) -- these machines can be commodity workstations
+2. Hadoop installed and configured on the cluster
+3. RHIPE and its dependencies (protocol buffers) installed on all the nodes
+
+(1) is often a large barrier to entry.  (2) can require a lot of patience and know-how.  (3) isn't too difficult.  
+
+These requirements are generally enough of a hinderance that only people very serious about scalable data analysis have the perseverance to get a system running.  Unfortunately, this is currently the price to pay for scalability.  We are working on providing easier access and better documentation for getting set up with this computing platform.
+

@@ -1,0 +1,508 @@
+## Division and Recombination ##
+
+### High-Level Interface ###
+
+`datadr` provides a high-level language for D&R that simply consists of functions `divide()` for performing division, and `recombine()` for performing recombinations.  The goal is for these methods to be sufficient for most operations a user might want to carry out.  There are several ways these methods can be invoked to perform different tasks, which is outlined in this section.  
+
+At their simplest form, `divide()` and `recombine()` provide a way to create a persistent partitioning of the data and then perform a `lapply`-like operation over the data with different ways to combine the results.  Being able to easily perform these operations alone provides a lot of power for ad-hoc analysis of very large data sets.  However, results from D&R theory and methods continue to be injected into these methods to provide an even more rich environment for analysis.
+
+<img src="image/drdiagram.svg" width="650px" alt="drdiagram" style="display:block; margin:auto"/>
+<!-- ![drdiagram](image/drdiagram.png) -->
+
+### Division ###
+
+Division is achieved through the `divide()` method.  The function documentation is available [here](http://hafen.github.io/datadr/functionref.html#recombine).
+
+Currently there are two types of divisions supported: *conditioning variable*, and *random replicate*.  In this section we discuss the major arguments to `divide()`, the most important of which is `by`.
+
+#### The `by` argument: *conditioning variable division*
+
+In the previous section, we were looking at a division of the `iris` data by species.  We manually split the data into key-value pairs.  We can achieve the same result by doing conditioning variable division:
+
+```{r iris_divide_byspecies}
+irisDdf <- ddf(iris)
+# divide irisDdf by species
+bySpecies <- divide(irisDdf, by="Species", update=TRUE)
+```
+
+`divide()` must take an object of class "ddo" or "ddf", and will return an object of either "ddo" or "ddf" ("ddf" if the resulting values are data frames).
+
+Since the result of splitting the `iris` data by species is a data frame, `bySpecies` is now a "ddf" object.  We can inspect it with the following:
+
+```{r print_byspecies}
+bySpecies
+```
+
+We see the same printout as we had with our manually-created division, with the addition of information about how the data was divided.
+
+In the above example, conditioning variable division was specified with the `by` argument.  Here, simply specifying a character string or vector of character strings (for multiple conditioning variables) will invoke conditioning variable division.  A more formal way to achieve this is by using `condDiv()` to build the division specification:
+
+```{r iris_divide_byspecies_formal}
+# divide irisDdf by species using condDiv()
+bySpecies <- divide(irisDdf, by=condDiv("Species"), update=TRUE)
+```
+
+Using `condDiv()` is not necessary but follows the general idea of using a function to build a division specification that is and will be followed for other division methods.
+
+Here's what a subset of the divide data looks like:
+
+```{r byspecies_subset}
+# look at a subset of bySpecies
+bySpecies[[1]]
+```
+
+Note that the "Species" column is missing in the value data frame.  This is because it is the variable we split on, and therefore has the same value for the entire subset.  All conditioning variables for a given subset are stored in a "splitVars" attribute, and can be retrieved by `getSplitVars()`:
+
+```{r byspecies_getsplitvars}
+# get the split variable (Species) for some subsets
+getSplitVars(bySpecies[[1]])
+getSplitVars(bySpecies[[2]])
+```
+
+The keys for the division result are strings that specify how the data was divided:
+
+```{r byspecies_getkeys}
+# look at bySpecies keys
+getKeys(bySpecies)
+```
+
+#### The `by` argument: *random replicate division*
+
+Another way to divide data that is currently implemented is *random replicate* division.  For this, we use the division specification function `rrDiv()`.  This function allows you to specify the number of rows you would like each random subset to have, and optionally a random seed to use for the random assignment of rows to subsets.
+
+Suppose we want to split the iris data into random subsets with roughly 10 rows per subset:
+
+```{r byrandom}
+# divide iris data into random subsets of 10 rows per subset
+set.seed(123)
+byRandom <- divide(bySpecies, by=rrDiv(10), update=TRUE)
+```
+
+Note that we passed `bySpecies` as the input data.  We could just as well have specified `irisDdf` or any other division of the iris data.  The input partitioning doesn't matter.
+
+```{r byrandom_print}
+byRandom
+```
+
+We see there are still 150 rows (as there should be), but now there are 15 subsets.  
+
+We can look at the distribution of the of the number of rows in each subset:
+
+```{r byrandom_row_distn, fig.height=4, echo=2:3}
+par(mar=c(4.1, 4.1, 1, 0.2))
+# plot distribution of the number of rows in each subset
+plot(splitRowDistn(byRandom))
+```
+
+We see that there are not exactly 10 rows in each subset, but 10 rows on average.  The random replicate algorithm simply randomly assigns each row of the input data into the number of bins \(K\) determined by the total number of rows \(n\) in the data divided by the desired number of rows per subset.  Thus the distribution of the number of rows in each subset is like a draw from a multinomial with number of trials \(n\) and event probabilities of being put into one of \(K\) bins as \(p_i=1/K, i=1, \ldots, K\).  We are working on a scalable approach to randomly assign exactly \(n/K\) rows to each subset.
+
+The keys for random replicate divided data are simply labels indicating the bin:
+
+```{r byRandom_keys}
+getKeys(byRandom)
+```
+
+We will show an example of random replicate division in use later in this section.
+
+#### The `preTransFn` argument
+
+`divide()` does not know how to break data into pieces unless it is dealing with data frames -- how would it know how to break up arbitrary data structures?  So the most `divide()`-friendly input data type is "ddf" objects.  But sometimes there is input data that is not "ddf" and we don't want to take the extra step of converting it to "ddf".  Instead, we can pass a "ddo" object to `divide()` along with `preTransFn`, which applies a transformation function to each subset prior to division.  
+
+`preTransFn` can also be used when the input is "ddf" but we would like to make some change to it prior to division.  For example, suppose we only want `divide()` to operate on the `Sepal.Length` column:
+
+```{r preTransFn_example}
+# preTransFn to extract Sepal.Length from a value in a key-value pair
+extractSepalLength <- function(v)
+   v[, c("Sepal.Length", "Species")]
+# test it on a subset to make sure it is doing what we want
+kvApply(extractSepalLength, irisDdf[[1]])
+# apply division with preTransFn
+bySpeciesSL <- divide(irisDdf, by="Species", preTransFn=extractSepalLength)
+```
+
+It is always a good practice to test any function that operates on key-value pairs on a subset prior to running it over the entire data set, as we have done here (if you missed it, see the discussion on [applying functions to key-value pairs](#key-value-pairs)).
+
+`preTransFn` is applied to each subset of the input data prior to dividing by species.  The result is a data frame of just `Sepal.Length` divided by species.
+
+#### Using `preTransFn` to create a derived conditioning variable
+
+A common use of `preTransFn` when the input data is a "ddf" object is to create a derived variable upon which we will perform division.  For example, suppose we would like to divide the iris data by both `Species` and a discretized version of `Sepal.Length`.
+
+First, let's get a feel for the `Sepal.Length` variable:
+
+```{r sl_summary}
+# get summary statistics for Sepal.Length
+summary(irisDdf)$Sepal.Length
+```
+
+We see that its range is from 4.3 to 7.9.  Suppose we want to bin it by the integer.  We can create a new variable `slCut` by defining a `preTransFn` that adds this column to the data frame.  Then we specify that we want to divide the data both on `Species`, but also `slCut`, which doesn't exist in the input data but will exist in the data prior to division thanks to `preTransFn`.
+
+```{r echo=FALSE, purl=FALSE}
+options(max.print=20)
+```
+
+```{r slcut}
+# preTransFn to add a variable "slCut" of discretized Sepal.Length
+sepalLengthCut <- function(v) {
+   v$slCut <- cut(v$Sepal.Length, seq(0, 8, by=1))
+   v
+}
+# test it on a subset
+kvApply(sepalCut, irisDdf[[1]])
+# divide on Species and slCut
+bySpeciesSL <- divide(irisDdf, by=c("Species", "slCut"), 
+   preTransFn = sepalLengthCut)
+```
+
+Since we added the variable `slCut` in our `preTransFn`, we can specify for divide to split on that variable.
+
+Let's look at one subset:
+
+```{r slcut_subset}
+bySpeciesSL[[3]]
+```
+
+```{r echo=FALSE, purl=FALSE}
+options(max.print=10)
+```
+
+As the key indicates, the species for this subset is "versicolor" and the sepal length is in the range `(4,5]`.  Recall that we can access the split variables for this subset with:
+
+```{r slcut_splitvars}
+getSplitVars(bySpeciesSL[[3]])
+```
+
+#### The `postTransFn` argument
+
+`postTransFn` provides a way for you to change the structure of the data after division, but prior to it being written to disk.  This can be used to get the data out of data frame mode (it must be a data frame just prior to and after division) or to subset or remove columns, etc.
+
+#### The 'spill' argument
+
+Many times a conditioning variable division of interest will result in a long-tailed distribution of the data belonging to each subset, such that the data going into some subsets will get too large (remember that each subset must be small enough to be processed efficiently in memory).  The `spill` argument in `divide()` allows you to specify a limit to the number of rows that can belong in a subset, after which additional records will get "spilled" into a new subset.
+
+For example, suppose we want no more than 12 rows per subset in our by-species division:
+
+```{r bySpecies_spill}
+# divide iris data by species, spilling to new key-value after 12 rows
+bySpeciesSpill <- divide(irisDdf, by="Species", spill=12, update=TRUE)
+```
+
+Let's see what our subsets look like now:
+
+```{r bySpecies_spill_subsets}
+# look at some subsets
+bySpeciesSpill[[1]]
+bySpeciesSpill[[5]]
+```
+
+There are 5 different subsets for each species.  For example, "Species=setosa" has subset with keys: "Species=setosa_1", ..., "Species=setosa_5".  The first four subsets have 12 rows in each (each spilling into a new subset after it was filled with 12 rows), and the fifth subset has 2 rows, a total of 50 rows for "Species=setosa".
+
+#### The 'filter' argument
+
+The `filter` argument to `divide()` is an optional function that is applied to each candidate post-division key-value pair to determine whether it should be part of the resulting division.  A common case of when the `filter` argument is useful is when a division may result in a very large number of very small subsets and we are only interested in studying subsets with adequate size.
+
+As an example, consider the iris splitting with `spill=12` from before.  Suppose that in addition to spilling records, we also only want to keep subsets that have more than 5 records in them.
+
+```{r bySpecies_filter}
+# divide iris data by species, spill, and filter out subsets with <=5 rows
+bySpeciesFilter <- divide(irisDdf, by="Species", spill=12,
+   filter=function(v) nrow(v) > 5, update=TRUE)
+bySpeciesFilter
+```
+
+The `filter` function simply returns `TRUE` if we want to keep the subset and `FALSE` if not.
+
+Now we have 144 rows and 12 divisions - the 3 subsets with 2 rows were omitted from the result.
+
+Note that the filter is applied to the data prior to the application of `postTransFn`.
+
+### Recombination ###
+
+In this section, we cover basic usage of the `recombine()` method.  The function documentation is available [here](http://hafen.github.io/datadr/functionref.html#recombine).
+
+`recombine()` can be applied to any "ddo" or "ddf" object.  It is not necessary to give it an object that was created using `divide()`, but some recombination methods may not be valid on just any input (such as recombinations that assume random replicate division).
+
+Aside from the `data` argument (which of course is the input "ddo" or "ddf" object), the main arguments in `recombine()` are `apply` and `combine`.  We will see several examples of different usage throughout this section, but first we provide an overview of the `apply` and `combine` arguments.
+
+#### `apply` argument
+
+The `apply` argument can either be a user-defined function that will be applied to each key-value pair, or a built-in `apply` function for performing specific tasks.  Custom `apply` functions currently implemented include:
+
+- `drGLM()`: a proof-of-concept for fitting generalized linear models in the D&R paradigm
+- `drBLB()`: a proof-of-concept implementation of the bag of little bootstraps, which falls under the D&R paradigm.
+
+The `combine` argument tells `recombine()` how to collate the results of `apply`.  Currently available `combine` methods include
+
+- `combCollect()`: (the default) - returns a list of key-value pairs of the result of `apply` being applied to each subset
+- `combRbind()`: for `apply` functions that return data frames, this `combine` method rbinds all of the results into a single data frame
+- `combMeanCoef()`: expects each 
+
+Most `recombine()` operations currently are done with a custom `apply` function using either `combCollect()` or `combRbind()` to combine the results.  We will see examples of these throughout this section.
+
+Much of the anticipated future work for `datadr` is the construction of several `apply`-`combine` pairs that are useful for different analysis tasks.  The apply/combine pairs `drGLM()`-`combMeanCoef()` and `drBLB()`-`combMeanCoef()` are two initial examples.
+
+#### Simple `lapply()`-like recombination
+
+Some of the most common uses of `recombine()` are simple `lapply()`-like operations, where we simply want to apply a function to each subset and pull the results back in.
+
+For example, suppose we would like to compute the mean petal width for each species in our `bySpecies` division:
+
+```{r recombine_meanpetalwidth}
+recombine(bySpecies, apply=function(v) mean(v$Petal.Width))
+```
+
+Here, the default `combCollect()` was used to combine the results, giving us a list of key-value pairs with the value being the mean petal width.
+
+Suppose we would like the result to be a data frame.  We can do this with `combRbind()`:
+
+```{r recombine_meanpetalwidth_rbind}
+recombine(bySpecies, apply=function(v) mean(v$Petal.Width), comb=combRbind())
+```
+
+The `apply` function here returns a scalar which is coerced into a data frame.  Note that by default if the input data keys are characters, they will be added to the data frame.  Here is another example of using `combRbind()` with an `apply` function that returns a data frame:
+
+```{r rec_mean_combrbind}
+meanApply <- function(v) {
+   data.frame(mpw=mean(v$Petal.Width), mpl=mean(v$Petal.Length))
+}
+recombine(bySpecies, apply=meanApply, comb=combRbind())
+```
+
+Sometimes we would like the result to be a new division object, in which case we use `combDdo()` 
+
+```{r rec_mean_combddo}
+recombine(bySpecies, apply=meanApply, comb=combDdo())
+```
+
+<div class="alert alert-warning">
+Note: at this point, those familiar with <code>lapply()</code>, <code>tapply()</code>, etc., the <code>plyr</code> and <code>dplyr</code> packages, and other similar approaches might wondering what the difference is with `datadr`.  For notes on this, see the <a href="#faq">FAQ</a>.
+</div>
+
+<!-- #### Note about output from `recombine()`
+
+Although `recombine()` typically returns a reduced amount of data, sometimes the result is too large to read back into memory, and sometimes we would like the result to be a new "ddo" dataset to apply further recombinations on.
+
+When the result of a recombine is large, we can store  -->
+
+### Between-Subset Variables ###
+
+A useful thing to do when creating a division is to specify *between subset variables*.  More to come here...
+
+********
+
+
+### D&R Examples ###
+
+Here are some examples with a new (but still small) data set that illustrate some general use of division and recombination including the use of random replicate division and some different recombination methods to fit a GLM to a dataset.  
+
+Although there are different approaches for in-memory data like this one, we will use `datadr` tools to deal with the data throughout, again remembering that these tools scale.
+
+#### The data
+
+The data is adult income from the 1994 census database, pulled from the [UCI machine learning repository](http://archive.ics.uci.edu/ml/datasets/Adult).  See `?adult` for more details.
+
+First, we load the data (available as part of the `datadr` package) and turn it into a "ddf" object:
+
+```{r load_adult}
+data(adult)
+# turn adult into a ddf
+adultDdf <- ddf(adult, update=TRUE)
+adultDdf
+#look at the names
+names(adultDdf)
+```
+
+We see that there are about 32K observations, and we see the various variables available.
+
+We'll start with some simple exploratory analysis.  One variable of interest in the data is education.  We can look at the summary statistics to see the frequency distribution of `education` (which were computed since we specified `update=TRUE` when we created `adultDdf`):
+
+```{r ed_table, fig.height=4}
+library(lattice)
+edTable <- summary(adultDdf)$education$freqTable
+edTable$var <- with(edTable, reorder(var, Freq, mean))
+dotplot(var ~ Freq, data=edTable)
+```
+
+#### Division by education group
+
+Perhaps we would like to divide our data by `education` and investigate how some of the other variables behave within education.  
+
+Suppose we want to make some changes to the `education` variable: we want to leave out "Preschool" and create groups "Some-elementary", "Some-middle", and "Some-HS".  Of course in a real analysis you would probably want to first make sure you aren't washing any interesting effects out by making these groupings.
+
+We can handle these changes to the `education` variable using `preTransFn` in our call to `divide()`.  You might be wondering why not make the changes to the variable in the original data frame prior to doing all of this.  For this example, of course we can do that, but suppose this data were, say, 1TB in size.  You would probably much rather apply the transformation during the division than create a new set of data.
+
+The following transformation function will achieve the desired result:
+
+```{r add_edgroup}
+# make a preTransFn to group some education levels
+edGroups <- function(v) {
+   v$edGroup <- as.character(v$education)
+   v$edGroup[v$edGroup %in% c("1st-4th", "5th-6th")] <- "Some-elementary"
+   v$edGroup[v$edGroup %in% c("7th-8th", "9th")] <- "Some-middle"
+   v$edGroup[v$edGroup %in% c("10th", "11th", "12th")] <- "Some-HS"
+   v
+}
+```
+
+This adds a variable `edGroup` with the desired grouping of education levels.  We can now divide the data by `edGroup`.  We specify a `filterFn` to only allow data to be output that does not correspond to "Preschool".
+
+```{r by_edgroup}
+# divide by edGroup and filter out "Preschool"
+byEdGroup <- divide(adultDdf, by="edGroup", 
+   preTransFn=edGroups, 
+   filterFn=function(x) x$edGroup[1] != "Preschool",
+   update=TRUE)
+byEdGroup
+```
+
+We can look at the distribution of number of people in each education group with the following simple recombination:
+
+```{r edgrouptable}
+# tabulate number of people in each education group
+edGroupTable <- recombine(byEdGroup, apply=nrow, combine=combRbind())
+edGroupTable
+```
+
+A similar dotplot as before can be made with this data.
+
+#### Investigating data by education group
+
+There are many things we might be interested in doing with our `byEdGroup` division.  We'll just show one quick example.
+
+One thing we might be interested in is how different the distribution of gender is within each of the education groups.  One way to do this is to look at the ratio of men to women.  We can compute this ratio with a simple recombination:
+
+```{r sexratio}
+# compute male/female ratio by education group
+sexRatio <- recombine(byEdGroup, apply=function(x) {
+   tab <- table(x$sex)
+   data.frame(maleFemaleRatio=tab["Male"] / tab["Female"])
+}, combine=combRbind())
+sexRatio
+```
+
+We can visualize it with the following:
+
+```{r vis_sexratio, fig.height=4}
+# make dotplot of male/female ratio by education group
+sexRatio$edGroup <- with(sexRatio, reorder(edGroup, maleFemaleRatio, mean))
+dotplot(edGroup ~ maleFemaleRatio, data=sexRatio)
+```
+
+We know the marginal distribution of gender is lopsided to begin with (see `summary(byEdGroup)$sex`), but we don't know if the sample we are dealing with is biased or not...  There are obviously many many directions to go with the exploratory analysis and hopefully these few examples provide a start and a feel for how to go about
+
+One more thing to note about what we have done so far:  We have shown a couple of examples of using `datadr` to summarize the data in different ways and visualize the summaries.  This is a good thing to do.  But we also want to be able to visualize the subsets in detail.  For example, we might want to look at a `scatterplot` of `age` vs. `hoursperweek`.  With this small data set, we obviously can pull all subsets in and make a lattice plot or faceted ggplot.  However, what if there are thousands or hundreds of thousands of subsets?  This is where the [trelliscope](http://hafen.github.io/trelliscope/) package -- a visualization companion to `datadr` -- comes in.
+
+#### Fitting a GLM to the data
+
+Although the majority of the work we do is quite effective through clever use of generic division and recombination approaches and making heavy use of visualization, it is worthwhile to show some of the approaches of approximating all-data estimates with `datadr`.
+
+Therefore, we now turn to some examples of ways to apply analytical methods across the entire dataset from within the D&R paradigm.  For example, suppose we would like to model the dependence of making more or less than 50K per year on `educationnum`, `hoursperweek`, and `sex` using logistic regression.
+
+Before doing it with `datadr`, let's first apply the method to the original data frame, so that we can compare the results.  Recall again that since this is a small data set, we can do things the "usual" way:
+
+```{r echo=FALSE, purl=FALSE}
+options(max.print=30)
+```
+
+```{r fit_glm}
+# fit a glm to the original adult data frame
+rglm <- glm(incomebin ~ educationnum + hoursperweek + sex, data=adult, family=binomial())
+summary(rglm)
+```
+
+<!-- tmp <- predict(rglm)
+tmp[tmp < 0.5] <- 0
+tmp[tmp > 0.5] <- 1
+
+length(which(tmp == adult$income)) / nrow(adult) -->
+
+Now let's compare this to a few `datadr` approaches.  Note that these approaches are currently proof-of-concept only and are meant to illustrate ideas.  We will illustrate `drGLM()` and `drBLB()`.
+
+#### Fitting a GLM with `drGLM()`
+
+For the results of `drGLM()` and `drBLB()` to be valid, we need a random-replicate division of the data.  We will choose a division that provides about 500 rows in each subset and that only has the variables that we care about:
+
+```{r rr_adult}
+rrAdult <- divide(adultDdf, by=rrDiv(500), update=TRUE,
+   postTrans=function(x) 
+      x[,c("incomebin", "educationnum", "hoursperweek", "sex")])
+```
+
+<!-- plot(splitRowDistn(rrAdult)) -->
+
+Now, we can call `recombine()` with `apply=drGLM(...)`.  `drGLM()` has been designed to take any arguments you might pass to `glm()` and pass them on to the function being applied to each subset.  We use `combine=combMeanCoef()`, which is a function that has been designed specifically to take coefficient results from model fits applied to each subset and average them:
+
+```{r drglm, cache=TRUE}
+recombine(
+   data = rrAdult, 
+   apply = drGLM(incomebin ~ educationnum + hoursperweek + sex, 
+      family = binomial()), 
+   combine = combMeanCoef())
+```
+
+Note you this operation could be done manually without too much additional effort with a user-defined apply function.  Since `glm()` is a common function, we wrapped it with `drGLM()` to make things simpler.
+
+If we compare the result to the all-data estimate, the values are close.  However, with this approach, we do not get any inference about the estimates.
+
+#### Fitting a GLM with `drBLB()`
+
+We can use the bag of little bootstraps (BLB) approach to fit a GLM to the data.  The idea of bag of little bootstraps is to split the data into random subsets and apply a bootstrap method to each subset, compute a bootstrap metric to the result, and then average the metric across all subsets.
+
+One important thing to keep in mind is that BLB requires each subset be resampled with with \(N\) replications, \(N\) being the total number of rows in the entire data set.  Since each subset has much fewer than \(N\) rows, say \(n\), we can imitate taking \(N\) draws by sampling from a multinomial with \(n\) bins with uniform probability and assigning weights to each of the \(n\) observations in the subset and computing weights from these and passing that as the `weights` argument to `glm()`.  Any R method that meets BLB requirements and accommodates this sampling scheme in one way or another can be used with `drBLB()`.
+
+We apply `drBLB()` to each subset, specifying the `statistic` to be computed for each bootstrap sample, the `metric` to compute on the statistics, and the number of bootstrap replications `R`.  We also need to tell it the total number of rows in the data set.  Right now, `drBLB()` simply returns a numeric vector, which is combined using `combMean()`.
+
+```{r drblb, cache=TRUE}
+recombine(rrAdult,
+   apply=drBLB(
+      statistic = function(x, weights)
+         coef(glm(incomebin ~ educationnum + hoursperweek + sex, 
+            data=x, weights=weights, family=binomial())),
+      metric = function(x)
+         quantile(x, c(0.05, 0.95)),
+      R = 100,
+      n = nrow(rrAdult)
+   ),
+   combine=combMean()
+)
+```
+
+The result here is simply a vector, where each successive pair of elements represents the lower and upper 95% confidence limit for `intercept`, `educationnum`, `hoursperweek`, and `sexMale`.  Close inspection shows that they are similar to what is returned from the all-data `glm()` estimate and that confidence interval widths are about the same.
+
+<!-- # BLB result: (500 per subset)
+-7.51194450 -7.20129785  
+0.35235341  0.37403775  
+0.03162063  0.03572909  
+1.17855898 1.29983445
+
+-7.53768498 x -7.22450246  (0.3132) (compare to 0.3732)
+0.35235099 x 0.37423944    (0.0219) (compare to 0.0256)
+0.03217393 x 0.03638794    (0.0042) (compare to 0.0049)
+1.17440023 x 1.29530486    (0.1209) (compare to 0.1442)
+
+# BLB result: (200 per subset)
+-7.74911838 -7.42470919  (0.3244) (compare to 0.3732)
+0.36184991  0.38391722  (0.0221) (compare to 0.0256)
+0.03323966 0.03743492  (0.0042) (compare to 0.0049)
+1.21932545  1.34476423  (0.1254) (compare to 0.1442)
+
+# glm result:
+-7.237654   0.095202
+ 0.357855   0.006541
+ 0.032991   0.001257
+ 1.211674   0.036791 -->
+
+<!-- # drGLM result (500 per subset)
+(Intercept) educationnum hoursperweek     sex Male 
+-7.35496959   0.36326367   0.03365385   1.23792439 -->
+
+```{r echo=FALSE, purl=FALSE}
+options(max.print=10)
+```
+
+
+
+
+
+
+

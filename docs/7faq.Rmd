@@ -1,0 +1,85 @@
+## Misc ##
+
+### Debugging ###
+
+More to come here, but for now, general guidelines:
+
+- Get it right first on a subset.  When using the `divide()` and `recombine()` interface, pretty much the only place you can introduce errors is in your custom `apply` function or transformation functions.
+- With large datasets, read in a small collection of subsets and test those in-memory by calling the same methods on the in-memory object.  `browser()` is your friend - you can stick this in any user-defined function or inside your map and reduce expressions, which allows you to step into the environment in which your code is operating.
+
+<!-- Will be adding capability to set `debug=TRUE` in your `control()` method, in which case whenever there is an error, the key is returned or something along those lines so you can pull out the troublesome key-value pair and see why it was causing problems. -->
+
+
+### FAQ ###
+
+#### When should I consider using `datadr`?
+
+Whenever you have large and/or complex data to analyze.  
+
+Complexity is often more of an issue than size.  Complex data requires great flexibility.  We need to be able to do more than run numerical linear algebra routines against the data.  We need to interrogate it from many different angles, both visually and numerically.  `datadr` strives to provide a very flexible interface for this, while being able to scale.
+
+#### What is the state of development of `datadr`?
+
+`datadr` started out as proof of concept, and after applying it to several real-world large complex datasets and getting a feel for the requirements, I completely rewrote the package around a more cohesive design, with extensibility in mind.
+
+At this point, we do not anticipate major changes to the interface, but do anticipate many changes under the hood, and perhaps some small changes in how various attributes for data structures are stored and handled.
+
+#### What are the plans for future development of `datadr`?
+
+Currently the plan is to continue to use the package in applied situations and refine, tweak, and tune performance.  We also plan to continue to add features, and particularly to investigate new backends, such as distributed memory architectures.
+
+#### Can you support backend "x" please?
+
+I am definitely interested in making `datadr` work with the latest technology.  I'm particularly interested in efficient, scalable, fault-tolerant backends.
+
+If the proposed backend meets these requirements, it is a candidate:
+
+- data is stored in a key-value store
+- MapReduce is a feasible computation approach
+- data can be accessed by key
+
+If it has these additional characteristics, it is all the more interesting:
+
+- it is scalable
+- work has already been done on generic R interfaces to this backend
+- other people use it -- it is not an obscure technology
+
+#### How is `datadr` similar to / different from Pig?
+
+Pig is similar to `datadr` in that it has a high-level language that abstracts MapReduce computations from the user.  Although I'm sure it is possible to run R code somehow with Pig using UDFs, and that it is also probably possible to reproduce division and recombination functionality in pig, the power of `datadr` comes from the fact that you never leave the R analysis environment, and that you deal with native R data structures.
+
+I see Pig as more of a data processing, transformation, and tabulation engine than a deep statistical analysis environment.  If you are mostly interested in scalable, high-level data manipulation tool and want a mature product (`datadr` is new and currently has one developer), then Pig is a good choice.  Another good thing about Pig is that it is tightly integrated into the Hadoop ecosystem.  If you are interested in deep analysis with a whole bunch of statistical tools available, then `datadr` is probably a better choice.
+
+#### How is `datadr` similar to / different from `plyr` / `dplyr`?
+
+Divide and Recombine follows the split/apply/combine paradigm upon which `plyr` and `dplyr` are built.  The division is the "split", and the recombination is the "apply" and "combine".  `datadr` is not a replacement or another implementation of these packages, but is an implementation of D&R, and has many unique differences:
+
+- **Persistence of divisions:** In D&R, divisions are new data objects that persist.  This is by design and an important distinction from the `plyr` implementations.  The reason for persistence is that with very large data, computing a division is expensive compared to recombination, and we don't want to have to redo the division each time.  We almost always are hitting single a division with hundreds of analytical or visual methods.
+- **Data structures:** The underlying data structure for `datadr` is key-value pairs, and keys and values can have any data structure.  It is important to have freedom over the use data structures, particularly with very complex data that is difficult to get into a "flattened" state or inconvenient to analyze in such a state.  Some of this is possible with `plyr`, but `dplyr` is strictly tabular (according to my understanding).
+- **The nuances of D&R:** There are many D&R-specific ideas implemented in `datadr` such as random replicate division, between-subset variables, the notion of distributed data objects, key lookup, etc.
+- **Scale:** Many of the distinctions come down to scale.  D&R was conceived with scaling to multi-terabyte data sets in mind.  In this setting, things such as persistent divisions become very important.
+
+#### How does `datadr` compare to other R-based big data solutions?
+
+There are many solutions for dealing with big data in R, so many that I won't even attempt to make direct comparisons out of fear of making an incorrect assessment of solutions I am not familiar enough about.
+
+A listing of many approaches can be found at the [HPC CRAN Task View](http://cran.r-project.org/web/views/HighPerformanceComputing.html).  Note that "high-performance computing" does not always mean "big data".
+
+Instead of making direct comparisons, I will try to point out some things that I think make `datadr` unique:
+
+- `datadr` leverages Hadoop, which is routinely used for extremely large data sets
+- `datadr` as an interface is extensible to other backends
+- `datadr` is not only a technology linking R to distributed computing backends, but an implementation of D&R, an *approach* to data analysis that has been used successfully for many analyses of large, complex data
+- `datadr` provides a backend to scalable detailed visualization of data using [trelliscope](http://hafen.github.io/trelliscope/)
+
+### R Code ###
+
+If you would like to run through all of the code examples in this documentation without having to pick out each line of code from the text, below are files with the R code for each section.
+
+- [Dealing with Data in D&R](docs/code/2data.R)
+- [Division and Recombination](docs/code/3dnr.R)
+- [MapReduce](docs/code/4mr.R)
+- [Division Agnostic Methods](docs/code/5divag.R)
+- [Store/Compute Backends](docs/code/6backend.R)
+
+

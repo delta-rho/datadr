@@ -1,0 +1,310 @@
+## Dealing with Data in D&R ##
+
+In D&R, data is partitioned into blocks.  Each block is represented as a *key-value pair*.  Collections of key-value pairs are *distributed data objects (ddo)*, or in the case of the value being a data frame, a *distributed data frame (ddf)*, and form the basic input and output types of all D&R operations.  This section introduces these concepts and illustrates how they are used in the `datadr` implementation.
+
+### Key-Value Pairs ###
+
+The most basic data structure in D&R is a *key-value pair* which is simply a data structure with key and value elements, each of which can have any data structure.  
+
+#### Key-value pairs in `datadr`
+
+In `datadr`, key-value pairs are R lists with two elements, one for the key and one for the value.  For example,
+
+```{r kv_pair_example}
+# simple key-value pair example
+list(1:5, rnorm(10))
+```
+
+is a key-value pair with integers 1-5 as the key and 10 random normals as the value.  Typically, a key is used as a unique identifier for the value.  For `datadr` it is recommended to make the key a simple string when possible.
+
+#### Key-value pair collections
+
+D&R data objects are made up of collections of key-value pairs.  In `datadr`, these are represented as lists of key-value pair lists.  As an example, consider the `iris` data set, which consists of measurements of 4 aspects for 50 flowers from each of 3 species of iris.  Suppose we would like to split the sepal measurements of the iris data into key-value pairs by species:
+
+```{r by_species_kv}
+# create by-species key-value pairs
+irisKV <- list(
+   list("setosa", subset(iris, Species=="setosa")[,1:2]),
+   list("versicolor", subset(iris, Species=="versicolor")[,1:2]),
+   list("virginica", subset(iris, Species=="virginica")[,1:2])
+)
+irisKV
+```
+
+The result is a list of 3 key-value pairs.  We chose the species to be the key and the corresponding data frame of sepal measurements to be the value for each pair.
+
+This example shows how we can partition our data into key-value pairs that have meaning -- each subset represents measurements for one species.  The ability to divide the data up into pieces allows us to distribute datasets that might be too large for a single disk across multiple machines, and also allows us to distribute computation, because in recombination we apply methods independently to each subset.
+
+Here, we manually created the partition by species, but `datadr` provides simple mechanisms for specifying divisions, which we will cover [later in the tutorial](#division).  Prior to doing that, however, we need to discuss how collections of key-value pairs are represented in `datadr` as distributed data objects.
+
+#### Applying functions to key-value pairs
+
+As a final note on key-value pairs before moving on to [distributed data objects](#distributed-data-objects), this is a good place to discuss how functions are applied to key-value pairs in `datadr`.  There are many places in `datadr` methods where you can specify functions that you want to have applied to each key-value pair for various purposes.  These include:
+
+- `transFn`: an argument to `ddo()`
+- `preTransFn`, `postTransFn`, `bsvFn`, and `filterFn`: arguments to `divide()`
+- `apply`: an argument to `recombine()`
+- `panelFn` and `cogFn`: arguments to `makeDisplay()` in the `trelliscope` package
+
+There is a general approach for flexibly specifying functions that operate on key-value pairs in `datadr`.  In some cases, you may want both the key and value to be available in the function for your code to operate on, but many times all you care about is applying the function to the value.  
+
+To keep the writing of such functions simple, in `datadr`, a check is made to see how many formal arguments your function has.  If it has one argument, that argument is treated as the value.  If it has two arguments, the first is treated as the key and the second as the value.  Handling of this logic is done by a function `kvApply(fn, kvPair)`.
+
+For example, suppose I want to apply a function computing the mean sepal length to the first key-value pair of the `irisKV` data:
+
+```{r kvapply_value}
+# kvApply example operating on just value
+meanSepalLength1 <- function(v)
+   mean(v$Sepal.Length)
+   
+kvApply(meanSepalLength1, irisKV[[1]])
+```
+
+Here my function `meanSepalLength1` only takes one argument so it is passed the value, which is the data frame of sepal measurements for this subset.  
+
+However, suppose there is information in the key that I would like to include in my computation or output.  For example, suppose I want a data frame of the mean tagged by its associated species (the key):
+
+```{r kvapply_key_value}
+# kvApply example operating on key and value
+meanSepalLength2 <- function(k, v)
+   data.frame(species=k, mean=mean(v$Sepal.Length))
+   
+kvApply(meanSepalLength2, irisKV[[1]])
+```
+
+My function `meanSepalLength2` now takes two arguments, and therefore `kvApply` will provide it both the key and the value, available in the function as `k` and `v`, and the function can use the key to get the species to put in the resulting data frame.
+
+<div class="alert alert-warning">
+Keep in mind that this is how things are done for all supplied functions to arguments of <code>datadr</code> methods that operate on key-value pairs: functions with two arguments are passed the key and value, and functions with one argument are passed only the value.
+</div>
+
+<!-- The reason for this construct is that in our experience we want to apply most functions to just the value, but there always arise cases where we want information in the key as well.  We could simply have all functions expect one argument which is the key-value pair list, but then there is too much subsetting to get keys and values that is tedious and makes code less readable. -->
+
+### Distributed Data Objects ###
+
+In `datadr`, a collection of key-value pairs along with attributes about the collection constitute a distributed data object (ddo).  Most `datadr` operations require "ddo" objects, and hence it is important to represent key-value pair collections as such.
+
+#### Initializing a "ddo" object
+
+To initialize a collection of key-value pairs as a distributed data object, we use the `ddo()` function:
+
+```{r create_ddo}
+# create ddo object from irisKV
+irisDdo <- ddo(irisKV)
+```
+
+`ddo()` simply takes the collection of key-value pairs and attaches additional attributes to the resulting "ddo" object.  Note that in this example, since the data is in memory, we are supplying the data directly as the argument to `ddo()`.  For larger datasets stored in more scalable backends, instead of passing the data directly, a connection that points to where the key-value pairs are stored is provided.  This is discussed in more detail in the [Store/Compute Backends](#backend-choices) sections.
+
+Objects of class "ddo" have several methods that can be invoked on them.  The most simple of these is a print method:
+
+```{r print_ddo}
+irisDdo
+```
+
+The print method shows several attributes that have been computed for the data.
+
+#### "ddo" attributes
+
+From the printout of `irisDdo`, we see that a "ddo" object has several attributes.  The most basic ones:
+
+- `totSize`: The total size of the data is 6 KB (that's some big data!)
+- `nDiv`: There are 3 divisions
+
+We can look at the keys with
+
+```{r ddo_keys}
+# look at irisDdo keys
+getKeys(irisDdo)
+```
+
+We can also get an example key-value pair with
+
+```{r example_kv}
+# look at an example key-value pair of irisDdo
+kvExample(irisDdo)
+```
+
+`kvExample` is useful for obtaining a subset key-value pair against which we can test out different analytical methods before applying them across the entire data set.
+
+The other attributes, `splitSizeDistn` and `bsvInfo` are empty.  `bsvInfo` provides information about between subset variables (BSVs), which we will discuss [later](#between-subset-variables).  
+
+The `splitSizeDistn` attribute provides information about the quantiles of the distribution of the size of each division.  With very large data sets with a large number of subsets, this can be useful for getting a feel for how uniform the subset sizes are.  
+
+The `splitSizeDistn` attribute and more that we will see in the future are not computed by default when `ddo()` is called.  This is because it requires a computation over the data set, which can take some time with very large datasets, and may not always be desired or necessary.
+
+#### Updating attributes
+
+If you decide at any point that you would like to update the attributes of your "ddo" object, you can call:
+
+```{r update_attrs_iris_ddo}
+# update irisDdo attributes
+irisDdo <- updateAttributes(irisDdo)
+irisDdo
+```
+
+The `splitSizeDistn` attribute is now available.  We can look at it with the accessor `splitSizeDistn()`:
+
+```{r plot_iris_split_size, fig.height=4, echo=2:3}
+par(mar=c(4.1, 4.1, 1, 0.2))
+# plot distribution of the size of the key-value pairs
+plot(splitSizeDistn(irisDdo))
+```
+
+Another way to get updated attributes is at the time the "ddo" object is created, by setting `update=TRUE`:
+
+```{r update_iris_ddo}
+# update at the time ddo() is called
+irisDdo <- ddo(irisKV, update=TRUE)
+```
+
+#### Note about storage and computation
+
+Notice the first and final lines of output from the `irisDdo` object printout.  It states that the object is of class "kvMemory" (key-value pairs in memory), and that it has an "in-memory data connection".  Here we are playing with a very small data set, but this package is designed to scale.  
+
+We will talk about other backends for storing and processing larger data sets that don't fit in memory or even on your workstation's disk.  The key here is that the interface always stays the same, regardless of whether we are working with terabytes of kilobytes of data.
+
+#### Accessing subsets
+
+We can access subsets of the data by key or by index:
+
+```{r subsetting_example}
+irisDdo[["setosa"]]
+irisDdo[[1]]
+```
+
+```{r multiple_subsetting_example}
+irisDdo[c("setosa", "virginica")]
+irisDdo[1:2]
+```
+
+Accessing by key is much simpler when the key is a character string, but subsetting works even when passing a list of non-string keys.
+
+### Distributed Data Frames ###
+
+Key-value pairs in distributed data objects can have any structure.  If we constrain the values to be data frames or readily transformable into data frames, we can represent the object as a distributed data frame (ddf).  Having a uniform data frame structure for the values provides several benefits and data frames are required for specifying division methods.
+
+#### Initializing a "ddf" object
+
+Our `irisKV` data we created earlier has values that are data frames, so we can cast it as a distributed data frame like this:
+
+```{r iris_ddf}
+# create ddf object from irisKV
+irisDdf <- ddf(irisKV, update=TRUE)
+irisDdf
+```
+
+#### "ddf" attributes
+
+The printout of `irisDdf` above shows data-frame-related attributes (which were automatically updated because we specified `update=TRUE`) in addition to the "ddo" attributes we saw earlier.  These include:
+
+- `vars`: a list of the variables
+- `transFn`: a transformation function (more on this later)
+- `nrow`: the total number of rows in the data set
+- `splitRowDistn`: which is similar to `splitSizeDistn`, except that it is the distribution of the number of rows of data in each subset
+- `summary` attribute holds summary statistics about each variable in the data frame
+
+The `summary` attribute can be useful for later computations, where doing it once up front is more efficient than .  A good example is quantile estimation (see `?quantile.ddo`), where the range is required to get a good quantile approximation.  Summary statistics are all computed simultaneously in one MapReduce job with a call to `updateAttributes()`.  
+
+The numerical summary statistics are computed using a numerically stable algorithm (cite).  Summary statistics include:
+
+For each numeric variable: 
+- `nna`: number of missing values
+- `stats`: list of mean, variance, skewness, kurtosis
+- `range`: min, max
+
+For each categorical variable:
+- `nobs`: number of observations
+- `nna`: number of missing values
+- `freqTable`: a data frame containing a frequency table
+
+Summaries can be accessed by:
+
+```{r iris_summary}
+# look at irisDdf summary stats
+summary(irisDdf)
+```
+
+In the future, there will be a better print method, etc. for summary results.
+
+#### Data frame-like "ddf" methods
+
+Note that with an object of class "ddf", you can use some of the methods that apply to regular data frames:
+
+```{r ddf_df_methods}
+nrow(irisDdf)
+ncol(irisDdf)
+names(irisDdf)
+```
+
+#### Passing a data frame to `ddo()` and `ddf()`
+
+It is worth noting that it is possible to pass a single data frame to `ddo()` or `ddf()`.  The result is a single key-value pair with the data frame as the value, and "" as the key.  This is an option strictly for convenience and with the idea that further down the line operations will be applied that split the data up into a more useful set of key-value pairs.  Here is an example:
+
+```{r iris_df_ddf}
+# initialize ddf from a data frame
+irisDf <- ddf(iris, update=TRUE)
+```
+
+This of course only makes sense for data small enough to fit in memory in the first place.  In the [backends](#small-memory--cpu) section, we will discuss other backends for larger data and how data can be added to objects in these cases.
+
+#### Coercing to "ddf" with a Transformation Function
+
+There may be times where we want to create a ddf but we have data with values that either aren't stored as a data frame or we don't want to store as a data frame, but we want them to act like data frames.  In this case, there is an argument to `ddf()` called `transFn` which transforms the data into a data frame prior to any computation is carried out on it.
+
+Consider the following collection of key-value pairs, for example:
+
+```{r unstruct}
+# example of some "less-structured" key-value pairs
+people <- list(
+   list("fred", 
+      list(age=74, statesLived=c("NJ", "MA", "ND", "TX"))
+   ),
+   list("bob", 
+      list(age=42, statesLived="NJ")
+   )
+)
+```
+
+The values are lists, not data frames.  In this case, the values are easily coercible to data frames using `as.data.frame`:
+
+```{r asdataframe}
+# cast first value as data frame
+as.data.frame(people[[1]][[2]])
+```
+
+Since `people` is a list of key-value pairs, we extract the first pair with `[[1]]`, and then get the value of the pair with `[[2]]`.
+
+We see that `as.data.frame` is able to coerce the list to a data frame.  So if we want to treat `people` as a distributed data frame, we might simply provide `as.data.frame` as the transformation function:
+
+```{r ddf_transfn}
+# ddf with transFn
+peopleDdf <- ddf(people, transFn=as.data.frame)
+```
+
+`ddf()` actually tries `as.data.frame` if the default (`identity`) does not yield a data frame:
+
+```{r ddf_transfn_default}
+# ddf tries as.data.frame for transFn by default
+peopleDdf <- ddf(people)
+```
+
+With this data representation, is what things will look like to `datadr` methods that need the data to be a data frame:
+
+```{r ddf_example_transform}
+# get a ddf key-value pair with transFn applied
+kvExample(peopleDdf, transform=TRUE)
+```
+
+<!-- The `transform=TRUE` argument tells `kvExample()` to apply `transFn` to the result. -->
+
+But how the data actually is stored is still the same:
+
+```{r ddf_example_untransform}
+# data is still stored unstructured (pre transFn)
+kvExample(peopleDdf)
+```
+
+More complex examples will certainly arise where a non-trivial transformation function is required to cast the data as a data frame.  
+
+This transformation is honored in `datadr` methods such as `divide()` and `updateAttributes()`.
+
