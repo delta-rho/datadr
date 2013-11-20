@@ -124,7 +124,7 @@ buildPrintTable <- function(x, attrList, type, namewidth) {
    # namewidth <- max(nchar(xnm2)) + 1
    # valwidth <- min(max(nchar(vals)), getOption("width") - namewidth - 1)
    valwidth <- getOption("width") - namewidth - 1
-
+   
    fmt <- paste("%-", namewidth, "s| %s", sep="")
    fmt2 <- paste("%-", namewidth, "s| %s", sep="")
    

@@ -61,6 +61,7 @@ localDiskConn <- function(loc, nBins=0, autoYes=FALSE, reset=FALSE, verbose=TRUE
       loc = normalizePath(loc),
       nBins = nBins
    )
+   class(conn) <- c("localDiskConn", "kvConnection")
    
    if(!file.exists(file.path(loc, "_meta"))) {
       if(verbose)
@@ -75,6 +76,13 @@ localDiskConn <- function(loc, nBins=0, autoYes=FALSE, reset=FALSE, verbose=TRUE
          # TODO: message that specified parameters are overridden?
    } else {
       save(conn, file=file.path(loc, "_meta", "conn.Rdata"))
+      # if there are "ddo" attributes, we need to update the conn info there
+      if(file.exists(file.path(loc, "_meta", "ddo.Rdata"))) {
+         load(file.path(loc, "_meta", "ddo.Rdata"))
+         attrs$conn <- conn
+         attrs$prefix <- loc
+         save(attrs, file=file.path(loc, "_meta", "ddo.Rdata"))
+      }
    }
    
    if(length(list.files(loc)) <= 1) {
@@ -85,7 +93,6 @@ localDiskConn <- function(loc, nBins=0, autoYes=FALSE, reset=FALSE, verbose=TRUE
          message("* To initialize the data in this directory as a distributed data object of data frame, call ddo() or ddf()")
    }
    
-   class(conn) <- c("localDiskConn", "kvConnection")
    conn
 }
 
