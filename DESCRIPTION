@@ -21,7 +21,6 @@ Suggests:
     Rhipe
 Collate:
     'agnostic_quantile.R'
-    'agnostic_tabulate.R'
     'bsv.R'
     'conn_HDFS.R'
     'conn_localDisk.R'
@@ -48,3 +47,4 @@ Collate:
     'divSpec_condDiv.R'
     'divSpec_rrDiv.R'
     'globals.R'
+    'agnostic_summary.R'

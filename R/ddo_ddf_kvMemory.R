@@ -23,6 +23,16 @@ ddoInitConn.list <- function(obj, ...) {
    structure(list(data=obj), class=c("nullConn", "kvConnection"))
 }
 
+#' @S3method ddoInit nullConn
+ddoInit.nullConn <- function(obj, ...) {
+   structure(list(), class="kvMemory")
+}
+
+#' @S3method ddoInitConn nullConn
+ddoInitConn.nullConn <- function(obj, ...) {
+   obj
+}
+
 #' @S3method requiredObjAttrs kvMemory
 requiredObjAttrs.kvMemory <- function(obj) {
    list(

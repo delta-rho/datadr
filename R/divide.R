@@ -216,8 +216,8 @@ divide <- function(data,
    
    # return ddo or ddf object
    tmp <- try(ddf(res, update=update, verbose=FALSE), silent=TRUE)
-   if(inherits(res, "try-error")) {
-      res <- ddo(output, update=update, verbose=FALSE)
+   if(inherits(tmp, "try-error")) {
+      res <- ddo(getAttribute(res, "conn"), update=update, verbose=FALSE)
    } else {
       res <- tmp
    }

@@ -73,11 +73,19 @@ updateAttributes <- function(obj, control=NULL) {
                   for(i in seq_along(r)) {
                      var <- r[[i]]
                      if(inherits(var, quantTypes)) {
+                        if(all(is.na(var)) || length(var) == 0) {
+                           minVal <- NA
+                           maxval <- NA
+                        } else {
+                           minVal <- min(var, na.rm=TRUE)
+                           maxVal <- max(var, na.rm=TRUE)
+                        }
+                        
                         collect(paste("summary_quant_", dfNames[i], sep="_"), list(
                            nna=length(which(is.na(r[[i]]))),
                            moments=calculateMoments(r[[i]], order=4),
-                           min=min(var, na.rm=TRUE),
-                           max=max(var, na.rm=TRUE)                     
+                           min=minVal,
+                           max=maxVal
                         ))
                      } else if(inherits(var, categTypes)) {
                         collect(paste("summary_categ_", dfNames[i], sep="_"), list(

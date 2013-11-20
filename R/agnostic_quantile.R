@@ -59,17 +59,20 @@ quantile.ddf <- function(x, var, by=NULL, probs = seq(0, 1, 0.005), transFn=iden
       ind <- split(seq_along(by), by)
       for(ii in ind) {
          vv <- v[ii]
-         ord <- order(vv)
-         
-         cutTab <- as.data.frame(table(cut(vv, cuts, labels=FALSE)), responseName = "Freq", stringsAsFactors = FALSE)
-         cutTab$Var1 <- as.integer(cutTab$Var1)
-         
-         for(i in 1:nrow(cutTab)) {
-            collect(list(by[ii[1]], cutTab$Var1[i]), cutTab$Freq[i])
+         vv <- vv[!is.na(vv)]
+         if(length(vv) > 0) {
+            ord <- order(vv)
+
+            cutTab <- as.data.frame(table(cut(vv, cuts, labels=FALSE)), responseName = "Freq", stringsAsFactors = FALSE)
+            cutTab$Var1 <- as.integer(cutTab$Var1)
+
+            for(i in 1:nrow(cutTab)) {
+               collect(list(by[ii[1]], cutTab$Var1[i]), cutTab$Freq[i])
+            }
+
+            collect(list(by[ii[1]], "bot"), vv[head(ord, tails)])
+            collect(list(by[ii[1]], "top"), vv[tail(ord, tails)])            
          }
-         
-         collect(list(by[ii[1]], "bot"), vv[head(ord, tails)])
-         collect(list(by[ii[1]], "top"), vv[tail(ord, tails)])
       }
    })
    
@@ -159,20 +162,20 @@ constructQuants <- function(obj, probs, tails, mids) {
       # now append top and bottom
       tailKeys <- unlist(keys[!intKeys])
       tailVals <- vals[!intKeys]
-
+      
       top <- tailVals[tailKeys=="top"][[1]]
       bot <- tailVals[tailKeys=="bot"][[1]]
-
+      
       botDf <- data.frame(
          fval=(seq_len(tails) - 1) / tot, 
          q=bot
       )
-
+      
       topDf <- data.frame(
          fval=(seq_len(tails) + tot - tails) / tot, 
          q=top
       )
-
+      
       res <- subset(res, fval > max(botDf$fval) & fval < min(topDf$fval))
       res <- rbind(botDf, res, topDf)
    }
