@@ -132,7 +132,7 @@ First, let's get a feel for the `Sepal.Length` variable:
 
 ```{r sl_summary}
 # get summary statistics for Sepal.Length
-summary(irisDdf)$Sepal.Length
+summary(bySpecies)$Sepal.Length
 ```
 
 We see that its range is from 4.3 to 7.9.  Suppose we want to bin it by the integer.  We can create a new variable `slCut` by defining a `preTransFn` that adds this column to the data frame.  Then we specify that we want to divide the data both on `Species`, but also `slCut`, which doesn't exist in the input data but will exist in the data prior to division thanks to `preTransFn`.
@@ -148,7 +148,7 @@ sepalLengthCut <- function(v) {
    v
 }
 # test it on a subset
-kvApply(sepalCut, irisDdf[[1]])
+kvApply(sepalLengthCut, irisDdf[[1]])
 # divide on Species and slCut
 bySpeciesSL <- divide(irisDdf, by=c("Species", "slCut"), 
    preTransFn = sepalLengthCut)

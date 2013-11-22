@@ -62,7 +62,7 @@ bySpeciesSL <- divide(irisDdf, by="Species", preTransFn=extractSepalLength)
 
 
 # get summary statistics for Sepal.Length
-summary(irisDdf)$Sepal.Length
+summary(bySpecies)$Sepal.Length
 
 
 
@@ -74,7 +74,7 @@ sepalLengthCut <- function(v) {
    v
 }
 # test it on a subset
-kvApply(sepalCut, irisDdf[[1]])
+kvApply(sepalLengthCut, irisDdf[[1]])
 # divide on Species and slCut
 bySpeciesSL <- divide(irisDdf, by=c("Species", "slCut"), 
    preTransFn = sepalLengthCut)

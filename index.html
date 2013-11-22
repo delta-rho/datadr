@@ -1307,10 +1307,28 @@ bySpeciesSL &lt;- divide(irisDdf, by=&quot;Species&quot;, preTransFn=extractSepa
 <p>First, let&#39;s get a feel for the <code>Sepal.Length</code> variable:</p>
 
 <pre><code class="r"># get summary statistics for Sepal.Length
-summary(irisDdf)$Sepal.Length
+summary(bySpecies)$Sepal.Length
 </code></pre>
 
-<pre><code>Error: $ operator is invalid for atomic vectors
+<pre><code>$nna
+[1] 0
+
+$stats
+$stats$mean
+[1] 5.843
+
+$stats$var
+[1] 0.6857
+
+$stats$skewness
+[1] 0.3118
+
+$stats$kurtosis
+[1] 2.426
+
+
+$range
+[1] 4.3 7.9
 </code></pre>
 
 <p>We see that its range is from 4.3 to 7.9.  Suppose we want to bin it by the integer.  We can create a new variable <code>slCut</code> by defining a <code>preTransFn</code> that adds this column to the data frame.  Then we specify that we want to divide the data both on <code>Species</code>, but also <code>slCut</code>, which doesn&#39;t exist in the input data but will exist in the data prior to division thanks to <code>preTransFn</code>.</p>
@@ -1321,10 +1339,14 @@ sepalLengthCut &lt;- function(v) {
    v
 }
 # test it on a subset
-kvApply(sepalCut, irisDdf[[1]])
+kvApply(sepalLengthCut, irisDdf[[1]])
 </code></pre>
 
-<pre><code>Error: object &#39;sepalCut&#39; not found
+<pre><code>    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species slCut
+1            5.1         3.5          1.4         0.2     setosa (5,6]
+2            4.9         3.0          1.4         0.2     setosa (4,5]
+3            4.7         3.2          1.3         0.2     setosa (4,5]
+ [ reached getOption(&quot;max.print&quot;) -- omitted 147 rows ]
 </code></pre>
 
 <pre><code class="r"># divide on Species and slCut
@@ -1649,12 +1671,7 @@ When the result of a recombine is large, we can store  -->
 <p>First, we load the data (available as part of the <code>datadr</code> package) and turn it into a &quot;ddf&quot; object:</p>
 
 <pre><code class="r">data(adult)
-</code></pre>
-
-<pre><code>Warning: data set &#39;adult&#39; not found
-</code></pre>
-
-<pre><code class="r"># turn adult into a ddf
+# turn adult into a ddf
 adultDdf &lt;- ddf(adult, update=TRUE)
 </code></pre>
 
@@ -1745,9 +1762,9 @@ byEdGroup &lt;- divide(adultDdf, by=&quot;edGroup&quot;,
 * Applying division...
 </code></pre>
 
-<pre><code>Warning: closing unused connection 7 (&lt;-localhost:11841)
-Warning: closing unused connection 6 (&lt;-localhost:11841)
-Warning: closing unused connection 5 (&lt;-localhost:11841)
+<pre><code>Warning: closing unused connection 7 (&lt;-localhost:11966)
+Warning: closing unused connection 6 (&lt;-localhost:11966)
+Warning: closing unused connection 5 (&lt;-localhost:11966)
 </code></pre>
 
 <pre><code>* Getting basic &#39;ddo&#39; attributes...
@@ -2570,12 +2587,7 @@ The output from the map function is processed before being sent to the reduce fu
 
 <pre><code class="r"># load adult data for quantile example
 data(adult)
-</code></pre>
-
-<pre><code>Warning: data set &#39;adult&#39; not found
-</code></pre>
-
-<pre><code class="r">adultDdf &lt;- ddf(adult)
+adultDdf &lt;- ddf(adult)
 </code></pre>
 
 <pre><code>* Getting basic &#39;ddo&#39; attributes...
@@ -4101,6 +4113,10 @@ irisDdfDisk &lt;- convert(from=irisDdf,
 <div class='tab-pane' id='faq'>
 <h3>FAQ</h3>
 
+<h4>What should I do if I have an issue or feature request?</h4>
+
+<p>Please post an issue on <a href="https://github.com/hafen/datadr/issues">github</a>.</p>
+
 <h4>When should I consider using <code>datadr</code>?</h4>
 
 <p>Whenever you have large and/or complex data to analyze.  </p>
@@ -4150,13 +4166,13 @@ irisDdfDisk &lt;- convert(from=irisDdf,
 <ul>
 <li><strong>Persistence of divisions:</strong> In D&amp;R, divisions are new data objects that persist.  This is by design and an important distinction from the <code>plyr</code> implementations.  The reason for persistence is that with very large data, computing a division is expensive compared to recombination, and we don&#39;t want to have to redo the division each time.  We almost always are hitting single a division with hundreds of analytical or visual methods.</li>
 <li><strong>Data structures:</strong> The underlying data structure for <code>datadr</code> is key-value pairs, and keys and values can have any data structure.  It is important to have freedom over the use data structures, particularly with very complex data that is difficult to get into a &quot;flattened&quot; state or inconvenient to analyze in such a state.  Some of this is possible with <code>plyr</code>, but <code>dplyr</code> is strictly tabular (according to my understanding).</li>
-<li><strong>The nuances of D&amp;R:</strong> There are many D&amp;R-specific ideas implemented in <code>datadr</code> such as random replicate division, between-subset variables, the notion of distributed data objects, key lookup, etc.</li>
-<li><strong>Scale:</strong> Many of the distinctions come down to scale.  D&amp;R was conceived with scaling to multi-terabyte data sets in mind.  In this setting, things such as persistent divisions become very important.</li>
+<li><strong>The nuances of D&amp;R:</strong> There are many D&amp;R-specific ideas implemented in <code>datadr</code> such as random replicate division, between-subset variables, key lookup, etc.</li>
+<li><strong>Scale:</strong> Many of the distinctions come down to scale.  D&amp;R was conceived with scaling to multi-terabyte data sets in mind.</li>
 </ul>
 
 <h4>How does <code>datadr</code> compare to other R-based big data solutions?</h4>
 
-<p>There are many solutions for dealing with big data in R, so many that I won&#39;t even attempt to make direct comparisons out of fear of making an incorrect assessment of solutions I am not familiar enough about.</p>
+<p>There are many solutions for dealing with big data in R, so many that I won&#39;t even attempt to make direct comparisons out of fear of making an incorrect assessment of solutions I am not adequately familiar with.</p>
 
 <p>A listing of many approaches can be found at the <a href="http://cran.r-project.org/web/views/HighPerformanceComputing.html">HPC CRAN Task View</a>.  Note that &quot;high-performance computing&quot; does not always mean &quot;big data&quot;.</p>
 
