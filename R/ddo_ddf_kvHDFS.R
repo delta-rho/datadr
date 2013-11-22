@@ -121,7 +121,9 @@ makeExtractable <- function(obj) {
          if(!hasExtractableKV(x))
             stop("This data must not be a valid mapfile -- cannot extract subsets by key.  Call makeExtractable() on this data.")
          a <- rhmapfile(getAttribute(x, "conn")$loc)
-         res <- a[getKeys(x)[i]]
+         keys <- getKeys(x)[i]
+         res <- a[keys]
+         res <- lapply(seq_along(keys), function(a) list(keys[[a]], res[[a]]))
       }
    } else {
       if(!hasExtractableKV(x))
@@ -130,21 +132,26 @@ makeExtractable <- function(obj) {
       # if the object does not have keys attribute, 
       # the best we can do is try to try to use "i" as-is, 
       # as we can't try to do a lookup
+      
       if(!hasAttributes(x, "keys")) {
          res <- a[i]
+         keys <- i
       } else {
          # if the key is most-likely a hash, try that
          res <- NULL
          if(is.character(i)) {
             if(all(nchar(i) == 32)) {
                idx <- which(names(getKeys(x)) %in% i)
-               res <- a[getKeys(x)[idx]]
+               keys <- getKeys(x)[idx]
+               res <- a[keys]
             }
          }
          if(is.null(res)) {
+            keys <- i
             res <- a[i]
          }
       }
+      res <- lapply(seq_along(keys), function(a) list(keys[[a]], res[[a]]))
    }
    if(conn$type == "text")
       res <- lapply(res, function(x) list("", x))

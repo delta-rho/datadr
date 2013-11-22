@@ -30,6 +30,11 @@ mrExecInternal.kvHDFS <- function(data, setup=NULL, map=NULL, reduce=NULL, outpu
    rhoptions(write.job.info=TRUE)
    
    conn <- getAttribute(data, "conn")
+
+   co <- rhoptions()$copyObjects
+   co2 <- co
+   co2$auto <- FALSE
+   rhoptions(copyObjects = co2)
    
    res <- rhwatch(
       setup=setup,
@@ -43,6 +48,7 @@ mrExecInternal.kvHDFS <- function(data, setup=NULL, map=NULL, reduce=NULL, outpu
       parameters=params
    )
    
+   rhoptions(copyObjects = co)
    # set write.job.info back to what it was
    rhoptions(write.job.info=wji)
    
