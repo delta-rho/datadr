@@ -406,7 +406,7 @@ We added a counter to the map expression that increments the distributed counter
 counters(meanRes)
 ```
 
-The result is what we expect -- there were 4 input key/value pairs processed by the map.
+The result is what we expect -- there were 4 input key-value pairs processed by the map.
 
 
 

@@ -1760,14 +1760,7 @@ byEdGroup &lt;- divide(adultDdf, by=&quot;edGroup&quot;,
 
 <pre><code>* Verifying parameters...
 * Applying division...
-</code></pre>
-
-<pre><code>Warning: closing unused connection 7 (&lt;-localhost:11966)
-Warning: closing unused connection 6 (&lt;-localhost:11966)
-Warning: closing unused connection 5 (&lt;-localhost:11966)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
+* Getting basic &#39;ddo&#39; attributes...
 * Running map/reduce to get missing attributes...
 * Getting basic &#39;ddo&#39; attributes...
 </code></pre>
@@ -2825,7 +2818,9 @@ top5[[1]]
 irisDiskConn &lt;- localDiskConn(&quot;/private/tmp/irisKV&quot;, autoYes=TRUE)
 </code></pre>
 
-<pre><code>* Loading connection attributes
+<pre><code>* Attempting to create directory ... ok
+* Saving connection attributes
+* Directory is empty - use addData() to add k/v pairs to this directory
 </code></pre>
 
 <p>By default, if the directory does not exist, <code>localDiskConn()</code> will ask you if you would like to create the directory.  Since we specify <code>autoYes=TRUE</code>, the directory is automatically created.</p>
@@ -2844,6 +2839,7 @@ irisDiskConn
 </code></pre>
 
 <pre><code>* Loading connection attributes
+* Directory is empty - use addData() to add k/v pairs to this directory
 </code></pre>
 
 <p>Any meta data that was there is also read in.  If you would like to connect to a directory but reset all meta data, you can call <code>localDiskConn()</code> with <code>reset=TRUE</code>.</p>
@@ -2865,10 +2861,6 @@ irisDiskConn
 <pre><code class="r">addData(irisDiskConn, irisKV[1:2])
 </code></pre>
 
-<pre><code>Warning: Element 1 of input data already has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
-Warning: Element 2 of input data already has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
-</code></pre>
-
 <p>Here we added the first 2 key-value pairs to disk.  We can verify this by looking in the directory:</p>
 
 <pre><code class="r">list.files(irisDiskConn$loc)
@@ -2876,8 +2868,7 @@ Warning: Element 2 of input data already has data already on disk of the same ke
 
 <pre><code>[1] &quot;_meta&quot;                                 
 [2] &quot;07abaecdababc84098369b43ae953523.Rdata&quot;
-[3] &quot;ac3c8cadb82078a1a3de9d0d59822e4d.Rdata&quot;
-[4] &quot;b1f1dba2f126bc3208b6b84121503757.Rdata&quot;
+[3] &quot;b1f1dba2f126bc3208b6b84121503757.Rdata&quot;
 </code></pre>
 
 <p><code>&quot;_meta&quot;</code> is a directory where the connection metadata is stored.  The two <code>.Rdata</code> files are the two key-value pairs we just added.  The file name is determined by the md5 hash of the data in the key (and we don&#39;t have to worry about this).</p>
@@ -2885,10 +2876,6 @@ Warning: Element 2 of input data already has data already on disk of the same ke
 <p>We can call <code>addData()</code> as many times as we would like to continue to add data to the directory.  Let&#39;s add the final key-value pair:</p>
 
 <pre><code class="r">addData(irisDiskConn, irisKV[3])
-</code></pre>
-
-<pre><code>Warning: Element 1 of input data already has data already on disk of the
-same key.  Set overwrite to TRUE or change key of input data.
 </code></pre>
 
 <p>Now we have a connection with all of the data in it.</p>
@@ -2901,8 +2888,8 @@ same key.  Set overwrite to TRUE or change key of input data.
 irisDdf &lt;- ddf(irisDiskConn)
 </code></pre>
 
-<pre><code>* Reading in existing &#39;ddo&#39; attributes
-* Reading in existing &#39;ddf&#39; attributes
+<pre><code>* Getting basic &#39;ddo&#39; attributes...
+* Getting basic &#39;ddf&#39; attributes...
 </code></pre>
 
 <p>As noted before, with in-memory data, we initialize &quot;ddo&quot; or &quot;ddf&quot; objects with in-memory key-value pairs.  For all other backends, we pass a connection object.  <code>irisDdf</code> is now a distributed data frame that behaves in the same way as the one we created for the in-memory case.  The data itself though is located on disk.  </p>
@@ -2918,10 +2905,10 @@ Distributed data object of class &#39;kvLocalDisk&#39; with attributes:
 
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
- keys           | keys are available through getKeys(dat)
+ keys           | [empty] call updateAttributes(dat) to get this value
  totSize        | 1.95 KB
  nDiv           | 3
- splitSizeDistn | use splitSizeDistn(dat) to get distribution
+ splitSizeDistn | [empty] call updateAttributes(dat) to get this value
  example        | use kvExample(dat) to get an example subset
  bsvInfo        | [empty] no BSVs have been specified
 
@@ -2929,9 +2916,9 @@ Distributed data object of class &#39;kvLocalDisk&#39; with attributes:
 ----------------+-----------------------------------------------------------
  vars           | Sepal.Length(num), Sepal.Width(num), and 3 more
  transFn        | identity (original data is a data frame)
- nRow           | 150
- splitRowDistn  | use splitRowDistn(dat) to get distribution
- summary        | use summary(dat) to see summaries
+ nRow           | [empty] call updateAttributes(dat) to get this value
+ splitRowDistn  | [empty] call updateAttributes(dat) to get this value
+ summary        | [empty] call updateAttributes(dat) to get this value
 
 localDiskConn connection
   loc=/private/tmp/irisKV; nBins=0
@@ -2943,7 +2930,8 @@ localDiskConn connection
 irisDdf &lt;- updateAttributes(irisDdf)
 </code></pre>
 
-<pre><code>All (implemented) attributes have already been computed.
+<pre><code>* Running map/reduce to get missing attributes...
+* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <h4>D&amp;R Example</h4>
@@ -2959,9 +2947,12 @@ bySpecies &lt;- divide(irisDdf,
 
 <pre><code>* Verifying parameters...
 * Applying division...
-* Loading connection attributes
-* Reading in existing &#39;ddo&#39; attributes
-All (implemented) attributes have already been computed.
+* Attempting to create directory ... ok
+* Saving connection attributes
+* Directory is empty - use addData() to add k/v pairs to this directory
+* Getting basic &#39;ddo&#39; attributes...
+* Running map/reduce to get missing attributes...
+* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <p>This code is the same as what we used for the in-memory data except that in <code>divide()</code>, we also need to specify an output connection.  If <code>output</code> is not provided, an attempt is made to read the data in to an in-memory connection.  Here we specify that we would like the output of the division to be stored on local disk in <code>&quot;/private/tmp/bySpecies&quot;</code>.  </p>
