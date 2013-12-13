@@ -1,4 +1,4 @@
-## Methods for object of class "kvHDFS" - key/value pairs as R objects stored on HDFS
+## Methods for object of class "kvHDFS" - key-value pairs as R objects stored on HDFS
 
 #' @S3method ddoInit hdfsConn
 ddoInit.hdfsConn <- function(obj, ...) {

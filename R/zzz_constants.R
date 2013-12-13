@@ -31,10 +31,10 @@ assign("ddoAttrPrintList", list(
       desc="total size of data on HDFS",
       render=function(x) NArender(x, prettySize(x), "[empty] will be added to updateAttributes")),
    "nDiv"=list(
-      desc="number of key/value pairs",
+      desc="number of key-value pairs",
       render=function(x) NArender(x, x, "[empty] call updateAttributes(dat) to get this value")),
    "splitSizeDistn"=list(
-      desc="distribution of the size of key/value pairs",
+      desc="distribution of the size of key-value pairs",
       render=function(x) NArender(x, "use splitSizeDistn(dat) to get distribution", "[empty] call updateAttributes(dat) to get this value")),
    # "sourceData"=list(
    #    desc="the data from which this data was created",
@@ -65,7 +65,7 @@ assign("ddfAttrPrintList", list(
       desc="number of rows in the data frame",
       render=function(x) NArender(x, x, "[empty] call updateAttributes(dat) to get this value")),
    "splitRowDistn"=list(
-      desc="distribution of the number of rows in each key/value pair",
+      desc="distribution of the number of rows in each key-value pair",
       render=function(x) NArender(x, "use splitRowDistn(dat) to get distribution", "[empty] call updateAttributes(dat) to get this value")),
    "summary"=list(
       desc="summary statistics for each variable",

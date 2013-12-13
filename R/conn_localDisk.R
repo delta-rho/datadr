@@ -4,6 +4,7 @@
 #' 
 #' @param loc location on local disk for the data source
 #' @param nBins number of bins (subdirectories) to put data files into - if anticipating a large number of k/v pairs, it is a good idea to set this to something bigger than 0
+#' @param fileHashFn an optional function that operates on each key-value pair to determine the subdirectory structure for where the data should be stored for that subset, or can be specified "asis" when keys are scalar strings
 #' @param autoYes automatically answer "yes" to questions about creating a path on local disk
 #' @param reset should existing metadata for this object be overwritten?
 #' @param verbose logical - print messages about what is being done
@@ -27,7 +28,7 @@
 #' irisDdf <- ddf(conn, update=TRUE)
 #' irisDdf
 #' @export
-localDiskConn <- function(loc, nBins=0, autoYes=FALSE, reset=FALSE, verbose=TRUE) {
+localDiskConn <- function(loc, nBins=0, fileHashFn=NULL, autoYes=FALSE, reset=FALSE, verbose=TRUE) {
    if(length(loc) > 1)
       return("A local disk connection must be one directory")
    
@@ -57,9 +58,20 @@ localDiskConn <- function(loc, nBins=0, autoYes=FALSE, reset=FALSE, verbose=TRUE
          stop("'loc' must be a directory")
    }
    
+   if(is.character(fileHashFn)) {
+      if(fileHashFn == "asis") {
+         fileHashFn <- charFileHash
+      }
+   }
+   
+   if(is.null(fileHashFn)) {
+      fileHashFn <- digestFileHash
+   }
+   
    conn <- list(
       loc = normalizePath(loc),
-      nBins = nBins
+      nBins = nBins,
+      fileHashFn = fileHashFn
    )
    class(conn) <- c("localDiskConn", "kvConnection")
    
@@ -94,6 +106,82 @@ localDiskConn <- function(loc, nBins=0, autoYes=FALSE, reset=FALSE, verbose=TRUE
    }
    
    conn
+}
+
+#' Character File Hash Function
+#' 
+#' Function to be used to specify the file where key-value pairs get stored for local disk connections, useful when keys are scalar strings.  Should be passed as the argument \code{fileHashFn} to \code{\link{localDiskConn}}.
+#' 
+#' @param keys keys to be hashed
+#' @param conn a "localDiskConn" object
+#' 
+#' @details You shouldn't need to call this directly other than to experiment with what the output looks like or to get ideas on how to write your own custom hash.
+#' 
+#' @author Ryan Hafen
+#' 
+#' @seealso \code{localDiskConn}, \code{\link{digestFileHash}}
+#' 
+#' @examples
+#' # connect to empty localDisk directory
+#' path <- file.path(tempdir(), "irisSplit")
+#' unlink(path, recursive=TRUE)
+#' conn <- localDiskConn(path, autoYes=TRUE, fileHashFn=charFileHash)
+#' # add some data
+#' addData(conn, list(list("key1", iris[1:10,])))
+#' addData(conn, list(list("key2", iris[11:110,])))
+#' addData(conn, list(list("key3", iris[111:150,])))
+#' # see that files were stored by their key
+#' list.files(path)
+#' @export
+charFileHash <- function(keys, conn) {
+   if(!all(sapply(keys, is.character)) || !all(sapply(keys, length) == 1)) {
+      warning("not all keys are scalar strings, but using charFileHash... converting keys to md5")
+      files <- sapply(keys, digest)
+   } else {
+      files <- unlist(keys)
+   }
+   paste(files, ".Rdata", sep="")
+}
+
+
+#' Digest File Hash Function
+#' 
+#' Function to be used to specify the file where key-value pairs get stored for local disk connections, useful when keys are arbitrary objects.  File names are determined using a md5 hash of the object.  This is the default argument for \code{fileHashFn} in \code{\link{localDiskConn}}.
+#' 
+#' @param keys keys to be hashed
+#' @param conn a "localDiskConn" object
+#' 
+#' @details You shouldn't need to call this directly other than to experiment with what the output looks like or to get ideas on how to write your own custom hash.
+#' 
+#' @author Ryan Hafen
+#' 
+#' @seealso \code{localDiskConn}, \code{\link{charFileHash}}
+#' 
+#' @examples
+#' # connect to empty localDisk directory
+#' path <- file.path(tempdir(), "irisSplit")
+#' unlink(path, recursive=TRUE)
+#' conn <- localDiskConn(path, autoYes=TRUE, fileHashFn=digestFileHash)
+#' # add some data
+#' addData(conn, list(list("key1", iris[1:10,])))
+#' addData(conn, list(list("key2", iris[11:110,])))
+#' addData(conn, list(list("key3", iris[111:150,])))
+#' # see that files were stored by their key
+#' list.files(path)
+#' @export
+digestFileHash <- function(keys, conn) {
+   digestKeys <- sapply(keys, digest)
+   
+   if(conn$nBins == 0) {
+      keySubDirs <- rep("", length(digestKeys))
+      res <- paste(digestKeys, ".Rdata", sep="")
+   } else {
+      keySubDirs <- sapply(digestKeys, function(x) digestKeyHash(x, conn$nBins))
+      padding <- paste("%0", nchar(as.character(conn$nBins)), "d", sep="")
+      keySubDirs <- sprintf(padding, keySubDirs)
+      res <- file.path(keySubDirs, paste(digestKeys, ".Rdata", sep=""))
+   }
+   res
 }
 
 #' @S3method addData localDiskConn
@@ -136,10 +224,6 @@ print.localDiskConn <- function(x) {
    cat(paste("localDiskConn connection\n  loc=", x$loc, "; nBins=", x$nBins, sep=""))
 }
 
-############################################################################
-### internal
-############################################################################
-
 #' @S3method loadAttrs localDiskConn
 loadAttrs.localDiskConn <- function(obj, type="ddo") {
    attrFile <- file.path(obj$loc, "_meta", paste(type, ".Rdata", sep=""))
@@ -157,30 +241,23 @@ saveAttrs.localDiskConn <- function(obj, attrs, type="ddo") {
    save(attrs, file=attrFile)
 }
 
-getFileLocs <- function(conn, keys, digest=TRUE) {
-   if(digest) {
-      digestKeys <- sapply(keys, digest)      
-   } else {
-      digestKeys <- keys
-   }
-   if(conn$nBins == 0) {
-      keySubDirs <- rep("", length(digestKeys))
-   } else {
-      keySubDirs <- sapply(digestKeys, function(x) digestKeyHash(x, conn$nBins))
-      padding <- paste("%0", nchar(as.character(conn$nBins)), "d", sep="")
-      keySubDirs <- sprintf(padding, keySubDirs)
-   }
-   fileLocs <- list(digestKeys=digestKeys, keySubDirs=keySubDirs)
+############################################################################
+### internal
+############################################################################
+
+getFileLocs <- function(conn, keys) {
+   fileLocs <- conn$fileHashFn(keys, conn)
+   fileLocs <- file.path(conn$loc, fileLocs)
    
-   if(any(duplicated(fileLocs$digestKeys)))
+   if(any(duplicated(fileLocs)))
       stop("There are duplicate keys - not currently supported")
-      
-   fileDirs <- file.path(conn$loc, fileLocs$keySubDirs)
+   
+   fileDirs <- dirname(fileLocs)
    uFileDirs <- unique(fileDirs)
    for(fp in uFileDirs)
-      if(!file.exists(fp)) dir.create(fp)
-
-   file.path(fileDirs, paste(fileLocs$digestKeys, ".Rdata", sep=""))
+      if(!file.exists(fp)) dir.create(fp, recursive=TRUE)
+   
+   fileLocs
 }
 
 

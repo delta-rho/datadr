@@ -1,4 +1,4 @@
-## Methods for object of class "kvLocalData" - key/value pairs as R objects stored on disk
+## Methods for object of class "kvLocalData" - key-value pairs as R objects stored on disk
 
 #' @S3method ddoInit localDiskConn
 ddoInit.localDiskConn <- function(obj, ...) {
@@ -66,12 +66,28 @@ hasExtractableKV.kvLocalDisk <- function(obj) {
 `[.kvLocalDisk` <- function(x, i, ...) {
    pr <- getAttribute(x, "prefix")
    ff <- getAttribute(x, "files")
-   nBins <- getAttribute(x, "conn")$nBins
+   conn <- getAttribute(x, "conn")
+   nBins <- conn$nBins
+   fileHashFn <- conn$fileHashFn
+   
+   # argument i can either be:
+   # - a numeric index, in which case the data ff[i] will be obtained
+   # - a list of actual keys, in which case the hash function is applied
+   #     and matched to the appropriate directory
+   # - a hash digest of the desired keys, in which case the appropriate file
+   #     will be located
    
    if(is.numeric(i)) {
       idx <- i
    } else {
-      # if the key is most-likely a hash, try that
+      # try both actual keys and hash possibilities
+      
+      # first try i as actual keys:
+      tmp <- sapply(i, function(a)
+         fileHashFn(a, conn))
+      idx0 <- which(ff %in% tmp)
+      
+      # now try i as hash, only if it is likely that i is a hash
       idx1 <- NULL
       if(all(is.character(i))) {
          if(all(nchar(i) == 32)) {
@@ -83,13 +99,7 @@ hasExtractableKV.kvLocalDisk <- function(obj) {
             }
          }
       }
-      if(nBins == 0) {
-         idx2 <- which(ff %in% paste(as.character(sapply(i, digest)), ".Rdata", sep=""))
-      } else {
-         tmp <- as.character(sapply(i, function(a) keyHash(a, nBins)))
-         idx2 <- which(ff %in% paste(tmp, "/", as.character(sapply(i, digest)), ".Rdata", sep=""))
-      }
-      idx <- union(idx1, idx2)
+      idx <- union(idx0, idx1)
    }
    if(length(idx)==0)
       return(NULL)

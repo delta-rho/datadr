@@ -91,6 +91,7 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
       assign("collect", LDcollect, mapEnv)
       assign("counter", LDcounter, mapEnv)
       assign("flushKV", LDflushKV, mapEnv)
+      assign("REDUCE", FALSE, mapEnv)
       
       ### do the map
       assign("task_id", fl$map_task_id, mapEnv)
@@ -176,6 +177,7 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
       assign("collect", LDcollect, reduceEnv)
       assign("counter", LDcounter, reduceEnv)
       assign("flushKV", LDflushKV, reduceEnv)
+      assign("REDUCE", TRUE, reduceEnv)
       
       ### do the reduce
       assign("task_id", reduceTaskFiles$reduce_task_id, reduceEnv)
@@ -231,18 +233,21 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
    # if there is only one .Rdata file in each of these
    # we can simply move them to the destination
    # otherwise, we need to read them in and combine them first
+   # UPDATE: since we are allowing custom hash functions, for now,
+   # we just read in each and write it back out according to the appropriate file hash
+   # TODO: move this into the map and reduce so we don't have to do it here
    for(x in outputKeyHash) {
       ff <- list.files(file.path(reduceDir, x), recursive=TRUE, full.names=TRUE)
-      if(length(ff) == 1) {
-         newFile <- getFileLocs(output, x, digest=FALSE)
-         file.rename(ff, newFile)
-      } else {
+      # if(length(ff) == 1) {
+      #    newFile <- getFileLocs(output, x)
+      #    file.rename(ff, newFile)
+      # } else {
          tmp <- do.call(c, lapply(ff, function(x) {
             load(x)
             obj
          }))
          addData(output, tmp)
-      }
+      # }
    }
    
    # read counters 
@@ -288,7 +293,18 @@ makeBlockIndices <- function(sz, sizePerBlock) {
    }
 }
 
-# TODO: document
+#' Specify Control Parameters for MapReduce on a Local Disk Connection
+#' 
+#' Specify control parameters for a MapReduce on a local disk connection.  Currenlty the parameters include:
+#' \itemize{
+#'   \item \code{cluster} a "cluster" object obtained from \code{\link{makeCluster}} to allow for parallel processing
+#'   \item \code{map_buff_size_bytes} determines how much data should be sent to each map task
+#'   \item \code{reduce_buff_size_bytes} determines how much data should be sent to each reduce task
+#'   \item \code{map_temp_buff_size_bytes} determines the size of chunks written to disk in between the map and reduce
+#' }
+#' @note If you have data on a shared drive that multiple nodes can access or a high performance shared file system like Lustre, you can run a local disk MapReduce job on multiple nodes by creating a multi-node cluster with \code{\link{makeCluster}}.
+#' 
+#' If you are using multiple cores and the input data is very small, \code{map_buff_size_bytes} needs to be small so that the key-value pairs will be split across cores.
 #' @export
 localDiskControl <- function(
    cluster = NULL,

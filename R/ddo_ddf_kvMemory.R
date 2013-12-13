@@ -1,4 +1,4 @@
-## Methods for object of class "kvMemory" - key/value pairs as R objects stored in memory
+## Methods for object of class "kvMemory" - key-value pairs as R objects stored in memory
 
 #' @S3method ddoInit data.frame
 ddoInit.data.frame <- function(obj, ...) {

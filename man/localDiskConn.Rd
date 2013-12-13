@@ -2,8 +2,8 @@
 \alias{localDiskConn}
 \title{Connect to Data Source on Local Disk}
 \usage{
-  localDiskConn(loc, nBins = 0, autoYes = FALSE,
-    reset = FALSE, verbose = TRUE)
+  localDiskConn(loc, nBins = 0, fileHashFn = NULL,
+    autoYes = FALSE, reset = FALSE, verbose = TRUE)
 }
 \arguments{
   \item{loc}{location on local disk for the data source}
@@ -11,6 +11,12 @@
   \item{nBins}{number of bins (subdirectories) to put data
   files into - if anticipating a large number of k/v pairs,
   it is a good idea to set this to something bigger than 0}
+
+  \item{fileHashFn}{an optional function that operates on
+  each key-value pair to determine the subdirectory
+  structure for where the data should be stored for that
+  subset, or can be specified "asis" when keys are scalar
+  strings}
 
   \item{autoYes}{automatically answer "yes" to questions
   about creating a path on local disk}
