@@ -246,7 +246,7 @@ saveAttrs.localDiskConn <- function(obj, attrs, type="ddo") {
 ############################################################################
 
 getFileLocs <- function(conn, keys) {
-   fileLocs <- conn$fileHashFn(keys, conn)
+   fileLocs <- sapply(keys, conn$fileHashFn, conn)
    fileLocs <- file.path(conn$loc, fileLocs)
    
    if(any(duplicated(fileLocs)))
