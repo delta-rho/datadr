@@ -39,8 +39,8 @@ validateListKV <- function(data) {
    allLengthTwo <- !any(sapply(data, length) != 2)
    allLists <- !any(!sapply(data, is.list))
    if(!allLengthTwo || !allLists)
-      stop("List must be a list of lists of length two (k/v pairs)")
-
+      stop("List must be a list of lists, each sublist being of length two (k/v pairs)")
+   
    # # add "keyValue" class to each element
    # for(i in seq_along(data)) {
    #    class(data[[i]]) <- c("keyValue", "list")

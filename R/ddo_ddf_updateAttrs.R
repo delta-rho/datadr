@@ -168,7 +168,7 @@ updateAttributes <- function(obj, control=NULL) {
       
       parList <- list(
          needs = needList, 
-         transFn = getAttribute(obj, "transFn"), 
+         transFn = NULL, # getAttribute(obj, "transFn"), 
          libPaths = .libPaths()
       )
       
