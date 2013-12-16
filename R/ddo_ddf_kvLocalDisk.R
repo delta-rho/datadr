@@ -26,7 +26,7 @@ getBasicDdoAttrs.kvLocalDisk <- function(obj, conn) {
    if(length(ff) == 0)
       stop("No data")
    sz <- file.info(file.path(fp, ff))$size
-
+   
    getDat <- function(f) {
       load(f)
       obj

@@ -50,11 +50,11 @@ updateAttributes <- function(obj, control=NULL) {
             if(needs["splitSizeDistn"]) collect("splitSizeDistn", object.size(r))
             if(needs["keys"]) collect("keys", k)
             if(needs["nDiv"]) collect("nDiv", 1.0)
-            
             ### ddf
             # only apply transFn *after* ddo attrs have been computed
             if(!is.null(transFn)) {
                r <- kvApply(transFn, list(k, r))
+
             }
             if(!is.na(needs["nRow"])) {
                if(needs["nRow"]) 
@@ -168,7 +168,7 @@ updateAttributes <- function(obj, control=NULL) {
       
       parList <- list(
          needs = needList, 
-         transFn = obj$transFn, 
+         transFn = getAttribute(obj, "transFn"), 
          libPaths = .libPaths()
       )
       

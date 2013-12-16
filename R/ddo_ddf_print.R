@@ -108,6 +108,7 @@ printTrans <- function(x) {
    } else if(identical(x, as.data.frame)) {
       text <- "as.data.frame - see kvExample(dat, transform=TRUE)"
    }
+   text
 }
 
 buildPrintTable <- function(x, attrList, type, namewidth) {
