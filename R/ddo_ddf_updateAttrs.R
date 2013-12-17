@@ -236,9 +236,8 @@ updateAttributes <- function(obj, control=NULL) {
          attrs[["summary"]] <- summaryList
       }
       
-      # add hash name to keys list (used for extraction)
-      # if(!is.null(attrs$keys))
-      #    names(attrs$keys) <- as.character(sapply(attrs$keys, digest))
+      # add keyHashes (used for extraction)
+      attrs$keyHashes <- as.character(sapply(attrs$keys, digest))
       
       obj <- setAttributes(obj, attrs)
       

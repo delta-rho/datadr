@@ -58,12 +58,13 @@ hasExtractableKV.kvLocalDisk <- function(obj) {
    TRUE
 }
 
-############################################################################
+######################################################################
 ### extract methods
-############################################################################
+######################################################################
 
 #' @S3method [ kvLocalDisk
 `[.kvLocalDisk` <- function(x, i, ...) {
+   
    pr <- getAttribute(x, "prefix")
    ff <- getAttribute(x, "files")
    conn <- getAttribute(x, "conn")
@@ -74,8 +75,8 @@ hasExtractableKV.kvLocalDisk <- function(obj) {
    # - a numeric index, in which case the data ff[i] will be obtained
    # - a list of actual keys, in which case the hash function is applied
    #     and matched to the appropriate directory
-   # - a hash digest of the desired keys, in which case the appropriate file
-   #     will be located
+   # - a hash digest of the desired keys, in which case the appropriate
+   #     file will be located
    
    if(is.numeric(i)) {
       idx <- i
@@ -83,19 +84,19 @@ hasExtractableKV.kvLocalDisk <- function(obj) {
       # try both actual keys and hash possibilities
       
       # first try i as actual keys:
-      tmp <- fileHashFn(i, conn)
-      idx0 <- which(ff %in% tmp)
+      idx0 <- NULL
+      tmp <- try(fileHashFn(i, conn), silent=TRUE)
+      if(!inherits(tmp, "try-error"))
+         idx0 <- which(ff %in% tmp)
       
       # now try i as hash, only if it is likely that i is a hash
       idx1 <- NULL
       if(all(is.character(i))) {
          if(all(nchar(i) == 32)) {
-            if(nBins == 0) {
-               idx1 <- which(ff %in% paste(i, ".Rdata", sep=""))
-            } else {
-               tmp <- as.character(sapply(i, function(a) digestKeyHash(a, nBins)))
-               idx1 <- which(ff %in% paste(tmp, "/", i, ".Rdata", sep=""))
-            }
+            # get the keys that have md5 hashes that match i
+            tmp <- getKeys(x)[getAttribute(x, "keyHashes") %in% i]
+            # then get the index of the matching file
+            idx1 <- which(ff %in% fileHashFn(tmp, conn))
          }
       }
       idx <- union(idx0, idx1)
@@ -121,9 +122,9 @@ hasExtractableKV.kvLocalDisk <- function(obj) {
 }
 
 
-############################################################################
+######################################################################
 ### convert methods
-############################################################################
+######################################################################
 
 #' @S3method convertImplemented kvLocalDisk
 convertImplemented.kvLocalDisk <- function(obj) {

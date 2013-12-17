@@ -5,7 +5,7 @@ getDr <- function(name) get(name, envir=.datadrEnv)
 # extractableKV: can you access k/v pairs by key?
 
 # any object of class ddo must have these attributes
-assign("requiredDdoAttrs", c("conn", "keys", "extractableKV", "totSize", "nDiv", "splitSizeDistn", "example", "bsvInfo", "div", "counters"), envir=.datadrEnv)
+assign("requiredDdoAttrs", c("conn", "keys", "keyHashes", "extractableKV", "totSize", "nDiv", "splitSizeDistn", "example", "bsvInfo", "div", "counters"), envir=.datadrEnv)
 
 # any object of class ddf must have these attributes
 assign("requiredDdfAttrs", c("vars", "transFn", "badSchema", "nRow", "splitRowDistn", "summary"), envir=.datadrEnv)

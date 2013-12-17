@@ -36,7 +36,7 @@ ddoInitConn.nullConn <- function(obj, ...) {
 #' @S3method requiredObjAttrs kvMemory
 requiredObjAttrs.kvMemory <- function(obj) {
    list(
-      ddo = c(getDr("requiredDdoAttrs"), "keyHashes"),
+      ddo = getDr("requiredDdoAttrs"),
       ddf = getDr("requiredDdfAttrs")
    )
 }

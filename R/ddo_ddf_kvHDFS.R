@@ -141,7 +141,7 @@ makeExtractable <- function(obj) {
          res <- NULL
          if(is.character(i)) {
             if(all(nchar(i) == 32)) {
-               idx <- which(names(getKeys(x)) %in% i)
+               idx <- which(getAttribute(x, "keyHashes") %in% i)
                keys <- getKeys(x)[idx]
                res <- a[keys]
             }
