@@ -117,7 +117,7 @@ updateAttributes <- function(obj, control=NULL) {
             if(reduce.key=="splitSizeDistn")
                splitSizeDistn <- c(splitSizeDistn, do.call(c, reduce.values))
             if(reduce.key=="keys")
-               keys <- c(keys, do.call(c, reduce.values))
+               keys <- c(keys, reduce.values)
             if(reduce.key=="nDiv")
                nDiv <- nDiv + sum(unlist(reduce.values), na.rm = TRUE)
             
@@ -149,7 +149,7 @@ updateAttributes <- function(obj, control=NULL) {
                collect("keys", keys)
             if(reduce.key=="nDiv")
                collect("nDiv", nDiv)
-               
+            
             ### ddf
             if(reduce.key=="splitRowDistn")
                collect("splitRowDistn", 
@@ -168,7 +168,7 @@ updateAttributes <- function(obj, control=NULL) {
       
       parList <- list(
          needs = needList, 
-         transFn = NULL, # getAttribute(obj, "transFn"), 
+         transFn = getAttribute(obj, "transFn"), 
          libPaths = .libPaths()
       )
       
@@ -178,7 +178,9 @@ updateAttributes <- function(obj, control=NULL) {
             calculateMoments       = calculateMoments,
             tabulateMap            = tabulateMap,
             combineMultipleMoments = combineMultipleMoments,
-            tabulateReduce         = tabulateReduce
+            combineMoments         = combineMoments,
+            tabulateReduce         = tabulateReduce,
+            kvApply                = kvApply
          ))
          
          setup <- expression({
@@ -235,8 +237,8 @@ updateAttributes <- function(obj, control=NULL) {
       }
       
       # add hash name to keys list (used for extraction)
-      if(!is.null(attrs$keys))
-         names(attrs$keys) <- as.character(sapply(attrs$keys, digest))
+      # if(!is.null(attrs$keys))
+      #    names(attrs$keys) <- as.character(sapply(attrs$keys, digest))
       
       obj <- setAttributes(obj, attrs)
       

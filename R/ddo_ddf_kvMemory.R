@@ -36,7 +36,7 @@ ddoInitConn.nullConn <- function(obj, ...) {
 #' @S3method requiredObjAttrs kvMemory
 requiredObjAttrs.kvMemory <- function(obj) {
    list(
-      ddo = getDr("requiredDdoAttrs"),
+      ddo = c(getDr("requiredDdoAttrs"), "keyHashes"),
       ddf = getDr("requiredDdfAttrs")
    )
 }
@@ -46,10 +46,11 @@ getBasicDdoAttrs.kvMemory <- function(obj, conn) {
    # data gets stored in conn, since conn is how things are passed around for other methods
    dat <- conn$data
    keys <- lapply(dat, "[[", 1)
-   names(keys) <- as.character(sapply(keys, digest))
+   # names(keys) <- as.character(sapply(keys, digest))
    list(
       conn = conn,
       keys = keys,
+      keyHashes = sapply(keys, digest),
       extractableKV = TRUE,
       totSize = as.numeric(object.size(dat)),
       nDiv = length(dat),
@@ -80,14 +81,17 @@ hasExtractableKV.kvMemory <- function(obj) {
    if(is.numeric(i)) {
       getAttribute(x, "conn")$data[i]
    } else {
+      keyHashes <- getAttribute(x, "keyHashes")
+      
       # if the key is most-likely a hash, try that
       idx1 <- NULL
       if(is.character(i)) {
          if(all(nchar(i) == 32)) {
-            idx1 <- which(names(getKeys(x)) %in% i)
+            idx1 <- which(keyHashes %in% i)
          }
       }
-      idx2 <- which(names(getKeys(x)) %in% as.character(sapply(i, digest)))
+      # otherwise, 
+      idx2 <- which(keyHashes %in% as.character(sapply(i, digest)))
       getAttribute(x, "conn")$data[union(idx1, idx2)]
    }
 }

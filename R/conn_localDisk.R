@@ -205,7 +205,7 @@ addData.localDiskConn <- function(conn, data, overwrite=FALSE) {
          if(overwrite) {
             save(obj, file=filePaths[i])
          } else {
-            warning(paste("Element", i, "of input data already has data already on disk of the same key.  Set overwrite to TRUE or change key of input data."))
+            warning(paste("Element", i, "of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data."))
          }
       } else {
          save(obj, file=filePaths[i])
@@ -246,7 +246,7 @@ saveAttrs.localDiskConn <- function(obj, attrs, type="ddo") {
 ############################################################################
 
 getFileLocs <- function(conn, keys) {
-   fileLocs <- sapply(keys, conn$fileHashFn, conn)
+   fileLocs <- do.call(conn$fileHashFn, list(keys=keys, conn=conn))
    fileLocs <- file.path(conn$loc, fileLocs)
    
    if(any(duplicated(fileLocs)))

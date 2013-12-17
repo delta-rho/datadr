@@ -83,8 +83,7 @@ hasExtractableKV.kvLocalDisk <- function(obj) {
       # try both actual keys and hash possibilities
       
       # first try i as actual keys:
-      tmp <- sapply(i, function(a)
-         fileHashFn(a, conn))
+      tmp <- fileHashFn(i, conn)
       idx0 <- which(ff %in% tmp)
       
       # now try i as hash, only if it is likely that i is a hash

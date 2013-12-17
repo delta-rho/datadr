@@ -1,6 +1,6 @@
-#############################################################################
+######################################################################
 ### ddo init methods
-############################################################################
+######################################################################
 
 ddoInit <- function(obj, ...)
    UseMethod("ddoInit")
@@ -8,30 +8,27 @@ ddoInit <- function(obj, ...)
 ddoInitConn <- function(obj, ...)
    UseMethod("ddoInitConn")
 
-
-############################################################################
+######################################################################
 ### requiredObjAttrs
-############################################################################
+######################################################################
 
-requiredObjAttrs <- function(obj, ...) {
+requiredObjAttrs <- function(obj, ...)
    UseMethod("requiredObjAttrs")
-}
 
-############################################################################
+######################################################################
 ### setAttributes
-############################################################################
+######################################################################
 
 #' @export
-setAttributes <- function(obj, ...) {
+setAttributes <- function(obj, ...)
    UseMethod("setAttributes")
-}
 
 # obj is the data object, attrs is a named list of attributes
 setAttributes.ddf <- function(obj, attrs) {
    ind <- which(names(attrs) %in% requiredObjAttrs(obj)$ddf)
    if(length(ind) > 0)
       obj <- setObjAttributes(obj, attrs[ind], type="ddf")
-
+   
    # all ddfs are also ddo's so call ddo directly instead of NextMethod
    setAttributes.ddo(obj, attrs[setdiff(seq_len(length(attrs)), ind)])
 }
@@ -67,40 +64,44 @@ setObjAttributes <- function(obj, attrs, type) {
    obj
 }
 
-############################################################################
+######################################################################
 ### getAttributes
-############################################################################
+######################################################################
 
 #' @export
 getAttribute <- function(obj, attrName) {
    res <- getAttributes(obj, attrName)
 
-   if(length(res) == 0)
-      return(NULL)
-      
    # getAttributes returns a list with "ddo" and "ddf"
-   # the single attribute we want will be in the one of these that is not null
-   res[[which(!sapply(res, is.null))]][[1]]
+   # the single attribute we want will be in the one of these that is not null   
+   if(length(res$ddf) == 0) {
+      if(length(res$ddo) == 0) {
+         return(NULL)
+      } else {
+         return(res$ddo[[1]])
+      }
+   } else {
+      return(res$ddf[[1]])
+   }
 }
 
 #' @export
-getAttributes <- function(obj, ...) {
+getAttributes <- function(obj, ...)
    UseMethod("getAttributes")
-}
 
 getAttributes.ddf <- function(obj, attrNames) {
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddf)
-   res <- NULL
+   res <- list(ddf = NULL)
    if(length(ind) > 0)
       res$ddf <- getObjAttributes(obj, attrNames[ind], type="ddf")
-   res$ddo <- getAttributes.ddo(obj, attrNames)$ddo
+   res <- c(res, getAttributes.ddo(obj, attrNames))
    res
 }
 
 # obj is the data object, attrs is a named list of attributes
 getAttributes.ddo <- function(obj, attrNames) {
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddo)
-   res <- list(ddo=NULL)
+   res <- list(ddo = NULL)
    if(length(ind) > 0)
       res$ddo <- getObjAttributes(obj, attrNames[ind], type="ddo")
    res
@@ -108,20 +109,18 @@ getAttributes.ddo <- function(obj, attrNames) {
 
 # setObjAttributes is called inside of setAttributes
 # (once it has been determined whether it is a ddo or ddf attribute)
-getObjAttributes <- function(obj, attrNames, type) {
+getObjAttributes <- function(obj, attrNames, type)
    attr(obj, type)[intersect(attrNames, names(attr(obj, type)))]
-}
 
-############################################################################
+######################################################################
 ### hasAttributes
-############################################################################
+######################################################################
 
 ## returns a boolean vector the same length of the input vector of attribute names
 
 #' @export
-hasAttributes <- function(obj, ...) {
+hasAttributes <- function(obj, ...)
    UseMethod("hasAttributes")
-}
 
 hasAttributes.ddf <- function(obj, attrNames) {
    res <- rep(FALSE, length(attrNames))
@@ -144,9 +143,8 @@ hasAttributes.ddo <- function(obj, attrNames) {
    res
 }
 
-hasObjAttributes <- function(obj, attrNames, type) {
+hasObjAttributes <- function(obj, attrNames, type)
    attrNames %in% names(attr(obj, type))
-}
 
 getAttrNeedList <- function(obj, type) {
    rattrs <- requiredObjAttrs(obj)[[type]]
@@ -158,9 +156,9 @@ getAttrNeedList <- function(obj, type) {
    }
 }
 
-############################################################################
+######################################################################
 ### other attribute methods
-############################################################################
+######################################################################
 
 loadAttrs <- function(obj, ...)
    UseMethod("loadAttrs")
@@ -177,9 +175,9 @@ getBasicDdoAttrs <- function(obj, ...)
 getBasicDdfAttrs <- function(obj, ...)
    UseMethod("getBasicDdfAttrs")
 
-############################################################################
+######################################################################
 ### special 'simplified' accessors
-############################################################################
+######################################################################
 
 #' Accessor Functions
 #' 
@@ -231,9 +229,9 @@ summary.ddf <- function(x, ...)
 hasExtractableKV <- function(x)
    UseMethod("hasExtractableKV")
 
-############################################################################
+######################################################################
 ### this is for connections
-############################################################################
+######################################################################
 
 #' Add Key-Value Pairs to a Data Connection
 #' 
@@ -268,9 +266,9 @@ addData <- function(conn, data, overwrite=FALSE)
 removeData <- function(conn, keys)
    UseMethod("removeData")
 
-############################################################################
+######################################################################
 ### object conversion
-############################################################################
+######################################################################
 
 # TODO: document
 #' @export
@@ -303,9 +301,9 @@ addNeededAttrs <- function(res, from) {
    setAttributes(res, newAttrs)
 }
 
-############################################################################
+######################################################################
 ### 
-############################################################################
+######################################################################
 
 setOldClass("ddf")
 setOldClass("ddo")
