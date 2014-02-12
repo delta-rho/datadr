@@ -1,13 +1,13 @@
-## mrExec for in-memory kv objects (data.frame, list)
+## mrExec for kvMemory objects
 
-#' @S3method mrExecInternal kvMemory
-mrExecInternal.kvMemory <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
-   
-   kvData <- getAttribute(data, "conn")$data
+#' @S3method mrExecInternal kvMemoryList
+mrExecInternal.kvMemoryList <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
    
    # set up empty environment for map and reduce expressions to be evaluated in
    mapEnv <- new.env() # parent = baseenv())
    reduceEnv <- new.env() # parent = baseenv())
+   
+   # add any needed data objects to map and reduce environments
    if(!is.null(params)) {
       pnames <- names(params)
       for(i in seq_along(params)) {
@@ -24,9 +24,6 @@ mrExecInternal.kvMemory <- function(data, setup=NULL, map=NULL, reduce=NULL, out
    ### do the map
    assign("counterRes", list(), mapEnv)
    assign("mapRes", list(), mapEnv)
-   assign("map.keys", lapply(kvData, "[[", 1), mapEnv)
-   assign("map.values", lapply(kvData, "[[", 2), mapEnv)
-   
    eval(expression({
       collect <- function(k, v) {
          mapRes[[length(mapRes) + 1]] <<- list(k, v)
@@ -40,7 +37,16 @@ mrExecInternal.kvMemory <- function(data, setup=NULL, map=NULL, reduce=NULL, out
          counterRes[[group]][[field]] <<- counterRes[[group]][[field]] + ct
       }
    }), envir=mapEnv)
-   eval(map, envir=mapEnv)
+   
+   # loop through inputs
+   nms <- names(data)
+   for(i in seq_along(data)) {
+      kvData <- getAttribute(data[[i]], "conn")$data
+      assign("map.keys", lapply(kvData, "[[", 1), mapEnv)
+      assign("map.values", lapply(kvData, "[[", 2), mapEnv)
+      assign(".dataSourceName", nms[i], mapEnv)
+      eval(map, envir=mapEnv)
+   }
    
    if(!is.null(reduce)) {
       reduce.keys <- lapply(get("mapRes", mapEnv), "[[", 1)

@@ -16,7 +16,7 @@
 #'
 #' Execute a MapReduce job
 #'
-#' @param data
+#' @param data a ddo/ddf object, or list of ddo/ddf objects
 #' @param setup an expression of R code (created using the R command \code{expression}) to be run before map and reduce
 #' @param map an R expression that is evaluated during the map stage. For each task, this expression is executed multiple times (see details).
 #' @param reduce a vector of R expressions with names pre, reduce, and post that is evaluated during the reduce stage. For example \code{reduce = expression(pre={...}, reduce={...}, post={...})}. reduce is optional, and if not specified the map output key-value pairs will be the result. If it is not specified, then a default identity reduce is performed. Setting it to 0 will skip the reduce altogether.
@@ -33,11 +33,25 @@
 mrExec <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL, verbose=TRUE) {
    require(digest)
    
-   mrCheckInOut(data, output)
-   
-   if(is.null(control)) {
-      control <- defaultControl(data)
+   # handle list of ddo/ddf - if not a list, make it one
+   if(!inherits(data, "ddo")) {
+      if(!all(sapply(data, function(x) inherits(x, "ddo"))))
+         stop("data must be a 'ddo' or 'ddf' object of a list of these")
+   } else {
+      data <- list(data)
    }
+   class(data) <- c(paste(tail(class(data[[1]]), 1), "List", sep = ""), "list")
+   
+   mrCheckOutput(data[[1]], output)
+   
+   if(is.null(control))
+      control <- list()
+   
+   # fill in missing required control fields with default
+   dc <- defaultControl(data[[1]])
+   controlMissingNames <- setdiff(names(dc), names(control))
+   for(nm in controlMissingNames)
+      control[[nm]] <- dc[[nm]]
    
    # if map is NULL, replace with identity
    if(is.null(map))
@@ -78,8 +92,8 @@ defaultControl <- function(x) {
    UseMethod("defaultControl", x)
 }
 
-# check input and output
-mrCheckInOut <- function(input, output) {
+# check output
+mrCheckOutput <- function(input, output) {
    if(!class(output)[1] %in% convertImplemented(input))
       stop("Cannot convert to requested output type")
 }

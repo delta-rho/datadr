@@ -1,10 +1,7 @@
-### mrExec for rhData objects
+### mrExec for kvHDFS objects
 
-#' @S3method mrExecInternal kvHDFS
-mrExecInternal.kvHDFS <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
-   
-   if(is.null(control))
-      control <- defaultControl(data)
+#' @S3method mrExecInternal kvHDFSList
+mrExecInternal.kvHDFSList <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
    
    setup2 <- expression({
       collect <- rhcollect
@@ -28,9 +25,25 @@ mrExecInternal.kvHDFS <- function(data, setup=NULL, map=NULL, reduce=NULL, outpu
    # set write.job.info to TRUE
    wji <- rhoptions()$write.job.info
    rhoptions(write.job.info=TRUE)
+      
+   conns <- lapply(data, function(x) getAttribute(x, "conn"))
+   locs <- sapply(conns, function(x) x$loc)
+   types <- sapply(conns, function(x) x$type)
+   if(length(unique(types)) != 1)
+      stop("Currently all inputs must have the same type ('map', 'seq', 'text')")
    
-   conn <- getAttribute(data, "conn")
-
+   # create a lookup for file being processed and it's dataSourceName
+   nms <- names(data)
+   dataSourceName <- lapply(seq_along(data), function(i) nms[i])
+   names(dataSourceName) <- locs
+   params$dataSourceName <- dataSourceName
+   map2 <- expression({
+      mif <- Sys.getenv("mapred.input.file")
+      .ind <- which(sapply(names(dataSourceName), function(x) grepl(x, mif)))
+      .dataSourceName <- dataSourceName[[.ind]]
+   })
+   map <- appendExpression(map2, map)
+   
    co <- rhoptions()$copyObjects
    co2 <- co
    co2$auto <- FALSE
@@ -40,7 +53,7 @@ mrExecInternal.kvHDFS <- function(data, setup=NULL, map=NULL, reduce=NULL, outpu
       setup=setup,
       map=map, 
       reduce=reduce, 
-      input=rhfmt(conn$loc, type=conn$type),
+      input=rhfmt(locs, type=types[1]),
       output=outFile,
       mapred=control$mapred, 
       # combiner=control$combiner,
@@ -78,46 +91,3 @@ defaultControl.kvHDFS <- function(x) {
    rhipeControl()
 }
 
-# #' @export
-# rhText2df <- function(x, output=NULL, transFn=NULL, keyFn=NULL, linesPerBlock=10000, control=NULL, update=FALSE) {
-#    if(!inherits(x, "kvHDFS"))
-#       stop("Input must be data from a HDFS connection")
-#    
-#    if(getAttribute(x, "conn")$type != "text")
-#       stop("This was designed for 'rhData' inputs of type 'text'.")
-#    
-#    if(is.null(transFn))
-#       stop("Must specify a transformation function with 'transFn'.")
-#       
-#    if(is.null(control))
-#       control <- defaultControl(x)
-#       
-#    if(is.null(control$mapred$rhipe_map_buff_size))
-#       control$mapred$rhipe_map_buff_size <- linesPerBlock
-#    if(is.null(control$mapred$mapred.reduce.tasks)) {
-#       reduce <- 0
-#    } else {
-#       reduce <- control$mapred$mapred.reduce.tasks
-#    }
-#    
-#    setup <- expression({
-#       suppressWarnings(suppressMessages(require(digest)))
-#    })
-#    
-#    map <- expression({
-#       tmp <- paste(unlist(map.values), collapse="\n")
-#       if(is.null(keyFn))
-#          keyFn <- digest
-#       
-#       collect(keyFn(tmp), transFn(tmp))
-#    })
-#    
-#    mrExec(x,
-#       setup   = setup,
-#       map     = map, 
-#       reduce  = reduce, 
-#       output  = output,
-#       control = control,
-#       params  = list(transFn = transFn, keyFn = keyFn)
-#    )
-# }

@@ -1,25 +1,17 @@
-## mrExec for disk kv objects
+## mrExec for kvLocalDisk objects
 
 
 # hdfsOutput("a")
 # memOutput
 # diskOutput("a", nBins=10)
 
-#' @S3method mrExecInternal kvLocalDisk
-mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
-   
-   # setup <- NULL
-   # output <- NULL
-   # control <- NULL
-   
+#' @S3method mrExecInternal kvLocalDiskList
+mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
    setup <- appendExpression(setup, 
       expression({
          require(digest)
       })
    )
-   
-   # library(parallel)
-   # cl <- makeCluster(6)
    
    nSlots <- 1
    if(!is.null(control$cluster))
@@ -53,17 +45,23 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
    
    ### map task setup
    # get file names and use file size to determine how to allocate
-   fp <- getAttribute(data, "prefix")
-   ff <- getAttribute(data, "files")
-   sz <- getAttribute(data, "sizes")
    
    # split ff into nSlots chunks with roughly equal size
-   nFile <- length(ff)
-   idx <- makeBlockIndices(sz, sum(sz) / nSlots)
-   prefix <- data$loc
-   mFileList <- lapply(idx, function(x) {
-      list(ff=ff[x], sz=sz[x])
+   nms <- names(data)
+   mFileList <- lapply(seq_along(data), function(i) {
+      fp <- getAttribute(data[[i]], "prefix")
+      ff <- getAttribute(data[[i]], "files")
+      sz <- getAttribute(data[[i]], "sizes")
+      
+      nFile <- length(ff)
+      idx <- makeBlockIndices(sz, sum(sz) / nSlots, nSlots)
+
+      lapply(idx, function(x) {
+         list(fp = fp, ff=ff[x], sz=sz[x], dataSourceName = nms[i])
+      })
    })
+   mFileList <- unlist(mFileList, recursive = FALSE)
+   
    # give a map task id to each block
    for(i in seq_along(mFileList)) {
       mFileList[[i]]$map_task_id <- i
@@ -99,22 +97,23 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
       assign("taskRes", list(), mapEnv)
       assign("taskCounter", list(), mapEnv)
       assign("writeKVseparately", TRUE, mapEnv) # more efficient
+      assign(".dataSourceName", fl$dataSourceName, mapEnv)
       
       # iterate through map blocks and apply map to each
-      mapBlocks <- makeBlockIndices(fl$sz, control$map_buff_size_bytes)
+      mapBlocks <- makeBlockIndices(fl$sz, control$map_buff_size_bytes, nSlots)
       for(idx in mapBlocks) {
          curDat <- lapply(fl$ff[idx], function(x) {
-            load(file.path(fp, x))
+            load(file.path(fl$fp, x))
             obj[[1]]
          })
          assign("map.keys", lapply(curDat, "[[", 1), mapEnv)
          assign("map.values", lapply(curDat, "[[", 2), mapEnv)
          eval(expression({
-            tmp <- environment()
-            attach(tmp, warn.conflicts=FALSE)
+            .tmp <- environment()
+            attach(.tmp, warn.conflicts=FALSE)
          }), envir=mapEnv)
          eval(map, envir=mapEnv)
-         eval(expression({detach("tmp")}), envir=mapEnv)
+         eval(expression({detach(".tmp")}), envir=mapEnv)
          
          # count number of k/v processed
          evalq(counter("map", "kvProcessed", length(map.values)), mapEnv)
@@ -128,7 +127,7 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
    
    ### run map tasks
    if(!is.null(control$cluster)) {
-      clusterExport(control$cluster, c("map", "reduce", "setup", "params", "mapDir", "reduceDir", "countersDir", "makeBlockIndices", "control", "fp", "LDflushKV", "LDcounter", "LDcollect"), envir=environment())
+      clusterExport(control$cluster, c("map", "reduce", "setup", "params", "mapDir", "reduceDir", "countersDir", "makeBlockIndices", "nSlots", "control", "LDflushKV", "LDcounter", "LDcollect", "params"), envir=environment())
       
       parLapply(control$cluster, mFileList, mapFn)
    } else {
@@ -150,7 +149,7 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
    })
    
    sz <- sapply(rf, function(x) sum(x$sz))
-   idx <- makeBlockIndices(sz, sum(sz) / nSlots)
+   idx <- makeBlockIndices(sz, sum(sz) / nSlots, nSlots)
    
    # each element of rFileList is a list of reduce keys and associated data
    rFileList <- lapply(seq_along(idx), function(i) {
@@ -159,13 +158,15 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
          reduce_task_id = i
       )
    })
-      
+   
    reduceFn <- function(reduceTaskFiles) {
       reduceEnv <- new.env() # parent = baseenv())
       if(!is.null(params)) {
          pnames <- names(params)
          for(i in seq_along(params)) {
-            assign(pnames[i], params[[i]], envir=reduceEnv)
+            if(is.function(params[[i]]))
+               environment(params[[i]]) <- reduceEnv
+            assign(pnames[i], params[[i]], envir = reduceEnv)
          }
       }
       eval(setup, envir=reduceEnv)
@@ -191,8 +192,8 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
          load(file.path(curReduceFiles$fp, "1", "key.Rdata"))
          assign("reduce.key", k, reduceEnv)
          
-         reduceBlocks <- makeBlockIndices(curReduceFiles$sz, control$reduce_buff_size_bytes)
-         
+         # nSlots is 1 because we are already in parLapply
+         reduceBlocks <- makeBlockIndices(curReduceFiles$sz, control$reduce_buff_size_bytes, nSlots) #, nSlots = 1)
          eval(reduce$pre, envir=reduceEnv)
          
          for(idx in reduceBlocks) {
@@ -201,7 +202,7 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
                v
             }))
             assign("reduce.values", curDat, reduceEnv)
-            eval(reduce$reduce, envir=reduceEnv)
+            eval(reduce$reduce, envir = reduceEnv)
          }
          eval(reduce$post, envir=reduceEnv)
          # count number of k/v processed
@@ -277,18 +278,16 @@ mrExecInternal.kvLocalDisk <- function(data, setup=NULL, map=NULL, reduce=NULL, 
 # take a vector of sizes and return a list of indices where
 # the sum of sizes for each collection of indices is roughly sizePerBlock
 # (used to create "buffers" of data sent to map and reduce tasks)
-makeBlockIndices <- function(sz, sizePerBlock) {
+# also take number of cores available into account
+makeBlockIndices <- function(sz, sizePerBlock, nSlots = 1) {
    cs <- cumsum(sz)
-   n <- ceiling(sum(sz) / sizePerBlock)
+   n <- max(ceiling(sum(sz) / sizePerBlock), nSlots)
    if(n == 1) {
       return(list(seq_along(sz)))
    } else {
-      splitPoints <- sizePerBlock*c(0:n)
-      splitPoints[1] <- splitPoints[1] - 1
-      splitPoints[length(splitPoints)] <- splitPoints[length(splitPoints)] + 1
-      res <- split(seq_along(sz), cut(cs, splitPoints))
+      qs <- quantile(cumsum(sz), seq(0, 1, length=ifelse(n==1, 0, n) + 1))
+      res <- split(seq_along(sz), cut(cumsum(sz), qs, include.lowest = TRUE))
       names(res) <- NULL
-      res[sapply(res, length) == 0] <- NULL
       return(res)
    }
 }
