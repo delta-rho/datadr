@@ -1,26 +1,26 @@
 #' Apply Function to Key-Value Pair
 #' 
-#' Apply a function to a key-value pair
+#' Apply a function to a single key-value pair" - not a traditional R "apply" function.
 #' 
 #' @param fn a function
 #' @param kvPair a key-value pair (a list with 2 elements)
-#' @param returnKV should the key be added to the result?
+#' @param returnKV should the key and value be returned?
 #' 
-#' @details Determines how a function should be applied to a key-value pair and then applies it: if the function has 2 formals, it applies the function giving it the key and the value as the arguments; if the function has 1 formal, it applies the function giving it just the value.  This provides flexibility and simplicity for when a function is only meant to be applied to the value, but still allows keys to be used if desired.
+#' @details Determines how a function should be applied to a key-value pair and then applies it: if the function has two formals, it applies the function giving it the key and the value as the arguments; if the function has one formal, it applies the function giving it just the value.  This provides flexibility and simplicity for when a function is only meant to be applied to the value, but still allows keys to be used if desired.
 #' 
 #' @export
-kvApply <- function(fn, kvPair, returnKV=FALSE) {
+kvApply <- function(fn, kvPair, returnKV = FALSE) {
    # TODO?: also do other stuff like add splitVars back on to df, etc. prior to applying
    if(length(formals(fn)) == 2) {
       res <- fn(kvPair[[1]], kvPair[[2]])
+      if(!returnKV)
+         res <- res[[2]]
    } else {
       res <- fn(kvPair[[2]])
+      if(returnKV)
+         res <- list(kvPair[[1]], res)
    }
-   if(returnKV) {
-      return(list(kvPair[[1]], res))
-   } else {
-      return(res)
-   }
+   return(res)
 }
 
 ### internal
