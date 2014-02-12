@@ -38,16 +38,15 @@ getCuts.rrDiv <- function(by, curDF) {
    
    if(!is.null(by$seed)) set.seed(by$seed)
    # cuts <- paste("rr_", sample(1:ndiv, n, replace=TRUE), sep="")
-   
-   paste("rr_", cut(runif(n), seq(0, 1, length=ndiv + 1), labels=FALSE), sep="")
+   paste("rr_", cut(runif(n), seq(0, 1, length = ndiv + 1), labels = FALSE), sep = "")
 }
 
 #' @S3method validateDivSpec rrDiv
 validateDivSpec.rrDiv <- function(by, data, ex) {
-   n <- nrow(data)
+   n <- suppressWarnings(nrow(data))
    nr <- by$nrows
    ndiv <- round(n / nr, 0)
-   if(is.null(n) && by$type == "rrDiv")
+   if((is.null(n) || is.na(n)) && by$type == "rrDiv")
       stop("To do random replicate division, must know the total number of rows.  Call updateAttributes() on your data.")
    
    list(ndiv=ndiv, nrow=n)

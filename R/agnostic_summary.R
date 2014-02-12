@@ -20,11 +20,12 @@ tabulateReduce <- function(result, reduce.values) {
    tmp <- rbind(result, tmp)
    tmp <- as.data.frame(xtabs(Freq ~ ., data=tmp), stringsAsFactors=FALSE)
    # only tabulate top and bottom 10000 unique values
+   idx <- order(tmp$Freq, tmp$var)
    if(nrow(tmp) > 10000) {
-      idx <- order(tmp$Freq, tmp$var)
       return(tmp[c(head(idx, 5000), tail(idx, 5000)),])
    } else {
-      return(tmp)
+      idx <- order(tmp$Freq, decreasing=TRUE)
+      return(tmp[idx,])
    }
 }
 
