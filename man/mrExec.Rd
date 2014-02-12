@@ -7,7 +7,7 @@
     verbose = TRUE)
 }
 \arguments{
-  \item{data}{}
+  \item{data}{a ddo/ddf object, or list of ddo/ddf objects}
 
   \item{setup}{an expression of R code (created using the R
   command \code{expression}) to be run before map and

@@ -37,7 +37,10 @@
   This simply creates a "connection" to a directory on
   local disk (which need not have data in it).  To actually
   do things with this connection, see \code{\link{ddo}},
-  etc.
+  etc.  Typically, you should just use \code{loc} to
+  specify where the data is or where you would like data
+  for this connection to be stored.  Metadata for the
+  object is also stored in this directory.
 }
 \examples{
 # connect to empty localDisk directory

@@ -188,7 +188,7 @@ getBasicDdfAttrs <- function(obj, ...)
 kvExample <- function(x, transform=FALSE) {
    res <- getAttribute(x, "example")
    if(inherits(x, "ddf") && transform)
-      return(kvApply(getAttribute(x, "transFn"), res, returnKV=TRUE))
+      return(kvApply(getAttribute(x, "transFn"), res, returnKV = TRUE))
    res
 }
 
@@ -302,7 +302,7 @@ addNeededAttrs <- function(res, from) {
 }
 
 ######################################################################
-### 
+### nrow, ncol, names, length
 ######################################################################
 
 setOldClass("ddf")
@@ -367,7 +367,7 @@ as.data.frame.ddf <- function(x, keys=TRUE, splitVars=TRUE, bsvs=FALSE, ...) {
    x <- convert(x, NULL)
    tmp <- lapply(getAttribute(x, "conn")$data, function(a) {
       res <- a[[2]]
-
+      
       if(keys) {
          # TODO: what if 'key' already is a variable name?
          res$key <- if(length(a[[1]] == 1)) {
@@ -392,8 +392,4 @@ as.data.frame.ddf <- function(x, keys=TRUE, splitVars=TRUE, bsvs=FALSE, ...) {
    
    data.frame(rbindlist(tmp), ...)
 }
-
-
-
-
 

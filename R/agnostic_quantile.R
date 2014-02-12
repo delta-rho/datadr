@@ -26,19 +26,19 @@
 #'    list("1", iris[1:10,]), list("2", iris[11:110,]), list("3", iris[111:150,])
 #' )
 #' # represent it as ddf
-#' irisSplit <- ddf(irisSplit, update=TRUE)
+#' irisSplit <- ddf(irisSplit, update = TRUE)
 #' 
 #' # approximate quantiles over the divided data set
 #' probs <- seq(0, 1, 0.005)
-#' iq <- quantile(irisSplit, var="Sepal.Length", tails=0, probs=probs)
+#' iq <- quantile(irisSplit, var = "Sepal.Length", tails = 0, probs = probs)
 #' plot(iq$fval, iq$q)
 #' 
 #' # compare to the all-data quantile "type 1" result
-#' plot(probs, quantile(iris$Sepal.Length, probs=probs, type=1))
+#' plot(probs, quantile(iris$Sepal.Length, probs = probs, type = 1))
 #' 
 #' @method quantile ddf
 #' @export
-quantile.ddf <- function(x, var, by=NULL, probs = seq(0, 1, 0.005), transFn=identity, nBins = 10000, tails=100, control=NULL) {
+quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), transFn = identity, nBins = 10000, tails = 100, control = NULL) {
    # nBins <- 10000; tails <- 0; probs <- seq(0, 1, 0.0005); by <- "Species"; var <- "Sepal.Length"; x <- ldd; trans <- identity
    
    if(class(summary(x))[1] == "logical")
@@ -127,7 +127,7 @@ quantile.ddf <- function(x, var, by=NULL, probs = seq(0, 1, 0.005), transFn=iden
          data.frame(
             constructQuants(mrRes[ind[[i]]], probs, tails, mids),
             group = groups[ind[[i]][1]],
-            stringsAsFactors=FALSE
+            stringsAsFactors = FALSE
          )
       })
       res <- do.call(rbind, res)
@@ -163,17 +163,17 @@ constructQuants <- function(obj, probs, tails, mids) {
       tailKeys <- unlist(keys[!intKeys])
       tailVals <- vals[!intKeys]
       
-      top <- tailVals[tailKeys=="top"][[1]]
-      bot <- tailVals[tailKeys=="bot"][[1]]
+      top <- tailVals[tailKeys == "top"][[1]]
+      bot <- tailVals[tailKeys == "bot"][[1]]
       
       botDf <- data.frame(
-         fval=(seq_len(tails) - 1) / tot, 
-         q=bot
+         fval = (seq_len(tails) - 1) / tot, 
+         q = bot
       )
       
       topDf <- data.frame(
-         fval=(seq_len(tails) + tot - tails) / tot, 
-         q=top
+         fval = (seq_len(tails) + tot - tails) / tot, 
+         q = top
       )
       
       res <- subset(res, fval > max(botDf$fval) & fval < min(topDf$fval))

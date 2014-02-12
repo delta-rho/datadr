@@ -11,7 +11,7 @@
 #' 
 #' @return a "kvConnection" object of class "localDiskConn"
 #' 
-#' @details This simply creates a "connection" to a directory on local disk (which need not have data in it).  To actually do things with this connection, see \code{\link{ddo}}, etc.
+#' @details This simply creates a "connection" to a directory on local disk (which need not have data in it).  To actually do things with this connection, see \code{\link{ddo}}, etc.  Typically, you should just use \code{loc} to specify where the data is or where you would like data for this connection to be stored.  Metadata for the object is also stored in this directory.
 #' 
 #' @author Ryan Hafen
 #' 
@@ -57,6 +57,7 @@ localDiskConn <- function(loc, nBins=0, fileHashFn=NULL, autoYes=FALSE, reset=FA
       if(!fi$isdir)
          stop("'loc' must be a directory")
    }
+   
    
    if(is.character(fileHashFn)) {
       if(fileHashFn == "asis") {

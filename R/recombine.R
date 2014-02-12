@@ -86,7 +86,7 @@ recombine <- function(data, apply=NULL, combine=NULL, output=NULL, control=NULL,
    }
    
    if(verbose)
-      message("* Testing the division method on a subset...")
+      message("* Testing the 'apply' method on a subset...")
    tmp <- apply$applyFn(apply$args, kvExample(data))
    
    if(verbose)

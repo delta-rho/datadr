@@ -157,4 +157,3 @@ convertKvMemory.hdfsConn <- function(to, from, verbose=FALSE) {
    addNeededAttrs(res, from)
 }
 
-

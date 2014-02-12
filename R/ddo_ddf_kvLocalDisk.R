@@ -1,4 +1,4 @@
-## Methods for object of class "kvLocalData" - key-value pairs as R objects stored on disk
+## Methods for object of class "kvLocalDisk" - key-value pairs as R objects stored on disk
 
 #' @S3method ddoInit localDiskConn
 ddoInit.localDiskConn <- function(obj, ...) {
@@ -198,5 +198,4 @@ convertKvLocalDisk.hdfsConn <- function(to, from, verbose=FALSE) {
    
    addNeededAttrs(res, from)
 }
-
 

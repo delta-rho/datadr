@@ -8,6 +8,8 @@
 #' @method print ddo
 print.ddo <- function(x) {
    
+   # objName <- as.character(substitute(x))
+   
    objClass <- class(x)
    title <- paste("Distributed data object of class '", objClass[which(objClass=="ddo") + 1], "' with attributes: \n\n", sep="")
    
