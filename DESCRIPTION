@@ -1,8 +1,8 @@
 Package: datadr
 Type: Package
 Title: Divide and Recombine for Large, Complex Data
-Version: 0.5-3
-Date: 2013-12-12
+Version: 0.6
+Date: 2014-02-11
 Author: Ryan Hafen
 Maintainer: Ryan Hafen <ryan.hafen@pnnl.gov>
 Description: Methods for dividing data into subsets, applying analytical
@@ -48,3 +48,9 @@ Collate:
     'divSpec_rrDiv.R'
     'globals.R'
     'agnostic_summary.R'
+    'ddf_summary_print.R'
+    'dataops_filter.R'
+    'dataops_join.R'
+    'dataops_lapply.R'
+    'dataops_read.R'
+    'dataops_sample.R'
