@@ -19,9 +19,6 @@
 updateAttributes <- function(obj, control=NULL) {
    # obj <- ddf(iris)
    
-   if(is.null(control))
-      control <- defaultControl(obj)
-   
    ddoVars <- requiredObjAttrs(obj)$ddo
    ddfVars <- requiredObjAttrs(obj)$ddf
    
@@ -95,7 +92,7 @@ updateAttributes <- function(obj, control=NULL) {
                      }
                   }
                }
-            } 
+            }
          }
       })
       
@@ -129,8 +126,12 @@ updateAttributes <- function(obj, control=NULL) {
             
             ### ddf summary
             if(grepl("^summary_quant", reduce.key)) {
+               curMomList <- lapply(reduce.values, function(x) x$moments)
+               if(!is.null(resQuant$moments))
+                  curMomList <- c(list(resQuant$moments), curMomList)
+               
                resQuant$nna       <- sum(c(resQuant$nna, sapply(reduce.values, function(x) x$nna)), na.rm=TRUE)
-               resQuant$moments   <- do.call(combineMultipleMoments, lapply(reduce.values, function(x) x$moments))
+               resQuant$moments   <- do.call(combineMultipleMoments, curMomList)
                resQuant$min       <- min(c(resQuant$min, sapply(reduce.values, function(x) x$min)), na.rm=TRUE)
                resQuant$max       <- max(c(resQuant$max, sapply(reduce.values, function(x) x$max)), na.rm=TRUE)            
             }
@@ -191,14 +192,15 @@ updateAttributes <- function(obj, control=NULL) {
             suppressWarnings(suppressMessages(require(datadr)))
          })
       }
-            
+      
       tmp <- mrExec(
          obj,
          setup = setup, 
          map = map, 
          reduce = reduce, 
          params = parList,
-         verbose = FALSE
+         verbose = FALSE,
+         control = control
       )
       
       # result is kvMemory - get the k/v pairs (stored in conn)
@@ -227,11 +229,20 @@ updateAttributes <- function(obj, control=NULL) {
             varName <- gsub("^summary_(quant|categ)__(.*)", "\\2", k)
             if(varType=="quant") {
                stats <- moments2statistics(v$moments)
-               summaryList[[varName]] <- list(nna=v$nna, stats=stats, range=c(v$min, v$max))
+               v <- list(nna=v$nna, stats=stats, range=c(v$min, v$max))
+               class(v) <- c("ddfSummNumeric", "list")
+               summaryList[[varName]] <- v
             } else {
+               class(v) <- c("ddfSummFactor", "list")
+               # were there more unique levels than we could handle?
+               v$complete <- attrs[["nRow"]] == sum(v$freqTable$Freq)               
                summaryList[[varName]] <- v
             }
          }
+         
+         # make sure it is in the same order as the columns
+         summaryList <- summaryList[names(obj)]
+         
          class(summaryList) <- c("ddfSummary", "list")
          attrs[["summary"]] <- summaryList
       }
