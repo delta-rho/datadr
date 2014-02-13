@@ -92,7 +92,7 @@ validateBsvFn <- function(data, bsvFn, verbose=FALSE) {
 # if data.frame, check number of subsets to make sure 
 # it is reasonable - then store in _meta directory
 # the other option is MongoDB
-# NOTE: this should be an attribute, and should be done in updateAttributes
+# NOTE: maybe this should be an attribute, and should be done in updateAttributes
 # bsvTable <- function(obj, conn="data.frame") {
 #    # mapreduce job to extract bsvs and splitvars in case of condDiv
 # }
