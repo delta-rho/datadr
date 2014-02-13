@@ -1,4 +1,3 @@
-library(lattice)
 library(plyr)
 
 # set up data
@@ -60,6 +59,7 @@ test_that("by=TRUE", {
          q = quantile(x$Sepal.Length, 
          probs = seq(0, 1, by = 0.005), type = 3)))
    
+   # library(lattice)
    # xyplot(q ~ fval, groups = group, data = sq2, auto.key = TRUE, type = c("p", "g"))
    # xyplot(q ~ fval, groups = Species, data = tmp2, auto.key = TRUE, type = c("p", "g"))
    # plot(sq2$q - tmp2$q)
