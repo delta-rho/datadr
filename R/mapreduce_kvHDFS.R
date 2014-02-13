@@ -78,7 +78,7 @@ mrExecInternal.kvHDFSList <- function(data, setup=NULL, map=NULL, reduce=NULL, o
 
 #' Specify Control Parameters for RHIPE Job
 #' 
-#' Specify control parameters for a RHIPE job.  See \code{\link{rhwatch}} for details about each of the parameters.
+#' Specify control parameters for a RHIPE job.  See \code{rhwatch} for details about each of the parameters.
 #' @export
 rhipeControl <- function(mapred=NULL, setup=NULL, combiner=FALSE, cleanup=NULL, orderby="bytes", shared=NULL, jarfiles=NULL, zips=NULL, jobname="") {
    res <- list(mapred=mapred, setup=setup, combiner=combiner, cleanup=cleanup, orderby=orderby, shared=shared, jarfiles=jarfiles, zips=zips, jobname=jobname)

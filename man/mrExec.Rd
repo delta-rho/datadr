@@ -34,9 +34,8 @@
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
-  \code{\link{rhwatch}} in RHIPE) - see
-  \code{\link{rhipeControl}} and
-  \code{\link{localDiskControl}}}
+  \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
+  and \code{\link{localDiskControl}}}
 
   \item{params}{a named list of parameters external to the
   input data that are needed in the map or reduce phases}

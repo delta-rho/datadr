@@ -68,7 +68,7 @@ getBasicDdfAttrs.kvMemory <- function(obj, transFn) {
 
 # kvMemory is always extractable
 #' @S3method hasExtractableKV kvMemory
-hasExtractableKV.kvMemory <- function(obj) {
+hasExtractableKV.kvMemory <- function(x) {
    TRUE
 }
 

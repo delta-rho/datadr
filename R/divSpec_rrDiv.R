@@ -14,14 +14,9 @@
 #'   \item \url{http://www.datadr.org}
 #'   \item \href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha, S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., & Cleveland, W. S. (2012). Large complex data: divide and recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.}
 #' }
-
 #' 
 #' @author Ryan Hafen
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{condDiv}}
-#' @examples
-#' \dontrun{
-#' 
-#' }
 #' @export
 rrDiv <- function(nrows=NULL, seed=NULL) {
    res <- list(type="rrDiv", nrows=nrows, seed=seed)

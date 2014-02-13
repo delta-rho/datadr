@@ -6,7 +6,7 @@
 #' @author Ryan Hafen
 #' @export
 #' @method print ddo
-print.ddo <- function(x) {
+print.ddo <- function(x, ...) {
    
    # objName <- as.character(substitute(x))
    

@@ -22,7 +22,7 @@
 
   getKeys(x)
 
-  \method{summary}{ddf} (x, ...)
+  \method{summary}{ddf} (object, ...)
 
   \method{names}{ddf} (x)
 

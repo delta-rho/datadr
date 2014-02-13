@@ -221,7 +221,7 @@ removeData.localDiskConn <- function(conn, keys) {
 }
 
 #' @S3method print localDiskConn
-print.localDiskConn <- function(x) {
+print.localDiskConn <- function(x, ...) {
    cat(paste("localDiskConn connection\n  loc=", x$loc, "; nBins=", x$nBins, sep=""))
 }
 

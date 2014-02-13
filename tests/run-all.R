@@ -2,6 +2,6 @@
 # tests are located in inst/tests
 
 library(testthat)
-library(Rhipe)
+library(datadr)
 
 test_package("datadr")

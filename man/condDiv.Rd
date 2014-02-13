@@ -23,11 +23,6 @@
   specifying shingles for numeric conditioning variables
   will be implemented.
 }
-\examples{
-\dontrun{
-
-}
-}
 \author{
   Ryan Hafen
 }

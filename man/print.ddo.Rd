@@ -2,7 +2,7 @@
 \alias{print.ddo}
 \title{Print a "ddo" or "ddf" Object}
 \usage{
-  \method{print}{ddo} (x)
+  \method{print}{ddo} (x, ...)
 }
 \arguments{
   \item{x}{object to be printed}

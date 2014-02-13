@@ -42,9 +42,8 @@
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
-  \code{\link{rhwatch}} in RHIPE) - see
-  \code{\link{rhipeControl}} and
-  \code{\link{localDiskControl}}}
+  \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
+  and \code{\link{localDiskControl}}}
 
   \item{update}{should a MapReduce job be run to obtain
   additional attributes for the result data prior to
@@ -71,11 +70,6 @@
   variable names, the data will be divided by these
   variables.  Alternatively, this can be specified by e.g.
   \code{condDiv(c("var1", "var2"))}.
-}
-\examples{
-\dontrun{
-
-}
 }
 \author{
   Ryan Hafen

@@ -10,7 +10,7 @@
 #' @param filterFn a function that is applied to each candidate output key-value pair to determine whether it should be (if returns \code{TRUE}) part of the resulting division
 #' @param preTransFn a transformation function (if desired) to applied to eah subset prior to division
 #' @param postTransFn a transformation function (if desired) to apply to each post-division subset
-#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
+#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param update should a MapReduce job be run to obtain additional attributes for the result data prior to returning?
 #' @param verbose logical - print messages about what is being done
 #' 
@@ -26,10 +26,6 @@
 #' 
 #' @author Ryan Hafen
 #' @seealso \code{\link{recombine}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{condDiv}}, \code{\link{rrDiv}}
-#' @examples
-#' \dontrun{
-#' 
-#' }
 #' @export
 divide <- function(data, 
    by = NULL, 

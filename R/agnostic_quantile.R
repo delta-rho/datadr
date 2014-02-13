@@ -9,7 +9,7 @@
 #' @param transFn transformation to apply to variable prior to computing quantiles
 #' @param nBins how many bins should the range of the variable be split into?
 #' @param tails how many exact values at each tail should be retained?
-#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
+#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' 
 #' @return
 #' data frame of quantiles \code{q} and their associated f-value \code{fval}.  If \code{by} is specified, then also a variable \code{group}.
@@ -37,6 +37,7 @@
 #' plot(probs, quantile(iris$Sepal.Length, probs = probs, type = 1))
 #' 
 #' @method quantile ddf
+#' @importFrom stats quantile
 #' @export
 quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), transFn = identity, nBins = 10000, tails = 100, control = NULL) {
    # nBins <- 10000; tails <- 0; probs <- seq(0, 1, 0.0005); by <- "Species"; var <- "Sepal.Length"; x <- ldd; trans <- identity

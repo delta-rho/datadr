@@ -221,8 +221,8 @@ getKeys <- function(x)
 #' @rdname ddo-ddf-accessors
 #' @method summary ddf
 #' @export
-summary.ddf <- function(x, ...)
-   getAttribute(x, "summary")
+summary.ddf <- function(object, ...)
+   getAttribute(object, "summary")
 
 # TODO: document
 #' @export

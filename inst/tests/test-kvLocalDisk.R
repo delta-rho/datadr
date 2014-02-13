@@ -193,35 +193,35 @@ test_that("update ddf - check attrs", {
 ############################################################################
 context("local disk parallel check")
 
-test_that("update in parallel and check", {
-   require(parallel)
-   ldf <- ddf(conn, reset = TRUE)
-   cl <- makeCluster(2)
-   ldf <- updateAttributes(ldf, control=localDiskControl(cluster=cl))
-   stopCluster(cl)
-   
-   expect_true(nrow(ldf) == 3750)
-   expect_true(all(names(ldf) == names(iris2)))
-   
-   ldfSumm <- summary(ldf)
-   
-   # summaries
-   expect_equal(ldfSumm$Sepal.Width$nna, length(which(is.na(datadf$Sepal.Width))))
-   expect_equal(ldfSumm$Sepal.Width$range[1], min(datadf$Sepal.Width))
-   expect_equal(ldfSumm$Sepal.Width$range[2], max(datadf$Sepal.Width))
-   expect_equal(ldfSumm$Sepal.Width$stats$mean, mean(datadf$Sepal.Width))
-   expect_equal(ldfSumm$Sepal.Width$stats$var, var(datadf$Sepal.Width))
-   
-   # summaries with NA
-   expect_equal(ldfSumm$Sepal.Length$range[1], min(datadf$Sepal.Length, na.rm = TRUE))
-   expect_equal(ldfSumm$Sepal.Length$range[2], max(datadf$Sepal.Length, na.rm = TRUE))
-   expect_equal(ldfSumm$Sepal.Length$stats$mean, mean(datadf$Sepal.Length, na.rm = TRUE))
-   expect_equal(ldfSumm$Sepal.Length$stats$var, var(datadf$Sepal.Length, na.rm = TRUE))
-   # expect_equal(ldfSumm$Sepal.Length$stats$skewness, skewness(datadf$Sepal.Length))
-   # expect_equal(ldfSumm$Sepal.Length$stats$kurtosis, kurtosis(datadf$Sepal.Length, type = 2))
-   
-   ldfSumm
-})
+# test_that("update in parallel and check", {
+#    require(parallel)
+#    ldf <- ddf(conn, reset = TRUE)
+#    cl <- makeCluster(2)
+#    ldf <- updateAttributes(ldf, control=localDiskControl(cluster=cl))
+#    stopCluster(cl)
+#    
+#    expect_true(nrow(ldf) == 3750)
+#    expect_true(all(names(ldf) == names(iris2)))
+#    
+#    ldfSumm <- summary(ldf)
+#    
+#    # summaries
+#    expect_equal(ldfSumm$Sepal.Width$nna, length(which(is.na(datadf$Sepal.Width))))
+#    expect_equal(ldfSumm$Sepal.Width$range[1], min(datadf$Sepal.Width))
+#    expect_equal(ldfSumm$Sepal.Width$range[2], max(datadf$Sepal.Width))
+#    expect_equal(ldfSumm$Sepal.Width$stats$mean, mean(datadf$Sepal.Width))
+#    expect_equal(ldfSumm$Sepal.Width$stats$var, var(datadf$Sepal.Width))
+#    
+#    # summaries with NA
+#    expect_equal(ldfSumm$Sepal.Length$range[1], min(datadf$Sepal.Length, na.rm = TRUE))
+#    expect_equal(ldfSumm$Sepal.Length$range[2], max(datadf$Sepal.Length, na.rm = TRUE))
+#    expect_equal(ldfSumm$Sepal.Length$stats$mean, mean(datadf$Sepal.Length, na.rm = TRUE))
+#    expect_equal(ldfSumm$Sepal.Length$stats$var, var(datadf$Sepal.Length, na.rm = TRUE))
+#    # expect_equal(ldfSumm$Sepal.Length$stats$skewness, skewness(datadf$Sepal.Length))
+#    # expect_equal(ldfSumm$Sepal.Length$stats$kurtosis, kurtosis(datadf$Sepal.Length, type = 2))
+#    
+#    ldfSumm
+# })
 
 ############################################################################
 ############################################################################

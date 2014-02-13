@@ -1,6 +1,7 @@
 
-
-filter <- function(x, fraction, output) {
+#' Take a Sample of Key-Value Pairs
+#' @export
+drSample <- function(x, fraction) {
    # TODO: warn if output storage is not commensurate with input?
    map <- expression({
       for(i in seq_along(map.keys)) {

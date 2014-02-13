@@ -1,8 +1,8 @@
-\name{filter}
-\alias{filter}
+\name{drFilter}
+\alias{drFilter}
 \title{Filter a 'ddo' or 'ddf' Object}
 \usage{
-  filter(x, fraction, output)
+  drFilter(x, filterFn, output = NULL, control = NULL)
 }
 \arguments{
   \item{x}{an object of class 'ddo' or 'ddf'}

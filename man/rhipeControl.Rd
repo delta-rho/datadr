@@ -9,7 +9,6 @@
 }
 \description{
   Specify control parameters for a RHIPE job.  See
-  \code{\link{rhwatch}} for details about each of the
-  parameters.
+  \code{rhwatch} for details about each of the parameters.
 }
 

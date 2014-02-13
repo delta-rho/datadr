@@ -26,11 +26,6 @@
   \code{nrows} rows.  A future implementation will make
   each subset have exactly \code{nrows} rows.
 }
-\examples{
-\dontrun{
-
-}
-}
 \author{
   Ryan Hafen
 }

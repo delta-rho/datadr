@@ -47,10 +47,10 @@ getBasicDdfAttrs.kvHDFS <- function(obj, transFn) {
 }
 
 #' @S3method hasExtractableKV kvHDFS
-hasExtractableKV.kvHDFS <- function(obj) {
+hasExtractableKV.kvHDFS <- function(x) {
    # grab one key and see if you can get it with rhmapfile
-   conn <- getAttribute(obj, "conn")
-   k <- kvExample(obj)[1]
+   conn <- getAttribute(x, "conn")
+   k <- kvExample(x)[1]
    err <- try(a <- rhmapfile(conn$loc), silent=TRUE)
    if(inherits(err, "try-error")) {
       return(FALSE)

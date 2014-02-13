@@ -23,9 +23,8 @@
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
-  \code{\link{rhwatch}} in RHIPE) - see
-  \code{\link{rhipeControl}} and
-  \code{\link{localDiskControl}}}
+  \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
+  and \code{\link{localDiskControl}}}
 }
 \value{
   depends on \code{combine}
@@ -33,11 +32,6 @@
 \description{
   Apply an analytic recombination method to a ddo/ddf
   object and combine the results
-}
-\examples{
-\dontrun{
-
-}
 }
 \author{
   Ryan Hafen

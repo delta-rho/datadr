@@ -29,9 +29,8 @@
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
-  \code{\link{rhwatch}} in RHIPE) - see
-  \code{\link{rhipeControl}} and
-  \code{\link{localDiskControl}}}
+  \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
+  and \code{\link{localDiskControl}}}
 }
 \value{
   data frame of quantiles \code{q} and their associated

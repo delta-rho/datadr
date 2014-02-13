@@ -54,7 +54,7 @@ getBasicDdfAttrs.kvLocalDisk <- function(obj, transFn) {
 
 # kvLocalDisk is always extractable
 #' @S3method hasExtractableKV kvLocalDisk
-hasExtractableKV.kvLocalDisk <- function(obj) {
+hasExtractableKV.kvLocalDisk <- function(x) {
    TRUE
 }
 

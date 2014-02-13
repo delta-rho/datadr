@@ -16,10 +16,6 @@
 #' 
 #' @author Ryan Hafen
 #' @seealso \code{\link{divide}}, \code{\link{getSplitVars}}, \code{\link{getSplitVar}}
-#' @examples
-#' \dontrun{
-#' 
-#' }
 #' @export
 condDiv <- function(vars) {
    # TODO: shingles, etc.

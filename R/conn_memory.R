@@ -11,6 +11,6 @@ saveAttrs.nullConn <- function(obj, attrs, type="ddo") {
 }
 
 #' @S3method print nullConn
-print.nullConn <- function(x) {
+print.nullConn <- function(x, ...) {
    cat("In-memory data connection")
 }

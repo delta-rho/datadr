@@ -10,6 +10,13 @@
 #' @examples
 #' a <- divide(iris, by="Species")
 #' b <- lapply(a, function(x) x$Sepal.Width)
+setMethod("lapply", signature(X = "ddf", FUN = "function"), function(X, FUN) {
+   if(length(formals(FUN)) > 1)
+      stop("FUN must take only one argument for lapply on a ddo/ddf object")
+   recombine(X, apply = FUN, combine=combDdo())
+})
+
+#' @export
 setMethod("lapply", signature(X = "ddo", FUN = "function"), function(X, FUN) {
    if(length(formals(FUN)) > 1)
       stop("FUN must take only one argument for lapply on a ddo/ddf object")

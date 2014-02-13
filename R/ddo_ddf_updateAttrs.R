@@ -3,7 +3,7 @@
 #' Update attributes of a 'ddo' or 'ddf' object
 #' 
 #' @param obj an object of class 'ddo' or 'ddf'
-#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{\link{rhwatch}} in RHIPE) - see \code{\link{rhipeControl}}
+#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
 #' 
 #' @return an object of class 'ddo' or 'ddf'
 #' 

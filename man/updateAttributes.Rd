@@ -9,7 +9,7 @@
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
-  \code{\link{rhwatch}} in RHIPE) - see
+  \code{rhwatch} in RHIPE) - see
   \code{\link{rhipeControl}}}
 }
 \value{

@@ -129,7 +129,7 @@ removeData.hdfsConn <- function(conn, keys) {
 }
 
 #' @export
-print.hdfsConn <- function(x) {
+print.hdfsConn <- function(x, ...) {
    cat(paste("hdfsConn connection\n  loc=", x$loc, "; type=", x$type, sep=""))
 }
 
