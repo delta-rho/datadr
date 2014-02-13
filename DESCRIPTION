@@ -20,8 +20,6 @@ Depends:
     data.table,
     digest,
     testthat
-Suggests:
-    Rhipe
 Collate:
     'agnostic_quantile.R'
     'bsv.R'
