@@ -60,11 +60,6 @@ test_that("by=TRUE", {
             q = quantile(x$Sepal.Length, 
                probs = seq(0, 1, by = 0.005), type = 3)),
       combine = combRbind())
-
-   tmp2 <- ddply(tmp, .(Species), function(x) 
-      data.frame(fval = seq(0, 1, by = 0.005), 
-         q = quantile(x$Sepal.Length, 
-         probs = seq(0, 1, by = 0.005), type = 3)))
    
    # library(lattice)
    # xyplot(q ~ fval, groups = group, data = sq2, auto.key = TRUE, type = c("p", "g"))
