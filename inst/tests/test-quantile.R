@@ -1,5 +1,3 @@
-library(plyr)
-
 # set up data
 path <- file.path(tempdir(), "ldd_test")
 unlink(path, recursive=TRUE)
