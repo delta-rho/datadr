@@ -54,6 +54,15 @@ test_that("tails check", {
 
 test_that("by=TRUE", {
    sq2 <- quantile(ldd, var = "Sepal.Length", by = "Species", tails = 0)
+   # true quantiles
+   tmpd <- divide(tmp, by="Species")
+   tmp2 <- recombine(tmpd, 
+      apply = function(x) 
+         data.frame(fval = seq(0, 1, by = 0.005),
+            q = quantile(x$Sepal.Length, 
+               probs = seq(0, 1, by = 0.005), type = 3)),
+      combine = combRbind())
+
    tmp2 <- ddply(tmp, .(Species), function(x) 
       data.frame(fval = seq(0, 1, by = 0.005), 
          q = quantile(x$Sepal.Length, 
