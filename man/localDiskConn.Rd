@@ -2,8 +2,8 @@
 \alias{localDiskConn}
 \title{Connect to Data Source on Local Disk}
 \usage{
-  localDiskConn(loc, nBins = 0, fileHashFn = NULL,
-    autoYes = FALSE, reset = FALSE, verbose = TRUE)
+localDiskConn(loc, nBins = 0, fileHashFn = NULL, autoYes = FALSE,
+  reset = FALSE, verbose = TRUE)
 }
 \arguments{
   \item{loc}{location on local disk for the data source}
@@ -28,19 +28,19 @@
   being done}
 }
 \value{
-  a "kvConnection" object of class "localDiskConn"
+a "kvConnection" object of class "localDiskConn"
 }
 \description{
-  Connect to a data source on local disk
+Connect to a data source on local disk
 }
 \details{
-  This simply creates a "connection" to a directory on
-  local disk (which need not have data in it).  To actually
-  do things with this connection, see \code{\link{ddo}},
-  etc.  Typically, you should just use \code{loc} to
-  specify where the data is or where you would like data
-  for this connection to be stored.  Metadata for the
-  object is also stored in this directory.
+This simply creates a "connection" to a directory on local
+disk (which need not have data in it).  To actually do
+things with this connection, see \code{\link{ddo}}, etc.
+Typically, you should just use \code{loc} to specify where
+the data is or where you would like data for this
+connection to be stored.  Metadata for the object is also
+stored in this directory.
 }
 \examples{
 # connect to empty localDisk directory
@@ -54,10 +54,10 @@ irisDdf <- ddf(conn, update=TRUE)
 irisDdf
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{addData}, \code{\link{ddo}}, \code{\link{ddf}},
-  \code{\link{localDiskConn}}
+\code{addData}, \code{\link{ddo}}, \code{\link{ddf}},
+\code{\link{localDiskConn}}
 }
 

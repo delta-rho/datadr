@@ -2,7 +2,7 @@
 \alias{addData}
 \title{Add Key-Value Pairs to a Data Connection}
 \usage{
-  addData(conn, data, overwrite = FALSE)
+addData(conn, data, overwrite = FALSE)
 }
 \arguments{
   \item{conn}{a kvConnection object}
@@ -16,18 +16,18 @@
   work for HDFS connections)}
 }
 \description{
-  Add key-value pairs to a data connection
+Add key-value pairs to a data connection
 }
 \note{
-  This is generally not recommended for HDFS as it writes a
-  new file each time it is called, and can result in more
-  individual files than Hadoop likes to deal with.
+This is generally not recommended for HDFS as it writes a
+new file each time it is called, and can result in more
+individual files than Hadoop likes to deal with.
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{removeData}}, \code{\link{localDiskConn}},
-  \code{\link{hdfsConn}}
+\code{\link{removeData}}, \code{\link{localDiskConn}},
+\code{\link{hdfsConn}}
 }
 

@@ -2,11 +2,17 @@
 \alias{as.data.frame.ddf}
 \title{Turn "ddf" Object into Data Frame}
 \usage{
-  as.data.frame.ddf(x, keys = TRUE, splitVars = TRUE,
-    bsvs = FALSE, ...)
+\method{as.data.frame}{ddf}(x, row.names = NULL, optional = FALSE,
+  keys = TRUE, splitVars = TRUE, bsvs = FALSE, ...)
 }
 \arguments{
-  \item{should}{the key be added as a variable in the
+  \item{x}{a 'ddf' object}
+
+  \item{row.names}{passed to as.data.frame}
+
+  \item{optional}{passed to as.data.frame}
+
+  \item{keys}{should the key be added as a variable in the
   resulting data frame? (if key is not a character, it will
   be replaced with a md5 hash)}
 
@@ -14,10 +20,13 @@
   added as variables in the resulting data frame?}
 
   \item{bsvs}{should the values of bsvs be added as
-  variables in the resulting data frame? Rbind all the rows
-  of a ddf object into a single data frame}
+  variables in the resulting data frame?}
+
+  \item{\ldots}{additional arguments passed to
+  as.data.frame Rbind all the rows of a ddf object into a
+  single data frame}
 }
 \description{
-  Turn "ddf" Object into Data Frame
+Turn "ddf" Object into Data Frame
 }
 

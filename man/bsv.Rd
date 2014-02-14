@@ -2,7 +2,7 @@
 \alias{bsv}
 \title{Construct Between Subset Variable (BSV)}
 \usage{
-  bsv(val = NULL, desc = "")
+bsv(val = NULL, desc = "")
 }
 \arguments{
   \item{val}{a scalar character, numeric, or date}
@@ -10,12 +10,12 @@
   \item{desc}{a character string describing the BSV}
 }
 \description{
-  Construct between subset variable (BSV)
+Construct between subset variable (BSV)
 }
 \details{
-  Should be called inside the \code{bsvFn} argument to
-  \code{divide} used for constructing a BSV list for each
-  subset of a division.
+Should be called inside the \code{bsvFn} argument to
+\code{divide} used for constructing a BSV list for each
+subset of a division.
 }
 \examples{
 irisDdf <- ddf(iris)
@@ -35,10 +35,10 @@ bsvInfo(bySpecies)
 getBsvs(bySpecies[[1]])
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{getBsvs}},
-  \code{\link{bsvInfo}}
+\code{\link{divide}}, \code{\link{getBsvs}},
+\code{\link{bsvInfo}}
 }
 

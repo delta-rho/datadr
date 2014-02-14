@@ -2,12 +2,11 @@
 \alias{quantile.ddf}
 \title{Sample Quantiles for ddf Objects}
 \usage{
-  \method{quantile}{ddf} (x, var, by = NULL,
-    probs = seq(0, 1, 0.005), transFn = identity,
-    nBins = 10000, tails = 100, control = NULL)
+\method{quantile}{ddf}(x, var, by = NULL, probs = seq(0, 1, 0.005),
+  transFn = identity, nBins = 10000, tails = 100, control = NULL, ...)
 }
 \arguments{
-  \item{x}{}
+  \item{x}{a 'ddf' object}
 
   \item{var}{the name of the variable to compute quantiles
   for}
@@ -31,27 +30,28 @@
   should handle things (most-likely parameters to
   \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
   and \code{\link{localDiskControl}}}
+
+  \item{\ldots}{additional arguments}
 }
 \value{
-  data frame of quantiles \code{q} and their associated
-  f-value \code{fval}.  If \code{by} is specified, then
-  also a variable \code{group}.
+data frame of quantiles \code{q} and their associated
+f-value \code{fval}.  If \code{by} is specified, then also
+a variable \code{group}.
 }
 \description{
-  Compute sample quantiles for
+Compute sample quantiles for
 }
 \details{
-  This division-agnostic quantile calculation algorithm
-  takes the range of the variable of interest and splits it
-  into \code{nBins} bins, tabulates counts for those bins,
-  and reconstructs a quantile approximation from them.
-  \code{nBins} should not get too large, but larger
-  \code{nBins} gives more accuracy.  If \code{tails} is
-  positive, the first and last \code{tails} ordered values
-  are attached to the quantile estimate - this is useful
-  for long-tailed distributions or distributions with
-  outliers for which you would like more detail in the
-  tails.
+This division-agnostic quantile calculation algorithm takes
+the range of the variable of interest and splits it into
+\code{nBins} bins, tabulates counts for those bins, and
+reconstructs a quantile approximation from them.
+\code{nBins} should not get too large, but larger
+\code{nBins} gives more accuracy.  If \code{tails} is
+positive, the first and last \code{tails} ordered values
+are attached to the quantile estimate - this is useful for
+long-tailed distributions or distributions with outliers
+for which you would like more detail in the tails.
 }
 \examples{
 # break the iris data into k/v pairs
@@ -70,9 +70,9 @@ plot(iq$fval, iq$q)
 plot(probs, quantile(iris$Sepal.Length, probs = probs, type = 1))
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{updateAttributes}}
+\code{\link{updateAttributes}}
 }
 

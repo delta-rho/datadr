@@ -23,7 +23,8 @@ requiredObjAttrs <- function(obj, ...)
 setAttributes <- function(obj, ...)
    UseMethod("setAttributes")
 
-# obj is the data object, attrs is a named list of attributes
+#' @rdname ddoddfattr
+#' @param attrs a named list of attributes to set
 setAttributes.ddf <- function(obj, attrs) {
    ind <- which(names(attrs) %in% requiredObjAttrs(obj)$ddf)
    if(length(ind) > 0)
@@ -68,6 +69,10 @@ setObjAttributes <- function(obj, attrs, type) {
 ### getAttributes
 ######################################################################
 
+#' Managing attributes of 'ddo' or 'ddf' objects
+#' @param obj 'ddo' or 'ddf' object
+#' @param attrName name of the attribute to get
+#' @rdname ddoddfattr
 #' @export
 getAttribute <- function(obj, attrName) {
    res <- getAttributes(obj, attrName)
@@ -89,6 +94,8 @@ getAttribute <- function(obj, attrName) {
 getAttributes <- function(obj, ...)
    UseMethod("getAttributes")
 
+#' @rdname ddoddfattr
+#' @param attrNames vector of names of the attributes to get
 getAttributes.ddf <- function(obj, attrNames) {
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddf)
    res <- list(ddf = NULL)
@@ -122,6 +129,7 @@ getObjAttributes <- function(obj, attrNames, type)
 hasAttributes <- function(obj, ...)
    UseMethod("hasAttributes")
 
+#' @rdname ddoddfattr
 hasAttributes.ddf <- function(obj, attrNames) {
    res <- rep(FALSE, length(attrNames))
 
@@ -182,10 +190,14 @@ getBasicDdfAttrs <- function(obj, ...)
 #' Accessor Functions
 #' 
 #' Accessor functions for attributes of ddo/ddf objects.  Methods also include \code{nrow} and \code{ncol} for ddf objects.
+#' @param x a 'ddf'/'ddo' object
+#' @param transform if the 'ddf' object has a \code{transFn}, should it be applied prior to returning?
+#' @param object a 'ddf'/'ddo' object
+#' @param \ldots additional arguments
 #' 
 #' @export
 #' @rdname ddo-ddf-accessors
-kvExample <- function(x, transform=FALSE) {
+kvExample <- function(x, transform = FALSE) {
    res <- getAttribute(x, "example")
    if(inherits(x, "ddf") && transform)
       return(kvApply(getAttribute(x, "transFn"), res, returnKV = TRUE))
@@ -270,7 +282,12 @@ removeData <- function(conn, keys)
 ### object conversion
 ######################################################################
 
-# TODO: document
+#' Convert 'ddo' / 'ddf' Objects
+#' 
+#' Convert 'ddo' / 'ddf' objects between different storage backends
+#' 
+#' @param from a 'ddo' or 'ddf' object
+#' @param to a 'kvConnection' object (created with \code{\link{localDiskConn}} or \code{\link{hdfsConn}}) or \code{NULL} if an in-memory 'ddo' / 'ddf' is desired
 #' @export
 convert <- function(from, to)
    UseMethod("convert")
@@ -308,12 +325,32 @@ addNeededAttrs <- function(res, from) {
 setOldClass("ddf")
 setOldClass("ddo")
 
+#' 'ddf' accessors
+#' @name ddf-class
+#' @rdname ddf-class
+#' @exportMethod nrow
 setGeneric("nrow")
+#' 'ddf' accessors
+#' @name ddf-class
+#' @rdname ddf-class
+#' @exportMethod NROW
 setGeneric("NROW")
+#' 'ddf' accessors
+#' @name ddf-class
+#' @rdname ddf-class
+#' @exportMethod ncol
 setGeneric("ncol")
+#' 'ddf' accessors
+#' @name ddf-class
+#' @rdname ddf-class
+#' @exportMethod NCOL
 setGeneric("NCOL")
 
+#' The Number of Rows/Columns of a 'ddf' object
+#' @rdname ddf-class
+#' @param a 'ddf' object
 #' @export
+#' @aliases nrow,ddf-method
 setMethod("nrow", "ddf", function(x) {
    res <- getAttribute(x, "nRow")
    if(is.na(res) || is.null(res))
@@ -321,7 +358,9 @@ setMethod("nrow", "ddf", function(x) {
    res
 })
 
+#' @rdname ddf-class
 #' @export
+#' @aliases NROW
 setMethod("NROW", "ddf",   function(x) {
    res <- getAttribute(x, "nRow")
    if(is.na(res) || is.null(res))
@@ -329,19 +368,23 @@ setMethod("NROW", "ddf",   function(x) {
    res
 })
 
+#' @rdname ddf-class
 #' @export
+#' @aliases ncol
 setMethod("ncol", "ddf", function(x) {
    length(attributes(x)$ddf$vars)
 })
 
+#' @rdname ddf-class
 #' @export
+#' @aliases NCOL
 setMethod("NCOL", "ddf", function(x) {
    length(attributes(x)$ddf$vars)
 })
 
-
 # names and length are primitives
 
+#' Accessor methods for 'ddo' and 'ddf' objects
 #' @export
 #' @method names ddf
 #' @rdname ddo-ddf-accessors
@@ -358,12 +401,16 @@ length.ddo <- function(x) {
 
 #' Turn "ddf" Object into Data Frame
 #' 
-#' @param should the key be added as a variable in the resulting data frame? (if key is not a character, it will be replaced with a md5 hash)
+#' @param x a 'ddf' object
+#' @param row.names passed to as.data.frame
+#' @param optional passed to as.data.frame
+#' @param keys should the key be added as a variable in the resulting data frame? (if key is not a character, it will be replaced with a md5 hash)
 #' @param splitVars should the values of the splitVars be added as variables in the resulting data frame?
 #' @param bsvs should the values of bsvs be added as variables in the resulting data frame?
+#' @param \ldots additional arguments passed to as.data.frame
 #' Rbind all the rows of a ddf object into a single data frame
-#' @export
-as.data.frame.ddf <- function(x, keys=TRUE, splitVars=TRUE, bsvs=FALSE, ...) {
+#' @method as.data.frame ddf
+as.data.frame.ddf <- function(x, row.names = NULL, optional = FALSE, keys = TRUE, splitVars = TRUE, bsvs = FALSE, ...) {
    x <- convert(x, NULL)
    tmp <- lapply(getAttribute(x, "conn")$data, function(a) {
       res <- a[[2]]
@@ -390,6 +437,6 @@ as.data.frame.ddf <- function(x, keys=TRUE, splitVars=TRUE, bsvs=FALSE, ...) {
       res
    })
    
-   data.frame(rbindlist(tmp), ...)
+   as.data.frame(rbindlist(tmp), row.names = row.names, optional = optional, ...)
 }
 

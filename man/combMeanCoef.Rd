@@ -2,28 +2,28 @@
 \alias{combMeanCoef}
 \title{Mean Coefficient Recombination}
 \usage{
-  combMeanCoef(...)
+combMeanCoef(...)
 }
 \arguments{
   \item{\ldots}{...}
 }
 \description{
-  Mean coefficient recombination
+Mean coefficient recombination
 }
 \details{
-  This is an experimental prototype.  It is to be passed as
-  the argument \code{combine} to \code{\link{recombine}}.
-  It expects to be dealing with named vectors including an
-  element \code{n} specifying the number of rows in that
-  subset.
+This is an experimental prototype.  It is to be passed as
+the argument \code{combine} to \code{\link{recombine}}.  It
+expects to be dealing with named vectors including an
+element \code{n} specifying the number of rows in that
+subset.
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{recombine}},
-  \code{\link{rrDiv}}, \code{\link{combCollect}},
-  \code{\link{combDdo}}, \code{\link{combRbind}},
-  \code{\link{combMean}}
+\code{\link{divide}}, \code{\link{recombine}},
+\code{\link{rrDiv}}, \code{\link{combCollect}},
+\code{\link{combDdo}}, \code{\link{combRbind}},
+\code{\link{combMean}}
 }
 

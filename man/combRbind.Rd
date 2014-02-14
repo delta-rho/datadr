@@ -2,24 +2,24 @@
 \alias{combRbind}
 \title{"rbind" Recombination}
 \usage{
-  combRbind(...)
+combRbind(...)
 }
 \arguments{
   \item{\ldots}{...}
 }
 \description{
-  "rbind" recombination
+"rbind" recombination
 }
 \details{
-  This is an experimental prototype.  It is to be passed as
-  the argument \code{combine} to \code{\link{recombine}}.
+This is an experimental prototype.  It is to be passed as
+the argument \code{combine} to \code{\link{recombine}}.
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{recombine}},
-  \code{\link{combDdo}}, \code{\link{combCollect}},
-  \code{\link{combMeanCoef}}, \code{\link{combMean}}
+\code{\link{divide}}, \code{\link{recombine}},
+\code{\link{combDdo}}, \code{\link{combCollect}},
+\code{\link{combMeanCoef}}, \code{\link{combMean}}
 }
 

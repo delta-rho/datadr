@@ -2,7 +2,7 @@
 \alias{condDiv}
 \title{Conditioning Variable Division}
 \usage{
-  condDiv(vars)
+condDiv(vars)
 }
 \arguments{
   \item{vars}{a character string or vector of character
@@ -10,31 +10,30 @@
   which to divide}
 }
 \value{
-  a list to be used for the "by" argument to
-  \code{\link{divide}}
+a list to be used for the "by" argument to
+\code{\link{divide}}
 }
 \description{
-  Specify conditioning variable division parameters for
-  data division
+Specify conditioning variable division parameters for data
+division
 }
 \details{
-  Currently each unique combination of values of
-  \code{vars} constitutes a subset.  In the future,
-  specifying shingles for numeric conditioning variables
-  will be implemented.
+Currently each unique combination of values of \code{vars}
+constitutes a subset.  In the future, specifying shingles
+for numeric conditioning variables will be implemented.
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \references{
-  \itemize{ \item \url{http://www.datadr.org} \item
-  \href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha,
-  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
-  Cleveland, W. S. (2012). Large complex data: divide and
-  recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
+\itemize{ \item \url{http://www.datadr.org} \item
+\href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha,
+S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+Cleveland, W. S. (2012). Large complex data: divide and
+recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{getSplitVars}},
-  \code{\link{getSplitVar}}
+\code{\link{divide}}, \code{\link{getSplitVars}},
+\code{\link{getSplitVar}}
 }
 

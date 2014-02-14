@@ -299,7 +299,8 @@ getSplitVars <- function(x) {
 # (this is meant to be called in parallel)
 
 #' Functions used in divide()
-#' #rdname divideInternals
+#' @rdname divideInternals
+#' @param curDF,seed arguments
 #' @export
 dfSplit <- function(curDF, by, seed) {   
    # remove factor levels, if any
@@ -312,7 +313,8 @@ dfSplit <- function(curDF, by, seed) {
    split(curDF, getCuts(by, curDF))
 }
 
-#' #rdname divideInternals
+#' @rdname divideInternals
+#' @param curSplit,bsvFn,by,postTransFn arguments
 #' @export
 addSplitAttrs <- function(curSplit, bsvFn, by, postTransFn=NULL) {
    bsvs <- NULL

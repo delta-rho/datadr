@@ -2,7 +2,7 @@
 \alias{drFilter}
 \title{Filter a 'ddo' or 'ddf' Object}
 \usage{
-  drFilter(x, filterFn, output = NULL, control = NULL)
+drFilter(x, filterFn, output = NULL, control = NULL)
 }
 \arguments{
   \item{x}{an object of class 'ddo' or 'ddf'}
@@ -24,15 +24,15 @@
   and \code{\link{localDiskControl}}}
 }
 \value{
-  a 'ddo' or 'ddf' object
+a 'ddo' or 'ddf' object
 }
 \description{
-  Filter a 'ddo' or 'ddf' object
+Filter a 'ddo' or 'ddf' object
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{join}}
+\code{\link{drJoin}}
 }
 

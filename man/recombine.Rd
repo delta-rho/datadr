@@ -2,8 +2,8 @@
 \alias{recombine}
 \title{Recombine}
 \usage{
-  recombine(data, apply = NULL, combine = NULL,
-    output = NULL, control = NULL, verbose = TRUE)
+recombine(data, apply = NULL, combine = NULL, output = NULL,
+  control = NULL, verbose = TRUE)
 }
 \arguments{
   \item{data}{an object of class "ddo" of "ddf"}
@@ -25,29 +25,31 @@
   should handle things (most-likely parameters to
   \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
   and \code{\link{localDiskControl}}}
+
+  \item{verbose}{logical - print messages about what is
+  being done}
 }
 \value{
-  depends on \code{combine}
+depends on \code{combine}
 }
 \description{
-  Apply an analytic recombination method to a ddo/ddf
-  object and combine the results
+Apply an analytic recombination method to a ddo/ddf object
+and combine the results
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \references{
-  \itemize{ \item \url{http://www.datadr.org} \item
-  \href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha,
-  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
-  Cleveland, W. S. (2012). Large complex data: divide and
-  recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
+\itemize{ \item \url{http://www.datadr.org} \item
+\href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha,
+S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+Cleveland, W. S. (2012). Large complex data: divide and
+recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{ddo}},
-  \code{\link{ddf}}, \code{\link{drGLM}},
-  \code{\link{drBLB}}, \code{\link{combMeanCoef}},
-  \code{\link{combMean}}, \code{\link{combCollect}},
-  \code{\link{combRbind}}
+\code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}},
+\code{\link{drGLM}}, \code{\link{drBLB}},
+\code{\link{combMeanCoef}}, \code{\link{combMean}},
+\code{\link{combCollect}}, \code{\link{combRbind}}
 }
 

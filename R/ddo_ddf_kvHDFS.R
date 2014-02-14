@@ -69,6 +69,7 @@ hasExtractableKV.kvHDFS <- function(x) {
 ############################################################################
 
 #' Take a ddo/ddf HDFS data object and turn it into a mapfile
+#' @param obj object of class 'ddo' or 'ddf' with an HDFS connection
 #' @export
 makeExtractable <- function(obj) {
    # identity mr job

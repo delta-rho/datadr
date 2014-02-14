@@ -2,24 +2,24 @@
 \alias{combMean}
 \title{Mean Recombination}
 \usage{
-  combMean(...)
+combMean(...)
 }
 \arguments{
   \item{\ldots}{...}
 }
 \description{
-  Mean recombination
+Mean recombination
 }
 \details{
-  This is an experimental prototype.  It is to be passed as
-  the argument \code{combine} to \code{\link{recombine}}.
+This is an experimental prototype.  It is to be passed as
+the argument \code{combine} to \code{\link{recombine}}.
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{recombine}},
-  \code{\link{combCollect}}, \code{\link{combDdo}},
-  \code{\link{combRbind}}, \code{\link{combMeanCoef}}
+\code{\link{divide}}, \code{\link{recombine}},
+\code{\link{combCollect}}, \code{\link{combDdo}},
+\code{\link{combRbind}}, \code{\link{combMeanCoef}}
 }
 

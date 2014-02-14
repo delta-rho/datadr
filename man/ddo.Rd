@@ -1,15 +1,37 @@
 \name{ddo}
 \alias{ddo}
-\title{Make a distributed data object}
+\title{Instantiate a Distributed Data Object ('ddo')
+Instantiate a distributed data object ('ddo')}
 \usage{
-  ddo(conn, update = FALSE, reset = FALSE, control = NULL,
-    verbose = TRUE)
+ddo(conn, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE)
 }
 \arguments{
+  \item{conn}{an object pointing to where data is or will
+  be stored for the 'ddf' object - can be a 'kvConnection'
+  object created from \code{\link{localDiskConn}} or
+  \code{\link{hdfsConn}}, or a data frame or list of
+  key-value pairs}
+
+  \item{update}{should the attributes of this object be
+  updated?  See \code{\link{updateAttributes}} for more
+  details.}
+
+  \item{reset}{should all persistent metadata about this
+  object be removed and the object created from scratch?
+  This setting does not effect data stored in the
+  connection location.}
+
+  \item{control}{parameters specifying how the backend
+  should handle things if attributes are updated
+  (most-likely parameters to \code{rhwatch} in RHIPE) - see
+  \code{\link{rhipeControl}} and
+  \code{\link{localDiskControl}}}
+
   \item{verbose}{logical - print messages about what is
   being done}
 }
 \description{
-  Make a distributed data object
+Instantiate a Distributed Data Object ('ddo') Instantiate a
+distributed data object ('ddo')
 }
 

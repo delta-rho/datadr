@@ -4,11 +4,17 @@
 
 # transFn is a function that turns each value into a data frame (if it isn't one)
 
-# TODO: document
-#' Make a distributed data frame
+#' Instantiate a Distributed Data Frame ('ddf')
+#' Instantiate a distributed data frame ('ddf')
+#' 
+#' @param conn an object pointing to where data is or will be stored for the 'ddf' object - can be a 'kvConnection' object created from \code{\link{localDiskConn}} or \code{\link{hdfsConn}}, or a data frame or list of key-value pairs
+#' @param transFn transFn a function to be applied to the key-value pairs of this data prior to doing any processing, that transform the data into a data frame if it is not stored as such
+#' @param update should the attributes of this object be updated?  See \code{\link{updateAttributes}} for more details.
+#' @param reset should all persistent metadata about this object be removed and the object created from scratch?  This setting does not effect data stored in the connection location.
+#' @param control parameters specifying how the backend should handle things if attributes are updated (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
 #' @export
-ddf <- function(conn, transFn=identity, update=FALSE, reset=FALSE, control=NULL, verbose=TRUE) {
+ddf <- function(conn, transFn = identity, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE) {
    if(inherits(conn, "ddo")) {
       res <- conn
    } else {
@@ -41,11 +47,15 @@ ddf <- function(conn, transFn=identity, update=FALSE, reset=FALSE, control=NULL,
    res
 }
 
-# TODO: document
-#' Make a distributed data object
+#' Instantiate a Distributed Data Object ('ddo')
+#' Instantiate a distributed data object ('ddo')
+#' @param conn an object pointing to where data is or will be stored for the 'ddf' object - can be a 'kvConnection' object created from \code{\link{localDiskConn}} or \code{\link{hdfsConn}}, or a data frame or list of key-value pairs
+#' @param update should the attributes of this object be updated?  See \code{\link{updateAttributes}} for more details.
+#' @param reset should all persistent metadata about this object be removed and the object created from scratch?  This setting does not effect data stored in the connection location.
+#' @param control parameters specifying how the backend should handle things if attributes are updated (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
 #' @export
-ddo <- function(conn, update=FALSE, reset=FALSE, control=NULL, verbose=TRUE) {
+ddo <- function(conn, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE) {
    # ddoInit should attach the conn attribute and add the ddo class to the object
    res <- ddoInit(conn)
    class(res) <- c("ddo", class(res))

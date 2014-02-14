@@ -2,13 +2,16 @@
 \alias{rhipeControl}
 \title{Specify Control Parameters for RHIPE Job}
 \usage{
-  rhipeControl(mapred = NULL, setup = NULL,
-    combiner = FALSE, cleanup = NULL, orderby = "bytes",
-    shared = NULL, jarfiles = NULL, zips = NULL,
-    jobname = "")
+rhipeControl(mapred = NULL, setup = NULL, combiner = FALSE,
+  cleanup = NULL, orderby = "bytes", shared = NULL, jarfiles = NULL,
+  zips = NULL, jobname = "")
+}
+\arguments{
+  \item{mapred,setup,combiner,cleanup,orderby,shared,jarfiles,zips,jobname}{arguments
+  to \code{rhwatch} in RHIPE}
 }
 \description{
-  Specify control parameters for a RHIPE job.  See
-  \code{rhwatch} for details about each of the parameters.
+Specify control parameters for a RHIPE job.  See
+\code{rhwatch} for details about each of the parameters.
 }
 

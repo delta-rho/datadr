@@ -1,0 +1,18 @@
+\name{convert}
+\alias{convert}
+\title{Convert 'ddo' / 'ddf' Objects}
+\usage{
+convert(from, to)
+}
+\arguments{
+  \item{from}{a 'ddo' or 'ddf' object}
+
+  \item{to}{a 'kvConnection' object (created with
+  \code{\link{localDiskConn}} or \code{\link{hdfsConn}}) or
+  \code{NULL} if an in-memory 'ddo' / 'ddf' is desired}
+}
+\description{
+Convert 'ddo' / 'ddf' objects between different storage
+backends
+}
+

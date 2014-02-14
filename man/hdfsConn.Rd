@@ -2,8 +2,8 @@
 \alias{hdfsConn}
 \title{Connect to Data Source on HDFS}
 \usage{
-  hdfsConn(loc, type = "sequence", autoYes = FALSE,
-    reset = FALSE, verbose = TRUE)
+hdfsConn(loc, type = "sequence", autoYes = FALSE, reset = FALSE,
+  verbose = TRUE)
 }
 \arguments{
   \item{loc}{location on HDFS for the data source}
@@ -20,15 +20,15 @@
   being done}
 }
 \value{
-  a "kvConnection" object of class "hdfsConn"
+a "kvConnection" object of class "hdfsConn"
 }
 \description{
-  Connect to a data source on HDFS
+Connect to a data source on HDFS
 }
 \details{
-  This simply creates a "connection" to a directory on HDFS
-  (which need not have data in it).  To actually do things
-  with this data, see \code{\link{ddo}}, etc.
+This simply creates a "connection" to a directory on HDFS
+(which need not have data in it).  To actually do things
+with this data, see \code{\link{ddo}}, etc.
 }
 \examples{
 \dontrun{
@@ -43,10 +43,10 @@
 }
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{addData}, \code{\link{ddo}}, \code{\link{ddf}},
-  \code{\link{localDiskConn}}
+\code{addData}, \code{\link{ddo}}, \code{\link{ddf}},
+\code{\link{localDiskConn}}
 }
 

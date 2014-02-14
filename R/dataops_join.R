@@ -11,7 +11,7 @@
 #' 
 #' @author Ryan Hafen
 #' 
-#' @seealso \code{\link{filter}}
+#' @seealso \code{\link{drFilter}}
 #' 
 #' @examples
 #' bySpecies <- divide(iris, by = "Species")

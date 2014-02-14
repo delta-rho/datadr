@@ -2,7 +2,7 @@
 \alias{getSplitVar}
 \title{Extract "Split" Variable}
 \usage{
-  getSplitVar(x, name)
+getSplitVar(x, name)
 }
 \arguments{
   \item{x}{a key-value pair or a value}
@@ -10,8 +10,8 @@
   \item{name}{the name of the split variable to get}
 }
 \description{
-  For a given key-value pair or value, get a split variable
-  value by name, if present (split variables are variables
-  that define how the data was divided).
+For a given key-value pair or value, get a split variable
+value by name, if present (split variables are variables
+that define how the data was divided).
 }
 

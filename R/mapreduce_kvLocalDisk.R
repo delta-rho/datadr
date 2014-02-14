@@ -294,13 +294,11 @@ makeBlockIndices <- function(sz, sizePerBlock, nSlots = 1) {
 
 #' Specify Control Parameters for MapReduce on a Local Disk Connection
 #' 
-#' Specify control parameters for a MapReduce on a local disk connection.  Currenlty the parameters include:
-#' \itemize{
-#'   \item \code{cluster} a "cluster" object obtained from \code{\link{makeCluster}} to allow for parallel processing
-#'   \item \code{map_buff_size_bytes} determines how much data should be sent to each map task
-#'   \item \code{reduce_buff_size_bytes} determines how much data should be sent to each reduce task
-#'   \item \code{map_temp_buff_size_bytes} determines the size of chunks written to disk in between the map and reduce
-#' }
+#' Specify control parameters for a MapReduce on a local disk connection.  Currently the parameters include:
+#' @param cluster a "cluster" object obtained from \code{\link{makeCluster}} to allow for parallel processing
+#' @param map_buff_size_bytes determines how much data should be sent to each map task
+#' @param reduce_buff_size_bytes determines how much data should be sent to each reduce task
+#' @param map_temp_buff_size_bytes determines the size of chunks written to disk in between the map and reduce
 #' @note If you have data on a shared drive that multiple nodes can access or a high performance shared file system like Lustre, you can run a local disk MapReduce job on multiple nodes by creating a multi-node cluster with \code{\link{makeCluster}}.
 #' 
 #' If you are using multiple cores and the input data is very small, \code{map_buff_size_bytes} needs to be small so that the key-value pairs will be split across cores.

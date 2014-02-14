@@ -7,6 +7,7 @@
 #' @param combine the method to combine the results
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
+#' @param verbose logical - print messages about what is being done
 #' 
 #' @return depends on \code{combine}
 #' 

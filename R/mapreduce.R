@@ -23,7 +23,7 @@
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param params a named list of parameters external to the input data that are needed in the map or reduce phases
-#' @param verbose 
+#' @param verbose logical - print messages about what is being done
 #' 
 #' @return "ddo" object - to keep it simple.  It is up to the user to update or cast as "ddf" if that is the desired result.
 #' 

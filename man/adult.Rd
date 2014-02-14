@@ -23,27 +23,28 @@
    \item incomebin. 0 if income<=50K, 1 if income>50K
 }}
 \source{
-  (From UCI machine learning repository) Link:
-  \url{http://archive.ics.uci.edu/ml/datasets/Adult} Donor:
-  Ronny Kohavi and Barry Becker Data Mining and
-  Visualization Silicon Graphics. e-mail: ronnyk@live.com
-  for questions.
+(From UCI machine learning repository) Link:
+\url{http://archive.ics.uci.edu/ml/datasets/Adult} Donor:
+Ronny Kohavi and Barry Becker Data Mining and Visualization
+Silicon Graphics. e-mail: ronnyk@live.com for questions.
 
-  Data Set Information: Extraction was done by Barry Becker
-  from the 1994 Census database. A set of reasonably clean
-  records was extracted using the following conditions:
-  ((AAGE>16) && (AGI>100) && (AFNLWGT>1)&& (HRSWK>0))
+Data Set Information: Extraction was done by Barry Becker
+from the 1994 Census database. A set of reasonably clean
+records was extracted using the following conditions:
+((AAGE>16) && (AGI>100) && (AFNLWGT>1)&& (HRSWK>0))
+}
+\usage{
+adult
 }
 \description{
-  "Census Income" dataset from UCI machine learning
-  repository
+"Census Income" dataset from UCI machine learning
+repository
 }
 \references{
-  Bache, K. & Lichman, M. (2013). UCI Machine Learning
-  Repository [\url{http://archive.ics.uci.edu/ml}]. Irvine,
-  CA: University of California, School of Information and
-  Computer Science.
+Bache, K. & Lichman, M. (2013). UCI Machine Learning
+Repository [\url{http://archive.ics.uci.edu/ml}]. Irvine,
+CA: University of California, School of Information and
+Computer Science.
 }
 \keyword{data}
-\keyword{datasets}
 

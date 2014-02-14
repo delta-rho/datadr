@@ -2,7 +2,7 @@
 \alias{removeData}
 \title{Remove Key-Value Pairs from a Data Connection}
 \usage{
-  removeData(conn, keys)
+removeData(conn, keys)
 }
 \arguments{
   \item{conn}{a kvConnection object}
@@ -11,18 +11,18 @@
   remove}
 }
 \description{
-  Remove key-value pairs from a data connection
+Remove key-value pairs from a data connection
 }
 \note{
-  This is generally not recommended for HDFS as it writes a
-  new file each time it is called, and can result in more
-  individual files than Hadoop likes to deal with.
+This is generally not recommended for HDFS as it writes a
+new file each time it is called, and can result in more
+individual files than Hadoop likes to deal with.
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{removeData}}, \code{\link{localDiskConn}},
-  \code{\link{hdfsConn}}
+\code{\link{removeData}}, \code{\link{localDiskConn}},
+\code{\link{hdfsConn}}
 }
 

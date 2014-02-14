@@ -2,25 +2,25 @@
 \alias{combCollect}
 \title{"Collect" Recombination}
 \usage{
-  combCollect(...)
+combCollect(...)
 }
 \arguments{
   \item{\ldots}{...}
 }
 \description{
-  "Collect" recombination - simply collect the results into
-  a local list of key-value pairs
+"Collect" recombination - simply collect the results into a
+local list of key-value pairs
 }
 \details{
-  This is an experimental prototype.  It is to be passed as
-  the argument \code{combine} to \code{\link{recombine}}.
+This is an experimental prototype.  It is to be passed as
+the argument \code{combine} to \code{\link{recombine}}.
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{recombine}},
-  \code{\link{combDdo}}, \code{\link{combMeanCoef}},
-  \code{\link{combRbind}}, \code{\link{combMean}}
+\code{\link{divide}}, \code{\link{recombine}},
+\code{\link{combDdo}}, \code{\link{combMeanCoef}},
+\code{\link{combRbind}}, \code{\link{combMean}}
 }
 

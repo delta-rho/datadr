@@ -2,7 +2,7 @@
 \alias{charFileHash}
 \title{Character File Hash Function}
 \usage{
-  charFileHash(keys, conn)
+charFileHash(keys, conn)
 }
 \arguments{
   \item{keys}{keys to be hashed}
@@ -10,16 +10,15 @@
   \item{conn}{a "localDiskConn" object}
 }
 \description{
-  Function to be used to specify the file where key-value
-  pairs get stored for local disk connections, useful when
-  keys are scalar strings.  Should be passed as the
-  argument \code{fileHashFn} to
-  \code{\link{localDiskConn}}.
+Function to be used to specify the file where key-value
+pairs get stored for local disk connections, useful when
+keys are scalar strings.  Should be passed as the argument
+\code{fileHashFn} to \code{\link{localDiskConn}}.
 }
 \details{
-  You shouldn't need to call this directly other than to
-  experiment with what the output looks like or to get
-  ideas on how to write your own custom hash.
+You shouldn't need to call this directly other than to
+experiment with what the output looks like or to get ideas
+on how to write your own custom hash.
 }
 \examples{
 # connect to empty localDisk directory
@@ -34,9 +33,9 @@ addData(conn, list(list("key3", iris[111:150,])))
 list.files(path)
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{localDiskConn}, \code{\link{digestFileHash}}
+\code{localDiskConn}, \code{\link{digestFileHash}}
 }
 

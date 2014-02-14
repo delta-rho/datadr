@@ -128,7 +128,7 @@ removeData.hdfsConn <- function(conn, keys) {
    message("* Sorry... removing individual k/v pairs from HDFS is not fun. (requires complete read and write of the data).")
 }
 
-#' @export
+#' @S3method print hdfsConn
 print.hdfsConn <- function(x, ...) {
    cat(paste("hdfsConn connection\n  loc=", x$loc, "; type=", x$type, sep=""))
 }

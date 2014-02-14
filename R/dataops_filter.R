@@ -11,20 +11,21 @@
 #' 
 #' @author Ryan Hafen
 #' 
-#' @seealso \code{\link{join}}
+#' @seealso \code{\link{drJoin}}
 #' 
 #' @export
 drFilter <- function(x, filterFn, output = NULL, control = NULL) {
    # TODO: warn if output storage is not commensurate with input?
    # which will most-often happen when "output" is forgotten
+   # TODO: check filterFn on a subset and make sure it returns a logical
    map <- expression({
       for(i in seq_along(map.keys)) {
-         if(kvApply(list(map.keys[[i]], map.values[[i]])))
+         if(kvApply(filterFn, list(map.keys[[i]], map.values[[i]])))
             collect(map.keys[[i]], map.values[[i]])
       }
    })
    
-   mrExec(inputs,
+   mrExec(x,
       map = map,
       control = control,
       output = output,

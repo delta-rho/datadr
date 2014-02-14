@@ -1,6 +1,6 @@
 #' Apply Function to Key-Value Pair
 #' 
-#' Apply a function to a single key-value pair" - not a traditional R "apply" function.
+#' Apply a function to a single key-value pair - not a traditional R "apply" function.
 #' 
 #' @param fn a function
 #' @param kvPair a key-value pair (a list with 2 elements)

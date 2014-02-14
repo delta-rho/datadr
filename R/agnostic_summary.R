@@ -4,6 +4,8 @@
 
 #' Functions to Compute Summary Statistics in MapReduce
 #' 
+#' @param formula a formula to be used in \code{\link{xtabs}}
+#' @param data a subset of a 'ddf' object
 #' Functions that are used to tabulate categorical variables and compute moments for numeric variables inside through the MapReduce framework.  Used in \code{\link{updateAttributes}}.
 #' 
 #' @export
@@ -12,6 +14,7 @@ tabulateMap <- function(formula, data) {
    as.data.frame(xtabs(formula, data=data), stringsAsFactors=FALSE)
 }
 
+#' @param result,reduce.values inconsequential \code{tabulateReduce} parameters
 #' @export
 #' @rdname mrSummaryStats
 tabulateReduce <- function(result, reduce.values) {
@@ -29,6 +32,7 @@ tabulateReduce <- function(result, reduce.values) {
    }
 }
 
+#' @param y,order,na.rm inconsequential \code{calculateMoments} parameters
 #' @export
 #' @rdname mrSummaryStats
 calculateMoments <- function(y, order=1, na.rm=TRUE) {
@@ -51,6 +55,7 @@ calculateMoments <- function(y, order=1, na.rm=TRUE) {
    res
 }
 
+#' @param m1,m2 inconsequential \code{combineMoments} parameters
 #' @export
 #' @rdname mrSummaryStats
 combineMoments <- function(m1, m2) {
@@ -77,6 +82,7 @@ combineMoments <- function(m1, m2) {
    res
 }
 
+#' @param \ldots inconsequential parameters
 #' @export
 #' @rdname mrSummaryStats
 combineMultipleMoments <- function(...) {
@@ -103,6 +109,7 @@ combineMultipleMoments <- function(...) {
    result
 }
 
+#' @param m inconsequential \code{moments2statistics} parameters
 #' @export
 #' @rdname mrSummaryStats
 moments2statistics <- function(m) {

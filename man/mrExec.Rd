@@ -2,9 +2,8 @@
 \alias{mrExec}
 \title{Execute a MapReduce Job}
 \usage{
-  mrExec(data, setup = NULL, map = NULL, reduce = NULL,
-    output = NULL, control = NULL, params = NULL,
-    verbose = TRUE)
+mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
+  control = NULL, params = NULL, verbose = TRUE)
 }
 \arguments{
   \item{data}{a ddo/ddf object, or list of ddo/ddf objects}
@@ -40,16 +39,17 @@
   \item{params}{a named list of parameters external to the
   input data that are needed in the map or reduce phases}
 
-  \item{verbose}{}
+  \item{verbose}{logical - print messages about what is
+  being done}
 }
 \value{
-  "ddo" object - to keep it simple.  It is up to the user
-  to update or cast as "ddf" if that is the desired result.
+"ddo" object - to keep it simple.  It is up to the user to
+update or cast as "ddf" if that is the desired result.
 }
 \description{
-  Execute a MapReduce job
+Execute a MapReduce job
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 

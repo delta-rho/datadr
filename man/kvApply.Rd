@@ -2,7 +2,7 @@
 \alias{kvApply}
 \title{Apply Function to Key-Value Pair}
 \usage{
-  kvApply(fn, kvPair, returnKV = FALSE)
+kvApply(fn, kvPair, returnKV = FALSE)
 }
 \arguments{
   \item{fn}{a function}
@@ -12,17 +12,17 @@
   \item{returnKV}{should the key and value be returned?}
 }
 \description{
-  Apply a function to a single key-value pair" - not a
-  traditional R "apply" function.
+Apply a function to a single key-value pair - not a
+traditional R "apply" function.
 }
 \details{
-  Determines how a function should be applied to a
-  key-value pair and then applies it: if the function has
-  two formals, it applies the function giving it the key
-  and the value as the arguments; if the function has one
-  formal, it applies the function giving it just the value.
-  This provides flexibility and simplicity for when a
-  function is only meant to be applied to the value, but
-  still allows keys to be used if desired.
+Determines how a function should be applied to a key-value
+pair and then applies it: if the function has two formals,
+it applies the function giving it the key and the value as
+the arguments; if the function has one formal, it applies
+the function giving it just the value.  This provides
+flexibility and simplicity for when a function is only
+meant to be applied to the value, but still allows keys to
+be used if desired.
 }
 

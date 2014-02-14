@@ -2,8 +2,7 @@
 \alias{drJoin}
 \title{Join Two Data Sources by Key}
 \usage{
-  drJoin(..., output = NULL, postTransFn = NULL,
-    control = NULL)
+drJoin(..., output = NULL, postTransFn = NULL, control = NULL)
 }
 \arguments{
   \item{\ldots}{named lists of input objects - assumed that
@@ -25,13 +24,13 @@
   and \code{\link{localDiskControl}}}
 }
 \value{
-  a 'ddo' object stored in the \code{output} connection,
-  where the values are named lists with names according to
-  the names given to the input data objects, and values are
-  the corresponding data
+a 'ddo' object stored in the \code{output} connection,
+where the values are named lists with names according to
+the names given to the input data objects, and values are
+the corresponding data
 }
 \description{
-  Join two data sources by key
+Join two data sources by key
 }
 \examples{
 bySpecies <- divide(iris, by = "Species")
@@ -41,9 +40,9 @@ sl <- lapply(bySpecies, function(x) x$Sepal.Length)
 a1 <- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \seealso{
-  \code{\link{filter}}
+\code{\link{drFilter}}
 }
 

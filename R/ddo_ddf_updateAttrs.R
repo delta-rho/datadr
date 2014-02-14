@@ -16,7 +16,7 @@
 #' @seealso \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{divide}}
 #' 
 #' @export
-updateAttributes <- function(obj, control=NULL) {
+updateAttributes <- function(obj, control = NULL) {
    # obj <- ddf(iris)
    
    ddoVars <- requiredObjAttrs(obj)$ddo
@@ -74,20 +74,20 @@ updateAttributes <- function(obj, control=NULL) {
                            minVal <- NA
                            maxval <- NA
                         } else {
-                           minVal <- min(var, na.rm=TRUE)
-                           maxVal <- max(var, na.rm=TRUE)
+                           minVal <- min(var, na.rm = TRUE)
+                           maxVal <- max(var, na.rm = TRUE)
                         }
                         
-                        collect(paste("summary_quant_", dfNames[i], sep="_"), list(
-                           nna=length(which(is.na(r[[i]]))),
-                           moments=calculateMoments(r[[i]], order=4),
-                           min=minVal,
-                           max=maxVal
+                        collect(paste("summary_quant_", dfNames[i], sep = "_"), list(
+                           nna = length(which(is.na(r[[i]]))),
+                           moments = calculateMoments(r[[i]], order = 4),
+                           min = minVal,
+                           max = maxVal
                         ))
                      } else if(inherits(var, categTypes)) {
-                        collect(paste("summary_categ_", dfNames[i], sep="_"), list(
-                           nna=length(which(is.na(var))),
-                           freqTable=tabulateMap(~ var, data=data.frame(var))
+                        collect(paste("summary_categ_", dfNames[i], sep = "_"), list(
+                           nna = length(which(is.na(var))),
+                           freqTable = tabulateMap(~ var, data = data.frame(var))
                         ))
                      }
                   }
@@ -97,7 +97,7 @@ updateAttributes <- function(obj, control=NULL) {
       })
       
       reduce <- expression(
-         pre={
+         pre = {
             ### ddo
             splitSizeDistn <- NULL
             keys <- NULL
@@ -106,22 +106,22 @@ updateAttributes <- function(obj, control=NULL) {
             nRow <- as.numeric(0)
             splitRowDistn <- NULL
             ### ddf summary
-            resQuant <- list(nobs=NULL, nna=NULL, moments=NULL, min=NULL, max=NULL)
-            resCateg <- list(nobs=NULL, nna=NULL, freqTable=NULL)
+            resQuant <- list(nobs = NULL, nna = NULL, moments = NULL, min = NULL, max = NULL)
+            resCateg <- list(nobs = NULL, nna = NULL, freqTable = NULL)
          },
-         reduce={
+         reduce = {
             ### ddo
-            if(reduce.key=="splitSizeDistn")
+            if(reduce.key == "splitSizeDistn")
                splitSizeDistn <- c(splitSizeDistn, do.call(c, reduce.values))
-            if(reduce.key=="keys")
+            if(reduce.key == "keys")
                keys <- c(keys, reduce.values)
-            if(reduce.key=="nDiv")
+            if(reduce.key == "nDiv")
                nDiv <- nDiv + sum(unlist(reduce.values), na.rm = TRUE)
             
             ### ddf
-            if(reduce.key=="nRow")
+            if(reduce.key == "nRow")
                nRow <- nRow + sum(unlist(reduce.values), na.rm = TRUE)
-            if(reduce.key=="splitRowDistn")
+            if(reduce.key == "splitRowDistn")
                splitRowDistn <- c(splitRowDistn, do.call(c, reduce.values))
             
             ### ddf summary
@@ -130,10 +130,10 @@ updateAttributes <- function(obj, control=NULL) {
                if(!is.null(resQuant$moments))
                   curMomList <- c(list(resQuant$moments), curMomList)
                
-               resQuant$nna       <- sum(c(resQuant$nna, sapply(reduce.values, function(x) x$nna)), na.rm=TRUE)
+               resQuant$nna       <- sum(c(resQuant$nna, sapply(reduce.values, function(x) x$nna)), na.rm = TRUE)
                resQuant$moments   <- do.call(combineMultipleMoments, curMomList)
-               resQuant$min       <- min(c(resQuant$min, sapply(reduce.values, function(x) x$min)), na.rm=TRUE)
-               resQuant$max       <- max(c(resQuant$max, sapply(reduce.values, function(x) x$max)), na.rm=TRUE)            
+               resQuant$min       <- min(c(resQuant$min, sapply(reduce.values, function(x) x$min)), na.rm = TRUE)
+               resQuant$max       <- max(c(resQuant$max, sapply(reduce.values, function(x) x$max)), na.rm = TRUE)            
             }
             
             if(grepl("^summary_categ", reduce.key)) {
@@ -141,21 +141,21 @@ updateAttributes <- function(obj, control=NULL) {
                resCateg$freqTable <- tabulateReduce(resCateg$freqTable, lapply(reduce.values, function(x) x$freqTable))
             }
          },
-         post={
+         post = {
             ### ddo
-            if(reduce.key=="splitSizeDistn")
+            if(reduce.key == "splitSizeDistn")
                collect("splitSizeDistn", 
-                  quantile(splitSizeDistn, probs=seq(0, 1, by=0.01), na.rm=TRUE))
-            if(reduce.key=="keys")
+                  quantile(splitSizeDistn, probs = seq(0, 1, by = 0.01), na.rm = TRUE))
+            if(reduce.key == "keys")
                collect("keys", keys)
-            if(reduce.key=="nDiv")
+            if(reduce.key == "nDiv")
                collect("nDiv", nDiv)
             
             ### ddf
-            if(reduce.key=="splitRowDistn")
+            if(reduce.key == "splitRowDistn")
                collect("splitRowDistn", 
-                  quantile(splitRowDistn, probs=seq(0, 1, by=0.01), na.rm=TRUE))
-            if(reduce.key=="nRow")
+                  quantile(splitRowDistn, probs = seq(0, 1, by = 0.01), na.rm = TRUE))
+            if(reduce.key == "nRow")
                collect("nRow", nRow)
             
             ### ddf summary
@@ -227,9 +227,9 @@ updateAttributes <- function(obj, control=NULL) {
             v <- tmp[[i]][[2]]
             varType <- gsub("^summary_(quant|categ).*", "\\1", k)
             varName <- gsub("^summary_(quant|categ)__(.*)", "\\2", k)
-            if(varType=="quant") {
+            if(varType == "quant") {
                stats <- moments2statistics(v$moments)
-               v <- list(nna=v$nna, stats=stats, range=c(v$min, v$max))
+               v <- list(nna = v$nna, stats = stats, range = c(v$min, v$max))
                class(v) <- c("ddfSummNumeric", "list")
                summaryList[[varName]] <- v
             } else {

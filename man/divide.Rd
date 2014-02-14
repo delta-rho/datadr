@@ -2,10 +2,9 @@
 \alias{divide}
 \title{Divide a Distributed Data Object}
 \usage{
-  divide(data, by = NULL, spill = 1e+06, filterFn = NULL,
-    bsvFn = NULL, output = NULL, preTransFn = NULL,
-    postTransFn = NULL, control = NULL, update = FALSE,
-    verbose = TRUE)
+divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
+  output = NULL, preTransFn = NULL, postTransFn = NULL, control = NULL,
+  update = FALSE, verbose = TRUE)
 }
 \arguments{
   \item{data}{an object of class "ddf" or "ddo" - in the
@@ -53,37 +52,37 @@
   being done}
 }
 \value{
-  an object of class "ddf" if the resulting subsets are
-  data frames.  Otherwise, an object of class "ddo".
+an object of class "ddf" if the resulting subsets are data
+frames.  Otherwise, an object of class "ddo".
 }
 \description{
-  Divide a ddo/ddf object into subsets based on different
-  criteria
+Divide a ddo/ddf object into subsets based on different
+criteria
 }
 \details{
-  The division methods this function will support include
-  conditioning variable division for factors (implemented
-  -- see \code{\link{condDiv}}), conditioning variable
-  division for numerical variables through shingles, random
-  replicate (implemented -- see \code{\link{rrDiv}}), and
-  near-exact replicate.  If \code{by} is a vector of
-  variable names, the data will be divided by these
-  variables.  Alternatively, this can be specified by e.g.
-  \code{condDiv(c("var1", "var2"))}.
+The division methods this function will support include
+conditioning variable division for factors (implemented --
+see \code{\link{condDiv}}), conditioning variable division
+for numerical variables through shingles, random replicate
+(implemented -- see \code{\link{rrDiv}}), and near-exact
+replicate.  If \code{by} is a vector of variable names, the
+data will be divided by these variables.  Alternatively,
+this can be specified by e.g.  \code{condDiv(c("var1",
+"var2"))}.
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \references{
-  \itemize{ \item \url{http://www.datadr.org} \item
-  \href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha,
-  S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
-  Cleveland, W. S. (2012). Large complex data: divide and
-  recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
+\itemize{ \item \url{http://www.datadr.org} \item
+\href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha,
+S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., &
+Cleveland, W. S. (2012). Large complex data: divide and
+recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
 }
 \seealso{
-  \code{\link{recombine}}, \code{\link{ddo}},
-  \code{\link{ddf}}, \code{\link{condDiv}},
-  \code{\link{rrDiv}}
+\code{\link{recombine}}, \code{\link{ddo}},
+\code{\link{ddf}}, \code{\link{condDiv}},
+\code{\link{rrDiv}}
 }
 

@@ -1,6 +1,10 @@
-\name{lapply}
-\alias{lapply}
+\docType{methods}
+\name{lapply,ddf,function-method}
+\alias{lapply,ddf,function-method}
 \title{Apply a function to all key/value pairs of a ddo/ddf object}
+\usage{
+\S4method{lapply}{ddf,function}(X, FUN)
+}
 \arguments{
   \item{X}{the ddo/ddf object to apply the function to}
 
@@ -8,11 +12,11 @@
   each key/value pair}
 }
 \value{
-  a new ddo object
+a new ddo object
 }
 \description{
-  This function creates a new ddo object by applying a
-  function to all key/value pairs of a ddo/ddf object.
+This function creates a new ddo object by applying a
+function to all key/value pairs of a ddo/ddf object.
 }
 \examples{
 a <- divide(iris, by="Species")

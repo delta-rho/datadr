@@ -2,7 +2,7 @@
 #' 
 #' GLM recombination 'apply' method
 #' 
-#' @param ldots arguments you would pass to the \code{\link{glm}} function
+#' @param \ldots arguments you would pass to the \code{\link{glm}} function
 #' 
 #' @details This provides a function to be called for each subset in a recombination MapReduce job that applies R's glm method and outputs the coefficients.  It is to be passed as the argument \code{method} to \code{\link{recombine}}.
 #' 
@@ -41,7 +41,8 @@ drGLM <- function(...) {
 #' @param statistic a function to apply to each subset specifying the statistic to compute.  Must have arguments 'data' and 'weights' - see details).  Must return a vector, where each element is a statistic of interest.
 #' @param metric a function specifying the metric to be applied to the \code{R} bootstrap samples of each statistic returned by \code{statistic}.  Expects an input vector and should output a vector.
 #' @param R the number of bootstrap samples
-#'
+#' @param n the total number of observations in the data
+#' 
 #' @details It is necessary to specify \code{weights} as a parameter to the \code{statistic} function because for BLB to work efficiently, it must resample each time with a sample of size \code{n}.  To make this computationally possible for very large \code{n}, we can use \code{weights} (see reference for details).  Therefore, only methods with a weights option can legitimately be used here.
 #' 
 #' @references

@@ -2,7 +2,7 @@
 \alias{drBLB}
 \title{Bag of Little Bootstraps Recombination 'apply' Method}
 \usage{
-  drBLB(statistic, metric, R, n)
+drBLB(statistic, metric, R, n)
 }
 \arguments{
   \item{statistic}{a function to apply to each subset
@@ -16,26 +16,28 @@
   vector and should output a vector.}
 
   \item{R}{the number of bootstrap samples}
+
+  \item{n}{the total number of observations in the data}
 }
 \description{
-  Bag of little bootstraps recombination 'apply' method
+Bag of little bootstraps recombination 'apply' method
 }
 \details{
-  It is necessary to specify \code{weights} as a parameter
-  to the \code{statistic} function because for BLB to work
-  efficiently, it must resample each time with a sample of
-  size \code{n}.  To make this computationally possible for
-  very large \code{n}, we can use \code{weights} (see
-  reference for details).  Therefore, only methods with a
-  weights option can legitimately be used here.
+It is necessary to specify \code{weights} as a parameter to
+the \code{statistic} function because for BLB to work
+efficiently, it must resample each time with a sample of
+size \code{n}.  To make this computationally possible for
+very large \code{n}, we can use \code{weights} (see
+reference for details).  Therefore, only methods with a
+weights option can legitimately be used here.
 }
 \author{
-  Ryan Hafen
+Ryan Hafen
 }
 \references{
-  BLB paper
+BLB paper
 }
 \seealso{
-  \code{\link{divide}}, \code{\link{recombine}}
+\code{\link{divide}}, \code{\link{recombine}}
 }
 

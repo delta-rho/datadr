@@ -3,6 +3,7 @@
 #' Print an overview of attributes of distributed data objects (ddo) or distributed data frames (ddf)
 #' 
 #' @param x object to be printed
+#' @param \ldots additional arguments
 #' @author Ryan Hafen
 #' @export
 #' @method print ddo
