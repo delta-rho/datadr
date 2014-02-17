@@ -2,6 +2,7 @@
 \alias{bsvInfo}
 \alias{counters}
 \alias{getKeys}
+\alias{hasExtractableKV}
 \alias{kvExample}
 \alias{length.ddo}
 \alias{names.ddf}
@@ -23,6 +24,8 @@ splitRowDistn(x)
 getKeys(x)
 
 \method{summary}{ddf}(object, ...)
+
+hasExtractableKV(x)
 
 \method{names}{ddf}(x)
 

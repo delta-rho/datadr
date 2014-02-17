@@ -31,7 +31,6 @@
 #' 
 #' @export
 mrExec <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL, verbose=TRUE) {
-   require(digest)
    
    # handle list of ddo/ddf - if not a list, make it one
    if(!inherits(data, "ddo")) {

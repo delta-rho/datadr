@@ -1,6 +1,6 @@
 \name{quantile.ddf}
 \alias{quantile.ddf}
-\title{Sample Quantiles for ddf Objects}
+\title{Sample Quantiles for 'ddf' Objects}
 \usage{
 \method{quantile}{ddf}(x, var, by = NULL, probs = seq(0, 1, 0.005),
   transFn = identity, nBins = 10000, tails = 100, control = NULL, ...)
@@ -39,7 +39,7 @@ f-value \code{fval}.  If \code{by} is specified, then also
 a variable \code{group}.
 }
 \description{
-Compute sample quantiles for
+Compute sample quantiles for 'ddf' objects
 }
 \details{
 This division-agnostic quantile calculation algorithm takes

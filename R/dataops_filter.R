@@ -13,6 +13,9 @@
 #' 
 #' @seealso \code{\link{drJoin}}
 #' 
+#' @examples
+#' bySpecies <- divide(iris, by="Species")
+#' drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
 #' @export
 drFilter <- function(x, filterFn, output = NULL, control = NULL) {
    # TODO: warn if output storage is not commensurate with input?
@@ -32,3 +35,4 @@ drFilter <- function(x, filterFn, output = NULL, control = NULL) {
       params = list(filterFn = filterFn)
    )
 }
+

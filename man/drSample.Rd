@@ -26,4 +26,9 @@ drSample(x, fraction, output = NULL, control = NULL)
 Take a Sample of Key-Value Pairs Take a sample of key-value
 Pairs
 }
+\examples{
+bySpecies <- divide(iris, by="Species")
+set.seed(234)
+sampleRes <- drSample(bySpecies, fraction = 0.25)
+}
 

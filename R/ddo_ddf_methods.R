@@ -19,6 +19,7 @@ requiredObjAttrs <- function(obj, ...)
 ### setAttributes
 ######################################################################
 
+#' @rdname ddoddfattr
 #' @export
 setAttributes <- function(obj, ...)
    UseMethod("setAttributes")
@@ -90,6 +91,8 @@ getAttribute <- function(obj, attrName) {
    }
 }
 
+#' @rdname ddoddfattr
+#' @param \ldots additional arguments
 #' @export
 getAttributes <- function(obj, ...)
    UseMethod("getAttributes")
@@ -125,6 +128,7 @@ getObjAttributes <- function(obj, attrNames, type)
 
 ## returns a boolean vector the same length of the input vector of attribute names
 
+#' @rdname ddoddfattr
 #' @export
 hasAttributes <- function(obj, ...)
    UseMethod("hasAttributes")
@@ -236,7 +240,7 @@ getKeys <- function(x)
 summary.ddf <- function(object, ...)
    getAttribute(object, "summary")
 
-# TODO: document
+#' @rdname ddo-ddf-accessors
 #' @export
 hasExtractableKV <- function(x)
    UseMethod("hasExtractableKV")
@@ -348,9 +352,9 @@ setGeneric("NCOL")
 
 #' The Number of Rows/Columns of a 'ddf' object
 #' @rdname ddf-class
-#' @param a 'ddf' object
+#' @param x a 'ddf' object
 #' @export
-#' @aliases nrow,ddf-method
+#' @aliases nrow
 setMethod("nrow", "ddf", function(x) {
    res <- getAttribute(x, "nRow")
    if(is.na(res) || is.null(res))
@@ -399,16 +403,17 @@ length.ddo <- function(x) {
    getAttribute(x, "nDiv")
 }
 
-#' Turn "ddf" Object into Data Frame
+#' Turn 'ddf' Object into Data Frame
 #' 
+#' Rbind all the rows of a 'ddf' object into a single data frame
 #' @param x a 'ddf' object
-#' @param row.names passed to as.data.frame
-#' @param optional passed to as.data.frame
+#' @param row.names passed to \code{as.data.frame}
+#' @param optional passed to \code{as.data.frame}
 #' @param keys should the key be added as a variable in the resulting data frame? (if key is not a character, it will be replaced with a md5 hash)
 #' @param splitVars should the values of the splitVars be added as variables in the resulting data frame?
 #' @param bsvs should the values of bsvs be added as variables in the resulting data frame?
 #' @param \ldots additional arguments passed to as.data.frame
-#' Rbind all the rows of a ddf object into a single data frame
+#' @export
 #' @method as.data.frame ddf
 as.data.frame.ddf <- function(x, row.names = NULL, optional = FALSE, keys = TRUE, splitVars = TRUE, bsvs = FALSE, ...) {
    x <- convert(x, NULL)
@@ -417,10 +422,10 @@ as.data.frame.ddf <- function(x, row.names = NULL, optional = FALSE, keys = TRUE
       
       if(keys) {
          # TODO: what if 'key' already is a variable name?
-         res$key <- if(length(a[[1]] == 1)) {
-            a[[1]]
+         if(length(a[[1]] == 1)) {
+            res$key <- a[[1]]
          } else {
-            digest(a[[1]])
+            res$key <- digest(a[[1]])
          }
       }
       
@@ -440,3 +445,14 @@ as.data.frame.ddf <- function(x, row.names = NULL, optional = FALSE, keys = TRUE
    as.data.frame(rbindlist(tmp), row.names = row.names, optional = optional, ...)
 }
 
+#' Turn 'ddo' / 'ddf' Object into a list
+#' 
+#' @param x a 'ddo' / 'ddf' object
+#' @param \ldots additional arguments passed to \code{as.list}
+#' @export
+#' @method as.list ddo
+as.list.ddo <- function(x, ...) {
+   if(!inherits(x, "kvMemory"))
+      x <- convert(x, NULL)
+   getAttribute(x, "conn")$data
+}

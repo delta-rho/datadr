@@ -1,6 +1,6 @@
-#' Sample Quantiles for ddf Objects
+#' Sample Quantiles for 'ddf' Objects
 #' 
-#' Compute sample quantiles for 
+#' Compute sample quantiles for 'ddf' objects
 #' 
 #' @param x a 'ddf' object
 #' @param var the name of the variable to compute quantiles for

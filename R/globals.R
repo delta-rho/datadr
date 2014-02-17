@@ -10,16 +10,16 @@ drFindGlobals <- function(f) {
       return(character(0))
 
    tildeHandler <- codetools:::collectUsageHandlers[["~"]]
-   remove("~", envir=codetools:::collectUsageHandlers)
-   res <- codetools:::findGlobals(f, merge=FALSE)$variables
-   assign("~", tildeHandler, envir=codetools:::collectUsageHandlers)
+   remove("~", envir = codetools:::collectUsageHandlers)
+   res <- codetools::findGlobals(f, merge = FALSE)$variables
+   assign("~", tildeHandler, envir = codetools:::collectUsageHandlers)
    res
 }
 
 getGlobalVarList <- function(globalVars, parentFrame) {
    globalVarList <- list()
    # look first on parent frame
-   tmp <- intersect(globalVars, ls(envir=parentFrame))
+   tmp <- intersect(globalVars, ls(envir = parentFrame))
    if(length(tmp) > 0) {
       for(i in seq_along(tmp)) {
          globalVarList[[tmp[i]]] <- get(tmp[i], parentFrame)

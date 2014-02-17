@@ -1,6 +1,6 @@
 \name{as.data.frame.ddf}
 \alias{as.data.frame.ddf}
-\title{Turn "ddf" Object into Data Frame}
+\title{Turn 'ddf' Object into Data Frame}
 \usage{
 \method{as.data.frame}{ddf}(x, row.names = NULL, optional = FALSE,
   keys = TRUE, splitVars = TRUE, bsvs = FALSE, ...)
@@ -8,9 +8,9 @@
 \arguments{
   \item{x}{a 'ddf' object}
 
-  \item{row.names}{passed to as.data.frame}
+  \item{row.names}{passed to \code{as.data.frame}}
 
-  \item{optional}{passed to as.data.frame}
+  \item{optional}{passed to \code{as.data.frame}}
 
   \item{keys}{should the key be added as a variable in the
   resulting data frame? (if key is not a character, it will
@@ -23,10 +23,10 @@
   variables in the resulting data frame?}
 
   \item{\ldots}{additional arguments passed to
-  as.data.frame Rbind all the rows of a ddf object into a
-  single data frame}
+  as.data.frame}
 }
 \description{
-Turn "ddf" Object into Data Frame
+Rbind all the rows of a 'ddf' object into a single data
+frame
 }
 

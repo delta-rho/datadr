@@ -7,6 +7,7 @@
 \alias{ddf-class}
 \alias{ncol}
 \alias{ncol,ddf-method}
+\alias{nrow}
 \alias{nrow,ddf-method}
 \title{'ddf' accessors}
 \usage{
@@ -27,9 +28,7 @@ NCOL(x)
 \S4method{NCOL}{ddf}(x)
 }
 \arguments{
-  \item{a}{'ddf' object}
-
-  \item{x}{a vector, array or data frame}
+  \item{x}{a 'ddf' object}
 }
 \description{
 'ddf' accessors

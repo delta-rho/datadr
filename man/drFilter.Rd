@@ -29,6 +29,10 @@ a 'ddo' or 'ddf' object
 \description{
 Filter a 'ddo' or 'ddf' object
 }
+\examples{
+bySpecies <- divide(iris, by="Species")
+drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
+}
 \author{
 Ryan Hafen
 }

@@ -1,0 +1,16 @@
+\name{as.list.ddo}
+\alias{as.list.ddo}
+\title{Turn 'ddo' / 'ddf' Object into a list}
+\usage{
+\method{as.list}{ddo}(x, ...)
+}
+\arguments{
+  \item{x}{a 'ddo' / 'ddf' object}
+
+  \item{\ldots}{additional arguments passed to
+  \code{as.list}}
+}
+\description{
+Turn 'ddo' / 'ddf' Object into a list
+}
+

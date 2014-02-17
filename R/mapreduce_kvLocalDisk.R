@@ -9,7 +9,7 @@
 mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
    setup <- appendExpression(setup, 
       expression({
-         require(digest)
+         suppressWarnings(suppressMessages(require(digest)))
       })
    )
    

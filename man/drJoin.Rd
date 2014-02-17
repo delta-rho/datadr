@@ -37,7 +37,7 @@ bySpecies <- divide(iris, by = "Species")
 # get independent lists of just SW and SL
 sw <- lapply(bySpecies, function(x) x$Sepal.Width)
 sl <- lapply(bySpecies, function(x) x$Sepal.Length)
-a1 <- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
+drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
 }
 \author{
 Ryan Hafen

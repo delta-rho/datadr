@@ -1,13 +1,32 @@
-
-
-
 #' Experimental sequential text reader helper function
-#' Experimental helper function for reading text data in sequentially and adding to connection using \code{\link{addData}}
+#' 
+#' Experimental helper function for reading text data sequentially from a file on disk and adding to connection using \code{\link{addData}}
+#' @param input the path to an input text file
+#' @param output an output connection such as those created with \code{\link{localDiskConn}}, and \code{\link{hdfsConn}}
+#' @param linesPerBlock how many lines at a time to read
+#' @param fn function to be applied to each chunk of lines (see details)
+#' @param header does the file have a header
+#' @param skip number of lines to skip before reading
+#' @param recordEndRegex an optional regular expression that finds lines in the text file that indicate the end of a record (for multi-line records)
+#' @details The function \code{fn} should have one argument, which should expect to receive a vector of strings, each element of which is a line in the file.  It is also possible for \code{fn} to take two arguments, in which case the second argument is the header line from the file (some parsing methods might need to know the header).
+#' @examples
+#' csvFile <- file.path(tempdir(), "iris.csv")
+#' write.csv(iris, file = csvFile, row.names = FALSE, quote = FALSE)
+#' myoutput <- localDiskConn(file.path(tempdir(), "irisText"), autoYes = TRUE)
+#' a <- readTextFileByChunk(csvFile, 
+#'    output = myoutput, linesPerBlock = 10, 
+#'    fn = function(x, header) {
+#'       colNames <- strsplit(header, ",")[[1]]
+#'       read.csv(textConnection(paste(x, collapse = "\n")), col.names = colNames, header = FALSE)
+#'    })
+#' a[[1]]
 #' @export
-processTextFileByChunk <- function(inFile, outConn, chunkSize, fn, header=TRUE, skip=0, recordEndRegex = NULL) {
-   # inFile <- "data/raw/bb-week2.csv"; chunkSize <- 1000; skip <- 0; header <- TRUE; recordEndRegex <- "\"$"
+readTextFileByChunk <- function(input, output, linesPerBlock = 10000, fn = NULL, header = TRUE, skip = 0, recordEndRegex = NULL) {
    
-   con <- file(description = inFile, open = "r")
+   if(is.null(fn))
+      fn <- identity
+   
+   con <- file(description = input, open = "r")
    on.exit(close(con))
    
    if(skip > 0)
@@ -16,7 +35,7 @@ processTextFileByChunk <- function(inFile, outConn, chunkSize, fn, header=TRUE, 
    if(header)
       header <- readLines(con, n = 1)
    
-   data <- readLines(con, n = chunkSize)
+   data <- readLines(con, n = linesPerBlock)
    
    i <- 1
    repeat {
@@ -43,10 +62,10 @@ processTextFileByChunk <- function(inFile, outConn, chunkSize, fn, header=TRUE, 
       }
       
       if(!is.null(res))
-         addData(outConn, list(list(i, res)))
+         addData(output, list(list(i, res)))
       
       data <- tryCatch({
-         data <- c(extra, readLines(con, n = chunkSize))
+         data <- c(extra, readLines(con, n = linesPerBlock))
       }, error=function(err) {
          if (identical(conditionMessage(err), "no lines available in input"))
             extra
@@ -54,23 +73,32 @@ processTextFileByChunk <- function(inFile, outConn, chunkSize, fn, header=TRUE, 
       })
       i <- i + 1
    }
+   ddo(output)
 }
 
 #' Experimental HDFS text reader helper function
-#' Experimental helper function for reading text data into HDFS
+#' 
+#' Experimental helper function for reading text data on HDFS into a HDFS connection
+#' @param input a RHIPE input text handle created with \code{rhfmt}
+#' @param output an output connection such as those created with \code{\link{localDiskConn}}, and \code{\link{hdfsConn}}
+#' @param fn function to be applied to each chunk of lines (input to function is a vector of strings)
+#' @param keyFn optional function to determine the value of the key for each block
+#' @param linesPerBlock how many lines at a time to read
+#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
+#' @param update should a MapReduce job be run to obtain additional attributes for the result data prior to returning?
 #' @export
-rhText2df <- function(x, output=NULL, transFn=NULL, keyFn=NULL, linesPerBlock=10000, control=NULL, update=FALSE) {
-   if(!inherits(x, "kvHDFS"))
+readHDFStextFile <- function(input, output = NULL, fn = NULL, keyFn = NULL, linesPerBlock = 10000, control = NULL, update = FALSE) {
+   if(!inherits(input, "kvHDFS"))
       stop("Input must be data from a HDFS connection")
    
-   if(getAttribute(x, "conn")$type != "text")
-      stop("This was designed for 'rhData' inputs of type 'text'.")
+   if(getAttribute(input, "conn")$type != "text")
+      stop("This was designed to read in HDFS text files")
    
-   if(is.null(transFn))
-      stop("Must specify a transformation function with 'transFn'.")
+   if(is.null(fn))
+      fn <- identity
       
    if(is.null(control))
-      control <- defaultControl(x)
+      control <- defaultControl(input)
       
    if(is.null(control$mapred$rhipe_map_buff_size))
       control$mapred$rhipe_map_buff_size <- linesPerBlock
@@ -89,15 +117,15 @@ rhText2df <- function(x, output=NULL, transFn=NULL, keyFn=NULL, linesPerBlock=10
       if(is.null(keyFn))
          keyFn <- digest
       
-      collect(keyFn(tmp), transFn(tmp))
+      collect(keyFn(tmp), fn(tmp))
    })
    
-   mrExec(x,
+   mrExec(input,
       setup   = setup,
       map     = map, 
       reduce  = reduce, 
       output  = output,
       control = control,
-      params  = list(transFn = transFn, keyFn = keyFn)
+      params  = list(fn = fn, keyFn = keyFn)
    )
 }
