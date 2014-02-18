@@ -281,11 +281,14 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
 # also take number of cores available into account
 makeBlockIndices <- function(sz, sizePerBlock, nSlots = 1) {
    cs <- cumsum(sz)
+   # number of blocks to split files into
    n <- max(ceiling(sum(sz) / sizePerBlock), nSlots)
+   # if there are fewer files than slots:
+   n <- min(length(cs), n)
    if(n == 1) {
       return(list(seq_along(sz)))
    } else {
-      qs <- quantile(cumsum(sz), seq(0, 1, length=ifelse(n==1, 0, n) + 1))
+      qs <- quantile(cumsum(sz), seq(0, 1, length=n + 1))
       res <- split(seq_along(sz), cut(cumsum(sz), qs, include.lowest = TRUE))
       names(res) <- NULL
       return(res)

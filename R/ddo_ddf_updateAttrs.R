@@ -248,7 +248,9 @@ updateAttributes <- function(obj, control = NULL) {
       }
       
       # add keyHashes (used for extraction)
-      attrs$keyHashes <- as.character(sapply(attrs$keys, digest))
+      # if(needList["keyHashes"])
+      if(!is.null(attrs$keys))
+         attrs$keyHashes <- as.character(sapply(attrs$keys, digest))
       
       obj <- setAttributes(obj, attrs)
       
