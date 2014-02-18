@@ -159,9 +159,11 @@ updateAttributes <- function(obj, control = NULL) {
             
             if(grepl("^summary_datetime", reduce.key)) {
                resDatetime$nna       <- sum(c(resDatetime$nna, sapply(reduce.values, function(x) x$nna)), na.rm = TRUE)
-               tmp <- c(resDatetime$min, lapply(reduce.values, function(x) x$min))
+               tmp <- c(list(resDatetime$min), lapply(reduce.values, function(x) x$min))
+               tmp <- tmp[!sapply(tmp, is.null)]
                resDatetime$min       <- min(do.call(c, tmp), na.rm = TRUE)
-               tmp <- c(resDatetime$max, lapply(reduce.values, function(x) x$max))
+               tmp <- lapply(reduce.values, function(x) x$max)
+               tmp <- tmp[!sapply(tmp, is.null)]
                resDatetime$max       <- max(do.call(c, tmp), na.rm = TRUE)
             }
          },
