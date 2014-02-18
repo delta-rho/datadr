@@ -69,4 +69,11 @@ test_that("by=TRUE", {
    expect_true(mean(abs(sq2$q - tmp2$q)) < 0.001)
 })
 
+test_that("map is cleaned up for mulitple blocks", {
+   # set map_buff_size_bytes small so that mulitple blocks are sent through
+   # a single map task -- this is more of a localDisk mapReduce test to make
+   # sure that it cleans up the map each time
+   # (the "by" argument gets updated but should be clean for each map call)
+   quantile(ldd, var = "Sepal.Length", control = list(map_buff_size_bytes = 10))   
+})
 

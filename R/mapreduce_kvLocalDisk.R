@@ -3,10 +3,10 @@
 
 # hdfsOutput("a")
 # memOutput
-# diskOutput("a", nBins=10)
+# diskOutput("a", nBins = 10)
 
 #' @S3method mrExecInternal kvLocalDiskList
-mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
+mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {
    setup <- appendExpression(setup, 
       expression({
          suppressWarnings(suppressMessages(require(digest)))
@@ -24,14 +24,14 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
       tempDir <- control$mapred_temp_dir
    }
    # put results in a "job" directory named "job_i" where i increments
-   jobDirs <- list.files(tempDir, pattern="^job_")
+   jobDirs <- list.files(tempDir, pattern = "^job_")
    jobNums <- as.integer(gsub("^job_", "", jobDirs))
    if(length(jobNums) == 0) {
       jobNum <- 1
    } else {
       jobNum <- max(jobNums) + 1
    }
-   jobDir <- file.path(tempDir, paste("job_", jobNum, sep=""))
+   jobDir <- file.path(tempDir, paste("job_", jobNum, sep = ""))
    stopifnot(dir.create(jobDir))
    # add directory for map, counters, log
    mapDir <- file.path(jobDir, "map")
@@ -57,7 +57,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
       idx <- makeBlockIndices(sz, sum(sz) / nSlots, nSlots)
 
       lapply(idx, function(x) {
-         list(fp = fp, ff=ff[x], sz=sz[x], dataSourceName = nms[i])
+         list(fp = fp, ff = ff[x], sz = sz[x], dataSourceName = nms[i])
       })
    })
    mFileList <- unlist(mFileList, recursive = FALSE)
@@ -71,16 +71,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
    
    mapFn <- function(fl) {
       mapEnv <- new.env() # parent = baseenv())
-      if(!is.null(params)) {
-         pnames <- names(params)
-         for(i in seq_along(params)) {
-            if(is.function(params[[i]]))
-               environment(params[[i]]) <- mapEnv
-            assign(pnames[i], params[[i]], envir=mapEnv)
-         }
-      }
-      
-      eval(setup, envir=mapEnv)
+      eval(setup, envir = mapEnv)
       
       # add a collect, counter functions to the environment
       environment(LDcollect) <- mapEnv
@@ -99,9 +90,20 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
       assign("writeKVseparately", TRUE, mapEnv) # more efficient
       assign(".dataSourceName", fl$dataSourceName, mapEnv)
       
+      for(i in seq_along(params)) {
+         if(is.function(params[[i]]))
+            environment(params[[i]]) <- mapEnv
+      }
+      
       # iterate through map blocks and apply map to each
       mapBlocks <- makeBlockIndices(fl$sz, control$map_buff_size_bytes, nSlots)
       for(idx in mapBlocks) {
+         # set fresh params for each application of map expression
+         # in case a previous map updates them
+         pnames <- names(params)
+         for(i in seq_along(params))
+            assign(pnames[i], params[[i]], envir = mapEnv)
+         
          curDat <- lapply(fl$ff[idx], function(x) {
             load(file.path(fl$fp, x))
             obj[[1]]
@@ -110,24 +112,24 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
          assign("map.values", lapply(curDat, "[[", 2), mapEnv)
          eval(expression({
             .tmp <- environment()
-            attach(.tmp, warn.conflicts=FALSE)
-         }), envir=mapEnv)
-         eval(map, envir=mapEnv)
-         eval(expression({detach(".tmp")}), envir=mapEnv)
+            attach(.tmp, warn.conflicts = FALSE)
+         }), envir = mapEnv)
+         eval(map, envir = mapEnv)
+         eval(expression({detach(".tmp")}), envir = mapEnv)
          
          # count number of k/v processed
          evalq(counter("map", "kvProcessed", length(map.values)), mapEnv)
          
          # cat(evalq(object.size(taskRes), mapEnv), "\n")
          if(evalq(object.size(taskRes), mapEnv) > control$map_temp_buff_size_bytes)
-            evalq(flushKV(), envir=mapEnv)
+            evalq(flushKV(), envir = mapEnv)
       }
-      evalq(flushKV(), envir=mapEnv)
+      evalq(flushKV(), envir = mapEnv)
    }
    
    ### run map tasks
    if(!is.null(control$cluster)) {
-      clusterExport(control$cluster, c("map", "reduce", "setup", "params", "mapDir", "reduceDir", "countersDir", "makeBlockIndices", "nSlots", "control", "LDflushKV", "LDcounter", "LDcollect", "params"), envir=environment())
+      clusterExport(control$cluster, c("map", "reduce", "setup", "params", "mapDir", "reduceDir", "countersDir", "makeBlockIndices", "nSlots", "control", "LDflushKV", "LDcounter", "LDcollect", "params"), envir = environment())
       
       parLapply(control$cluster, mFileList, mapFn)
    } else {
@@ -140,7 +142,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
    rmf <- list.files(mapDir)
    nReduceKey <- length(rf)
    rf <- lapply(rmf, function(x) {
-      ff <- list.files(file.path(mapDir, x), recursive=TRUE, pattern="value")
+      ff <- list.files(file.path(mapDir, x), recursive = TRUE, pattern = "value")
       list(
          ff = ff,
          sz = file.info(file.path(mapDir, x, ff))$size,
@@ -169,7 +171,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
             assign(pnames[i], params[[i]], envir = reduceEnv)
          }
       }
-      eval(setup, envir=reduceEnv)
+      eval(setup, envir = reduceEnv)
       
       # add a collect, counter functions to the environment
       environment(LDcollect) <- reduceEnv
@@ -194,7 +196,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
          
          # nSlots is 1 because we are already in parLapply
          reduceBlocks <- makeBlockIndices(curReduceFiles$sz, control$reduce_buff_size_bytes, nSlots) #, nSlots = 1)
-         eval(reduce$pre, envir=reduceEnv)
+         eval(reduce$pre, envir = reduceEnv)
          
          for(idx in reduceBlocks) {
             curDat <- do.call(c, lapply(curReduceFiles$ff[idx], function(x) {
@@ -204,10 +206,10 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
             assign("reduce.values", curDat, reduceEnv)
             eval(reduce$reduce, envir = reduceEnv)
          }
-         eval(reduce$post, envir=reduceEnv)
+         eval(reduce$post, envir = reduceEnv)
          # count number of k/v processed
          evalq(counter("reduce", "kvProcessed", 1), reduceEnv)
-         evalq(flushKV(), envir=reduceEnv)
+         evalq(flushKV(), envir = reduceEnv)
       }
    }
    
@@ -226,7 +228,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
       if(is.character(output)) {
          output <- localDiskConn(output, nBins = floor(length(outputKeyHash) / 1000))
       } else {
-         output <- localDiskConn(tempfile(paste("job", jobNum, "_", sep="")), nBins = floor(length(outputKeyHash) / 1000), autoYes=TRUE, verbose=FALSE)
+         output <- localDiskConn(tempfile(paste("job", jobNum, "_", sep = "")), nBins = floor(length(outputKeyHash) / 1000), autoYes = TRUE, verbose = FALSE)
       }
    }
    
@@ -238,7 +240,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
    # we just read in each and write it back out according to the appropriate file hash
    # TODO: move this into the map and reduce so we don't have to do it here
    for(x in outputKeyHash) {
-      ff <- list.files(file.path(reduceDir, x), recursive=TRUE, full.names=TRUE)
+      ff <- list.files(file.path(reduceDir, x), recursive = TRUE, full.names = TRUE)
       # if(length(ff) == 1) {
       #    newFile <- getFileLocs(output, x)
       #    file.rename(ff, newFile)
@@ -252,13 +254,13 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
    }
    
    # read counters 
-   groupf <- list.files(countersDir, full.names=TRUE)
+   groupf <- list.files(countersDir, full.names = TRUE)
    counters <- lapply(groupf, function(f) {
-      fieldf <- list.files(f, full.names=TRUE)
+      fieldf <- list.files(f, full.names = TRUE)
       fieldNames <- basename(fieldf)
       
       tmp <- lapply(fieldf, function(a) {
-         sum(as.integer(basename(list.files(a, recursive=TRUE))))
+         sum(as.integer(basename(list.files(a, recursive = TRUE))))
       })
       names(tmp) <- fieldNames
       tmp
@@ -268,11 +270,11 @@ mrExecInternal.kvLocalDiskList <- function(data, setup=NULL, map=NULL, reduce=NU
    # TODO: add input, map, reduce, etc. to _meta
    
    # clean up (leave counters and log)
-   unlink(mapDir, recursive=TRUE)
-   unlink(reduceDir, recursive=TRUE)
+   unlink(mapDir, recursive = TRUE)
+   unlink(reduceDir, recursive = TRUE)
    file.create(file.path(jobDir, "SUCCESS"))
    
-   list(data=output, counters=counters)
+   list(data = output, counters = counters)
 }
 
 # take a vector of sizes and return a list of indices where
@@ -288,7 +290,7 @@ makeBlockIndices <- function(sz, sizePerBlock, nSlots = 1) {
    if(n == 1) {
       return(list(seq_along(sz)))
    } else {
-      qs <- quantile(cumsum(sz), seq(0, 1, length=n + 1))
+      qs <- quantile(cumsum(sz), seq(0, 1, length = n + 1))
       res <- split(seq_along(sz), cut(cumsum(sz), qs, include.lowest = TRUE))
       names(res) <- NULL
       return(res)
@@ -333,7 +335,7 @@ LDcollect <- function(k, v) {
    # also create a subdirectory named task_id to avoid conflicts
    kPath <- file.path(taskDir, dk, task_id)
    if(!file.exists(kPath))
-      dir.create(kPath, recursive=TRUE)
+      dir.create(kPath, recursive = TRUE)
    
    # if this is the first, store key in a file key.Rdata
    # then build up a list of map results until it's too big (then flush to disk)
@@ -341,7 +343,7 @@ LDcollect <- function(k, v) {
       taskCounter[[dk]] <<- 1
       taskRes[[dk]] <<- list()
       if(writeKVseparately)
-         save(k, file=file.path(kPath, "key.Rdata"))
+         save(k, file = file.path(kPath, "key.Rdata"))
    } else {
       taskCounter[[dk]] <<- taskCounter[[dk]] + 1
    }
@@ -352,7 +354,7 @@ LDcollect <- function(k, v) {
 LDcounter <- function(group, field, ct) {
    countersPath <- file.path(countersDir, group, field, task_id)
    if(!file.exists(countersPath)) {
-      dir.create(countersPath, recursive=TRUE)
+      dir.create(countersPath, recursive = TRUE)
       file.create(file.path(countersPath, "0"))
    }
    curCt <- as.numeric(list.files(countersPath))
