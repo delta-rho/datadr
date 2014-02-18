@@ -66,7 +66,8 @@ updateAttributes <- function(obj, control = NULL) {
                   dfNames <- names(r)
                   quantTypes <- c("integer", "numeric", "double")
                   categTypes <- c("character", "factor")
-
+                  datetimeTypes <- c("POSIXct", "Date")
+                  
                   for(i in seq_along(r)) {
                      var <- r[[i]]
                      if(inherits(var, quantTypes)) {
@@ -89,6 +90,20 @@ updateAttributes <- function(obj, control = NULL) {
                            nna = length(which(is.na(var))),
                            freqTable = tabulateMap(~ var, data = data.frame(var))
                         ))
+                     } else if(inherits(var, datetimeTypes)) {
+                        if(all(is.na(var)) || length(var) == 0) {
+                           minVal <- NA
+                           maxval <- NA
+                        } else {
+                           minVal <- min(var, na.rm = TRUE)
+                           maxVal <- max(var, na.rm = TRUE)
+                        }
+                        
+                        collect(paste("summary_datetime_", dfNames[i], sep = "_"), list(
+                           nna = length(which(is.na(r[[i]]))),
+                           min = minVal,
+                           max = maxVal
+                        ))
                      }
                   }
                }
@@ -106,9 +121,10 @@ updateAttributes <- function(obj, control = NULL) {
             nRow <- as.numeric(0)
             splitRowDistn <- NULL
             ### ddf summary
-            resQuant <- list(nobs = NULL, nna = NULL, moments = NULL, min = NULL, max = NULL)
-            resCateg <- list(nobs = NULL, nna = NULL, freqTable = NULL)
-         },
+            resQuant <- list(nna = NULL, moments = NULL, min = NULL, max = NULL)
+            resCateg <- list(nna = NULL, freqTable = NULL)
+            resDatetime <- list(nna = NULL, min = NULL, max = NULL)
+         }, 
          reduce = {
             ### ddo
             if(reduce.key == "splitSizeDistn")
@@ -140,6 +156,14 @@ updateAttributes <- function(obj, control = NULL) {
                resCateg$nna       <- sum(c(resCateg$nna, sapply(reduce.values, function(x) x$nna)), na.rm=TRUE)
                resCateg$freqTable <- tabulateReduce(resCateg$freqTable, lapply(reduce.values, function(x) x$freqTable))
             }
+            
+            if(grepl("^summary_datetime", reduce.key)) {
+               resDatetime$nna       <- sum(c(resDatetime$nna, sapply(reduce.values, function(x) x$nna)), na.rm = TRUE)
+               tmp <- c(resDatetime$min, lapply(reduce.values, function(x) x$min))
+               resDatetime$min       <- min(do.call(c, tmp), na.rm = TRUE)
+               tmp <- c(resDatetime$max, lapply(reduce.values, function(x) x$max))
+               resDatetime$max       <- max(do.call(c, tmp), na.rm = TRUE)
+            }
          },
          post = {
             ### ddo
@@ -164,6 +188,9 @@ updateAttributes <- function(obj, control = NULL) {
             
             if(grepl("^summary_categ", reduce.key))
                collect(reduce.key, resCateg)
+            
+            if(grepl("^summary_datetime", reduce.key))
+               collect(reduce.key, resDatetime)
          }
       )
       
@@ -225,23 +252,27 @@ updateAttributes <- function(obj, control = NULL) {
          for(i in summaryInd) {
             k <- tmp[[i]][[1]]
             v <- tmp[[i]][[2]]
-            varType <- gsub("^summary_(quant|categ).*", "\\1", k)
-            varName <- gsub("^summary_(quant|categ)__(.*)", "\\2", k)
+            varType <- gsub("^summary_(quant|categ|datetime).*", "\\1", k)
+            varName <- gsub("^summary_(quant|categ|datetime)__(.*)", "\\2", k)
             if(varType == "quant") {
                stats <- moments2statistics(v$moments)
                v <- list(nna = v$nna, stats = stats, range = c(v$min, v$max))
                class(v) <- c("ddfSummNumeric", "list")
                summaryList[[varName]] <- v
-            } else {
+            } else if(varType == "categ") {
                class(v) <- c("ddfSummFactor", "list")
                # were there more unique levels than we could handle?
                v$complete <- attrs[["nRow"]] == sum(v$freqTable$Freq)               
+               summaryList[[varName]] <- v
+            } else if(varType == "datetime") {
+               v <- list(nna = v$nna, range = c(v$min, v$max))
+               class(v) <- c("ddfSummDatetime", "list")
                summaryList[[varName]] <- v
             }
          }
          
          # make sure it is in the same order as the columns
-         summaryList <- summaryList[names(obj)]
+         summaryList <- summaryList[intersect(names(obj), names(summaryList))]
          
          class(summaryList) <- c("ddfSummary", "list")
          attrs[["summary"]] <- summaryList

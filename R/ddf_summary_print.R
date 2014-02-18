@@ -41,6 +41,27 @@ getPrintVals.ddfSummNumeric <- function(x) {
    paste(np, vp, sep="")
 }
 
+getPrintVals.ddfSummDatetime <- function(x) {
+   if(inherits(x$range, "POSIXct")) {
+      x$range <- format(x$range, "%y-%m-%d %H:%M")
+   } else if(inherits(x$range, "Date")) {
+      x$range <- format(x$range, "%y-%m-%d")
+   }
+   
+   x <- c(nna=x$nna, min=x$range[1], max=x$range[2])
+   names(x)[names(x) == "nna"] <- "missing"
+   names <- names(x)
+   vals <- sapply(x, format)
+   
+   nn <- max(nchar(names))
+   vn <- max(nchar(vals))
+      
+   np <- sprintf(paste("%", nn, "s : ", sep=""), names)
+   vp <- sprintf(paste("%", vn, "s", sep=""), vals)
+   res <- paste(np, vp, sep="")
+   c(res, rep(" ", 7 - length(res)))
+}
+
 getPrintVals.ddfSummFactor <- function(x) {
    nShow <- 4
    maxNchar <- 50
