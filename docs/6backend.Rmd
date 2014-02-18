@@ -319,13 +319,13 @@ Currently, the available control parameters for MapReduce on a local disk connec
 
 - `cluster`: a cluster object from `makeCluster()` to use to do distributed computation -- default is `NULL` (single core)
 - `mapred_temp_dir`: where to put intermediate key-value pairs in between map and reduce -- default is `tempdir()`
-- `map_buff_size_bytes`: the size of batches of key-value pairs to be passed to the map -- default is 10485760 (10 Mb)
+- `map_buff_size_bytes`: the size of batches of key-value pairs to be passed to the map -- default is 10485760 (10 Mb).  The cores in the cluster are filled with key-value pairs to process, up to each collection exceeding this size.
 - `map_temp_buff_size_bytes`: the size of the batches of key-value pairs to flush to intermediate storage from the map output -- default is 10485760 (10 Mb)
 - `reduce_buff_size_bytes`: the size of the batches of key-value pairs to send to the reduce -- default is 10485760 (10 Mb)
 
 The function `localDiskControl()` is used to create the default list.  Any parameter specified will override the default.
 
-To illustrate the use of `control` for local disk connections, let's rerun the "top 5" MapReduce job but this time with a 3-core cluster and with a much smaller buffer size for the map input:
+To illustrate the use of `control` for local disk connections, let's rerun the "top 5" MapReduce job but this time with a 3-core cluster:
 
 ```{r disk_top5_control}
 # create a 3 core cluster
@@ -335,17 +335,19 @@ cl <- makeCluster(3)
 # run MapReduce job with custom control
 top5a <- mrExec(bySpecies, 
    map = top5map, reduce = top5reduce,
-   control = localDiskControl(cluster = cl, map_buff_size_bytes = 10))
+   control = localDiskControl(cluster = cl))
 ```
 
-The map and reduce tasks for this job were run on a 3-core cluster.  We set `map_buff_size_bytes` to 10.  This means that when sending key-value pairs to the map tasks, input key-value pairs will be bundled into batches of key-value pairs (minimum of 1 key-value pair per batch) that don't exceed 10 bytes.  Since our data is very small, this very low limit ensures that there is only one key-value pair per batch, and therefore that the 3 map tasks will all be doing work.  With the default buffer size of 10 Mb, all 3 input key-value pairs are sent to one map task, and in that case, it is pointless to run a multicore job because only one map task will be run.
+The map and reduce tasks for this job were run on a 3-core cluster.  
 
-We can verify that our new computation did indeed run 3 map tasks by comparing the counters from the first and second jobs:
+<!-- We set `map_buff_size_bytes` to 10.  This means that when sending key-value pairs to the map tasks, input key-value pairs will be bundled into batches of key-value pairs (minimum of 1 key-value pair per batch) that don't exceed 10 bytes.  Since our data is very small, this very low limit ensures that there is only one key-value pair per batch, and therefore that the 3 map tasks will all be doing work.  With the default buffer size of 10 Mb, all 3 input key-value pairs are sent to one map task, and in that case, it is pointless to run a multicore job because only one map task will be run. -->
+
+We can verify that our new computation did indeed run 3 separate map tasks (one on each core) by comparing the counters from the first and second jobs:
 
 ```{r top5_counter_compare}
-# how many map tasks were there before setting map_buff_size_bytes
+# how many map tasks were there before using a 3-core cluster
 counters(top5)$map$mapTasks
-# how many map tasks were there after setting map_buff_size_bytes
+# how many map tasks were there after using a 3-core cluster
 counters(top5a)$map$mapTasks
 ```
 
@@ -404,7 +406,7 @@ Also see `rhcp()` and `rhmv()`.
 options(max.print=200)
 ```
 
-#### Initiating a HDFS connection
+#### Initiating an HDFS connection
 
 ```{r, echo=FALSE, purl=FALSE, cache=TRUE, results="hide", error=FALSE, message=FALSE, warning=FALSE}
 try({
@@ -708,4 +710,45 @@ irisDdfDisk <- convert(from=irisDdf,
 
 All possible conversions (disk -> HDFS, disk -> memory, HDFS -> disk, HDFS -> memory, memory -> disk, memory -> HDFS) have `convert()` methods implemented.
 
+### Reading in Data ###
+
+One of the most difficult parts of analyzing very large data sets is getting the original data into a format suitable for analysis.  This package provides some convenience functions for reading data in from text files, either very large text files on a local file system that are to be read in sequentially, or very large text files on HDFS.
+
+#### Reading in local text files
+
+Local text files can be read in using `readTextFileByChunk()`.  This function reads blocks of lines of text files, processes them with a user-defined function, and stores the output for each block in a key-value pair.  This is typically useful for local disk connections.
+
+As an example, suppose the iris data was given to us as a csv file:
+
+```{r}
+# create a csv file to treat as text input
+csvFile <- file.path(tempdir(), "iris.csv")
+write.csv(iris, file = csvFile, row.names = FALSE, quote = FALSE)
+# see what the file looks like
+system(paste("head", csvFile))
+```
+
+We want to get this into a format suitable for analysis in R.  
+
+```{r}
+# read chunks of the csv file in, process them, 
+# and store them in a local disk connection
+irisTextConn <- localDiskConn(file.path(tempdir(), "irisText"), autoYes = TRUE)
+a <- readTextFileByChunk(input = csvFile, 
+   output = irisTextConn, linesPerBlock = 10, 
+   fn = function(x, header) {
+      colNames <- strsplit(header, ",")[[1]]
+      read.csv(textConnection(paste(x, collapse = "\n")), 
+         col.names = colNames, header = FALSE)
+   })
+a[[1]]
+```
+
+#### Reading in text files on HDFS
+
+In many cases, reading data from text files on HDFS can be a very complex process, and you might want to write your own mapReduce jobs to handle it.  However, in some cases it can be more straightforward, and a convenience function for reading text into HDFS is available, `readHDFStextFile()`.
+
+Example to come.
+
+<!-- TODO: example of writing your own MR job to read in data from text file -->
 

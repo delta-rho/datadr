@@ -156,6 +156,11 @@
       </li>
 
 
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#common-data-operations'>Common Data Operations</a>
+      </li>
+
+
 <li class='nav-header unselectable' data-edit-href='https://www.github.com/hafen/datadr/edit/gh-pages/docs/3dnr.Rmd'>Division and Recombination</li>
       
       <li class='active'>
@@ -241,6 +246,11 @@
 
       <li class='active'>
          <a target='_self' class='nav-not-header' href='#conversion'>Conversion</a>
+      </li>
+
+
+      <li class='active'>
+         <a target='_self' class='nav-not-header' href='#reading-in-data'>Reading in Data</a>
       </li>
 
 
@@ -364,6 +374,8 @@ install_github(&quot;datadr&quot;, &quot;hafen&quot;)
 <div class='tab-pane' id='key-value-pairs'>
 <h3>Key-Value Pairs</h3>
 
+<p>In D&amp;R, data is partitioned into blocks.  Each block is represented as a <em>key-value pair</em>.  Collections of key-value pairs are <em>distributed data objects (ddo)</em>, or in the case of the value being a data frame, a <em>distributed data frame (ddf)</em>, and form the basic input and output types of all D&amp;R operations.  This section introduces these concepts and illustrates how they are used in the <code>datadr</code> implementation.</p>
+
 <p>The most basic data structure in D&amp;R is a <em>key-value pair</em> which is simply a data structure with key and value elements, each of which can have any data structure.  </p>
 
 <h4>Key-value pairs in <code>datadr</code></h4>
@@ -483,8 +495,7 @@ meanSepalLength2 &lt;- function(k, v)
 kvApply(meanSepalLength2, irisKV[[1]])
 </code></pre>
 
-<pre><code>  species  mean
-1  setosa 5.006
+<pre><code>[1] 5.006
 </code></pre>
 
 <p>My function <code>meanSepalLength2</code> now takes two arguments, and therefore <code>kvApply</code> will provide it both the key and the value, available in the function as <code>k</code> and <code>v</code>, and the function can use the key to get the species to put in the resulting data frame.</p>
@@ -553,13 +564,13 @@ In-memory data connection
 getKeys(irisDdo)
 </code></pre>
 
-<pre><code>$`946a2c38121bed59091a362f5015327e`
+<pre><code>[[1]]
 [1] &quot;setosa&quot;
 
-$fa66f5fefadcc79a57a5afe78fe680db
+[[2]]
 [1] &quot;versicolor&quot;
 
-$b313f00809c319b9b5918795d13ca47a
+[[3]]
 [1] &quot;virginica&quot;
 </code></pre>
 
@@ -831,55 +842,51 @@ In-memory data connection
 summary(irisDdf)
 </code></pre>
 
-<pre><code>$Sepal.Length
-$Sepal.Length$nna
+<pre><code>   Sepal.Length        Sepal.Width    
+ -----------------  ----------------- 
+  missing :      0   missing :      0 
+      min :    4.3       min :      2 
+      max :    7.9       max :    4.4 
+     mean :  5.843      mean :  3.057 
+ [ reached getOption(&quot;max.print&quot;) -- omitted 4 rows ]
+</code></pre>
+
+<p>This prints the summary statistics.  For categorical variables, the top four values and their frequency is pritned.  To access the values themselves, we can do, for example:</p>
+
+<pre><code class="r">summary(irisDdf)$Sepal.Length
+</code></pre>
+
+<pre><code>$nna
 [1] 0
 
-$Sepal.Length$stats
-$Sepal.Length$stats$mean
+$stats
+$stats$mean
 [1] 5.843
 
-$Sepal.Length$stats$var
+$stats$var
 [1] 0.6857
 
-$Sepal.Length$stats$skewness
+$stats$skewness
 [1] 0.3118
 
-$Sepal.Length$stats$kurtosis
+$stats$kurtosis
 [1] 2.426
 
 
-$Sepal.Length$range
+$range
 [1] 4.3 7.9
 
-
-$Sepal.Width
-$Sepal.Width$nna
-[1] 0
-
-$Sepal.Width$stats
-$Sepal.Width$stats$mean
-[1] 3.057
-
-$Sepal.Width$stats$var
-[1] 0.19
-
-$Sepal.Width$stats$skewness
-[1] 0.3158
-
-$Sepal.Width$stats$kurtosis
-[1] 3.181
-
-
-$Sepal.Width$range
-[1] 2.0 4.4
-
-
 attr(,&quot;class&quot;)
-[1] &quot;ddfSummary&quot; &quot;list&quot;      
+[1] &quot;ddfSummNumeric&quot; &quot;list&quot;          
 </code></pre>
 
-<p>In the future, there will be a better print method, etc. for summary results.</p>
+<p>or:</p>
+
+<pre><code class="r">summary(irisDdf)$Species
+</code></pre>
+
+<pre><code>NULL
+</code></pre>
 
 <h4>Data frame-like &quot;ddf&quot; methods</h4>
 
@@ -1020,6 +1027,195 @@ kvExample(peopleDdf)
 </div>
 
 
+<div class='tab-pane' id='common-data-operations'>
+<h3>Common Data Operations</h3>
+
+<p>The majority of this documentation will cover division and recombination, but here, we present some methods that are available for common data operations that come in handy for manipulating data in various ways.</p>
+
+<h4>lapply</h4>
+
+<p>It is convenient to be able use the familiar <code>lapply()</code> approach to apply a function to each key-value pair.  This method is available for &quot;ddo&quot; and &quot;ddf&quot; objects.  The function you specify follows the same convention as described earlier (if it has one argument, it is applied to the value only, if it has two arguments, it is applied to the key and value).  A &quot;ddo&quot; object is returned.</p>
+
+<p>Here is an example of using <code>lapply()</code> to the <code>irisDdf</code> data:</p>
+
+<pre><code class="r"># get the mean Sepal.Width for each key-value pair in irisDdf
+means &lt;- lapply(irisDdf, function(x) mean(x$Sepal.Width))
+</code></pre>
+
+<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
+* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
+* Testing the &#39;apply&#39; method on a subset...
+* Applying to all subsets...
+* Getting basic &#39;ddo&#39; attributes...
+</code></pre>
+
+<pre><code class="r"># turn the resulting &quot;ddo&quot; object into a list
+as.list(means)
+</code></pre>
+
+<pre><code>[[1]]
+[[1]][[1]]
+[1] &quot;setosa&quot;
+
+[[1]][[2]]
+[1] 3.428
+
+
+[[2]]
+[[2]][[1]]
+[1] &quot;versicolor&quot;
+
+[[2]][[2]]
+[1] 2.77
+
+
+[[3]]
+[[3]][[1]]
+[1] &quot;virginica&quot;
+
+[[3]][[2]]
+[1] 2.974
+</code></pre>
+
+<h4>Filter</h4>
+
+<p>A <code>drFilter()</code> function is available which takes a function that is applied to each key-value pair (using the <code>kvApply()</code> convention).  If the function returns <code>TRUE</code>, that key-value pair will be included in the resulting &quot;ddo&quot; or &quot;ddf&quot; object, if <code>FALSE</code>, it will not.</p>
+
+<p>Here is an example that keeps all subsets with mean sepal width less than 3:</p>
+
+<pre><code class="r"># keep subsets with mean sepal width less than 3
+drFilter(irisDdf, function(v) mean(v$Sepal.Width) &lt; 3)
+</code></pre>
+
+<pre><code>* Getting basic &#39;ddo&#39; attributes...
+</code></pre>
+
+<pre><code>
+Distributed data object of class &#39;kvMemory&#39; with attributes: 
+
+&#39;ddo&#39; attribute | value
+----------------+-----------------------------------------------------------
+ keys           | keys are available through getKeys(dat)
+ totSize        | 3.85 KB
+ nDiv           | 2
+ splitSizeDistn | [empty] call updateAttributes(dat) to get this value
+ example        | use kvExample(dat) to get an example subset
+ bsvInfo        | [empty] no BSVs have been specified
+
+In-memory data connection
+</code></pre>
+
+<h4>Join</h4>
+
+<p>The <code>drJoin()</code> operation takes multiple input &quot;ddo&quot; or &quot;ddf&quot; objects and merges their values by key.  This is a very useful function when there are multiple input sources that you would like to group together.</p>
+
+<p>Suppose with the iris data that we have two separate input sources, one that reports the sepal width and another that reports the sepal length for each species:</p>
+
+<pre><code class="r"># create two new &quot;ddo&quot; objects that contain sepal width and sepal length
+sw &lt;- lapply(irisDdf, function(x) x$Sepal.Width)
+sl &lt;- lapply(irisDdf, function(x) x$Sepal.Length)
+</code></pre>
+
+<p>An example subset of <code>sw</code> looks like this:</p>
+
+<pre><code class="r">sw[[1]]
+</code></pre>
+
+<pre><code>[[1]]
+[1] &quot;setosa&quot;
+
+[[2]]
+ [1] 3.5 3.0 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1
+ [ reached getOption(&quot;max.print&quot;) -- omitted 40 entries ]
+</code></pre>
+
+<p>Both <code>sw</code> and <code>sl</code> have the same set of keys, and the value is a vector of either the sepal width or length.  To join them together, we can call <code>drJoin()</code>.  This function takes any number of &quot;ddo&quot; or &quot;ddf&quot; input objects, and they must be named.  It also optionally takes a <code>postTransFn</code> argument, which allows a transformation function to be applied the joined result.</p>
+
+<p>By default, <code>drJoin()</code> groups the various data sources by key, and the resulting value is a named list, where each element of the list is the value from each data source.  For example, to join the <code>sw</code> and <code>sl</code> data, we get the following:</p>
+
+<pre><code class="r"># join sw and sl by key
+joinRes &lt;- drJoin(Sepal.Width=sw, Sepal.Length=sl)
+</code></pre>
+
+<pre><code>* Getting basic &#39;ddo&#39; attributes...
+</code></pre>
+
+<pre><code class="r"># look at first key-value pair
+joinRes[[1]]
+</code></pre>
+
+<pre><code>[[1]]
+[1] &quot;setosa&quot;
+
+[[2]]
+[[2]]$Sepal.Width
+ [1] 3.5 3.0 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1
+ [ reached getOption(&quot;max.print&quot;) -- omitted 40 entries ]
+
+[[2]]$Sepal.Length
+ [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9
+ [ reached getOption(&quot;max.print&quot;) -- omitted 40 entries ]
+</code></pre>
+
+<p>The resulting object, <code>joinRes</code>, has subsets with the same keys, but the values are now named lists that consist of the values from both data sets.</p>
+
+<p>Here is an example of specifying <code>postTransFn</code> to turn the resulting values of the join operation into a data frame:</p>
+
+<pre><code class="r"># join sw and sl by key and turn the result into a data frame
+joinRes &lt;- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
+</code></pre>
+
+<pre><code>* Getting basic &#39;ddo&#39; attributes...
+</code></pre>
+
+<pre><code class="r"># look at first key-value pair
+joinRes[[1]]
+</code></pre>
+
+<pre><code>[[1]]
+[1] &quot;setosa&quot;
+
+[[2]]
+   Sepal.Width Sepal.Length
+1          3.5          5.1
+2          3.0          4.9
+3          3.2          4.7
+4          3.1          4.6
+5          3.6          5.0
+ [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
+</code></pre>
+
+<h4>Sample</h4>
+
+<p>It can be useful to create a new data set of randomly sampled subsets of a large data set.  The <code>drSample()</code> function provides for this.  Currently, it is as simple as specifying the fraction of subsets you would like the resulting data set to have:</p>
+
+<pre><code class="r">set.seed(1234)
+drSample(irisDdf, fraction = 0.25)
+</code></pre>
+
+<pre><code>* Getting basic &#39;ddo&#39; attributes...
+</code></pre>
+
+<pre><code>
+Distributed data object of class &#39;kvMemory&#39; with attributes: 
+
+&#39;ddo&#39; attribute | value
+----------------+-----------------------------------------------------------
+ keys           | keys are available through getKeys(dat)
+ totSize        | 1.75 KB
+ nDiv           | 1
+ splitSizeDistn | [empty] call updateAttributes(dat) to get this value
+ example        | use kvExample(dat) to get an example subset
+ bsvInfo        | [empty] no BSVs have been specified
+
+In-memory data connection
+</code></pre>
+
+<p>In the future, we will add the capability to sample the data with respect to <a href="#between-subset-variables">between-subset-variables</a>.</p>
+
+</div>
+
+
 <div class='tab-pane' id='high-level-interface'>
 <h3>High-Level Interface</h3>
 
@@ -1153,13 +1349,13 @@ getSplitVars(bySpecies[[1]])
 getKeys(bySpecies)
 </code></pre>
 
-<pre><code>$`4a7a45a288b320d14537ba28cfdb8db5`
+<pre><code>[[1]]
 [1] &quot;Species=setosa&quot;
 
-$`88f9dd48ca10366898776cdf8fdc5418`
+[[2]]
 [1] &quot;Species=versicolor&quot;
 
-$bc1f636f7428e8dc45d7d65ee4c78a45
+[[3]]
 [1] &quot;Species=virginica&quot;
 </code></pre>
 
@@ -1230,34 +1426,34 @@ plot(splitRowDistn(byRandom))
 <pre><code class="r">getKeys(byRandom)
 </code></pre>
 
-<pre><code>$`1eba819cbcd7263e1862fa9d7d4be2d9`
+<pre><code>[[1]]
 [1] &quot;rr_1&quot;
 
-$aa32d056aba0e16736e7a8a5c72d271e
+[[2]]
 [1] &quot;rr_10&quot;
 
-$`2d67663e85cfc7d9211b1f66c04f4aca`
+[[3]]
 [1] &quot;rr_11&quot;
 
-$`2f43184cb1e3e1313c04e1ea1b36297c`
+[[4]]
 [1] &quot;rr_12&quot;
 
-$`8279729719e3b3c72580d43400e94725`
+[[5]]
 [1] &quot;rr_13&quot;
 
-$`7a033d10212755ca848e3d49adb12cbd`
+[[6]]
 [1] &quot;rr_14&quot;
 
-$`15e9c08531fcde946adf570a77665480`
+[[7]]
 [1] &quot;rr_15&quot;
 
-$`2973567a41c2ec84cd5c9cc748ae9731`
+[[8]]
 [1] &quot;rr_2&quot;
 
-$`2d4e834b37e65b87515e53b2024db8f8`
+[[9]]
 [1] &quot;rr_3&quot;
 
-$`4a724f19d274e3186324e79429144fdb`
+[[10]]
 [1] &quot;rr_4&quot;
 
  [ reached getOption(&quot;max.print&quot;) -- omitted 5 entries ]
@@ -1329,6 +1525,9 @@ $stats$kurtosis
 
 $range
 [1] 4.3 7.9
+
+attr(,&quot;class&quot;)
+[1] &quot;ddfSummNumeric&quot; &quot;list&quot;          
 </code></pre>
 
 <p>We see that its range is from 4.3 to 7.9.  Suppose we want to bin it by the integer.  We can create a new variable <code>slCut</code> by defining a <code>preTransFn</code> that adds this column to the data frame.  Then we specify that we want to divide the data both on <code>Species</code>, but also <code>slCut</code>, which doesn&#39;t exist in the input data but will exist in the data prior to division thanks to <code>preTransFn</code>.</p>
@@ -1537,7 +1736,7 @@ In-memory data connection
 
 <pre><code>* Verifying suitability of &#39;apply&#39; for division type...
 * Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
+* Testing the &#39;apply&#39; method on a subset...
 * Applying to all subsets...
 * Getting basic &#39;ddo&#39; attributes...
 </code></pre>
@@ -1575,7 +1774,7 @@ In-memory data connection
 
 <pre><code>* Verifying suitability of &#39;apply&#39; for division type...
 * Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
+* Testing the &#39;apply&#39; method on a subset...
 * Applying to all subsets...
 * Getting basic &#39;ddo&#39; attributes...
 </code></pre>
@@ -1596,7 +1795,7 @@ recombine(bySpecies, apply=meanApply, comb=combRbind())
 
 <pre><code>* Verifying suitability of &#39;apply&#39; for division type...
 * Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
+* Testing the &#39;apply&#39; method on a subset...
 * Applying to all subsets...
 * Getting basic &#39;ddo&#39; attributes...
 </code></pre>
@@ -1614,7 +1813,7 @@ recombine(bySpecies, apply=meanApply, comb=combRbind())
 
 <pre><code>* Verifying suitability of &#39;apply&#39; for division type...
 * Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
+* Testing the &#39;apply&#39; method on a subset...
 * Applying to all subsets...
 * Getting basic &#39;ddo&#39; attributes...
 </code></pre>
@@ -1803,7 +2002,7 @@ edGroupTable &lt;- recombine(byEdGroup, apply=nrow, combine=combRbind())
 
 <pre><code>* Verifying suitability of &#39;apply&#39; for division type...
 * Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
+* Testing the &#39;apply&#39; method on a subset...
 * Applying to all subsets...
 * Getting basic &#39;ddo&#39; attributes...
 </code></pre>
@@ -1837,7 +2036,7 @@ sexRatio &lt;- recombine(byEdGroup, apply=function(x) {
 
 <pre><code>* Verifying suitability of &#39;apply&#39; for division type...
 * Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
+* Testing the &#39;apply&#39; method on a subset...
 * Applying to all subsets...
 * Getting basic &#39;ddo&#39; attributes...
 </code></pre>
@@ -2538,7 +2737,7 @@ $counterTest$mapValuesProcessed
 [1] 4
 </code></pre>
 
-<p>The result is what we expect -- there were 4 input key/value pairs processed by the map.</p>
+<p>The result is what we expect -- there were 4 input key-value pairs processed by the map.</p>
 
 <!-- #### `status()`
 
@@ -2744,7 +2943,7 @@ recombine(bySpecies,
 
 <pre><code>* Verifying suitability of &#39;apply&#39; for division type...
 * Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
+* Testing the &#39;apply&#39; method on a subset...
 * Applying to all subsets...
 * Getting basic &#39;ddo&#39; attributes...
 </code></pre>
@@ -2818,9 +3017,7 @@ top5[[1]]
 irisDiskConn &lt;- localDiskConn(&quot;/private/tmp/irisKV&quot;, autoYes=TRUE)
 </code></pre>
 
-<pre><code>* Attempting to create directory ... ok
-* Saving connection attributes
-* Directory is empty - use addData() to add k/v pairs to this directory
+<pre><code>* Loading connection attributes
 </code></pre>
 
 <p>By default, if the directory does not exist, <code>localDiskConn()</code> will ask you if you would like to create the directory.  Since we specify <code>autoYes=TRUE</code>, the directory is automatically created.</p>
@@ -2839,7 +3036,6 @@ irisDiskConn
 </code></pre>
 
 <pre><code>* Loading connection attributes
-* Directory is empty - use addData() to add k/v pairs to this directory
 </code></pre>
 
 <p>Any meta data that was there is also read in.  If you would like to connect to a directory but reset all meta data, you can call <code>localDiskConn()</code> with <code>reset=TRUE</code>.</p>
@@ -2861,6 +3057,10 @@ irisDiskConn
 <pre><code class="r">addData(irisDiskConn, irisKV[1:2])
 </code></pre>
 
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
+Warning: Element 2 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
+</code></pre>
+
 <p>Here we added the first 2 key-value pairs to disk.  We can verify this by looking in the directory:</p>
 
 <pre><code class="r">list.files(irisDiskConn$loc)
@@ -2868,7 +3068,8 @@ irisDiskConn
 
 <pre><code>[1] &quot;_meta&quot;                                 
 [2] &quot;07abaecdababc84098369b43ae953523.Rdata&quot;
-[3] &quot;b1f1dba2f126bc3208b6b84121503757.Rdata&quot;
+[3] &quot;ac3c8cadb82078a1a3de9d0d59822e4d.Rdata&quot;
+[4] &quot;b1f1dba2f126bc3208b6b84121503757.Rdata&quot;
 </code></pre>
 
 <p><code>&quot;_meta&quot;</code> is a directory where the connection metadata is stored.  The two <code>.Rdata</code> files are the two key-value pairs we just added.  The file name is determined by the md5 hash of the data in the key (and we don&#39;t have to worry about this).</p>
@@ -2876,6 +3077,10 @@ irisDiskConn
 <p>We can call <code>addData()</code> as many times as we would like to continue to add data to the directory.  Let&#39;s add the final key-value pair:</p>
 
 <pre><code class="r">addData(irisDiskConn, irisKV[3])
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
 </code></pre>
 
 <p>Now we have a connection with all of the data in it.</p>
@@ -2888,8 +3093,8 @@ irisDiskConn
 irisDdf &lt;- ddf(irisDiskConn)
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Getting basic &#39;ddf&#39; attributes...
+<pre><code>* Reading in existing &#39;ddo&#39; attributes
+* Reading in existing &#39;ddf&#39; attributes
 </code></pre>
 
 <p>As noted before, with in-memory data, we initialize &quot;ddo&quot; or &quot;ddf&quot; objects with in-memory key-value pairs.  For all other backends, we pass a connection object.  <code>irisDdf</code> is now a distributed data frame that behaves in the same way as the one we created for the in-memory case.  The data itself though is located on disk.  </p>
@@ -2905,10 +3110,10 @@ Distributed data object of class &#39;kvLocalDisk&#39; with attributes:
 
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
- keys           | [empty] call updateAttributes(dat) to get this value
- totSize        | 1.95 KB
+ keys           | keys are available through getKeys(dat)
+ totSize        | 1.94 KB
  nDiv           | 3
- splitSizeDistn | [empty] call updateAttributes(dat) to get this value
+ splitSizeDistn | use splitSizeDistn(dat) to get distribution
  example        | use kvExample(dat) to get an example subset
  bsvInfo        | [empty] no BSVs have been specified
 
@@ -2916,9 +3121,9 @@ Distributed data object of class &#39;kvLocalDisk&#39; with attributes:
 ----------------+-----------------------------------------------------------
  vars           | Sepal.Length(num), Sepal.Width(num), and 3 more
  transFn        | identity (original data is a data frame)
- nRow           | [empty] call updateAttributes(dat) to get this value
- splitRowDistn  | [empty] call updateAttributes(dat) to get this value
- summary        | [empty] call updateAttributes(dat) to get this value
+ nRow           | 150
+ splitRowDistn  | use splitRowDistn(dat) to get distribution
+ summary        | use summary(dat) to see summaries
 
 localDiskConn connection
   loc=/private/tmp/irisKV; nBins=0
@@ -2930,8 +3135,7 @@ localDiskConn connection
 irisDdf &lt;- updateAttributes(irisDdf)
 </code></pre>
 
-<pre><code>* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
+<pre><code>All (implemented) attributes have already been computed.
 </code></pre>
 
 <h4>D&amp;R Example</h4>
@@ -2947,12 +3151,16 @@ bySpecies &lt;- divide(irisDdf,
 
 <pre><code>* Verifying parameters...
 * Applying division...
-* Attempting to create directory ... ok
-* Saving connection attributes
-* Directory is empty - use addData() to add k/v pairs to this directory
-* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
+* Loading connection attributes
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
+Warning: Element 1 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
+Warning: Element 1 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>* Reading in existing &#39;ddo&#39; attributes
+All (implemented) attributes have already been computed.
 </code></pre>
 
 <p>This code is the same as what we used for the in-memory data except that in <code>divide()</code>, we also need to specify an output connection.  If <code>output</code> is not provided, an attempt is made to read the data in to an in-memory connection.  Here we specify that we would like the output of the division to be stored on local disk in <code>&quot;/private/tmp/bySpecies&quot;</code>.  </p>
@@ -2983,7 +3191,7 @@ recombine(bySpecies,
 
 <pre><code>* Verifying suitability of &#39;apply&#39; for division type...
 * Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
+* Testing the &#39;apply&#39; method on a subset...
 * Applying to all subsets...
 * Getting basic &#39;ddo&#39; attributes...
 </code></pre>
@@ -3033,10 +3241,14 @@ recombine(bySpecies,
 <pre><code class="r">getKeys(bySpecies)
 </code></pre>
 
-<pre><code>4a7a45a288b320d14537ba28cfdb8db5 88f9dd48ca10366898776cdf8fdc5418 
-                &quot;Species=setosa&quot;             &quot;Species=versicolor&quot; 
-bc1f636f7428e8dc45d7d65ee4c78a45 
-             &quot;Species=virginica&quot; 
+<pre><code>[[1]]
+[1] &quot;Species=setosa&quot;
+
+[[2]]
+[1] &quot;Species=versicolor&quot;
+
+[[3]]
+[1] &quot;Species=virginica&quot;
 </code></pre>
 
 <h4>MapReduce example</h4>
@@ -3106,14 +3318,14 @@ top5[[1]]
 <ul>
 <li><code>cluster</code>: a cluster object from <code>makeCluster()</code> to use to do distributed computation -- default is <code>NULL</code> (single core)</li>
 <li><code>mapred_temp_dir</code>: where to put intermediate key-value pairs in between map and reduce -- default is <code>tempdir()</code></li>
-<li><code>map_buff_size_bytes</code>: the size of batches of key-value pairs to be passed to the map -- default is 10485760 (10 Mb)</li>
+<li><code>map_buff_size_bytes</code>: the size of batches of key-value pairs to be passed to the map -- default is 10485760 (10 Mb).  The cores in the cluster are filled with key-value pairs to process, up to each collection exceeding this size.</li>
 <li><code>map_temp_buff_size_bytes</code>: the size of the batches of key-value pairs to flush to intermediate storage from the map output -- default is 10485760 (10 Mb)</li>
 <li><code>reduce_buff_size_bytes</code>: the size of the batches of key-value pairs to send to the reduce -- default is 10485760 (10 Mb)</li>
 </ul>
 
 <p>The function <code>localDiskControl()</code> is used to create the default list.  Any parameter specified will override the default.</p>
 
-<p>To illustrate the use of <code>control</code> for local disk connections, let&#39;s rerun the &quot;top 5&quot; MapReduce job but this time with a 3-core cluster and with a much smaller buffer size for the map input:</p>
+<p>To illustrate the use of <code>control</code> for local disk connections, let&#39;s rerun the &quot;top 5&quot; MapReduce job but this time with a 3-core cluster:</p>
 
 <pre><code class="r"># create a 3 core cluster
 library(parallel)
@@ -3122,24 +3334,26 @@ cl &lt;- makeCluster(3)
 # run MapReduce job with custom control
 top5a &lt;- mrExec(bySpecies, 
    map = top5map, reduce = top5reduce,
-   control = localDiskControl(cluster = cl, map_buff_size_bytes = 10))
+   control = localDiskControl(cluster = cl))
 </code></pre>
 
 <pre><code>* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
-<p>The map and reduce tasks for this job were run on a 3-core cluster.  We set <code>map_buff_size_bytes</code> to 10.  This means that when sending key-value pairs to the map tasks, input key-value pairs will be bundled into batches of key-value pairs (minimum of 1 key-value pair per batch) that don&#39;t exceed 10 bytes.  Since our data is very small, this very low limit ensures that there is only one key-value pair per batch, and therefore that the 3 map tasks will all be doing work.  With the default buffer size of 10 Mb, all 3 input key-value pairs are sent to one map task, and in that case, it is pointless to run a multicore job because only one map task will be run.</p>
+<p>The map and reduce tasks for this job were run on a 3-core cluster.  </p>
 
-<p>We can verify that our new computation did indeed run 3 map tasks by comparing the counters from the first and second jobs:</p>
+<!-- We set `map_buff_size_bytes` to 10.  This means that when sending key-value pairs to the map tasks, input key-value pairs will be bundled into batches of key-value pairs (minimum of 1 key-value pair per batch) that don't exceed 10 bytes.  Since our data is very small, this very low limit ensures that there is only one key-value pair per batch, and therefore that the 3 map tasks will all be doing work.  With the default buffer size of 10 Mb, all 3 input key-value pairs are sent to one map task, and in that case, it is pointless to run a multicore job because only one map task will be run. -->
 
-<pre><code class="r"># how many map tasks were there before setting map_buff_size_bytes
+<p>We can verify that our new computation did indeed run 3 separate map tasks (one on each core) by comparing the counters from the first and second jobs:</p>
+
+<pre><code class="r"># how many map tasks were there before using a 3-core cluster
 counters(top5)$map$mapTasks
 </code></pre>
 
 <pre><code>[1] 1
 </code></pre>
 
-<pre><code class="r"># how many map tasks were there after setting map_buff_size_bytes
+<pre><code class="r"># how many map tasks were there after using a 3-core cluster
 counters(top5a)$map$mapTasks
 </code></pre>
 
@@ -3260,7 +3474,7 @@ rhdel(&quot;/tmp/testfile&quot;)
 
 <p>Also see <code>rhcp()</code> and <code>rhmv()</code>.</p>
 
-<h4>Initiating a HDFS connection</h4>
+<h4>Initiating an HDFS connection</h4>
 
 <p>To initiate a connection to data on HDFS, we use the function <code>hdfsConn()</code>, and simply point it to a directory on HDFS.</p>
 
@@ -4082,6 +4296,90 @@ irisDdfDisk &lt;- convert(from=irisDdf,
 </code></pre>
 
 <p>All possible conversions (disk -&gt; HDFS, disk -&gt; memory, HDFS -&gt; disk, HDFS -&gt; memory, memory -&gt; disk, memory -&gt; HDFS) have <code>convert()</code> methods implemented.</p>
+
+</div>
+
+
+<div class='tab-pane' id='reading-in-data'>
+<h3>Reading in Data</h3>
+
+<p>One of the most difficult parts of analyzing very large data sets is getting the original data into a format suitable for analysis.  This package provides some convenience functions for reading data in from text files, either very large text files on a local file system that are to be read in sequentially, or very large text files on HDFS.</p>
+
+<h4>Reading in local text files</h4>
+
+<p>Local text files can be read in using <code>readTextFileByChunk()</code>.  This function reads blocks of lines of text files, processes them with a user-defined function, and stores the output for each block in a key-value pair.  This is typically useful for local disk connections.</p>
+
+<p>As an example, suppose the iris data was given to us as a csv file:</p>
+
+<pre><code class="r"># create a csv file to treat as text input
+csvFile &lt;- file.path(tempdir(), &quot;iris.csv&quot;)
+write.csv(iris, file = csvFile, row.names = FALSE, quote = FALSE)
+# see what the file looks like
+system(paste(&quot;head&quot;, csvFile))
+</code></pre>
+
+<p>We want to get this into a format suitable for analysis in R.  </p>
+
+<pre><code class="r"># read chunks of the csv file in, process them, 
+# and store them in a local disk connection
+irisTextConn &lt;- localDiskConn(file.path(tempdir(), &quot;irisText&quot;), autoYes = TRUE)
+</code></pre>
+
+<pre><code>* Attempting to create directory ... ok
+* Saving connection attributes
+* Directory is empty - use addData() to add k/v pairs to this directory
+</code></pre>
+
+<pre><code class="r">a &lt;- readTextFileByChunk(input = csvFile, 
+   output = irisTextConn, linesPerBlock = 10, 
+   fn = function(x, header) {
+      colNames &lt;- strsplit(header, &quot;,&quot;)[[1]]
+      read.csv(textConnection(paste(x, collapse = &quot;\n&quot;)), 
+         col.names = colNames, header = FALSE)
+   })
+</code></pre>
+
+<pre><code>Processing chunk  1 
+Processing chunk  2 
+Processing chunk  3 
+Processing chunk  4 
+Processing chunk  5 
+Processing chunk  6 
+Processing chunk  7 
+Processing chunk  8 
+Processing chunk  9 
+Processing chunk  10 
+Processing chunk  11 
+Processing chunk  12 
+Processing chunk  13 
+Processing chunk  14 
+Processing chunk  15 
+Processing chunk  16 
+</code></pre>
+
+<pre><code>* Getting basic &#39;ddo&#39; attributes...
+</code></pre>
+
+<pre><code class="r">a[[1]]
+</code></pre>
+
+<pre><code>[[1]]
+[1] 6
+
+[[2]]
+   Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+1           7.0         3.2          4.7         1.4 versicolor
+2           6.4         3.2          4.5         1.5 versicolor
+ [ reached getOption(&quot;max.print&quot;) -- omitted 8 rows ]
+</code></pre>
+
+<h4>Reading in text files on HDFS</h4>
+
+<p>In many cases, reading data from text files on HDFS can be a very complex process, and you might want to write your own mapReduce jobs to handle it.  However, in some cases it can be more straightforward, and a convenience function for reading text into HDFS is available, <code>readHDFStextFile()</code>.</p>
+
+<p>Example to come.</p>
+
+<!-- TODO: example of writing your own MR job to read in data from text file -->
 
 </div>
 

@@ -1,8 +1,8 @@
 ## Dealing with Data in D&R ##
 
-In D&R, data is partitioned into blocks.  Each block is represented as a *key-value pair*.  Collections of key-value pairs are *distributed data objects (ddo)*, or in the case of the value being a data frame, a *distributed data frame (ddf)*, and form the basic input and output types of all D&R operations.  This section introduces these concepts and illustrates how they are used in the `datadr` implementation.
-
 ### Key-Value Pairs ###
+
+In D&R, data is partitioned into blocks.  Each block is represented as a *key-value pair*.  Collections of key-value pairs are *distributed data objects (ddo)*, or in the case of the value being a data frame, a *distributed data frame (ddf)*, and form the basic input and output types of all D&R operations.  This section introduces these concepts and illustrates how they are used in the `datadr` implementation.
 
 The most basic data structure in D&R is a *key-value pair* which is simply a data structure with key and value elements, each of which can have any data structure.  
 
@@ -224,7 +224,17 @@ Summaries can be accessed by:
 summary(irisDdf)
 ```
 
-In the future, there will be a better print method, etc. for summary results.
+This prints the summary statistics.  For categorical variables, the top four values and their frequency is pritned.  To access the values themselves, we can do, for example:
+
+```{r iris_summary2}
+summary(irisDdf)$Sepal.Length
+```
+
+or:
+
+```{r iris_summary3}
+summary(irisDdf)$Species
+```
 
 #### Data frame-like "ddf" methods
 
@@ -307,4 +317,83 @@ kvExample(peopleDdf)
 More complex examples will certainly arise where a non-trivial transformation function is required to cast the data as a data frame.  
 
 This transformation is honored in `datadr` methods such as `divide()` and `updateAttributes()`.
+
+### Common Data Operations ###
+
+The majority of this documentation will cover division and recombination, but here, we present some methods that are available for common data operations that come in handy for manipulating data in various ways.
+
+#### lapply
+
+It is convenient to be able use the familiar `lapply()` approach to apply a function to each key-value pair.  This method is available for "ddo" and "ddf" objects.  The function you specify follows the same convention as described earlier (if it has one argument, it is applied to the value only, if it has two arguments, it is applied to the key and value).  A "ddo" object is returned.
+
+Here is an example of using `lapply()` to the `irisDdf` data:
+
+```{r lapply}
+# get the mean Sepal.Width for each key-value pair in irisDdf
+means <- lapply(irisDdf, function(x) mean(x$Sepal.Width))
+# turn the resulting "ddo" object into a list
+as.list(means)
+```
+
+#### Filter
+
+A `drFilter()` function is available which takes a function that is applied to each key-value pair (using the `kvApply()` convention).  If the function returns `TRUE`, that key-value pair will be included in the resulting "ddo" or "ddf" object, if `FALSE`, it will not.
+
+Here is an example that keeps all subsets with mean sepal width less than 3:
+
+```{r filter}
+# keep subsets with mean sepal width less than 3
+drFilter(irisDdf, function(v) mean(v$Sepal.Width) < 3)
+```
+
+#### Join
+
+The `drJoin()` operation takes multiple input "ddo" or "ddf" objects and merges their values by key.  This is a very useful function when there are multiple input sources that you would like to group together.
+
+Suppose with the iris data that we have two separate input sources, one that reports the sepal width and another that reports the sepal length for each species:
+
+```{r join, message=FALSE}
+# create two new "ddo" objects that contain sepal width and sepal length
+sw <- lapply(irisDdf, function(x) x$Sepal.Width)
+sl <- lapply(irisDdf, function(x) x$Sepal.Length)
+```
+
+An example subset of `sw` looks like this:
+
+```{r join2}
+sw[[1]]
+```
+
+Both `sw` and `sl` have the same set of keys, and the value is a vector of either the sepal width or length.  To join them together, we can call `drJoin()`.  This function takes any number of "ddo" or "ddf" input objects, and they must be named.  It also optionally takes a `postTransFn` argument, which allows a transformation function to be applied the joined result.
+
+By default, `drJoin()` groups the various data sources by key, and the resulting value is a named list, where each element of the list is the value from each data source.  For example, to join the `sw` and `sl` data, we get the following:
+
+```{r join3}
+# join sw and sl by key
+joinRes <- drJoin(Sepal.Width=sw, Sepal.Length=sl)
+# look at first key-value pair
+joinRes[[1]]
+```
+
+The resulting object, `joinRes`, has subsets with the same keys, but the values are now named lists that consist of the values from both data sets.
+
+Here is an example of specifying `postTransFn` to turn the resulting values of the join operation into a data frame:
+
+```{r join4}
+# join sw and sl by key and turn the result into a data frame
+joinRes <- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
+# look at first key-value pair
+joinRes[[1]]
+```
+
+#### Sample
+
+It can be useful to create a new data set of randomly sampled subsets of a large data set.  The `drSample()` function provides for this.  Currently, it is as simple as specifying the fraction of subsets you would like the resulting data set to have:
+
+```{r sample}
+set.seed(1234)
+drSample(irisDdf, fraction = 0.25)
+```
+
+In the future, we will add the capability to sample the data with respect to [between-subset-variables](#between-subset-variables).
 

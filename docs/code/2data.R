@@ -88,6 +88,14 @@ summary(irisDdf)
 
 
 
+summary(irisDdf)$Sepal.Length
+
+
+
+summary(irisDdf)$Species
+
+
+
 nrow(irisDdf)
 ncol(irisDdf)
 names(irisDdf)
@@ -133,5 +141,46 @@ kvExample(peopleDdf, transform=TRUE)
 
 # data is still stored unstructured (pre transFn)
 kvExample(peopleDdf)
+
+
+
+# get the mean Sepal.Width for each key-value pair in irisDdf
+means <- lapply(irisDdf, function(x) mean(x$Sepal.Width))
+# turn the resulting "ddo" object into a list
+as.list(means)
+
+
+
+# keep subsets with mean sepal width less than 3
+drFilter(irisDdf, function(v) mean(v$Sepal.Width) < 3)
+
+
+
+# create two new "ddo" objects that contain sepal width and sepal length
+sw <- lapply(irisDdf, function(x) x$Sepal.Width)
+sl <- lapply(irisDdf, function(x) x$Sepal.Length)
+
+
+
+sw[[1]]
+
+
+
+# join sw and sl by key
+joinRes <- drJoin(Sepal.Width=sw, Sepal.Length=sl)
+# look at first key-value pair
+joinRes[[1]]
+
+
+
+# join sw and sl by key and turn the result into a data frame
+joinRes <- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
+# look at first key-value pair
+joinRes[[1]]
+
+
+
+set.seed(1234)
+drSample(irisDdf, fraction = 0.25)
 
 

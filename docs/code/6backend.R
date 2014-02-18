@@ -178,13 +178,13 @@ cl <- makeCluster(3)
 # run MapReduce job with custom control
 top5a <- mrExec(bySpecies, 
    map = top5map, reduce = top5reduce,
-   control = localDiskControl(cluster = cl, map_buff_size_bytes = 10))
+   control = localDiskControl(cluster = cl))
 
 
 
-# how many map tasks were there before setting map_buff_size_bytes
+# how many map tasks were there before using a 3-core cluster
 counters(top5)$map$mapTasks
-# how many map tasks were there after setting map_buff_size_bytes
+# how many map tasks were there after using a 3-core cluster
 counters(top5a)$map$mapTasks
 
 
@@ -398,5 +398,27 @@ irisDdfMem <- convert(from=irisDdf)
 # convert from HDFS to local disk ddf
 irisDdfDisk <- convert(from=irisDdf, 
    to=localDiskConn("/private/tmp/irisKVdisk", autoYes=TRUE))
+
+
+
+# create a csv file to treat as text input
+csvFile <- file.path(tempdir(), "iris.csv")
+write.csv(iris, file = csvFile, row.names = FALSE, quote = FALSE)
+# see what the file looks like
+system(paste("head", csvFile))
+
+
+
+# read chunks of the csv file in, process them, 
+# and store them in a local disk connection
+irisTextConn <- localDiskConn(file.path(tempdir(), "irisText"), autoYes = TRUE)
+a <- readTextFileByChunk(input = csvFile, 
+   output = irisTextConn, linesPerBlock = 10, 
+   fn = function(x, header) {
+      colNames <- strsplit(header, ",")[[1]]
+      read.csv(textConnection(paste(x, collapse = "\n")), 
+         col.names = colNames, header = FALSE)
+   })
+a[[1]]
 
 
