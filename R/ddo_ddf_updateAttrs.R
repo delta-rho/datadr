@@ -154,7 +154,7 @@ updateAttributes <- function(obj, control = NULL) {
             
             if(grepl("^summary_categ", reduce.key)) {
                resCateg$nna       <- sum(c(resCateg$nna, sapply(reduce.values, function(x) x$nna)), na.rm=TRUE)
-               resCateg$freqTable <- tabulateReduce(resCateg$freqTable, lapply(reduce.values, function(x) x$freqTable))
+               resCateg$freqTable <- tabulateReduce(resCateg$freqTable, lapply(reduce.values, function(x) x$freqTable), maxUnique = 10000)
             }
             
             if(grepl("^summary_datetime", reduce.key)) {
