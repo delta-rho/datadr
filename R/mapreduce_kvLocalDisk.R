@@ -1,10 +1,5 @@
 ## mrExec for kvLocalDisk objects
 
-
-# hdfsOutput("a")
-# memOutput
-# diskOutput("a", nBins = 10)
-
 #' @S3method mrExecInternal kvLocalDiskList
 mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {
    setup <- appendExpression(setup, 

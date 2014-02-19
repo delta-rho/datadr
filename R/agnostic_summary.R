@@ -4,9 +4,11 @@
 
 #' Functions to Compute Summary Statistics in MapReduce
 #' 
+#' Functions that are used to tabulate categorical variables and compute moments for numeric variables inside through the MapReduce framework.  Used in \code{\link{updateAttributes}}.
+
 #' @param formula a formula to be used in \code{\link{xtabs}}
 #' @param data a subset of a 'ddf' object
-#' Functions that are used to tabulate categorical variables and compute moments for numeric variables inside through the MapReduce framework.  Used in \code{\link{updateAttributes}}.
+#' @param maxUnique the maximum number of unique combinations of variables to obtaion tabulations for.  This is meant to help against cases where a variable in the formula has a very large number of levels, to the point that it is not meaningful to tabulate and is too computationally burdonsome.  If \code{NULL}, it is ignored.  If a positive number, only the top and bottom \code{maxUnique} tabulations by frequency are kept.
 #' 
 #' @export
 #' @rdname mrSummaryStats
@@ -17,18 +19,21 @@ tabulateMap <- function(formula, data) {
 #' @param result,reduce.values inconsequential \code{tabulateReduce} parameters
 #' @export
 #' @rdname mrSummaryStats
-tabulateReduce <- function(result, reduce.values) {
+tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
    suppressWarnings(suppressMessages(require(data.table)))
    tmp <- data.frame(rbindlist(reduce.values))
    tmp <- rbind(result, tmp)
    tmp <- as.data.frame(xtabs(Freq ~ ., data=tmp), stringsAsFactors=FALSE)
-   # only tabulate top and bottom 10000 unique values
-   idx <- order(tmp$Freq, tmp$var)
-   if(nrow(tmp) > 10000) {
-      return(tmp[c(head(idx, 5000), tail(idx, 5000)),])
-   } else {
-      idx <- order(tmp$Freq, decreasing=TRUE)
+   # only tabulate top and bottom maxUnique values
+   idx <- order(tmp$Freq, decreasing = TRUE)
+   if(is.null(maxUnique)) {
       return(tmp[idx,])
+   } else {
+      if(nrow(tmp) > maxUnique) {
+         return(tmp[c(head(idx, maxUnique / 2), tail(idx, maxUnique / 2)),])
+      } else {
+         return(tmp[idx,])
+      }
    }
 }
 
