@@ -106,6 +106,9 @@ test_that("extraction checks", {
    expect_true(all(sapply(hdo[c(1, 3)], digest) %in% dataDigest), label = "multiple extraction by index")
    keys <- c(data[[1]][[1]], data[[10]][[1]])
    expect_equivalent(hdo[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
+
+   expect_equivalent(hdo[[1]], hdo[[digest(hdo[[1]][[1]])]], label = "extraction by key hash")
+
 })
 
 ############################################################################

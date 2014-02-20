@@ -134,6 +134,8 @@ test_that("extraction checks", {
    expect_true(all(sapply(ldo[c(1, 3)], digest) %in% dataDigest), label = "multiple extraction by index")
    keys <- c(data[[1]][[1]], data[[10]][[1]])
    expect_equivalent(ldo[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
+   
+   expect_equivalent(ldo[[1]], ldo[[digest(ldo[[1]][[1]])]], label = "extraction by key hash")
 })
 
 pathBins <- file.path(tempdir(), "ldd_testBins")
