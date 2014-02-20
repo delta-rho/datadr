@@ -55,7 +55,9 @@ test_that("extraction checks", {
    expect_true(all(sapply(mdo[c(1, 3)], digest) %in% dataDigest), label = "multiple extraction by index")
    keys <- c(data[[1]][[1]], data[[10]][[1]])
    expect_equivalent(mdo[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
-   
+
+   expect_equivalent(mdo[[1]], mdo[[digest(mdo[[1]][[1]])]], label = "extraction by key hash")
+      
    # make sure this still works after updating
    mdo <- updateAttributes(mdo)
    key <- data[[1]][[1]]

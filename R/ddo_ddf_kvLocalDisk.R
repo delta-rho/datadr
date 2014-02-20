@@ -34,7 +34,7 @@ getBasicDdoAttrs.kvLocalDisk <- function(obj, conn) {
    
    list(
       conn = conn,
-      extractableKV = TRUE, 
+      extractableKV = FALSE, 
       totSize = sum(sz),
       prefix = fp,
       files = ff,
@@ -55,6 +55,10 @@ getBasicDdfAttrs.kvLocalDisk <- function(obj, transFn) {
 # kvLocalDisk is always extractable
 #' @S3method hasExtractableKV kvLocalDisk
 hasExtractableKV.kvLocalDisk <- function(x) {
+   kh <- getAttribute(x, "keyHashes")
+   if(length(kh) == 1)
+      if(is.na(kh))
+         return(FALSE)
    TRUE
 }
 
@@ -93,6 +97,9 @@ hasExtractableKV.kvLocalDisk <- function(x) {
       idx1 <- NULL
       if(all(is.character(i))) {
          if(all(nchar(i) == 32)) {
+            if(!hasExtractableKV(x))
+               stop("It appears you are trying to retrive a subset of the data using a hash of the key.  Key hashes have not been computed for this data.  Please call updateAttributes() on this data.")
+            
             # get the keys that have md5 hashes that match i
             tmp <- getKeys(x)[getAttribute(x, "keyHashes") %in% i]
             # then get the index of the matching file
