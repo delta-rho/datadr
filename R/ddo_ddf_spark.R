@@ -84,7 +84,15 @@ convertkvSparkData.sparkDataConn <- function(to, from, verbose=FALSE) {
 # from sparkData to memory
 #' @S3method convertkvSparkData NULL
 convertkvSparkData.NULL <- function(to, from, verbose=FALSE) {
-   getAttribute(from, "conn")$data
+   res <- getAttribute(from, "conn")$data
+   
+   if(inherits(from, "ddf")) {
+      res <- ddf(res, update=FALSE, verbose=verbose)
+   } else {
+      res <- ddo(res, update=FALSE, verbose=verbose)
+   }
+   
+   addNeededAttrs(res, from)
 }
 
 

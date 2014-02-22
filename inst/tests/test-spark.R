@@ -34,4 +34,7 @@ test_that("spark MR job", {
    res <- mrExec(irisDdo, map = mapExp, reduce = reduceExp, output = sparkDataConn())
    
    getAttribute(res, "conn")$data
+   
+   irisDdo <- updateAttributes(irisDdo)
 })
+

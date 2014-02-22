@@ -79,7 +79,7 @@ mrExec <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control
    
    # extractableKV can change after any mr job
    obj <- setAttributes(obj, list(extractableKV = hasExtractableKV(obj), counters = res$counters))
-   
+   browser()
    convert(obj, output)
 }
 

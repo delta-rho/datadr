@@ -9,20 +9,24 @@ mrExecInternal.kvSparkDataList <- function(data, setup=NULL, map=NULL, reduce=NU
    }), recursive = FALSE)
    
    conn <- getAttribute(data[[1]], "conn")
-   sc <- do.call(sparkR.init, conn$init)
+   sc <- do.call(sparkR.init, c(conn$init, list(appName = "datadrMR")))
    rdd <- parallelize(sc, dat)
    
    # "map" currently conflicts with SparkR's map()
    mapExp <- map
    reduceExp <- reduce
    
-   for(i in seq_along(params)) {
-      if(is.function(params[[i]]))
-         environment(params[[i]]) <- mapEnv
-      broadcast(sc, params[[i]])
-   }
+   paramsBr <- broadcast(sc, params)
    
    rddMap <- function(kv) {
+      params <- value(paramsBr)
+      pnames <- names(params)
+      for(i in seq_along(params)) {
+         if(is.function(params[[i]]))
+            environment(params[[i]]) <- environment()
+         assign(pnames[i], params[[i]], envir = environment())
+      }
+      
       eval(setup, envir = environment())
       
       map.keys <- lapply(kv, "[[", 1)
@@ -39,9 +43,17 @@ mrExecInternal.kvSparkDataList <- function(data, setup=NULL, map=NULL, reduce=NU
    }
    
    rddReduce <- function(kv) {
+      params <- value(paramsBr)
+      pnames <- names(params)
+      for(i in seq_along(params)) {
+         if(is.function(params[[i]]))
+            environment(params[[i]]) <- environment()
+         assign(pnames[i], params[[i]], envir = environment())
+      }
+      
       reduce.key <- kv[[1]]
       reduce.values <- kv[[2]]
-      
+      # return(list(reduce.key = reduce.key, reduce.values = reduce.values))
       taskRes <- list()
       collect <- function(k, v) {
          taskRes[[length(taskRes) + 1]] <<- list(k, v)
@@ -66,7 +78,10 @@ mrExecInternal.kvSparkDataList <- function(data, setup=NULL, map=NULL, reduce=NU
    gr <- groupByKey(mr, 1L)
    rr <- lapply(gr, rddReduce)
    res <- collect(rr)
-   
+   res <- unlist(res, recursive = FALSE)
+   # NOTE: see setMethod("groupByKey" ...
+   #   perhaps we can save computation by just doing partitionBy
+
    # TODO: once accumulators have been implemented, get counters
    
    list(data = sparkDataConn(data = res, init = data$init), counters = NULL)
