@@ -78,22 +78,26 @@ hasExtractableKV.kvMemory <- function(x) {
 
 #' @S3method [ kvMemory
 `[.kvMemory` <- function(x, i, ...) {
+   idx <- NULL
+   
    if(is.numeric(i)) {
-      getAttribute(x, "conn")$data[i]
+      idx <- i
    } else {
       keyHashes <- getAttribute(x, "keyHashes")
       
-      # if the key is most-likely a hash, try that
-      idx1 <- NULL
-      if(is.character(i)) {
+      # try actual key
+      idx <- unlist(lapply(as.character(sapply(i, digest)), function(x) which(keyHashes == x)))
+
+      if(length(idx) == 0 && is.character(i)) {
          if(all(nchar(i) == 32)) {
-            idx1 <- which(keyHashes %in% i)
+            idx <- unlist(lapply(i, function(x) which(keyHashes == x)))
          }
       }
-      # otherwise, 
-      idx2 <- which(keyHashes %in% as.character(sapply(i, digest)))
-      getAttribute(x, "conn")$data[union(idx1, idx2)]
    }
+   
+   if(length(idx) == 0)
+      return(NULL)
+   getAttribute(x, "conn")$data[idx]
 }
 
 #' @S3method [[ kvMemory
