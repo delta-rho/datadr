@@ -1,3 +1,13 @@
+# not all test environments have Spark installed
+TEST_SPARK <- Sys.getenv("DATADR_TEST_SPARK")
+if(TEST_SPARK == "")
+   TEST_SPARK <- FALSE
+
+if(TEST_SPARK) {
+
+
+############################################################################
+############################################################################
 context("spark tests")
 
 test_that("spark MR job", {
@@ -36,5 +46,8 @@ test_that("spark MR job", {
    getAttribute(res, "conn")$data
    
    irisDdo <- updateAttributes(irisDdo)
+   irisDdf <- ddf(scn)
+   irisDdf <- updateAttributes(irisDdf)
 })
 
+}
