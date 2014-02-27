@@ -124,7 +124,7 @@ test_that("update ddo - check attrs", {
 
 # TODO: test resetting the connection
 
-ldo <- ddo(conn)
+ldo <- ddo(conn, update = TRUE)
 
 test_that("extraction checks", {
    expect_true(digest(ldo[[1]]) %in% dataDigest, label = "single extraction by index")
@@ -136,6 +136,23 @@ test_that("extraction checks", {
    expect_equivalent(ldo[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
    
    expect_equivalent(ldo[[1]], ldo[[digest(ldo[[1]][[1]])]], label = "extraction by key hash")
+   
+   # check extraction order
+   keys <- c(data[[1]][[1]], data[[8]][[1]], data[[27]][[1]])   
+   idxs <- list(c(1, 2, 3), c(1, 3, 2), c(2, 1, 3), c(2, 3, 1), c(3, 1, 2), c(3, 2, 1))
+   
+   for(idx in idxs) {
+      idxLab <- paste(idx, collapse = ",")
+      expect_true(all(sapply(ldo[keys[idx]], "[[", 1) == keys[idx]),
+         label = paste("extraction key matching order for", idxLab))
+   }
+
+   for(idx in idxs) {
+      idxLab <- paste(idx, collapse = ",")
+      keyHash <- sapply(keys[idx], digest)
+      expect_true(all(sapply(ldo[keyHash], "[[", 1) == keys[idx]),
+         label = paste("extraction hash matching order for", idxLab))
+   }   
 })
 
 pathBins <- file.path(tempdir(), "ldd_testBins")

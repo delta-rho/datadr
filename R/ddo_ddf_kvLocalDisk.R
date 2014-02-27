@@ -68,47 +68,48 @@ hasExtractableKV.kvLocalDisk <- function(x) {
 
 #' @S3method [ kvLocalDisk
 `[.kvLocalDisk` <- function(x, i, ...) {
-   
-   pr <- getAttribute(x, "prefix")
-   ff <- getAttribute(x, "files")
-   conn <- getAttribute(x, "conn")
-   nBins <- conn$nBins
-   fileHashFn <- conn$fileHashFn
-   
    # argument i can either be:
    # - a numeric index, in which case the data ff[i] will be obtained
    # - a list of actual keys, in which case the hash function is applied
    #     and matched to the appropriate directory
    # - a hash digest of the desired keys, in which case the appropriate
    #     file will be located
+
+   pr <- getAttribute(x, "prefix")
+   ff <- getAttribute(x, "files")
+   conn <- getAttribute(x, "conn")
+   nBins <- conn$nBins
+   fileHashFn <- conn$fileHashFn
+   
+   idx <- NULL
    
    if(is.numeric(i)) {
       idx <- i
    } else {
       # try both actual keys and hash possibilities
-      
       # first try i as actual keys:
-      idx0 <- NULL
       tmp <- try(fileHashFn(i, conn), silent=TRUE)
       if(!inherits(tmp, "try-error"))
-         idx0 <- which(ff %in% tmp)
+         idx <- unlist(lapply(tmp, function(x) which(ff == x)))
       
-      # now try i as hash, only if it is likely that i is a hash
-      idx1 <- NULL
-      if(all(is.character(i))) {
-         if(all(nchar(i) == 32)) {
-            if(!hasExtractableKV(x))
-               stop("It appears you are trying to retrive a subset of the data using a hash of the key.  Key hashes have not been computed for this data.  Please call updateAttributes() on this data.")
-            
-            # get the keys that have md5 hashes that match i
-            tmp <- getKeys(x)[getAttribute(x, "keyHashes") %in% i]
-            # then get the index of the matching file
-            idx1 <- which(ff %in% fileHashFn(tmp, conn))
+      if(length(idx) == 0) {
+         # now try i as hash, only if it is likely that i is a hash
+         if(all(is.character(i))) {
+            if(all(nchar(i) == 32)) {
+               if(!hasExtractableKV(x))
+                  stop("It appears you are trying to retrive a subset of the data using a hash of the key.  Key hashes have not been computed for this data.  Please call updateAttributes() on this data.")
+               
+               # get the keys that have md5 hashes that match i
+               kh <- getAttribute(x, "keyHashes")
+               tmp <- getKeys(x)[unlist(lapply(i, function(x) which(kh == x)))]
+               tmp <- fileHashFn(tmp, conn)
+               # then get the index of the matching file
+               idx <- unlist(lapply(tmp, function(x) which(ff == x)))
+            }
          }
       }
-      idx <- union(idx0, idx1)
    }
-   if(length(idx)==0)
+   if(length(idx) == 0)
       return(NULL)
    lapply(idx, function(a) {
       load(file.path(pr, ff[a]))
