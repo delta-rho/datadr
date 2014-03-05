@@ -111,8 +111,11 @@ test_that("update ddo - check attrs", {
    
    expect_true(length(ldo) == 75)
    
-   totSize <- getAttribute(ldo, "totSize")
-   expect_true(!is.na(totSize))
+   totStorageSize <- getAttribute(ldo, "totStorageSize")
+   expect_true(!is.na(totStorageSize))
+   
+   totObjectSize <- getAttribute(ldo, "totObjectSize")
+   expect_true(!is.na(totObjectSize))
    
    splitSizeRange <- diff(range(splitSizeDistn(ldo)))
    expect_true(splitSizeRange > 4800)

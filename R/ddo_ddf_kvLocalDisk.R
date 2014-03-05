@@ -35,7 +35,7 @@ getBasicDdoAttrs.kvLocalDisk <- function(obj, conn) {
    list(
       conn = conn,
       extractableKV = FALSE, 
-      totSize = sum(sz),
+      totStorageSize = sum(sz),
       prefix = fp,
       files = ff,
       sizes = sz,
@@ -156,7 +156,9 @@ convertKvLocalDisk.localDiskConn <- function(to, from, verbose=FALSE) {
 # from local disk to memory
 #' @S3method convertKvLocalDisk NULL
 convertKvLocalDisk.NULL <- function(to, from, verbose=FALSE) {
-   size <- getAttribute(from, "totSize")
+   size <- getAttribute(from, "totObjectSize")
+   if(is.na(size))
+      size <- getAttribute(from, "totStorageSize")
    if(size / 1024^2 > 100)
       warning("Reading over 100MB of data into memory - probably not a good idea...")
    pr <- getAttribute(from, "prefix")
