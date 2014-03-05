@@ -7,6 +7,7 @@
 #' @param by an optional variable by which to split up tabulations (i.e. tabulate independently inside of each unique "by" variable value).  The only difference between specifying "by" and placing it in the right hand side of the formula is how the computation is done and how the result is returned.
 #' @param transFn an optional function to apply to each subset prior to performing tabulation.  The output from this function should be a data frame containing variables with names that match that of the formula provided.
 #' @param maxUnique the maximum number of unique combinations of variables to obtaion tabulations for.  This is meant to help against cases where a variable in the formula has a very large number of levels, to the point that it is not meaningful to tabulate and is too computationally burdonsome.  If \code{NULL}, it is ignored.  If a positive number, only the top and bottom \code{maxUnique} tabulations by frequency are kept.
+#' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' 
 #' @return a data frame of the tabulations.  When "by" is specified, it is a named list, with each element corresponding to a unique "by" value, containing a data frame of tabulations.
@@ -18,7 +19,7 @@
 #' @examples
 #' drXtabs(Sepal.Length ~ Species, data = ddf(iris))
 #' @export
-drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique = NULL, control = NULL) {
+drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique = NULL, params = NULL, control = NULL) {
    
    if(is.null(transFn))
       transFn <- identity
@@ -54,8 +55,10 @@ drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique =
       reduce = { res <- tabulateReduce(res, reduce.values, maxUnique) }, 
       post = { collect(reduce.key, res) }
    )
-   
-   params <- list(
+
+   globalVars <- drFindGlobals(transFn)
+   globalVarList <- getGlobalVarList(globalVars, parent.frame())
+   parList <- list(
       formula = formula,
       by = by,
       transFn = transFn,
@@ -65,7 +68,7 @@ drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique =
    res <- mrExec(data,
       map = map,
       reduce = reduce,
-      params = params,
+      params = c(globalVarList, parList, params),
       control = control
    )
    

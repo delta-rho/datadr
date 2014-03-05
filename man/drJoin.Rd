@@ -2,7 +2,8 @@
 \alias{drJoin}
 \title{Join Two Data Sources by Key}
 \usage{
-drJoin(..., output = NULL, postTransFn = NULL, control = NULL)
+drJoin(..., output = NULL, postTransFn = NULL, params = NULL,
+  control = NULL)
 }
 \arguments{
   \item{\ldots}{named lists of input objects - assumed that
@@ -17,6 +18,11 @@ drJoin(..., output = NULL, postTransFn = NULL, control = NULL)
 
   \item{postTransFn}{an optional function to be applied to
   the each final key-value pair after joining}
+
+  \item{params}{a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)}
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to

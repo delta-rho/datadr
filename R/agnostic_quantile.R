@@ -9,6 +9,7 @@
 #' @param transFn transformation to apply to variable prior to computing quantiles
 #' @param nBins how many bins should the range of the variable be split into?
 #' @param tails how many exact values at each tail should be retained?
+#' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param \ldots additional arguments
 #' 
@@ -40,7 +41,7 @@
 #' @method quantile ddf
 #' @importFrom stats quantile
 #' @export
-quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), transFn = identity, nBins = 10000, tails = 100, control = NULL, ...) {
+quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), transFn = identity, nBins = 10000, tails = 100, params = NULL, control = NULL, ...) {
    # nBins <- 10000; tails <- 0; probs <- seq(0, 1, 0.0005); by <- "Species"; var <- "Sepal.Length"; x <- ldd; trans <- identity
    
    if(class(summary(x))[1] == "logical")
@@ -102,17 +103,21 @@ quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), transFn = 
       }
    )
    
+   globalVars <- drFindGlobals(transFn)
+   globalVarList <- getGlobalVarList(globalVars, parent.frame())
+   parList <- list(
+      transFn = transFn,
+      dfTrans = getAttribute(x, "transFn"),
+      var = var,
+      by = by,
+      cuts = cuts,
+      tails = tails
+   )
+   
    mrRes <- mrExec(x,
       map = map,
       reduce = reduce,
-      params = list(
-         transFn = transFn,
-         dfTrans = getAttribute(x, "transFn"),
-         var = var,
-         by = by,
-         cuts = cuts,
-         tails = tails
-      ),
+      params = c(globalVarList, parList, params),
       control = control
    )
    
