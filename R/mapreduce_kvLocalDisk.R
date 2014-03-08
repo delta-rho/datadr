@@ -8,6 +8,9 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       })
    )
    
+   if(is.null(reduce))
+      reduce <- expression(pre = {}, reduce = {collect(reduce.key, reduce.values)}, post = {})
+   
    nSlots <- 1
    if(!is.null(control$cluster))
       nSlots <- length(control$cluster)
@@ -135,7 +138,6 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
    # figure out how to divvy up reduce tasks
    # (ideally should use in-memory size, not file size)
    rmf <- list.files(mapDir)
-   nReduceKey <- length(rf)
    rf <- lapply(rmf, function(x) {
       ff <- list.files(file.path(mapDir, x), recursive = TRUE, pattern = "value")
       list(
@@ -168,7 +170,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       }
       eval(setup, envir = reduceEnv)
       
-      # add a collect, counter functions to the environment
+      # add collect, counter functions to the environment
       environment(LDcollect) <- reduceEnv
       environment(LDcounter) <- reduceEnv
       environment(LDflushKV) <- reduceEnv
@@ -186,11 +188,11 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
          assign("taskRes", list(), reduceEnv)
          assign("taskCounter", list(), reduceEnv)
          
-         load(file.path(curReduceFiles$fp, "1", "key.Rdata"))
+         load(list.files(curReduceFiles$fp, recursive = TRUE, pattern = "key\\.Rdata", full.names = TRUE)[1])
          assign("reduce.key", k, reduceEnv)
          
          # nSlots is 1 because we are already in parLapply
-         reduceBlocks <- makeBlockIndices(curReduceFiles$sz, control$reduce_buff_size_bytes, nSlots) #, nSlots = 1)
+         reduceBlocks <- makeBlockIndices(curReduceFiles$sz, control$reduce_buff_size_bytes, nSlots = 1)
          eval(reduce$pre, envir = reduceEnv)
          
          for(idx in reduceBlocks) {

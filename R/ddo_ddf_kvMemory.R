@@ -47,12 +47,14 @@ getBasicDdoAttrs.kvMemory <- function(obj, conn) {
    dat <- conn$data
    keys <- lapply(dat, "[[", 1)
    # names(keys) <- as.character(sapply(keys, digest))
+   ts <- as.numeric(object.size(dat))
    list(
       conn = conn,
       keys = keys,
       keyHashes = sapply(keys, digest),
       extractableKV = TRUE,
-      totSize = as.numeric(object.size(dat)),
+      totStorageSize = ts,
+      totObjectSize = ts,
       nDiv = length(dat),
       example = dat[[1]]
    )

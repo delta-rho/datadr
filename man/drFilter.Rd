@@ -2,7 +2,7 @@
 \alias{drFilter}
 \title{Filter a 'ddo' or 'ddf' Object}
 \usage{
-drFilter(x, filterFn, output = NULL, control = NULL)
+drFilter(x, filterFn, output = NULL, params = NULL, control = NULL)
 }
 \arguments{
   \item{x}{an object of class 'ddo' or 'ddf'}
@@ -18,6 +18,11 @@ drFilter(x, filterFn, output = NULL, control = NULL)
   \code{NULL} (default), output will be an in-memory "ddo"
   object.}
 
+  \item{params}{a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)}
+
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to
   \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
@@ -30,13 +35,13 @@ a 'ddo' or 'ddf' object
 Filter a 'ddo' or 'ddf' object
 }
 \examples{
-bySpecies <- divide(iris, by="Species")
+bySpecies <- divide(iris, by = "Species")
 drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
 }
 \author{
 Ryan Hafen
 }
 \seealso{
-\code{\link{drJoin}}
+\code{\link{drJoin}}, \code{\link{drLapply}}
 }
 

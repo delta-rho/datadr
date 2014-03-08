@@ -3,7 +3,7 @@
 \title{Division-Agnostic Tabulation}
 \usage{
 drXtabs(formula, data = data, by = NULL, transFn = NULL,
-  maxUnique = NULL, control = NULL)
+  maxUnique = NULL, params = NULL, control = NULL)
 }
 \arguments{
   \item{formula}{a \code{\link{formula}} object with the
@@ -38,6 +38,11 @@ drXtabs(formula, data = data, by = NULL, transFn = NULL,
   computationally burdonsome.  If \code{NULL}, it is
   ignored.  If a positive number, only the top and bottom
   \code{maxUnique} tabulations by frequency are kept.}
+
+  \item{params}{a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)}
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to

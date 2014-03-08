@@ -3,7 +3,8 @@
 \title{Sample Quantiles for 'ddf' Objects}
 \usage{
 \method{quantile}{ddf}(x, var, by = NULL, probs = seq(0, 1, 0.005),
-  transFn = identity, nBins = 10000, tails = 100, control = NULL, ...)
+  transFn = identity, nBins = 10000, tails = 100, params = NULL,
+  control = NULL, ...)
 }
 \arguments{
   \item{x}{a 'ddf' object}
@@ -25,6 +26,11 @@
 
   \item{tails}{how many exact values at each tail should be
   retained?}
+
+  \item{params}{a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)}
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to

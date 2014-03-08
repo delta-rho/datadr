@@ -4,7 +4,22 @@
 \usage{
 sparkDataConn(data = NULL, init = list(), verbose = TRUE)
 }
+\arguments{
+  \item{data}{a data frame or list of key-value pairs}
+
+  \item{init}{a named list of arguments to be passed to
+  \code{sparkR.init}}
+
+  \item{verbose}{logical - print messages about what is
+  being done}
+}
 \description{
-Connect to Spark Data Source
+Connect to Spark data source (experimental).
+}
+\note{
+This is currently a proof-of-concept.  It only allows
+in-memory data to be initialized as a Spark RDD, which is
+quite pointless for big data.  In the future, this will
+allow connections to link to data on HDFS.
 }
 

@@ -40,7 +40,7 @@ setAttributes.ddo <- function(obj, attrs) {
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddo)
 
    if(length(ind) < length(attrNames))
-      warning(paste("Unused attributes:", paste(attrNames[setdiff(1:length(attrNames), ind)], collapse=", ")))
+      warning(paste("Unused attributes:", paste(attrNames[setdiff(1:length(attrNames), ind)], collapse=", ")))      
 
    if(length(ind) > 0)
       obj <- setObjAttributes(obj, attrs[ind], type="ddo")

@@ -23,7 +23,7 @@ getBasicDdoAttrs.kvSparkData <- function(obj, conn) {
    list(
       conn = conn,
       extractableKV = FALSE, 
-      totSize = NA, # TODO...
+      totStorageSize = NA, # TODO...
       nDiv = NA, # TODO,
       example = conn$data[[1]]
    )

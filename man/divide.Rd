@@ -3,8 +3,8 @@
 \title{Divide a Distributed Data Object}
 \usage{
 divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
-  output = NULL, preTransFn = NULL, postTransFn = NULL, control = NULL,
-  update = FALSE, verbose = TRUE)
+  output = NULL, preTransFn = NULL, postTransFn = NULL, params = NULL,
+  control = NULL, update = FALSE, verbose = TRUE)
 }
 \arguments{
   \item{data}{an object of class "ddf" or "ddo" - in the
@@ -38,6 +38,11 @@ divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
 
   \item{postTransFn}{a transformation function (if desired)
   to apply to each post-division subset}
+
+  \item{params}{a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)}
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to

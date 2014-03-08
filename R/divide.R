@@ -10,6 +10,7 @@
 #' @param filterFn a function that is applied to each candidate output key-value pair to determine whether it should be (if returns \code{TRUE}) part of the resulting division
 #' @param preTransFn a transformation function (if desired) to applied to eah subset prior to division
 #' @param postTransFn a transformation function (if desired) to apply to each post-division subset
+#' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param update should a MapReduce job be run to obtain additional attributes for the result data prior to returning?
 #' @param verbose logical - print messages about what is being done
@@ -27,15 +28,16 @@
 #' @author Ryan Hafen
 #' @seealso \code{\link{recombine}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{condDiv}}, \code{\link{rrDiv}}
 #' @export
-divide <- function(data, 
-   by = NULL, 
+divide <- function(data,
+   by = NULL,
    spill = 1000000,
-   filterFn = NULL, 
+   filterFn = NULL,
    bsvFn = NULL,
    output = NULL,
    preTransFn = NULL,
    # blockPreTransFn = NULL,
    postTransFn = NULL,
+   params = NULL,
    control = NULL,
    update = FALSE,
    verbose = TRUE
@@ -71,8 +73,8 @@ divide <- function(data,
    }
    
    # get an example of what a subset will look like when it is to be divided
-   ex <- kvExample(data, transform=TRUE)
-   ex <- kvApply(preTransFn, ex, returnKV=TRUE)
+   ex <- kvExample(data, transform = TRUE)
+   ex <- kvApply(preTransFn, ex, returnKV = TRUE)
    
    # make sure the division specification is good
    # and get any parameters that need to be sent to dfSplit
@@ -85,7 +87,7 @@ divide <- function(data,
       # Since bsvFn is applied *before* postTransFn() is called
       # it should work on an input subset after preTransFn().
       
-      validateBsvFn(ex, bsvFn, verbose=TRUE)
+      validateBsvFn(ex, bsvFn, verbose = TRUE)
    }
    if(verbose)
       message("* Applying division...")
@@ -140,7 +142,7 @@ divide <- function(data,
       for(i in seq_along(map.values)) {
          curKV <- kvApply(preTransFn,
             kvApply(transFn, list(map.keys[[i]], map.values[[i]]),   
-               returnKV=TRUE), returnKV=TRUE)
+               returnKV = TRUE), returnKV = TRUE)
          
          cutDat <- dfSplit(curKV[[2]], by, seed)
          cdn <- names(cutDat)
@@ -157,7 +159,7 @@ divide <- function(data,
    })
    
    reduce <- expression(
-      pre={
+      pre = {
          # df, nr, and count used for "spill"
          df <- list()
          nr <- 0
@@ -165,7 +167,7 @@ divide <- function(data,
          
          # counter("datadr", "Divide reduce k/v processed", 1)
       },
-      reduce={
+      reduce = {
          df[[length(df) + 1]] <- reduce.values
          nr <- nr + sum(sapply(reduce.values, nrow))
          if(nr > MAX_ROWS) {
@@ -180,7 +182,7 @@ divide <- function(data,
                   res <- addSplitAttrs(df[1:MAX_ROWS,], bsvFn, by, postTransFn)
 
                   # counter("datadr", "spilled", 1)
-                  collect(paste(reduce.key, spillCount, sep="_"), res)               
+                  collect(paste(reduce.key, spillCount, sep = "_"), res)               
                }
                # now continue to work on what is left over
                df <- list(list(df[c((MAX_ROWS + 1):nr),]))
@@ -188,11 +190,11 @@ divide <- function(data,
             }
          }
       },
-      post={
+      post = {
          df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
          # if we never reached MAX_ROWS, don't append count to key
          if(spillCount > 0)
-            reduce.key <- paste(reduce.key, spillCount + 1, sep="_")
+            reduce.key <- paste(reduce.key, spillCount + 1, sep = "_")
          
          if(kvApply(filterFn, list(reduce.key, df))) {
             # put in div-specific attr stuff
@@ -203,23 +205,23 @@ divide <- function(data,
    )
    
    res <- mrExec(data,
-      setup=setup,
-      map=map, 
-      reduce=reduce, 
-      output=output,
-      params=parList
+      setup  = setup,
+      map    = map, 
+      reduce = reduce, 
+      output = output,
+      params = c(params, parList)
    )
    
    # return ddo or ddf object
-   tmp <- try(ddf(res, update=update, verbose=FALSE), silent=TRUE)
+   tmp <- try(ddf(res, update = update, verbose = FALSE), silent = TRUE)
    if(inherits(tmp, "try-error")) {
-      res <- ddo(getAttribute(res, "conn"), update=update, verbose=FALSE)
+      res <- ddo(getAttribute(res, "conn"), update = update, verbose = FALSE)
    } else {
       res <- tmp
    }
    
    # add an attribute specifying how it was divided
-   res <- setAttributes(res, list(div=list(divBy=by)))
+   res <- setAttributes(res, list(div = list(divBy = by)))
    
    # add bsv attributes
    if(!is.null(bsvFn)) {
@@ -316,7 +318,7 @@ dfSplit <- function(curDF, by, seed) {
 #' @rdname divideInternals
 #' @param curSplit,bsvFn,by,postTransFn arguments
 #' @export
-addSplitAttrs <- function(curSplit, bsvFn, by, postTransFn=NULL) {
+addSplitAttrs <- function(curSplit, bsvFn, by, postTransFn = NULL) {
    bsvs <- NULL
    
    # BSVs are applied before postTrans
@@ -325,17 +327,17 @@ addSplitAttrs <- function(curSplit, bsvFn, by, postTransFn=NULL) {
    }
    
    splitAttr <- NULL
-   if(by$type=="condDiv") {
+   if(by$type == "condDiv") {
       splitVars <- by$vars
-      splitAttr <- curSplit[1, splitVars, drop=FALSE]
+      splitAttr <- curSplit[1, splitVars, drop = FALSE]
    }
    
    if(!is.null(postTransFn)) {
       curSplit <- postTransFn(curSplit)
    } else {
-      if(by$type=="condDiv") {
+      if(by$type == "condDiv") {
          # remove columns for split variables
-         curSplit <- curSplit[,setdiff(names(curSplit), by$vars), drop=FALSE]
+         curSplit <- curSplit[,setdiff(names(curSplit), by$vars), drop = FALSE]
       }
    }
    

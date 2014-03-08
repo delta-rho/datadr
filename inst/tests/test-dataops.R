@@ -3,7 +3,7 @@ context("data operations checks")
 bySpecies <- divide(iris, by="Species")
 
 test_that("lapply", {
-   lapplyRes <- lapply(bySpecies, function(x) mean(x$Sepal.Width))
+   lapplyRes <- drLapply(bySpecies, function(x) mean(x$Sepal.Width))
    expect_true(inherits(lapplyRes, "ddo"))
    expect_true(inherits(lapplyRes, "ddo"))
    resList <- as.list(lapplyRes)
@@ -12,8 +12,8 @@ test_that("lapply", {
 })
 
 test_that("join", {
-   sw <- lapply(bySpecies, function(x) x$Sepal.Width)
-   sl <- lapply(bySpecies, function(x) x$Sepal.Length)
+   sw <- drLapply(bySpecies, function(x) x$Sepal.Width)
+   sl <- drLapply(bySpecies, function(x) x$Sepal.Length)
    
    joinRes <- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
    

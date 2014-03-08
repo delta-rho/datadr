@@ -17,7 +17,8 @@ test_that("spark MR job", {
    irisSplit <- lapply(seq_along(splits), function(x) {
       list(x, iris[splits[[x]],])
    })
-   scn <- sparkDataConn(irisSplit)
+   
+   scn <- sparkDataConn(irisSplit, init = list(master = "spark://WE25070:7077"))
    irisDdo <- ddo(scn)
    
    mapExp <- expression({

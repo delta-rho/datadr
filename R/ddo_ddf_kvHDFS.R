@@ -32,7 +32,7 @@ getBasicDdoAttrs.kvHDFS <- function(obj, conn) {
    list(
       conn = conn,
       extractableKV = FALSE, 
-      totSize = sum(sz),
+      totStorageSize = sum(sz),
       nFile = length(ff$file),
       example = tmp
    )
@@ -209,7 +209,9 @@ convertKvHDFS.localDiskConn <- function(to, from, verbose=FALSE) {
 
 #' @S3method convertKvHDFS NULL
 convertKvHDFS.NULL <- function(to, from, verbose=FALSE) {
-   size <- getAttribute(from, "totSize")
+   size <- getAttribute(from, "totObjectSize")
+   if(is.na(size))
+      size <- getAttribute(from, "totStorageSize")
    if(size / 1024^2 > 100)
       warning("Reading over 100MB of data into memory - probably not a good idea...")
    

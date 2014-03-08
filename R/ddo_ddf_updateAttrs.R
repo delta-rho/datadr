@@ -44,7 +44,9 @@ updateAttributes <- function(obj, control = NULL) {
             r <- map.values[[i]]
             
             ### ddo
-            if(needs["splitSizeDistn"]) collect("splitSizeDistn", object.size(r))
+            objSize <- as.numeric(object.size(r))
+            if(needs["splitSizeDistn"]) collect("splitSizeDistn", objSize)
+            if(needs["totObjectSize"]) collect("totObjectSize", objSize)
             if(needs["keys"]) collect("keys", k)
             if(needs["nDiv"]) collect("nDiv", 1.0)
             ### ddf
@@ -117,6 +119,7 @@ updateAttributes <- function(obj, control = NULL) {
             splitSizeDistn <- NULL
             keys <- NULL
             nDiv <- as.numeric(0)
+            totObjectSize <- as.numeric(0)
             ### ddf
             nRow <- as.numeric(0)
             splitRowDistn <- NULL
@@ -129,6 +132,8 @@ updateAttributes <- function(obj, control = NULL) {
             ### ddo
             if(reduce.key == "splitSizeDistn")
                splitSizeDistn <- c(splitSizeDistn, do.call(c, reduce.values))
+            if(reduce.key == "totObjectSize")
+               totObjectSize <- totObjectSize + sum(do.call(c, reduce.values))
             if(reduce.key == "keys")
                keys <- c(keys, reduce.values)
             if(reduce.key == "nDiv")
@@ -172,6 +177,8 @@ updateAttributes <- function(obj, control = NULL) {
             if(reduce.key == "splitSizeDistn")
                collect("splitSizeDistn", 
                   quantile(splitSizeDistn, probs = seq(0, 1, by = 0.01), na.rm = TRUE))
+            if(reduce.key == "totObjectSize")
+               collect("totObjectSize", totObjectSize)
             if(reduce.key == "keys")
                collect("keys", keys)
             if(reduce.key == "nDiv")
