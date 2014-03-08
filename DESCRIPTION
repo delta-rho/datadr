@@ -1,15 +1,16 @@
 Package: datadr
 Type: Package
 Title: Divide and Recombine for Large, Complex Data
-Version: 0.6.4
-Date: 2014-02-26
+Version: 0.6.5
+Date: 2014-03-08
 Author: Ryan Hafen
 Maintainer: Ryan Hafen <ryan.hafen@pnnl.gov>
 Description: Methods for dividing data into subsets, applying analytical
     methods to the subsets, and recombining the results.  Comes with a generic
     MapReduce interface as well.  Works with key-value pairs stored in memory,
     on local disk, or on HDFS, in the latter case using the R and Hadoop
-    Integrated Programming Environment (RHIPE).
+    Integrated Programming Environment (RHIPE).  Also includes experimental
+    support for key-value pairs stored as Spark RDDs using the SparkR package.
 License: BSD_3_clause + file LICENSE
 LazyLoad: yes
 LazyData: yes
