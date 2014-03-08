@@ -19,7 +19,7 @@
 #' }
 #' 
 #' @author Ryan Hafen
-#' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}
+#' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}, \code{\link{drLapply}}
 #' @export
 recombine <- function(data, apply = NULL, combine = NULL, output = NULL, params = NULL, control = NULL, verbose = TRUE) {
    # apply <- function(x) {

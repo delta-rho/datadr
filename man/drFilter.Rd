@@ -42,6 +42,6 @@ drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
 Ryan Hafen
 }
 \seealso{
-\code{\link{drJoin}}
+\code{\link{drJoin}}, \code{\link{drLapply}}
 }
 

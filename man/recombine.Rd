@@ -55,6 +55,7 @@ recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.} }
 \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}},
 \code{\link{drGLM}}, \code{\link{drBLB}},
 \code{\link{combMeanCoef}}, \code{\link{combMean}},
-\code{\link{combCollect}}, \code{\link{combRbind}}
+\code{\link{combCollect}}, \code{\link{combRbind}},
+\code{\link{drLapply}}
 }
 

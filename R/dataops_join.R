@@ -12,13 +12,13 @@
 #' 
 #' @author Ryan Hafen
 #' 
-#' @seealso \code{\link{drFilter}}
+#' @seealso \code{\link{drFilter}}, \code{\link{drLapply}}
 #' 
 #' @examples
 #' bySpecies <- divide(iris, by = "Species")
 #' # get independent lists of just SW and SL
-#' sw <- lapply(bySpecies, function(x) x$Sepal.Width)
-#' sl <- lapply(bySpecies, function(x) x$Sepal.Length)
+#' sw <- drLapply(bySpecies, function(x) x$Sepal.Width)
+#' sl <- drLapply(bySpecies, function(x) x$Sepal.Length)
 #' drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
 #' 
 #' @export

@@ -12,7 +12,7 @@
 #' 
 #' @author Ryan Hafen
 #' 
-#' @seealso \code{\link{drJoin}}
+#' @seealso \code{\link{drJoin}}, \code{\link{drLapply}}
 #' 
 #' @examples
 #' bySpecies <- divide(iris, by = "Species")

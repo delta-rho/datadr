@@ -35,7 +35,7 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
    # handle list of ddo/ddf - if not a list, make it one
    if(!inherits(data, "ddo")) {
       if(!all(sapply(data, function(x) inherits(x, "ddo"))))
-         stop("data must be a 'ddo' or 'ddf' object of a list of these")
+         stop("data must be a 'ddo' or 'ddf' object or a list of these")
    } else {
       data <- list(data)
    }

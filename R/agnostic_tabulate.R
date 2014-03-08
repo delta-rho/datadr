@@ -21,6 +21,10 @@
 #' @export
 drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique = NULL, params = NULL, control = NULL) {
    
+   # TODO: check formula on a subset
+   # if the number of levels of each factor is too insanely large
+   # then warn or stop
+   
    if(is.null(transFn))
       transFn <- identity
    
