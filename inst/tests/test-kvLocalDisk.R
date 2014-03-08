@@ -333,6 +333,48 @@ if(TEST_HDFS) {
    })
 }
 
+############################################################################
+############################################################################
+context("local disk MR checks")
+
+path <- file.path(tempdir(), "ldd_test")
+unlink(path, recursive=TRUE)
+conn <- localDiskConn(path, autoYes=TRUE)   
+addData(conn, data)
+
+irisDdo <- ddo(conn)
+
+mapExp <- expression({
+   lapply(map.values, function(r) {
+      by(r, r$Species, function(x) {
+         collect(
+            as.character(x$Species[1]),
+            range(x$Sepal.Length, na.rm = TRUE)
+         )
+      })
+   })
+})
+
+reduceExp <- expression(
+   pre = {
+      rng <- c(Inf, -Inf)
+   }, reduce = {
+      rx <- unlist(reduce.values)
+      rng <- c(min(rng[1], rx, na.rm = TRUE), max(rng[2], rx, na.rm = TRUE))
+   }, post = {
+      collect(reduce.key, rng)
+})
+
+test_that("simple MR job", {
+   res <- mrExec(irisDdo, map = mapExp, reduce = reduceExp)
+   expect_equivalent(res[["versicolor"]][[2]], c(4.9, 7.0))
+})
+
+test_that("MR job with no reduce", {
+   res <- mrExec(irisDdo, map = mapExp)
+})
+
+
 ## clean up
 
 unlink(file.path(tempdir(), "ldd_test"), recursive = TRUE)
@@ -340,7 +382,3 @@ unlink(file.path(tempdir(), "ldd_test_div"), recursive = TRUE)
 unlink(file.path(tempdir(), "ldd_test_drglm"), recursive = TRUE)
 unlink(file.path(tempdir(), "ldd_test_rrdiv"), recursive = TRUE)
 unlink(file.path(tempdir(), "ldd_testBins"), recursive = TRUE)
-
-
-
-
