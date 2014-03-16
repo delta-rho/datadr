@@ -2,8 +2,9 @@
 \alias{readTextFileByChunk}
 \title{Experimental sequential text reader helper function}
 \usage{
-readTextFileByChunk(input, output, linesPerBlock = 10000, fn = NULL,
-  header = TRUE, skip = 0, recordEndRegex = NULL)
+readTextFileByChunk(input, output, overwrite = FALSE, linesPerBlock = 10000,
+  fn = NULL, header = TRUE, skip = 0, recordEndRegex = NULL,
+  cl = NULL)
 }
 \arguments{
   \item{input}{the path to an input text file}
@@ -11,6 +12,10 @@ readTextFileByChunk(input, output, linesPerBlock = 10000, fn = NULL,
   \item{output}{an output connection such as those created
   with \code{\link{localDiskConn}}, and
   \code{\link{hdfsConn}}}
+
+  \item{overwrite}{logical; should existing output location
+  be overwritten? (also can specify \code{overwrite =
+  "backup"} to move the existing output to _bak)}
 
   \item{linesPerBlock}{how many lines at a time to read}
 
@@ -24,6 +29,9 @@ readTextFileByChunk(input, output, linesPerBlock = 10000, fn = NULL,
   \item{recordEndRegex}{an optional regular expression that
   finds lines in the text file that indicate the end of a
   record (for multi-line records)}
+
+  \item{cl}{a "cluster" object to be used for parallel
+  processing, created using \code{makeCluster}}
 }
 \description{
 Experimental helper function for reading text data

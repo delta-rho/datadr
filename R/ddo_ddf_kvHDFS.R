@@ -72,6 +72,9 @@ hasExtractableKV.kvHDFS <- function(x) {
 #' @param obj object of class 'ddo' or 'ddf' with an HDFS connection
 #' @export
 makeExtractable <- function(obj) {
+   if(!inherits(obj, "kvHDFS"))
+      stop("object must have an HDFS connection")
+   
    # identity mr job
    res <- mrExec(
       obj,

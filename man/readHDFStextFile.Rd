@@ -2,8 +2,8 @@
 \alias{readHDFStextFile}
 \title{Experimental HDFS text reader helper function}
 \usage{
-readHDFStextFile(input, output = NULL, fn = NULL, keyFn = NULL,
-  linesPerBlock = 10000, control = NULL, update = FALSE)
+readHDFStextFile(input, output = NULL, overwrite = FALSE, fn = NULL,
+  keyFn = NULL, linesPerBlock = 10000, control = NULL, update = FALSE)
 }
 \arguments{
   \item{input}{a RHIPE input text handle created with
@@ -12,6 +12,10 @@ readHDFStextFile(input, output = NULL, fn = NULL, keyFn = NULL,
   \item{output}{an output connection such as those created
   with \code{\link{localDiskConn}}, and
   \code{\link{hdfsConn}}}
+
+  \item{overwrite}{logical; should existing output location
+  be overwritten? (also can specify \code{overwrite =
+  "backup"} to move the existing output to _bak)}
 
   \item{fn}{function to be applied to each chunk of lines
   (input to function is a vector of strings)}

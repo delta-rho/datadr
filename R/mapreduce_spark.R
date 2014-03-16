@@ -81,7 +81,7 @@ mrExecInternal.kvSparkDataList <- function(data, setup=NULL, map=NULL, reduce=NU
    res <- unlist(res, recursive = FALSE)
    # NOTE: see setMethod("groupByKey" ...
    #   perhaps we can save computation by just doing partitionBy
-
+   
    # TODO: once accumulators have been implemented, get counters
    
    list(data = sparkDataConn(data = res, init = data$init), counters = NULL)

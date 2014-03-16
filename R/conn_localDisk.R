@@ -261,6 +261,29 @@ getFileLocs <- function(conn, keys) {
    fileLocs
 }
 
-
+#' @S3method mrCheckOutputLoc localDiskConn
+mrCheckOutputLoc.localDiskConn <- function(x, overwrite = FALSE) {
+   if(file.exists(x$loc)) {
+      tmp <- list.files(x$loc)
+      tmp <- setdiff(tmp, "_meta")
+      if(length(tmp) > 0) {
+         message(paste("The output path '", x$loc, "' exists and contains data... ", sep = ""), appendLF = FALSE)
+         if(overwrite == "TRUE") {
+            message("removing existing data...")
+            unlink(x$loc, recursive = TRUE)
+         } else if(overwrite == "backup") {
+            bakFile <- paste(x$loc, "_bak", sep = "")
+            message(paste("backing up to ", bakFile, "...", sep = ""))
+            if(file.exists(bakFile))
+               unlink(bakFile, recursive = TRUE)
+            file.rename(x$loc, bakFile)
+         } else {
+      	   stop("backing out...", call. = FALSE)
+         }
+         x <- localDiskConn(x$loc, nBins = x$nBins, fileHashFn = x$fileHashFn, autoYes = TRUE, verbose = FALSE)
+      }
+   }
+   x
+}
 
 

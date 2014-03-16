@@ -90,6 +90,7 @@ hdfsConn <- function(loc, type="sequence", autoYes=FALSE, reset=FALSE, verbose=T
       rhchmod(connPath, "777")
    }
    
+   # TODO: better way to check if empty
    if(length(rhls(loc)) <= 1) {
       if(verbose)
          message("* Directory is empty... move some data in here")
@@ -166,5 +167,31 @@ existsOnHDFS <- function(...) {
    } else {
       return(TRUE)
    }
+}
+
+#' @S3method mrCheckOutputLoc hdfsConn
+mrCheckOutputLoc.hdfsConn <- function(x, overwrite = FALSE) {
+   if(existsOnHDFS(x$loc)) {
+      ff <- rhls(x$loc)$file
+      ff <- ff[!grepl(rhoptions()$file.types.remove.regex, ff)]
+      if(length(ff) > 0) {
+         message(paste("The output path '", x$loc, "' exists and contains data... ", sep = ""), appendLF = FALSE)
+         if(overwrite == "TRUE") {
+            message("removing existing data...")
+            rhdel(x$loc)
+         } else if(overwrite == "backup") {
+            bakFile <- paste(x$loc, "_bak", sep = "")
+            message(paste("backing up to ", bakFile, "...", sep = ""))
+            if(file.exists(bakFile))
+               rhdel(bakFile, recursive = TRUE)
+            rhmv(x$loc, bakFile)
+         } else {
+      	   stop("backing out...", call. = FALSE)
+         }
+         
+         x <- hdfsConn(x$loc, type = x$type, autoYes = TRUE, verbose = FALSE)
+      }
+   }
+   x
 }
 

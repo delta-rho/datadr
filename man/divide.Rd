@@ -3,8 +3,9 @@
 \title{Divide a Distributed Data Object}
 \usage{
 divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
-  output = NULL, preTransFn = NULL, postTransFn = NULL, params = NULL,
-  control = NULL, update = FALSE, verbose = TRUE)
+  output = NULL, overwrite = FALSE, preTransFn = NULL,
+  postTransFn = NULL, params = NULL, control = NULL, update = FALSE,
+  verbose = TRUE)
 }
 \arguments{
   \item{data}{an object of class "ddf" or "ddo" - in the
@@ -24,6 +25,10 @@ divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
   \code{NULL} (default), output will be an in-memory "ddo"
   object.}
 
+  \item{overwrite}{logical; should existing output location
+  be overwritten? (also can specify \code{overwrite =
+  "backup"} to move the existing output to _bak)}
+
   \item{spill}{integer telling the division method how many
   lines of data should be collected until spilling over
   into a new key-value pair}
@@ -34,7 +39,7 @@ divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
   division}
 
   \item{preTransFn}{a transformation function (if desired)
-  to applied to eah subset prior to division}
+  to applied to each subset prior to division}
 
   \item{postTransFn}{a transformation function (if desired)
   to apply to each post-division subset}

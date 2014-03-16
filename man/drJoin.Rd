@@ -2,8 +2,8 @@
 \alias{drJoin}
 \title{Join Two Data Sources by Key}
 \usage{
-drJoin(..., output = NULL, postTransFn = NULL, params = NULL,
-  control = NULL)
+drJoin(..., output = NULL, overwrite = FALSE, postTransFn = NULL,
+  params = NULL, control = NULL)
 }
 \arguments{
   \item{\ldots}{named lists of input objects - assumed that
@@ -18,6 +18,10 @@ drJoin(..., output = NULL, postTransFn = NULL, params = NULL,
 
   \item{postTransFn}{an optional function to be applied to
   the each final key-value pair after joining}
+
+  \item{overwrite}{logical; should existing output location
+  be overwritten? (also can specify \code{overwrite =
+  "backup"} to move the existing output to _bak)}
 
   \item{params}{a named list of parameters external to the
   input data that are needed in the distributed computing
