@@ -77,3 +77,46 @@ test_that("map is cleaned up for mulitple blocks", {
    quantile(ldd, var = "Sepal.Length", control = list(map_buff_size_bytes = 10))   
 })
 
+
+test_that("varTransFn", {
+   sq <- quantile(ldd, var = "Sepal.Length", by = "Species", tails = 0, varTransFn = function(x) log(x))
+   
+   tmpd <- divide(tmp, by="Species")
+   tmp2 <- recombine(tmpd, 
+      apply = function(x) 
+         data.frame(fval = seq(0, 1, by = 0.005),
+            q = quantile(log(x$Sepal.Length), 
+               probs = seq(0, 1, by = 0.005), type = 3)),
+      combine = combRbind())
+
+   expect_true(mean(abs(sq$q - tmp2$q)) < 0.0001)
+   # xyplot(q ~ fval | group, data = sq)
+   # xyplot(q ~ fval | Species, data = tmp2)
+})
+
+test_that("preTransFn", {
+   sq <- quantile(ldd, var = "Sepal.Length", by = "Species2", tails = 0, varTransFn = function(x) log(x), preTransFn = function(x) { x$Species2 <- paste(x$Species, "2"); x })
+   
+   tmpd <- divide(tmp, by="Species")
+   tmp2 <- recombine(tmpd, 
+      apply = function(x) 
+         data.frame(fval = seq(0, 1, by = 0.005),
+            q = quantile(log(x$Sepal.Length), 
+               probs = seq(0, 1, by = 0.005), type = 3)),
+      combine = combRbind())
+
+   expect_true(mean(abs(sq$q - tmp2$q)) < 0.0001)
+   # xyplot(q ~ fval | group, data = sq)
+   # xyplot(q ~ fval | Species, data = tmp2)
+})
+
+
+
+sq2 <- quantile(ldd, var = "Sepal.Length", by = "Species", tails = 0)
+
+# TODO: test varTransFn, preTransFn
+
+
+
+
+
