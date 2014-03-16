@@ -3,7 +3,7 @@
 \title{Recombine}
 \usage{
 recombine(data, apply = NULL, combine = NULL, output = NULL,
-  params = NULL, control = NULL, verbose = TRUE)
+  overwrite = FALSE, params = NULL, control = NULL, verbose = TRUE)
 }
 \arguments{
   \item{data}{an object of class "ddo" of "ddf"}
@@ -20,6 +20,10 @@ recombine(data, apply = NULL, combine = NULL, output = NULL,
   \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If
   \code{NULL} (default), output will be an in-memory "ddo"
   object.}
+
+  \item{overwrite}{logical; should existing output location
+  be overwritten? (also can specify \code{overwrite =
+  "backup"} to move the existing output to _bak)}
 
   \item{params}{a named list of parameters external to the
   input data that are needed in the distributed computing

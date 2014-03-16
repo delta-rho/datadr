@@ -3,7 +3,7 @@
 \title{Take a Sample of Key-Value Pairs
 Take a sample of key-value Pairs}
 \usage{
-drSample(x, fraction, output = NULL, control = NULL)
+drSample(x, fraction, output = NULL, overwrite = FALSE, control = NULL)
 }
 \arguments{
   \item{x}{a 'ddo' or 'ddf' object}
@@ -16,6 +16,10 @@ drSample(x, fraction, output = NULL, control = NULL)
   \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If
   \code{NULL} (default), output will be an in-memory "ddo"
   object.}
+
+  \item{overwrite}{logical; should existing output location
+  be overwritten? (also can specify \code{overwrite =
+  "backup"} to move the existing output to _bak)}
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to

@@ -3,7 +3,7 @@
 \title{Execute a MapReduce Job}
 \usage{
 mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
-  control = NULL, params = NULL, verbose = TRUE)
+  overwrite = FALSE, control = NULL, params = NULL, verbose = TRUE)
 }
 \arguments{
   \item{data}{a ddo/ddf object, or list of ddo/ddf objects}
@@ -30,6 +30,10 @@ mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
   \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If
   \code{NULL} (default), output will be an in-memory "ddo"
   object.}
+
+  \item{overwrite}{logical; should existing output location
+  be overwritten? (also can specify \code{overwrite =
+  "backup"} to move the existing output to _bak)}
 
   \item{control}{parameters specifying how the backend
   should handle things (most-likely parameters to

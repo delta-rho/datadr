@@ -2,7 +2,8 @@
 \alias{drFilter}
 \title{Filter a 'ddo' or 'ddf' Object}
 \usage{
-drFilter(x, filterFn, output = NULL, params = NULL, control = NULL)
+drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL,
+  control = NULL)
 }
 \arguments{
   \item{x}{an object of class 'ddo' or 'ddf'}
@@ -17,6 +18,10 @@ drFilter(x, filterFn, output = NULL, params = NULL, control = NULL)
   \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If
   \code{NULL} (default), output will be an in-memory "ddo"
   object.}
+
+  \item{overwrite}{logical; should existing output location
+  be overwritten? (also can specify \code{overwrite =
+  "backup"} to move the existing output to _bak)}
 
   \item{params}{a named list of parameters external to the
   input data that are needed in the distributed computing

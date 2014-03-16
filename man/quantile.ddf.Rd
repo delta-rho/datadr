@@ -3,8 +3,8 @@
 \title{Sample Quantiles for 'ddf' Objects}
 \usage{
 \method{quantile}{ddf}(x, var, by = NULL, probs = seq(0, 1, 0.005),
-  transFn = identity, nBins = 10000, tails = 100, params = NULL,
-  control = NULL, ...)
+  preTransFn = identity, varTransFn = identity, nBins = 10000,
+  tails = 100, params = NULL, control = NULL, ...)
 }
 \arguments{
   \item{x}{a 'ddf' object}
@@ -18,8 +18,14 @@
   \item{probs}{numeric vector of probabilities with values
   in [0-1]}
 
-  \item{transFn}{transformation to apply to variable prior
-  to computing quantiles}
+  \item{preTransFn}{a transformation function (if desired)
+  to applied to each subset prior to division (here it may
+  be useful for adding a "by" variable that is not present)
+  - note: this transformation should not modify \code{var}
+  (use \code{varTransFn} for that)}
+
+  \item{varTransFn}{transformation to apply to variable
+  prior to computing quantiles}
 
   \item{nBins}{how many bins should the range of the
   variable be split into?}
