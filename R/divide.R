@@ -6,9 +6,10 @@
 #' @param by specification of how to divide the data - conditional (factor-level or shingles), random replicate, or near-exact replicate (to come) -- see details
 #' @param bsvFn a function to be applied to each subset that returns a list of between subset variables (BSVs)
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
+#' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param spill integer telling the division method how many lines of data should be collected until spilling over into a new key-value pair
 #' @param filterFn a function that is applied to each candidate output key-value pair to determine whether it should be (if returns \code{TRUE}) part of the resulting division
-#' @param preTransFn a transformation function (if desired) to applied to eah subset prior to division
+#' @param preTransFn a transformation function (if desired) to applied to each subset prior to division
 #' @param postTransFn a transformation function (if desired) to apply to each post-division subset
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
@@ -33,7 +34,8 @@ divide <- function(data,
    spill = 1000000,
    filterFn = NULL,
    bsvFn = NULL,
-   output = NULL,
+   output = NULL, 
+   overwrite = FALSE,
    preTransFn = NULL,
    # blockPreTransFn = NULL,
    postTransFn = NULL,
@@ -205,11 +207,12 @@ divide <- function(data,
    )
    
    res <- mrExec(data,
-      setup  = setup,
-      map    = map, 
-      reduce = reduce, 
-      output = output,
-      params = c(params, parList)
+      setup     = setup,
+      map       = map, 
+      reduce    = reduce, 
+      output    = output,
+      overwrite = overwrite,
+      params    = c(params, parList)
    )
    
    # return ddo or ddf object
@@ -241,13 +244,10 @@ divide <- function(data,
 #' @param name the name of the BSV to get
 #' @export
 getBsv <- function(x, name) {
-   if(inherits(x, "divValue")) {
-      return(attr(x, "bsv")[[name]])
-   } else if(inherits(x[[2]], "divValue")) {
-      return(attr(x[[2]], "bsv")[[name]])      
-   } else {
-      return(NULL)
-   }
+   res <- attr(x, "bsv")[[name]]
+   if(is.null(res))
+      res <- attr(x[[2]], "bsv")[[name]]      
+   res
 }
 
 #' Get Between Subset Variables
@@ -256,13 +256,10 @@ getBsv <- function(x, name) {
 #' @param x a key-value pair or a value
 #' @export
 getBsvs <- function(x) {
-   if(inherits(x, "divValue")) {
-      return(attr(x, "bsv"))
-   } else if(inherits(x[[2]], "divValue")) {
-      return(attr(x[[2]], "bsv"))      
-   } else {
-      return(NULL)
-   }
+   res <- attr(x, "bsv")
+   if(is.null(res))
+      res <- attr(x[[2]], "bsv")
+   res
 }
 
 #' Extract "Split" Variable
@@ -272,13 +269,10 @@ getBsvs <- function(x) {
 #' @param name the name of the split variable to get
 #' @export
 getSplitVar <- function(x, name) {
-   if(inherits(x, "divValue")) {
-      return(attr(x, "split")[[name]])
-   } else if(inherits(x[[2]], "divValue")) {
-      return(attr(x[[2]], "split")[[name]])      
-   } else {
-      return(NULL)
-   }
+   res <- attr(x, "split")[[name]]
+   if(is.null(res))
+      res <- attr(x[[2]], "split")[[name]]      
+   res
 }
 
 #' Extract "Split" Variables
@@ -287,13 +281,12 @@ getSplitVar <- function(x, name) {
 #' @param x a key-value pair or a value
 #' @export
 getSplitVars <- function(x) {
-   if(inherits(x, "divValue")) {
-      return(as.list(attr(x, "split")))
-   } else if(inherits(x[[2]], "divValue")) {
-      return(as.list(attr(x[[2]], "split")))
-   } else {
-      return(NULL)
-   }
+   res <- as.list(attr(x, "split"))
+   if(length(res) == 0)
+      res <- as.list(attr(x[[2]], "split"))      
+   if(length(res) == 0)
+      res <- NULL
+   res
 }
 
 # take a data frame (or one that becomes a data frame with preTransFn)

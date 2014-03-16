@@ -6,6 +6,7 @@
 #' @param apply a function specifying the analytic method to apply to each subset, or a pre-defined apply function (see \code{\link{drBLB}}, \code{\link{drGLM}}, for example)
 #' @param combine the method to combine the results
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
+#' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
@@ -21,7 +22,7 @@
 #' @author Ryan Hafen
 #' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}, \code{\link{drLapply}}
 #' @export
-recombine <- function(data, apply = NULL, combine = NULL, output = NULL, params = NULL, control = NULL, verbose = TRUE) {
+recombine <- function(data, apply = NULL, combine = NULL, output = NULL, overwrite = FALSE, params = NULL, control = NULL, verbose = TRUE) {
    # apply <- function(x) {
    #    mean(x$Sepal.Length)
    # }
@@ -133,10 +134,11 @@ recombine <- function(data, apply = NULL, combine = NULL, output = NULL, params 
    
    res <- mrExec(
       data,
-      output = output,
       setup = setup,
       map = map,
       reduce = reduce,
+      output = output,
+      overwrite = overwrite,
       params = c(parList, params),
       control = control
    )

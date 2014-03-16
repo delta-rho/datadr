@@ -41,7 +41,8 @@ sparkDataConn <- function(data = NULL, init = list(), verbose = TRUE) {
    conn
 }
 
-
+mrCheckOutputLoc.sparkDataConn <- function(x)
+   NULL
 
 
 

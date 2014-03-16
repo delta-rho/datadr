@@ -3,11 +3,13 @@
 #' Experimental helper function for reading text data sequentially from a file on disk and adding to connection using \code{\link{addData}}
 #' @param input the path to an input text file
 #' @param output an output connection such as those created with \code{\link{localDiskConn}}, and \code{\link{hdfsConn}}
+#' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param linesPerBlock how many lines at a time to read
 #' @param fn function to be applied to each chunk of lines (see details)
 #' @param header does the file have a header
 #' @param skip number of lines to skip before reading
 #' @param recordEndRegex an optional regular expression that finds lines in the text file that indicate the end of a record (for multi-line records)
+#' @param cl a "cluster" object to be used for parallel processing, created using \code{makeCluster}
 #' @details The function \code{fn} should have one argument, which should expect to receive a vector of strings, each element of which is a line in the file.  It is also possible for \code{fn} to take two arguments, in which case the second argument is the header line from the file (some parsing methods might need to know the header).
 #' @examples
 #' csvFile <- file.path(tempdir(), "iris.csv")
@@ -21,7 +23,10 @@
 #'    })
 #' a[[1]]
 #' @export
-readTextFileByChunk <- function(input, output, linesPerBlock = 10000, fn = NULL, header = TRUE, skip = 0, recordEndRegex = NULL) {
+readTextFileByChunk <- function(input, output, overwrite = FALSE, linesPerBlock = 10000, fn = NULL, header = TRUE, skip = 0, recordEndRegex = NULL, cl = NULL) {
+   
+   if(!is.null(cl) && !is.null(recordEndRegex))
+      stop("Currently, cannot read in in parallel when recordEndRegex is specified")
    
    if(is.null(fn))
       fn <- identity
@@ -29,11 +34,17 @@ readTextFileByChunk <- function(input, output, linesPerBlock = 10000, fn = NULL,
    con <- file(description = input, open = "r")
    on.exit(close(con))
    
-   if(skip > 0)
-      garbage <- readLines(con, n = skip)
+   curPos <- 1
    
-   if(header)
+   if(skip > 0) {
+      garbage <- readLines(con, n = skip)
+      curPos <- curPos + skip
+   }
+   
+   if(header) {
       header <- readLines(con, n = 1)
+      curPos <- curPos + 1
+   }
    
    data <- readLines(con, n = linesPerBlock)
    
@@ -81,13 +92,14 @@ readTextFileByChunk <- function(input, output, linesPerBlock = 10000, fn = NULL,
 #' Experimental helper function for reading text data on HDFS into a HDFS connection
 #' @param input a RHIPE input text handle created with \code{rhfmt}
 #' @param output an output connection such as those created with \code{\link{localDiskConn}}, and \code{\link{hdfsConn}}
+#' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param fn function to be applied to each chunk of lines (input to function is a vector of strings)
 #' @param keyFn optional function to determine the value of the key for each block
 #' @param linesPerBlock how many lines at a time to read
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param update should a MapReduce job be run to obtain additional attributes for the result data prior to returning?
 #' @export
-readHDFStextFile <- function(input, output = NULL, fn = NULL, keyFn = NULL, linesPerBlock = 10000, control = NULL, update = FALSE) {
+readHDFStextFile <- function(input, output = NULL, overwrite = FALSE, fn = NULL, keyFn = NULL, linesPerBlock = 10000, control = NULL, update = FALSE) {
    if(!inherits(input, "kvHDFS"))
       stop("Input must be data from a HDFS connection")
    
@@ -121,11 +133,12 @@ readHDFStextFile <- function(input, output = NULL, fn = NULL, keyFn = NULL, line
    })
    
    mrExec(input,
-      setup   = setup,
-      map     = map, 
-      reduce  = reduce, 
-      output  = output,
-      control = control,
-      params  = list(fn = fn, keyFn = keyFn)
+      setup     = setup,
+      map       = map, 
+      reduce    = reduce, 
+      output    = output,
+      overwrite = overwrite,
+      control   = control,
+      params    = list(fn = fn, keyFn = keyFn)
    )
 }

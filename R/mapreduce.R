@@ -13,14 +13,15 @@
 # it expects to have a "collect" function
 
 #' Execute a MapReduce Job
-#'
+#' 
 #' Execute a MapReduce job
-#'
+#' 
 #' @param data a ddo/ddf object, or list of ddo/ddf objects
 #' @param setup an expression of R code (created using the R command \code{expression}) to be run before map and reduce
 #' @param map an R expression that is evaluated during the map stage. For each task, this expression is executed multiple times (see details).
 #' @param reduce a vector of R expressions with names pre, reduce, and post that is evaluated during the reduce stage. For example \code{reduce = expression(pre = {...}, reduce = {...}, post = {...})}. reduce is optional, and if not specified the map output key-value pairs will be the result. If it is not specified, then a default identity reduce is performed. Setting it to 0 will skip the reduce altogether.
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
+#' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param params a named list of parameters external to the input data that are needed in the map or reduce phases
 #' @param verbose logical - print messages about what is being done
@@ -30,7 +31,7 @@
 #' @author Ryan Hafen
 #' 
 #' @export
-mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL, verbose = TRUE) {
+mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, overwrite = FALSE, control = NULL, params = NULL, verbose = TRUE) {
    
    # handle list of ddo/ddf - if not a list, make it one
    if(!inherits(data, "ddo")) {
@@ -42,6 +43,7 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
    class(data) <- c(paste(tail(class(data[[1]]), 1), "List", sep = ""), "list")
    
    mrCheckOutput(data[[1]], output)
+   output <- mrCheckOutputLoc(output, as.character(overwrite))
    
    if(is.null(control))
       control <- list()
@@ -95,3 +97,7 @@ mrCheckOutput <- function(input, output) {
    if(!class(output)[1] %in% convertImplemented(input))
       stop("Cannot convert to requested output type")
 }
+
+mrCheckOutputLoc <- function(x, ...)
+   UseMethod("mrCheckOutputLoc", x)
+
