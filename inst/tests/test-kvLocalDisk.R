@@ -130,13 +130,19 @@ test_that("update ddo - check attrs", {
 ldo <- ddo(conn, update = TRUE)
 
 test_that("extraction checks", {
+   tmpConn <- getAttribute(ldo, "conn")
+   
    expect_true(digest(ldo[[1]]) %in% dataDigest, label = "single extraction by index")
    key <- data[[1]][[1]]
    expect_equivalent(ldo[[key]], data[[1]], label = "single extraction by key")
+   ffs <- tmpConn$fileHashFn(list(key), tmpConn)
+   expect_equivalent(ldo[[ffs]], data[[1]], label = "single extraction by file")
    
    expect_true(all(sapply(ldo[c(1, 3)], digest) %in% dataDigest), label = "multiple extraction by index")
    keys <- c(data[[1]][[1]], data[[10]][[1]])
    expect_equivalent(ldo[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
+   ffs <- tmpConn$fileHashFn(keys, tmpConn)
+   expect_equivalent(ldo[ffs], list(data[[1]], data[[10]]), label = "multiple extraction by key")
    
    expect_equivalent(ldo[[1]], ldo[[digest(ldo[[1]][[1]])]], label = "extraction by key hash")
    
@@ -147,15 +153,22 @@ test_that("extraction checks", {
    for(idx in idxs) {
       idxLab <- paste(idx, collapse = ",")
       expect_true(all(sapply(ldo[keys[idx]], "[[", 1) == keys[idx]),
-         label = paste("extraction key matching order for", idxLab))
+         label = paste("key extraction matching order for", idxLab))
    }
-
+   
    for(idx in idxs) {
       idxLab <- paste(idx, collapse = ",")
       keyHash <- sapply(keys[idx], digest)
       expect_true(all(sapply(ldo[keyHash], "[[", 1) == keys[idx]),
-         label = paste("extraction hash matching order for", idxLab))
-   }   
+         label = paste("hash extraction matching order for", idxLab))
+   }
+   
+   for(idx in idxs) {
+      idxLab <- paste(idx, collapse = ",")
+      ffs <- tmpConn$fileHashFn(keys[idx], tmpConn)
+      expect_true(all(sapply(ldo[ffs], "[[", 1) == keys[idx]),
+         label = paste("file name extraction matching order for", idxLab))
+   }
 })
 
 pathBins <- file.path(tempdir(), "ldd_testBins")
@@ -374,6 +387,19 @@ test_that("MR job with no reduce", {
    res <- mrExec(irisDdo, map = mapExp)
 })
 
+############################################################################
+############################################################################
+context("local disk overwrite checks")
+
+test_that("overwrite arguments", {
+   # use an existing location that contains data as output
+   loc <- getAttribute(ldo, "conn")$loc
+   
+   expect_error(divide(iris, output = localDiskConn(loc)))
+   
+   ldo2 <- divide(iris, by = "Species", output = localDiskConn(loc), overwrite = TRUE)
+   ldo3 <- divide(iris, by = "Species", output = localDiskConn(loc), overwrite = "backup")
+})
 
 ## clean up
 

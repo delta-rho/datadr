@@ -86,25 +86,31 @@ hasExtractableKV.kvLocalDisk <- function(x) {
    if(is.numeric(i)) {
       idx <- i
    } else {
-      # try both actual keys and hash possibilities
-      # first try i as actual keys:
-      tmp <- try(fileHashFn(i, conn), silent=TRUE)
-      if(!inherits(tmp, "try-error"))
-         idx <- unlist(lapply(tmp, function(x) which(ff == x)))
+      # try file names, actual keys, and key hash possibilities
       
-      if(length(idx) == 0) {
-         # now try i as hash, only if it is likely that i is a hash
-         if(all(is.character(i))) {
-            if(all(nchar(i) == 32)) {
-               if(!hasExtractableKV(x))
-                  stop("It appears you are trying to retrive a subset of the data using a hash of the key.  Key hashes have not been computed for this data.  Please call updateAttributes() on this data.")
-               
-               # get the keys that have md5 hashes that match i
-               kh <- getAttribute(x, "keyHashes")
-               tmp <- getKeys(x)[unlist(lapply(i, function(x) which(kh == x)))]
-               tmp <- fileHashFn(tmp, conn)
-               # then get the index of the matching file
-               idx <- unlist(lapply(tmp, function(x) which(ff == x)))
+      # first try file names
+      if(any(i %in% ff)) {
+         idx <- unlist(lapply(i, function(x) which(ff == x)))
+      } else {
+         # then try i as actual keys:
+         tmp <- try(fileHashFn(i, conn), silent=TRUE)
+         if(!inherits(tmp, "try-error"))
+            idx <- unlist(lapply(tmp, function(x) which(ff == x)))
+         
+         if(length(idx) == 0) {
+            # now try i as hash, only if it is likely that i is a hash
+            if(all(is.character(i))) {
+               if(all(nchar(i) == 32)) {
+                  if(!hasExtractableKV(x))
+                     stop("It appears you are trying to retrive a subset of the data using a hash of the key.  Key hashes have not been computed for this data.  Please call updateAttributes() on this data.")
+
+                  # get the keys that have md5 hashes that match i
+                  kh <- getAttribute(x, "keyHashes")
+                  tmp <- getKeys(x)[unlist(lapply(i, function(x) which(kh == x)))]
+                  tmp <- fileHashFn(tmp, conn)
+                  # then get the index of the matching file
+                  idx <- unlist(lapply(tmp, function(x) which(ff == x)))
+               }
             }
          }
       }
