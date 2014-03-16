@@ -6,7 +6,8 @@
 #' @param var the name of the variable to compute quantiles for
 #' @param by the (optional) variable by which to group quantile computations
 #' @param probs numeric vector of probabilities with values in [0-1]
-#' @param transFn transformation to apply to variable prior to computing quantiles
+#' @param preTransFn a transformation function (if desired) to applied to each subset prior to division (here it may be useful for adding a "by" variable that is not present) - note: this transformation should not modify \code{var} (use \code{varTransFn} for that)
+#' @param varTransFn transformation to apply to variable prior to computing quantiles
 #' @param nBins how many bins should the range of the variable be split into?
 #' @param tails how many exact values at each tail should be retained?
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
@@ -41,40 +42,51 @@
 #' @method quantile ddf
 #' @importFrom stats quantile
 #' @export
-quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), transFn = identity, nBins = 10000, tails = 100, params = NULL, control = NULL, ...) {
+quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = identity, varTransFn = identity, nBins = 10000, tails = 100, params = NULL, control = NULL, ...) {
    # nBins <- 10000; tails <- 0; probs <- seq(0, 1, 0.0005); by <- "Species"; var <- "Sepal.Length"; x <- ldd; trans <- identity
    
    if(class(summary(x))[1] == "logical")
       stop("Need to know the range of the variable to compute quantiles - please run updateAttributes on this data.")
    
-   rng <- transFn(summary(x)[[var]]$range)
+   ex <- kvApply(preTransFn, x[[1]])
+   
+   rng <- varTransFn(summary(x)[[var]]$range)
    delta <- diff(rng) / (nBins - 1)
    cuts <- seq(rng[1] - delta / 2, rng[2] + delta/2, by=delta)
    mids <- seq(rng[1], rng[2], by=delta)
    
    map <- expression({
-      v <- transFn(do.call(c, lapply(map.values, function(x) dfTrans(x)[, var])))
-      if(is.null(by)) {
-         by <- rep("1", length(v))
-      } else {
-         by <- do.call(c, lapply(map.values, function(x) as.character(dfTrans(x)[, by])))
-      }
-      ind <- split(seq_along(by), by)
+      dat <- data.frame(rbindlist(lapply(seq_along(map.values), function(i) {
+         curKV <- kvApply(preTransFn,
+            kvApply(dfTrans, list(map.keys[[i]], map.values[[i]]),   
+               returnKV = TRUE), returnKV = TRUE)
+         res <- data.frame(
+            v = varTransFn(curKV[[2]][, var]),
+            by = "1",
+            stringsAsFactors = FALSE
+         )
+         if(!is.null(by)) {
+            res$by <- as.character(curKV[[2]][, by])
+         }
+         res
+      })))
+      
+      ind <- split(seq_along(dat$by), dat$by)
       for(ii in ind) {
-         vv <- v[ii]
+         vv <- dat$v[ii]
          vv <- vv[!is.na(vv)]
          if(length(vv) > 0) {
             ord <- order(vv)
-
+            
             cutTab <- as.data.frame(table(cut(vv, cuts, labels=FALSE)), responseName = "Freq", stringsAsFactors = FALSE)
             cutTab$Var1 <- as.integer(cutTab$Var1)
-
+            
             for(i in 1:nrow(cutTab)) {
-               collect(list(by[ii[1]], cutTab$Var1[i]), cutTab$Freq[i])
+               collect(list(dat$by[ii[1]], cutTab$Var1[i]), cutTab$Freq[i])
             }
-
-            collect(list(by[ii[1]], "bot"), vv[head(ord, tails)])
-            collect(list(by[ii[1]], "top"), vv[tail(ord, tails)])            
+            
+            collect(list(dat$by[ii[1]], "bot"), vv[head(ord, tails)])
+            collect(list(dat$by[ii[1]], "top"), vv[tail(ord, tails)])            
          }
       }
    })
@@ -103,10 +115,11 @@ quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), transFn = 
       }
    )
    
-   globalVars <- drFindGlobals(transFn)
+   globalVars <- c(drFindGlobals(varTransFn), drFindGlobals(preTransFn))
    globalVarList <- getGlobalVarList(globalVars, parent.frame())
    parList <- list(
-      transFn = transFn,
+      varTransFn = varTransFn,
+      preTransFn = preTransFn,
       dfTrans = getAttribute(x, "transFn"),
       var = var,
       by = by,
@@ -114,9 +127,14 @@ quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), transFn = 
       tails = tails
    )
    
+   setup <- as.expression(bquote({
+      suppressWarnings(suppressMessages(library(data.table)))
+   }))
+   
    mrRes <- mrExec(x,
       map = map,
       reduce = reduce,
+      setup = setup,
       params = c(globalVarList, parList, params),
       control = control
    )
