@@ -7,11 +7,11 @@ list(1:5, rnorm(10))
 
 # create by-species key-value pairs
 irisKV <- list(
-   list("setosa", subset(iris, Species=="setosa")[,1:2]),
-   list("versicolor", subset(iris, Species=="versicolor")[,1:2]),
-   list("virginica", subset(iris, Species=="virginica")[,1:2])
+   list("setosa", subset(iris, Species == "setosa")[,c(1:2, 5)]),
+   list("versicolor", subset(iris, Species == "versicolor")[,c(1:2, 5)]),
+   list("virginica", subset(iris, Species == "virginica")[,c(1:2, 5)])
 )
-irisKV
+str(irisKV)
 
 
 
@@ -25,7 +25,7 @@ kvApply(meanSepalLength1, irisKV[[1]])
 
 # kvApply example operating on key and value
 meanSepalLength2 <- function(k, v)
-   data.frame(species=k, mean=mean(v$Sepal.Length))
+   data.frame(species = k, mean = mean(v$Sepal.Length))
    
 kvApply(meanSepalLength2, irisKV[[1]])
 
@@ -56,29 +56,29 @@ irisDdo
 
 
 
-par(mar=c(4.1, 4.1, 1, 0.2))
+par(mar = c(4.1, 4.1, 1, 0.2))
 # plot distribution of the size of the key-value pairs
 plot(splitSizeDistn(irisDdo))
 
 
 
 # update at the time ddo() is called
-irisDdo <- ddo(irisKV, update=TRUE)
+irisDdo <- ddo(irisKV, update = TRUE)
 
 
 
-irisDdo[["setosa"]]
-irisDdo[[1]]
+str(irisDdo[["setosa"]])
+str(irisDdo[[1]])
 
 
 
-irisDdo[c("setosa", "virginica")]
-irisDdo[1:2]
+str(irisDdo[c("setosa", "virginica")])
+str(irisDdo[1:2])
 
 
 
 # create ddf object from irisKV
-irisDdf <- ddf(irisKV, update=TRUE)
+irisDdf <- ddf(irisKV, update = TRUE)
 irisDdf
 
 
@@ -103,17 +103,17 @@ names(irisDdf)
 
 
 # initialize ddf from a data frame
-irisDf <- ddf(iris, update=TRUE)
+irisDf <- ddf(iris, update = TRUE)
 
 
 
 # example of some "less-structured" key-value pairs
 people <- list(
    list("fred", 
-      list(age=74, statesLived=c("NJ", "MA", "ND", "TX"))
+      list(age = 74, statesLived = c("NJ", "MA", "ND", "TX"))
    ),
    list("bob", 
-      list(age=42, statesLived="NJ")
+      list(age = 42, statesLived = "NJ")
    )
 )
 
@@ -125,7 +125,7 @@ as.data.frame(people[[1]][[2]])
 
 
 # ddf with transFn
-peopleDdf <- ddf(people, transFn=as.data.frame)
+peopleDdf <- ddf(people, transFn = as.data.frame)
 
 
 
@@ -135,7 +135,7 @@ peopleDdf <- ddf(people)
 
 
 # get a ddf key-value pair with transFn applied
-kvExample(peopleDdf, transform=TRUE)
+kvExample(peopleDdf, transform = TRUE)
 
 
 
@@ -145,7 +145,7 @@ kvExample(peopleDdf)
 
 
 # get the mean Sepal.Width for each key-value pair in irisDdf
-means <- lapply(irisDdf, function(x) mean(x$Sepal.Width))
+means <- drLapply(irisDdf, function(x) mean(x$Sepal.Width))
 # turn the resulting "ddo" object into a list
 as.list(means)
 
@@ -157,8 +157,8 @@ drFilter(irisDdf, function(v) mean(v$Sepal.Width) < 3)
 
 
 # create two new "ddo" objects that contain sepal width and sepal length
-sw <- lapply(irisDdf, function(x) x$Sepal.Width)
-sl <- lapply(irisDdf, function(x) x$Sepal.Length)
+sw <- drLapply(irisDdf, function(x) x$Sepal.Width)
+sl <- drLapply(irisDdf, function(x) x$Sepal.Length)
 
 
 

@@ -1,3 +1,5 @@
+```
+
 ## Division-Agnostic Methods ##
 
 ### All-Data Computation ###
@@ -14,7 +16,7 @@ By far the most common thing we tend to compute over the entire data other than 
 
 To be able to compute quantiles, a "ddf" object must be supplied, and the `range` attribute of the variable of interest must have been computed using `updateAttributes()`.  The range is required because the quantile estimation algorithm takes the range of the variable and slices it into a grid of `nBins` bins.  Each observation of the variable is placed into the bin of the interval that it falls in and the bin counts are tabulated.  Then the resulting table is turned into a quantile estimate.
 
-The quantile estimation returns results similar to that of `type=1` in R's base `quantile()` function.
+The quantile estimation returns results similar to that of `type = 1` in R's base `quantile()` function.
 
 #### Example: adult data
 
@@ -22,23 +24,23 @@ Here we provide a quick example of how to compute quantiles.  We have implemente
 
 We will use the `adult` data from before.  Let's load it and create a by education division:
 
-```{r quantile_example}
+```{r quantile_example, message = FALSE}
 # load adult data for quantile example
 data(adult)
 adultDdf <- ddf(adult)
 # divide it by education
-# must have update=TRUE to get range of variables
-byEd <- divide(adultDdf, by="education", update=TRUE)
+# must have update = TRUE to get range of variables
+byEd <- divide(adultDdf, by = "education", update = TRUE)
 ```
 
 There's no reason to divide by education other than to illustrate that this method operates on arbitrary divisions of the data.
 
 We can compute the quantiles with:
 
-```{r hpw_quant}
+```{r hpw_quant, message = FALSE}
 # compute quantiles of hoursperweek
-hpwQuant <- quantile(byEd, var="hoursperweek")
-hpwQuant
+hpwQuant <- quantile(byEd, var = "hoursperweek")
+head(hpwQuant)
 ```
 
 The result is simply a data frame of "f-values" `fval` and quantiles `q`.  We can plot the result with:
@@ -51,15 +53,16 @@ Recall the quantiles (y-axis) are hours worked in a week.  Some people work too 
 
 #### Keeping all data at the tails
 
-A common thing we want to do with all-data quantile estimates is retain more observations in the tails.  With large data sets and heavy tails, it can be good to know about all of the observations located in the tails.  With the `quantile()` method for "ddf" objects, it is possible to specify a parameter `tails`, which you can set to a positive integer.  The `tails` argument tells the quantile method how many exact observations to keep at each side of the distribution.  These exact values are appended to the quantile estimates to provide more detail at the tails of the distribution.  The default is `tails=100`.
+A common thing we want to do with all-data quantile estimates is retain more observations in the tails.  With large data sets and heavy tails, it can be good to know about all of the observations located in the tails.  With the `quantile()` method for "ddf" objects, it is possible to specify a parameter `tails`, which you can set to a positive integer.  The `tails` argument tells the quantile method how many exact observations to keep at each side of the distribution.  These exact values are appended to the quantile estimates to provide more detail at the tails of the distribution.  The default is `tails = 100`.
 
 #### Conditioning on variables
 
 It is possible to condition on a categorical variable when computing quantiles, so that you get a distribution per level of that categorical variable.  This can be useful when the data is very large for each category (otherwise, you can do this using `divide()` and `recombine()`).  Here is an example of the quantiles of hours worked per week by gender:
 
-```{r hpw_quant_bysex}
+```{r hpw_quant_bysex, message = FALSE}
 # compute quantiles of hoursperweek by sex
-hpwBySexQuant <- quantile(byEd, var="hoursperweek", by="sex")
-xyplot(q ~ fval, groups=group, data=hpwBySexQuant, auto.key=TRUE)
+hpwBySexQuant <- quantile(byEd, var = "hoursperweek", by = "sex")
+xyplot(q ~ fval, groups = group, data = hpwBySexQuant, auto.key = TRUE)
 ```
 
+<!-- TODO: more quantile examples and drXtabs -->

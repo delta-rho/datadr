@@ -1,3 +1,5 @@
+```
+
 ## Dealing with Data in D&R ##
 
 ### Key-Value Pairs ###
@@ -24,11 +26,11 @@ D&R data objects are made up of collections of key-value pairs.  In `datadr`, th
 ```{r by_species_kv}
 # create by-species key-value pairs
 irisKV <- list(
-   list("setosa", subset(iris, Species=="setosa")[,1:2]),
-   list("versicolor", subset(iris, Species=="versicolor")[,1:2]),
-   list("virginica", subset(iris, Species=="virginica")[,1:2])
+   list("setosa", subset(iris, Species == "setosa")[,c(1:2, 5)]),
+   list("versicolor", subset(iris, Species == "versicolor")[,c(1:2, 5)]),
+   list("virginica", subset(iris, Species == "virginica")[,c(1:2, 5)])
 )
-irisKV
+str(irisKV)
 ```
 
 The result is a list of 3 key-value pairs.  We chose the species to be the key and the corresponding data frame of sepal measurements to be the value for each pair.
@@ -67,7 +69,7 @@ However, suppose there is information in the key that I would like to include in
 ```{r kvapply_key_value}
 # kvApply example operating on key and value
 meanSepalLength2 <- function(k, v)
-   data.frame(species=k, mean=mean(v$Sepal.Length))
+   data.frame(species = k, mean = mean(v$Sepal.Length))
    
 kvApply(meanSepalLength2, irisKV[[1]])
 ```
@@ -88,7 +90,7 @@ In `datadr`, a collection of key-value pairs along with attributes about the col
 
 To initialize a collection of key-value pairs as a distributed data object, we use the `ddo()` function:
 
-```{r create_ddo}
+```{r create_ddo, message=FALSE}
 # create ddo object from irisKV
 irisDdo <- ddo(irisKV)
 ```
@@ -136,7 +138,7 @@ The `splitSizeDistn` attribute and more that we will see in the future are not c
 
 If you decide at any point that you would like to update the attributes of your "ddo" object, you can call:
 
-```{r update_attrs_iris_ddo}
+```{r update_attrs_iris_ddo, message=FALSE}
 # update irisDdo attributes
 irisDdo <- updateAttributes(irisDdo)
 irisDdo
@@ -145,16 +147,16 @@ irisDdo
 The `splitSizeDistn` attribute is now available.  We can look at it with the accessor `splitSizeDistn()`:
 
 ```{r plot_iris_split_size, fig.height=4, echo=2:3}
-par(mar=c(4.1, 4.1, 1, 0.2))
+par(mar = c(4.1, 4.1, 1, 0.2))
 # plot distribution of the size of the key-value pairs
 plot(splitSizeDistn(irisDdo))
 ```
 
-Another way to get updated attributes is at the time the "ddo" object is created, by setting `update=TRUE`:
+Another way to get updated attributes is at the time the "ddo" object is created, by setting `update = TRUE`:
 
-```{r update_iris_ddo}
+```{r update_iris_ddo, message=FALSE}
 # update at the time ddo() is called
-irisDdo <- ddo(irisKV, update=TRUE)
+irisDdo <- ddo(irisKV, update = TRUE)
 ```
 
 #### Note about storage and computation
@@ -168,13 +170,13 @@ We will talk about other backends for storing and processing larger data sets th
 We can access subsets of the data by key or by index:
 
 ```{r subsetting_example}
-irisDdo[["setosa"]]
-irisDdo[[1]]
+str(irisDdo[["setosa"]])
+str(irisDdo[[1]])
 ```
 
 ```{r multiple_subsetting_example}
-irisDdo[c("setosa", "virginica")]
-irisDdo[1:2]
+str(irisDdo[c("setosa", "virginica")])
+str(irisDdo[1:2])
 ```
 
 Accessing by key is much simpler when the key is a character string, but subsetting works even when passing a list of non-string keys.
@@ -187,15 +189,15 @@ Key-value pairs in distributed data objects can have any structure.  If we const
 
 Our `irisKV` data we created earlier has values that are data frames, so we can cast it as a distributed data frame like this:
 
-```{r iris_ddf}
+```{r iris_ddf, message=FALSE}
 # create ddf object from irisKV
-irisDdf <- ddf(irisKV, update=TRUE)
+irisDdf <- ddf(irisKV, update = TRUE)
 irisDdf
 ```
 
 #### "ddf" attributes
 
-The printout of `irisDdf` above shows data-frame-related attributes (which were automatically updated because we specified `update=TRUE`) in addition to the "ddo" attributes we saw earlier.  These include:
+The printout of `irisDdf` above shows data-frame-related attributes (which were automatically updated because we specified `update = TRUE`) in addition to the "ddo" attributes we saw earlier.  These include:
 
 - `vars`: a list of the variables
 - `transFn`: a transformation function (more on this later)
@@ -250,9 +252,9 @@ names(irisDdf)
 
 It is worth noting that it is possible to pass a single data frame to `ddo()` or `ddf()`.  The result is a single key-value pair with the data frame as the value, and "" as the key.  This is an option strictly for convenience and with the idea that further down the line operations will be applied that split the data up into a more useful set of key-value pairs.  Here is an example:
 
-```{r iris_df_ddf}
+```{r iris_df_ddf, message=FALSE}
 # initialize ddf from a data frame
-irisDf <- ddf(iris, update=TRUE)
+irisDf <- ddf(iris, update = TRUE)
 ```
 
 This of course only makes sense for data small enough to fit in memory in the first place.  In the [backends](#small-memory--cpu) section, we will discuss other backends for larger data and how data can be added to objects in these cases.
@@ -267,10 +269,10 @@ Consider the following collection of key-value pairs, for example:
 # example of some "less-structured" key-value pairs
 people <- list(
    list("fred", 
-      list(age=74, statesLived=c("NJ", "MA", "ND", "TX"))
+      list(age = 74, statesLived = c("NJ", "MA", "ND", "TX"))
    ),
    list("bob", 
-      list(age=42, statesLived="NJ")
+      list(age = 42, statesLived = "NJ")
    )
 )
 ```
@@ -286,14 +288,14 @@ Since `people` is a list of key-value pairs, we extract the first pair with `[[1
 
 We see that `as.data.frame` is able to coerce the list to a data frame.  So if we want to treat `people` as a distributed data frame, we might simply provide `as.data.frame` as the transformation function:
 
-```{r ddf_transfn}
+```{r ddf_transfn, message=FALSE}
 # ddf with transFn
-peopleDdf <- ddf(people, transFn=as.data.frame)
+peopleDdf <- ddf(people, transFn = as.data.frame)
 ```
 
 `ddf()` actually tries `as.data.frame` if the default (`identity`) does not yield a data frame:
 
-```{r ddf_transfn_default}
+```{r ddf_transfn_default, message=FALSE}
 # ddf tries as.data.frame for transFn by default
 peopleDdf <- ddf(people)
 ```
@@ -302,10 +304,10 @@ With this data representation, is what things will look like to `datadr` methods
 
 ```{r ddf_example_transform}
 # get a ddf key-value pair with transFn applied
-kvExample(peopleDdf, transform=TRUE)
+kvExample(peopleDdf, transform = TRUE)
 ```
 
-<!-- The `transform=TRUE` argument tells `kvExample()` to apply `transFn` to the result. -->
+<!-- The `transform = TRUE` argument tells `kvExample()` to apply `transFn` to the result. -->
 
 But how the data actually is stored is still the same:
 
@@ -324,13 +326,13 @@ The majority of this documentation will cover division and recombination, but he
 
 #### lapply
 
-It is convenient to be able use the familiar `lapply()` approach to apply a function to each key-value pair.  This method is available for "ddo" and "ddf" objects.  The function you specify follows the same convention as described earlier (if it has one argument, it is applied to the value only, if it has two arguments, it is applied to the key and value).  A "ddo" object is returned.
+It is convenient to be able use the familiar `lapply()` approach to apply a function to each key-value pair.  An `lapply()` method, called `drLapply()` is available for "ddo" and "ddf" objects.  The function you specify follows the same convention as described earlier (if it has one argument, it is applied to the value only, if it has two arguments, it is applied to the key and value).  A "ddo" object is returned.
 
-Here is an example of using `lapply()` to the `irisDdf` data:
+Here is an example of using `drLapply()` to the `irisDdf` data:
 
-```{r lapply}
+```{r lapply, message=FALSE}
 # get the mean Sepal.Width for each key-value pair in irisDdf
-means <- lapply(irisDdf, function(x) mean(x$Sepal.Width))
+means <- drLapply(irisDdf, function(x) mean(x$Sepal.Width))
 # turn the resulting "ddo" object into a list
 as.list(means)
 ```
@@ -341,7 +343,7 @@ A `drFilter()` function is available which takes a function that is applied to e
 
 Here is an example that keeps all subsets with mean sepal width less than 3:
 
-```{r filter}
+```{r filter, message=FALSE}
 # keep subsets with mean sepal width less than 3
 drFilter(irisDdf, function(v) mean(v$Sepal.Width) < 3)
 ```
@@ -354,8 +356,8 @@ Suppose with the iris data that we have two separate input sources, one that rep
 
 ```{r join, message=FALSE}
 # create two new "ddo" objects that contain sepal width and sepal length
-sw <- lapply(irisDdf, function(x) x$Sepal.Width)
-sl <- lapply(irisDdf, function(x) x$Sepal.Length)
+sw <- drLapply(irisDdf, function(x) x$Sepal.Width)
+sl <- drLapply(irisDdf, function(x) x$Sepal.Length)
 ```
 
 An example subset of `sw` looks like this:
@@ -368,7 +370,7 @@ Both `sw` and `sl` have the same set of keys, and the value is a vector of eithe
 
 By default, `drJoin()` groups the various data sources by key, and the resulting value is a named list, where each element of the list is the value from each data source.  For example, to join the `sw` and `sl` data, we get the following:
 
-```{r join3}
+```{r join3, message=FALSE}
 # join sw and sl by key
 joinRes <- drJoin(Sepal.Width=sw, Sepal.Length=sl)
 # look at first key-value pair
@@ -379,7 +381,7 @@ The resulting object, `joinRes`, has subsets with the same keys, but the values 
 
 Here is an example of specifying `postTransFn` to turn the resulting values of the join operation into a data frame:
 
-```{r join4}
+```{r join4, message=FALSE}
 # join sw and sl by key and turn the result into a data frame
 joinRes <- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
 # look at first key-value pair
@@ -390,7 +392,7 @@ joinRes[[1]]
 
 It can be useful to create a new data set of randomly sampled subsets of a large data set.  The `drSample()` function provides for this.  Currently, it is as simple as specifying the fraction of subsets you would like the resulting data set to have:
 
-```{r sample}
+```{r sample, message=FALSE}
 set.seed(1234)
 drSample(irisDdf, fraction = 0.25)
 ```

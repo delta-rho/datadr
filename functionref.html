@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>trelliscope R Function Reference</title>
+    <title>datadr  R function reference</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="css/pygment.css" rel="stylesheet">
+    <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/pygment.css" rel="stylesheet">
     <link href='css/highlight.css' rel='stylesheet'>
     <style type="text/css">
       body {
@@ -59,7 +59,7 @@
 */
     </style>
     
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -80,11 +80,9 @@
 
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
-          <li class=""><a href="index.html">Docs</a></li>
-          <li class="active"><a href="functionref.html">Function Ref</a></li>
-          <li><a href="https://www.github.com/hafen/datadr">Github</a></li>
+           <li class=''><a href='index.html'>Docs</a></li><li class='active'><a href='functionref.html'>Function Ref</a></li><li><a href='https://github.com/hafen/datadr'>Github</a></li>
         </ul>
-        <p class="myHeader">datadr: R Function Reference</p>
+        <p class="myHeader">datadr  R function reference</p>
       </div>
 
       <hr>
@@ -173,7 +171,13 @@
    <a target="_self" class="nav-not-header" href="#drjoin">drJoin</a>
 </li>
 <li class="">
+   <a target="_self" class="nav-not-header" href="#drlapply">drLapply</a>
+</li>
+<li class="">
    <a target="_self" class="nav-not-header" href="#drsample">drSample</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#drxtabs">drXtabs</a>
 </li>
 <li class="">
    <a target="_self" class="nav-not-header" href="#getbsv">getBsv</a>
@@ -192,9 +196,6 @@
 </li>
 <li class="">
    <a target="_self" class="nav-not-header" href="#kvapply">kvApply</a>
-</li>
-<li class="">
-   <a target="_self" class="nav-not-header" href="#lapplyddffunction-method">lapply,ddf,function-method</a>
 </li>
 <li class="">
    <a target="_self" class="nav-not-header" href="#localdiskconn">localDiskConn</a>
@@ -236,6 +237,12 @@
    <a target="_self" class="nav-not-header" href="#rrdiv">rrDiv</a>
 </li>
 <li class="">
+   <a target="_self" class="nav-not-header" href="#sparkcontrol">sparkControl</a>
+</li>
+<li class="">
+   <a target="_self" class="nav-not-header" href="#sparkdataconn">sparkDataConn</a>
+</li>
+<li class="">
    <a target="_self" class="nav-not-header" href="#updateattributes">updateAttributes</a>
 </li>
    </ul>
@@ -249,16 +256,17 @@
 <h3>Divide and Recombine for Large, Complex Data</h3>
 
 <p><strong>Author:</strong> Ryan Hafen</p>
-<p><strong>Version:</strong> 0.6.1</p>
-<p><strong>Date:</strong> 2014-02-17</p>
-<p><strong>License:</strong> BSD</p>
+<p><strong>Version:</strong> 0.6.6</p>
+<p><strong>Date:</strong> 2014-03-15</p>
+<p><strong>License:</strong> BSD_3_clause + file LICENSE</p>
 
 <h4>Description</h4>
 <p>Methods for dividing data into subsets, applying analytical
 methods to the subsets, and recombining the results.  Comes with a generic
 MapReduce interface as well.  Works with key-value pairs stored in memory,
 on local disk, or on HDFS, in the latter case using the R and Hadoop
-Integrated Programming Environment (RHIPE).</p>
+Integrated Programming Environment (RHIPE).  Also includes experimental
+support for key-value pairs stored as Spark RDDs using the SparkR package.</p>
 
 <h4>Depends</h4>
 <p>
@@ -1144,7 +1152,8 @@ Ryan Hafen
 
 <h5>Usage</h5>
 <pre>divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL, output = NULL, 
-  preTransFn = NULL, postTransFn = NULL, control = NULL, update = FALSE, verbose = TRUE)</pre>
+  overwrite = FALSE, preTransFn = NULL, postTransFn = NULL, params = NULL, control = NULL, 
+  update = FALSE, verbose = TRUE)</pre>
 
 <h5>Arguments</h5>
 <dl>
@@ -1165,6 +1174,10 @@ Ryan Hafen
   <code><a href='#localdiskconn'>localDiskConn</a></code>, <code><a href='#hdfsconn'>hdfsConn</a></code>).  If
   <code>NULL</code> (default), output will be an in-memory "ddo"
   object.</dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
   <dt>spill</dt>
   <dd>integer telling the division method how many
   lines of data should be collected until spilling over
@@ -1176,10 +1189,15 @@ Ryan Hafen
   division</dd>
   <dt>preTransFn</dt>
   <dd>a transformation function (if desired)
-  to applied to eah subset prior to division</dd>
+  to applied to each subset prior to division</dd>
   <dt>postTransFn</dt>
   <dd>a transformation function (if desired)
   to apply to each post-division subset</dd>
+  <dt>params</dt>
+  <dd>a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)</dd>
   <dt>control</dt>
   <dd>parameters specifying how the backend
   should handle things (most-likely parameters to
@@ -1343,7 +1361,7 @@ Ryan Hafen
 <h3 class="fref_title">Filter a 'ddo' or 'ddf' Object</h3>
 
 <h5>Usage</h5>
-<pre>drFilter(x, filterFn, output = NULL, control = NULL)</pre>
+<pre>drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL, control = NULL)</pre>
 
 <h5>Arguments</h5>
 <dl>
@@ -1360,6 +1378,15 @@ Ryan Hafen
   <code><a href='#localdiskconn'>localDiskConn</a></code>, <code><a href='#hdfsconn'>hdfsConn</a></code>).  If
   <code>NULL</code> (default), output will be an in-memory "ddo"
   object.</dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
+  <dt>params</dt>
+  <dd>a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)</dd>
   <dt>control</dt>
   <dd>parameters specifying how the backend
   should handle things (most-likely parameters to
@@ -1381,7 +1408,7 @@ Ryan Hafen
 
 <h5>See also</h5>
 
-<code><a href='#drjoin'>drJoin</a></code>
+<code><a href='#drjoin'>drJoin</a></code>, <code><a href='#drlapply'>drLapply</a></code>
 
 
 <h5>Author</h5>
@@ -1440,7 +1467,8 @@ Ryan Hafen
 <h3 class="fref_title">Join Two Data Sources by Key</h3>
 
 <h5>Usage</h5>
-<pre>drJoin(..., output = NULL, postTransFn = NULL, control = NULL)</pre>
+<pre>drJoin(..., output = NULL, overwrite = FALSE, postTransFn = NULL, params = NULL, 
+  control = NULL)</pre>
 
 <h5>Arguments</h5>
 <dl>
@@ -1457,6 +1485,15 @@ Ryan Hafen
   <dt>postTransFn</dt>
   <dd>an optional function to be applied to
   the each final key-value pair after joining</dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
+  <dt>params</dt>
+  <dd>a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)</dd>
   <dt>control</dt>
   <dd>parameters specifying how the backend
   should handle things (most-likely parameters to
@@ -1481,7 +1518,77 @@ the corresponding data</p>
 
 <h5>See also</h5>
 
-<code><a href='#drfilter'>drFilter</a></code>
+<code><a href='#drfilter'>drFilter</a></code>, <code><a href='#drlapply'>drLapply</a></code>
+
+
+<h5>Author</h5>
+
+Ryan Hafen
+
+</div>
+
+
+<!-- drLapply -->   
+<div class="tab-pane" id="drlapply">
+
+<h3 class="fref_title">Apply a function to all key/value pairs of a ddo/ddf object</h3>
+
+<h5>Usage</h5>
+<pre>drLapply(data, apply = NULL, combine = combDdo(), output = NULL, overwrite = FALSE, 
+  params = NULL, control = NULL, verbose = TRUE)</pre>
+
+<h5>Arguments</h5>
+<dl>
+  <dt>data</dt>
+  <dd>an object of class "ddo" of "ddf"</dd>
+  <dt>apply</dt>
+  <dd>a function to be applied to each subset</dd>
+  <dt>combine</dt>
+  <dd>optional method to combine the results</dd>
+  <dt>output</dt>
+  <dd>a "kvConnection" object indicating where
+  the output data should reside (see
+  <code><a href='#localdiskconn'>localDiskConn</a></code>, <code><a href='#hdfsconn'>hdfsConn</a></code>).  If
+  <code>NULL</code> (default), output will be an in-memory "ddo"
+  object.</dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
+  <dt>params</dt>
+  <dd>a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)</dd>
+  <dt>control</dt>
+  <dd>parameters specifying how the backend
+  should handle things (most-likely parameters to
+  <code>rhwatch</code> in RHIPE) - see <code><a href='#rhipecontrol'>rhipeControl</a></code>
+  and <code><a href='#localdiskcontrol'>localDiskControl</a></code></dd>
+  <dt>verbose</dt>
+  <dd>logical - print messages about what is
+  being done</dd>
+</dl>
+
+  <h5>Value</h5>
+
+  <p>depends on <code>combine</code></p>
+
+
+  <h5>Description</h5>
+
+  <p>Apply a function to all key/value pairs of a ddo/ddf object
+and get a new ddo object back, unless a different
+<code>combine</code> strategy is specified.</p>
+
+
+
+
+<h5>See also</h5>
+
+<code><a href='#recombine'>recombine</a></code>, <code><a href='#drfilter'>drFilter</a></code>,
+<code><a href='#drjoin'>drJoin</a></code>, <code><a href='#combddo'>combDdo</a></code>,
+<code><a href='#combrbind'>combRbind</a></code>
 
 
 <h5>Author</h5>
@@ -1498,7 +1605,7 @@ Ryan Hafen
 Take a sample of key-value Pairs</h3>
 
 <h5>Usage</h5>
-<pre>drSample(x, fraction, output = NULL, control = NULL)</pre>
+<pre>drSample(x, fraction, output = NULL, overwrite = FALSE, control = NULL)</pre>
 
 <h5>Arguments</h5>
 <dl>
@@ -1513,6 +1620,10 @@ Take a sample of key-value Pairs</h3>
   <code><a href='#localdiskconn'>localDiskConn</a></code>, <code><a href='#hdfsconn'>hdfsConn</a></code>).  If
   <code>NULL</code> (default), output will be an in-memory "ddo"
   object.</dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
   <dt>control</dt>
   <dd>parameters specifying how the backend
   should handle things (most-likely parameters to
@@ -1526,6 +1637,89 @@ Take a sample of key-value Pairs</h3>
 Pairs</p>
 
 
+
+</div>
+
+
+<!-- drXtabs -->   
+<div class="tab-pane" id="drxtabs">
+
+<h3 class="fref_title">Division-Agnostic Tabulation</h3>
+
+<h5>Usage</h5>
+<pre>drXtabs(formula, data = data, by = NULL, transFn = NULL, maxUnique = NULL, params = NULL, 
+  control = NULL)</pre>
+
+<h5>Arguments</h5>
+<dl>
+  <dt>formula</dt>
+  <dd>a <code><a href='http://www.inside-r.org/r-doc/stats/formula'>formula</a></code> object with the
+  cross-classifying variables (separated by +) on the right
+  hand side (or an object which can be coerced to a
+  formula). Interactions are not allowed. On the left hand
+  side, one may optionally give a variable name in the data
+  representing counts; in the latter case, the columns are
+  interpreted as corresponding to the levels of a variable.
+  This is useful if the data have already been tabulated.</dd>
+  <dt>data</dt>
+  <dd>a "ddf" containing the variables in the
+  formula <code>formula</code></dd>
+  <dt>by</dt>
+  <dd>an optional variable by which to split up
+  tabulations (i.e. tabulate independently inside of each
+  unique "by" variable value).  The only difference between
+  specifying "by" and placing it in the right hand side of
+  the formula is how the computation is done and how the
+  result is returned.</dd>
+  <dt>transFn</dt>
+  <dd>an optional function to apply to each
+  subset prior to performing tabulation.  The output from
+  this function should be a data frame containing variables
+  with names that match that of the formula provided.</dd>
+  <dt>maxUnique</dt>
+  <dd>the maximum number of unique
+  combinations of variables to obtaion tabulations for.
+  This is meant to help against cases where a variable in
+  the formula has a very large number of levels, to the
+  point that it is not meaningful to tabulate and is too
+  computationally burdonsome.  If <code>NULL</code>, it is
+  ignored.  If a positive number, only the top and bottom
+  <code>maxUnique</code> tabulations by frequency are kept.</dd>
+  <dt>params</dt>
+  <dd>a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)</dd>
+  <dt>control</dt>
+  <dd>parameters specifying how the backend
+  should handle things (most-likely parameters to
+  <code>rhwatch</code> in RHIPE) - see <code><a href='#rhipecontrol'>rhipeControl</a></code>
+  and <code><a href='#localdiskcontrol'>localDiskControl</a></code></dd>
+</dl>
+
+  <h5>Value</h5>
+
+  <p>a data frame of the tabulations.  When "by" is specified,
+it is a named list, with each element corresponding to a
+unique "by" value, containing a data frame of tabulations.</p>
+
+
+  <h5>Description</h5>
+
+  <p>Creates contingency tables from cross-classifying factors,
+with a formula interface similar to <code>xtabs</code></p>
+
+
+
+
+<h5>See also</h5>
+
+<code><a href='http://www.inside-r.org/r-doc/stats/xtabs'>xtabs</a></code>, <code><a href='#updateattributes'>updateAttributes</a></code>
+
+
+<h5>Author</h5>
+
+Ryan Hafen
 
 </div>
 
@@ -1728,40 +1922,6 @@ be used if desired.</p>
 </div>
 
 
-<!-- lapply,ddf,function-method -->   
-<div class="tab-pane" id="lapplyddffunction-method">
-
-<h3 class="fref_title">Apply a function to all key/value pairs of a ddo/ddf object</h3>
-
-<h5>Usage</h5>
-<pre>lapply(X, FUN)
-
-lapply(X, FUN)</pre>
-
-<h5>Arguments</h5>
-<dl>
-  <dt>X</dt>
-  <dd>the ddo/ddf object to apply the function to</dd>
-  <dt>FUN</dt>
-  <dd>the function to be applied to the value of
-  each key/value pair</dd>
-</dl>
-
-  <h5>Value</h5>
-
-  <p>a new ddo object</p>
-
-
-  <h5>Description</h5>
-
-  <p>This function creates a new ddo object by applying a
-function to all key/value pairs of a ddo/ddf object.</p>
-
-
-
-</div>
-
-
 <!-- localDiskConn -->   
 <div class="tab-pane" id="localdiskconn">
 
@@ -1911,8 +2071,8 @@ the key-value pairs will be split across cores.</p>
 <h3 class="fref_title">Execute a MapReduce Job</h3>
 
 <h5>Usage</h5>
-<pre>mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, 
-  params = NULL, verbose = TRUE)</pre>
+<pre>mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, overwrite = FALSE, 
+  control = NULL, params = NULL, verbose = TRUE)</pre>
 
 <h5>Arguments</h5>
 <dl>
@@ -1929,18 +2089,22 @@ the key-value pairs will be split across cores.</p>
   <dt>reduce</dt>
   <dd>a vector of R expressions with names pre,
   reduce, and post that is evaluated during the reduce
-  stage. For example <code>reduce = expression(pre={...},
-  reduce={...}, post={...})</code>. reduce is optional, and if
-  not specified the map output key-value pairs will be the
-  result. If it is not specified, then a default identity
-  reduce is performed. Setting it to 0 will skip the reduce
-  altogether.</dd>
+  stage. For example <code>reduce = expression(pre = {...},
+  reduce = {...}, post = {...})</code>. reduce is optional, and
+  if not specified the map output key-value pairs will be
+  the result. If it is not specified, then a default
+  identity reduce is performed. Setting it to 0 will skip
+  the reduce altogether.</dd>
   <dt>output</dt>
   <dd>a "kvConnection" object indicating where
   the output data should reside (see
   <code><a href='#localdiskconn'>localDiskConn</a></code>, <code><a href='#hdfsconn'>hdfsConn</a></code>).  If
   <code>NULL</code> (default), output will be an in-memory "ddo"
   object.</dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
   <dt>control</dt>
   <dd>parameters specifying how the backend
   should handle things (most-likely parameters to
@@ -1982,7 +2146,7 @@ Ryan Hafen
 <h5>Usage</h5>
 <pre>tabulateMap(formula, data)
 
-tabulateReduce(result, reduce.values)
+tabulateReduce(result, reduce.values, maxUnique = NULL)
 
 calculateMoments(y, order = 1, na.rm = TRUE)
 
@@ -1998,11 +2162,16 @@ moments2statistics(m)</pre>
   <dd>a formula to be used in
   <code><a href='http://www.inside-r.org/r-doc/stats/xtabs'>xtabs</a></code></dd>
   <dt>data</dt>
-  <dd>a subset of a 'ddf' object Functions that are
-  used to tabulate categorical variables and compute
-  moments for numeric variables inside through the
-  MapReduce framework.  Used in
-  <code><a href='#updateattributes'>updateAttributes</a></code>.</dd>
+  <dd>a subset of a 'ddf' object</dd>
+  <dt>maxUnique</dt>
+  <dd>the maximum number of unique
+  combinations of variables to obtaion tabulations for.
+  This is meant to help against cases where a variable in
+  the formula has a very large number of levels, to the
+  point that it is not meaningful to tabulate and is too
+  computationally burdonsome.  If <code>NULL</code>, it is
+  ignored.  If a positive number, only the top and bottom
+  <code>maxUnique</code> tabulations by frequency are kept.</dd>
   <dt>result,reduce.values</dt>
   <dd>inconsequential
   <code>tabulateReduce</code> parameters</dd>
@@ -2021,7 +2190,10 @@ moments2statistics(m)</pre>
 
   <h5>Description</h5>
 
-  <p>Functions to Compute Summary Statistics in MapReduce</p>
+  <p>Functions that are used to tabulate categorical variables
+and compute moments for numeric variables inside through
+the MapReduce framework.  Used in
+<code><a href='#updateattributes'>updateAttributes</a></code>.</p>
 
 
 
@@ -2065,8 +2237,8 @@ Ryan Hafen
 <h3 class="fref_title">Sample Quantiles for 'ddf' Objects</h3>
 
 <h5>Usage</h5>
-<pre>quantile(x, var, by = NULL, probs = seq(0, 1, 0.005), transFn = identity, nBins = 10000, 
-  tails = 100, control = NULL, ...)</pre>
+<pre>quantile(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = identity, varTransFn = identity, 
+  nBins = 10000, tails = 100, params = NULL, control = NULL, ...)</pre>
 
 <h5>Arguments</h5>
 <dl>
@@ -2081,15 +2253,26 @@ Ryan Hafen
   <dt>probs</dt>
   <dd>numeric vector of probabilities with values
   in [0-1]</dd>
-  <dt>transFn</dt>
-  <dd>transformation to apply to variable prior
-  to computing quantiles</dd>
+  <dt>preTransFn</dt>
+  <dd>a transformation function (if desired)
+  to applied to each subset prior to division (here it may
+  be useful for adding a "by" variable that is not present)
+  - note: this transformation should not modify <code>var</code>
+  (use <code>varTransFn</code> for that)</dd>
+  <dt>varTransFn</dt>
+  <dd>transformation to apply to variable
+  prior to computing quantiles</dd>
   <dt>nBins</dt>
   <dd>how many bins should the range of the
   variable be split into?</dd>
   <dt>tails</dt>
   <dd>how many exact values at each tail should be
   retained?</dd>
+  <dt>params</dt>
+  <dd>a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)</dd>
   <dt>control</dt>
   <dd>parameters specifying how the backend
   should handle things (most-likely parameters to
@@ -2145,8 +2328,8 @@ Ryan Hafen
 <h3 class="fref_title">Experimental HDFS text reader helper function</h3>
 
 <h5>Usage</h5>
-<pre>readHDFStextFile(input, output = NULL, fn = NULL, keyFn = NULL, linesPerBlock = 10000, 
-  control = NULL, update = FALSE)</pre>
+<pre>readHDFStextFile(input, output = NULL, overwrite = FALSE, fn = NULL, keyFn = NULL, 
+  linesPerBlock = 10000, control = NULL, update = FALSE)</pre>
 
 <h5>Arguments</h5>
 <dl>
@@ -2157,6 +2340,10 @@ Ryan Hafen
   <dd>an output connection such as those created
   with <code><a href='#localdiskconn'>localDiskConn</a></code>, and
   <code><a href='#hdfsconn'>hdfsConn</a></code></dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
   <dt>fn</dt>
   <dd>function to be applied to each chunk of lines
   (input to function is a vector of strings)</dd>
@@ -2192,8 +2379,8 @@ into a HDFS connection</p>
 <h3 class="fref_title">Experimental sequential text reader helper function</h3>
 
 <h5>Usage</h5>
-<pre>readTextFileByChunk(input, output, linesPerBlock = 10000, fn = NULL, header = TRUE, 
-  skip = 0, recordEndRegex = NULL)</pre>
+<pre>readTextFileByChunk(input, output, overwrite = FALSE, linesPerBlock = 10000, fn = NULL, 
+  header = TRUE, skip = 0, recordEndRegex = NULL, cl = NULL)</pre>
 
 <h5>Arguments</h5>
 <dl>
@@ -2203,6 +2390,10 @@ into a HDFS connection</p>
   <dd>an output connection such as those created
   with <code><a href='#localdiskconn'>localDiskConn</a></code>, and
   <code><a href='#hdfsconn'>hdfsConn</a></code></dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
   <dt>linesPerBlock</dt>
   <dd>how many lines at a time to read</dd>
   <dt>fn</dt>
@@ -2216,6 +2407,9 @@ into a HDFS connection</p>
   <dd>an optional regular expression that
   finds lines in the text file that indicate the end of a
   record (for multi-line records)</dd>
+  <dt>cl</dt>
+  <dd>a "cluster" object to be used for parallel
+  processing, created using <code>makeCluster</code></dd>
 </dl>
 
   <h5>Description</h5>
@@ -2245,7 +2439,8 @@ methods might need to know the header).</p>
 <h3 class="fref_title">Recombine</h3>
 
 <h5>Usage</h5>
-<pre>recombine(data, apply = NULL, combine = NULL, output = NULL, control = NULL, verbose = TRUE)</pre>
+<pre>recombine(data, apply = NULL, combine = NULL, output = NULL, overwrite = FALSE, params = NULL, 
+  control = NULL, verbose = TRUE)</pre>
 
 <h5>Arguments</h5>
 <dl>
@@ -2264,6 +2459,15 @@ methods might need to know the header).</p>
   <code><a href='#localdiskconn'>localDiskConn</a></code>, <code><a href='#hdfsconn'>hdfsConn</a></code>).  If
   <code>NULL</code> (default), output will be an in-memory "ddo"
   object.</dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
+  <dt>params</dt>
+  <dd>a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)</dd>
   <dt>control</dt>
   <dd>parameters specifying how the backend
   should handle things (most-likely parameters to
@@ -2306,7 +2510,8 @@ recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
 <code><a href='#divide'>divide</a></code>, <code><a href='#ddo'>ddo</a></code>, <code><a href='#ddf'>ddf</a></code>,
 <code><a href='#drglm'>drGLM</a></code>, <code><a href='#drblb'>drBLB</a></code>,
 <code><a href='#combmeancoef'>combMeanCoef</a></code>, <code><a href='#combmean'>combMean</a></code>,
-<code><a href='#combcollect'>combCollect</a></code>, <code><a href='#combrbind'>combRbind</a></code>
+<code><a href='#combcollect'>combCollect</a></code>, <code><a href='#combrbind'>combRbind</a></code>,
+<code><a href='#drlapply'>drLapply</a></code>
 
 
 <h5>Author</h5>
@@ -2454,6 +2659,61 @@ Ryan Hafen
 </div>
 
 
+<!-- sparkControl -->   
+<div class="tab-pane" id="sparkcontrol">
+
+<h3 class="fref_title">Specify Control Parameters for Spark Job</h3>
+
+<h5>Usage</h5>
+<pre>sparkControl()</pre>
+
+  <h5>Description</h5>
+
+  <p>Specify control parameters for a Spark job.  See
+<code>rhwatch</code> for details about each of the parameters.</p>
+
+
+
+</div>
+
+
+<!-- sparkDataConn -->   
+<div class="tab-pane" id="sparkdataconn">
+
+<h3 class="fref_title">Connect to Spark Data Source</h3>
+
+<h5>Usage</h5>
+<pre>sparkDataConn(data = NULL, init = list(), verbose = TRUE)</pre>
+
+<h5>Arguments</h5>
+<dl>
+  <dt>data</dt>
+  <dd>a data frame or list of key-value pairs</dd>
+  <dt>init</dt>
+  <dd>a named list of arguments to be passed to
+  <code>sparkR.init</code></dd>
+  <dt>verbose</dt>
+  <dd>logical - print messages about what is
+  being done</dd>
+</dl>
+
+  <h5>Description</h5>
+
+  <p>Connect to Spark data source (experimental).</p>
+
+
+  <h5>Note</h5>
+
+  <p>This is currently a proof-of-concept.  It only allows
+in-memory data to be initialized as a Spark RDD, which is
+quite pointless for big data.  In the future, this will
+allow connections to link to data on HDFS.</p>
+
+
+
+</div>
+
+
 <!-- updateAttributes -->   
 <div class="tab-pane" id="updateattributes">
 
@@ -2519,7 +2779,6 @@ Ryan Hafen
 
 
    
-   
    <ul class="pager">
       <li><a href="#" id="previous">&larr; Previous</a></li> 
       <li><a href="#" id="next">Next &rarr;</a></li> 
@@ -2533,13 +2792,13 @@ Ryan Hafen
 <hr>
 
 <div class="footer">
-   <p>&copy; Ryan Hafen, 2013</p>
+   <p>&copy; Ryan Hafen, 2014</p>
 </div>
 </div> <!-- /container -->
 
-<script src="js/jquery.js"></script>
-<script src="bootstrap/js/bootstrap.js"></script>
-<script src="js/jquery.ba-hashchange.min.js"></script>
+<script src="assets/js/jquery.js"></script>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
+<script src="assets/js/jquery.ba-hashchange.min.js"></script>
 <script>
 function manageNextPrev() {
    $('a#next').parent().toggleClass('disabled', $('#toc.nav li.active').nextAll('li:not(.nav-header)').size() == 0);

@@ -21,8 +21,8 @@ bySpecies <- divide(irisDdf,
 # compute lm coefficients for each division and rbind them
 recombine(bySpecies, 
    apply = function(x) {
-      coefs <- coef(lm(Sepal.Length ~ Petal.Length, data=x))
-      data.frame(slope=coefs[2], intercept=coefs[1])
+      coefs <- coef(lm(Sepal.Length ~ Petal.Length, data = x))
+      data.frame(slope = coefs[2], intercept = coefs[1])
    },
    combine = combRbind())
 
@@ -33,7 +33,7 @@ recombine(bySpecies,
 # map returns top 5 rows according to sepal width
 top5map <- expression({
    v <- do.call(rbind, map.values)
-   collect("top5", v[order(v$Sepal.Width, decreasing=TRUE)[1:5],])
+   collect("top5", v[order(v$Sepal.Width, decreasing = TRUE)[1:5],])
 })
 
 # reduce collects map results and then iteratively rbinds them and returns top 5
@@ -42,7 +42,7 @@ top5reduce <- expression(
       top5 <- NULL
    }, reduce = {
       top5 <- rbind(top5, do.call(rbind, reduce.values))
-      top5 <- top5[order(top5$Sepal.Width, decreasing=TRUE)[1:5],]
+      top5 <- top5[order(top5$Sepal.Width, decreasing = TRUE)[1:5],]
    }, post = {
       collect(reduce.key, top5)
    }
@@ -57,10 +57,14 @@ top5[[1]]
 
 
 
+# remove files if necessary
+try(unlink("/private/tmp/irisKV", recursive=TRUE))
+try(unlink("/private/tmp/bySpecies", recursive=TRUE))
+
 
 
 # initiate a disk connection to a new directory /private/tmp/irisKV
-irisDiskConn <- localDiskConn("/private/tmp/irisKV", autoYes=TRUE)
+irisDiskConn <- localDiskConn("/private/tmp/irisKV", autoYes = TRUE)
 
 
 
@@ -110,7 +114,7 @@ irisDdf <- updateAttributes(irisDdf)
 # divide local disk data by species
 bySpecies <- divide(irisDdf, 
    by = "Species",
-   output = localDiskConn("/private/tmp/bySpecies", autoYes=TRUE),
+   output = localDiskConn("/private/tmp/bySpecies", autoYes = TRUE),
    update = TRUE)
 
 
@@ -125,15 +129,15 @@ bySpecies <- ddf(localDiskConn("/private/tmp/bySpecies"))
 # compute lm coefficients for each division and rbind them
 recombine(bySpecies, 
    apply = function(x) {
-      coefs <- coef(lm(Sepal.Length ~ Petal.Length, data=x))
-      data.frame(slope=coefs[2], intercept=coefs[1])
+      coefs <- coef(lm(Sepal.Length ~ Petal.Length, data = x))
+      data.frame(slope = coefs[2], intercept = coefs[1])
    },
    combine = combRbind())
 
 
 
-bySpecies[[1]]
-bySpecies[["Species=setosa"]]
+str(bySpecies[[1]])
+str(bySpecies[["Species=setosa"]])
 
 
 
@@ -147,7 +151,7 @@ getKeys(bySpecies)
 top5map <- expression({
    counter("map", "mapTasks", 1)
    v <- do.call(rbind, map.values)
-   collect("top5", v[order(v$Sepal.Width, decreasing=TRUE)[1:5],])
+   collect("top5", v[order(v$Sepal.Width, decreasing = TRUE)[1:5],])
 })
 
 # reduce collects map results and then iteratively rbinds them and returns top 5
@@ -156,7 +160,7 @@ top5reduce <- expression(
       top5 <- NULL
    }, reduce = {
       top5 <- rbind(top5, do.call(rbind, reduce.values))
-      top5 <- top5[order(top5$Sepal.Width, decreasing=TRUE)[1:5],]
+      top5 <- top5[order(top5$Sepal.Width, decreasing = TRUE)[1:5],]
    }, post = {
       collect(reduce.key, top5)
    }
@@ -182,6 +186,10 @@ top5a <- mrExec(bySpecies,
 
 
 
+stopCluster(cl)
+
+
+
 # how many map tasks were there before using a 3-core cluster
 counters(top5)$map$mapTasks
 # how many map tasks were there after using a 3-core cluster
@@ -201,12 +209,12 @@ rhls("/")
 # make a directory /tmp/testfile
 rhmkdir("/tmp/testfile")
 # write a couple of key-value pairs to /tmp/testfile/1
-rhwrite(list(list(1, 1), list(2, 2)), file="/tmp/testfile/1")
+rhwrite(list(list(1, 1), list(2, 2)), file = "/tmp/testfile/1")
 # read those values back in
 a <- rhread("/tmp/testfile/1")
 # create an R object and save a .Rdata file containing it to HDFS
 d <- rnorm(10)
-rhsave(d, file="/tmp/testfile/d.Rdata")
+rhsave(d, file = "/tmp/testfile/d.Rdata")
 # load that object back into the session
 rhload("/tmp/testfile/d.Rdata")
 # list the files in /tmp/testfile
@@ -226,10 +234,17 @@ rhdel("/tmp/testfile")
 
 
 
+# remove files if necessary
+try(rhdel("/tmp/irisKV"))
+try(rhdel("/tmp/bySpecies"))
+try(rhdel("/tmp/adultDdf"))
+try(rhdel("/tmp/adult_raw_data"))
+try(unlink("/private/tmp/irisKVdisk", recursive = TRUE))
+
 
 
 # initiate an HDFS connection to a new HDFS directory /tmp/irisKV
-irisHDFSconn <- hdfsConn("/tmp/irisKV", autoYes=TRUE)
+irisHDFSconn <- hdfsConn("/tmp/irisKV", autoYes = TRUE)
 
 
 
@@ -283,12 +298,12 @@ recombine(bySpecies,
 
 
 
-bySpecies[[1]]
-bySpecies[["Species=setosa"]]
+str(bySpecies[[1]])
+str(bySpecies[["Species=setosa"]])
 
 
 
-irisDdf[["key1"]]
+str(irisDdf[["key1"]])
 
 
 
@@ -297,7 +312,7 @@ irisDdf <- makeExtractable(irisDdf)
 
 
 
-irisDdf[["key1"]]
+str(irisDdf[["key1"]])
 
 
 
@@ -342,7 +357,7 @@ write.table(adult,
 # create /tmp/adult_raw_data directory on HDFS
 rhmkdir("/tmp/adult_raw_data")
 # copy the csv from local disk to this directory on HDFS
-system("hadoop fs -copyFromLocal /tmp/adult.csv /tmp/adult_raw_data/adult.csv")
+rhput("/tmp/adult.csv", "/tmp/adult_raw_data/adult.csv")
 # make sure it is there
 rhls("/tmp/adult_raw_data")
 
@@ -359,9 +374,9 @@ adultDdo[[1]]
 
 # transformation function to turn line of csv text into data frame
 adult2df <- function(line) {
-   read.table(textConnection(line), sep=",", 
-      header=FALSE,
-      col.names=c("age", "workclass", "fnlwgt", "education", "educationnum", 
+   read.table(textConnection(line), sep = ",", 
+      header = FALSE,
+      col.names = c("age", "workclass", "fnlwgt", "education", "educationnum", 
          "marital", "occupation", "relationship", "race", "sex", "capgain", 
          "caploss", "hoursperweek", "nativecountry", "income", "incomebin"),
          stringsAsFactors=FALSE
@@ -370,20 +385,20 @@ adult2df <- function(line) {
 
 
 
-adultDdf <- ddf(adultConn, transFn=adult2df)
+adultDdf <- ddf(adultConn, transFn = adult2df)
 
 
 
 
 
-kvExample(adultDdf, transform=TRUE)
+kvExample(adultDdf, transform = TRUE)
 
 
 
 
 
-byEd <- divide(adultDdf, by="education", 
-   output=hdfsConn("/tmp/adultDdf", autoYes=TRUE))
+byEd <- divide(adultDdf, by = "education", 
+   output = hdfsConn("/tmp/adultDdf", autoYes = TRUE))
 
 
 
@@ -394,9 +409,9 @@ rhipeControl()
 # initialize irisDdf HDFS ddf object
 irisDdf <- ddo(hdfsConn("/tmp/irisKV"))
 # convert from HDFS to in-memory ddf
-irisDdfMem <- convert(from=irisDdf)
+irisDdfMem <- convert(from = irisDdf)
 # convert from HDFS to local disk ddf
-irisDdfDisk <- convert(from=irisDdf, 
+irisDdfDisk <- convert(from = irisDdf, 
    to=localDiskConn("/private/tmp/irisKVdisk", autoYes=TRUE))
 
 

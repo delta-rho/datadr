@@ -2,11 +2,11 @@
 
 # split iris data randomly into 4 key-value pairs
 set.seed(1234)
-ind <- split(sample(1:150), sample(1:4, 150, replace=TRUE))
+ind <- split(sample(1:150), sample(1:4, 150, replace = TRUE))
 irisRKV <- lapply(seq_along(ind), function(i) {
    list(i, iris[ind[[i]], c("Petal.Length", "Species")])
 })
-irisRKV
+str(irisRKV)
 
 
 
@@ -29,13 +29,13 @@ maxMap <- expression({
 
 # reduce expression to compute global max petal length
 maxReduce <- expression(
-   pre={
+   pre = {
       globalMax <- NULL
    },
-   reduce={
+   reduce = {
       globalMax <- max(c(globalMax, unlist(reduce.values)))
    },
-   post={
+   post = {
       collect(reduce.key, globalMax)
    }
 )
@@ -70,7 +70,7 @@ meanMap <- expression({
    tmp <- by(v, v$Species, function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length), n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length), n = nrow(x)))
    })
 })
 
@@ -78,16 +78,16 @@ meanMap <- expression({
 
 # reduce to compute mean Petal.Length
 meanReduce <- expression(
-   pre={
+   pre = {
       total <- 0
       nn <- 0
    },
-   reduce={
+   reduce = {
       tmp <- do.call(rbind, reduce.values)
       total <- total + sum(tmp[, "tot"])
       nn <- nn + sum(tmp[, "n"])
    },
-   post={
+   post = {
       collect(reduce.key, total / nn)
    }
 )
@@ -120,7 +120,7 @@ meanMap2 <- expression({
    dlply(v, .(Species), function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length), n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length), n = nrow(x)))
    })
 })
 
@@ -141,7 +141,7 @@ meanMap3 <- expression({
    dlply(v, .(Species), function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length) * cm2mm, n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length) * cm2mm, n = nrow(x)))
    })
 })
 
@@ -161,7 +161,7 @@ meanMap4 <- expression({
    dlply(v, .(Species), function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length) * cm2mm, n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length) * cm2mm, n = nrow(x)))
    })
 })
 

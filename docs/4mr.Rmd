@@ -1,3 +1,5 @@
+```
+
 ## MapReduce ##
 
 ### Introduction to MapReduce ###
@@ -28,16 +30,16 @@ We will illustrate MapReduce by continuing to look at the `iris` data.  This tim
 ```{r iris_rkv}
 # split iris data randomly into 4 key-value pairs
 set.seed(1234)
-ind <- split(sample(1:150), sample(1:4, 150, replace=TRUE))
+ind <- split(sample(1:150), sample(1:4, 150, replace = TRUE))
 irisRKV <- lapply(seq_along(ind), function(i) {
    list(i, iris[ind[[i]], c("Petal.Length", "Species")])
 })
-irisRKV
+str(irisRKV)
 ```
 
 All inputs and outputs to MapReduce jobs in `datadr` are "ddo" or "ddf" objects.  Hence, we turn `irisRKV` into a "ddf" object:
 
-```{r iris_r_ddf}
+```{r iris_r_ddf, message=FALSE}
 # represent irisRKV as a distributed data frame
 irisRddf <- ddf(irisRKV)
 ```
@@ -153,13 +155,13 @@ Then in the reduce, we set up the variable `globalMax` which we will update as n
 ```{r max_reduce}
 # reduce expression to compute global max petal length
 maxReduce <- expression(
-   pre={
+   pre = {
       globalMax <- NULL
    },
-   reduce={
+   reduce = {
       globalMax <- max(c(globalMax, unlist(reduce.values)))
    },
-   post={
+   post = {
       collect(reduce.key, globalMax)
    }
 )
@@ -167,7 +169,7 @@ maxReduce <- expression(
 
 We can execute the job with the following:
 
-```{r max_exec}
+```{r max_exec, message=FALSE}
 # execute the job
 maxRes <- mrExec(irisDdf,
    map = maxMap,
@@ -219,7 +221,7 @@ meanMap <- expression({
    tmp <- by(v, v$Species, function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length), n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length), n = nrow(x)))
    })
 })
 ```
@@ -231,16 +233,16 @@ For the reduce for each unique map output key, we initialize a value `total = 0`
 ```{r mean_reduce}
 # reduce to compute mean Petal.Length
 meanReduce <- expression(
-   pre={
+   pre = {
       total <- 0
       nn <- 0
    },
-   reduce={
+   reduce = {
       tmp <- do.call(rbind, reduce.values)
       total <- total + sum(tmp[, "tot"])
       nn <- nn + sum(tmp[, "n"])
    },
-   post={
+   post = {
       collect(reduce.key, total / nn)
    }
 )
@@ -248,7 +250,7 @@ meanReduce <- expression(
 
 The job is executed with:
 
-```{r mean_exec}
+```{r mean_exec, message=FALSE}
 # execute the job
 meanRes <- mrExec(irisRddf,
    map = meanMap,
@@ -315,14 +317,14 @@ meanMap2 <- expression({
    dlply(v, .(Species), function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length), n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length), n = nrow(x)))
    })
 })
 ```
 
 We can execute it with:
 
-```{r mean_exec2}
+```{r mean_exec2, message=FALSE}
 meanRes <- mrExec(irisRddf,
    setup = setup,
    map = meanMap2,
@@ -336,7 +338,7 @@ If your `map` and/or `reduce` expressions rely on data in your local environment
 
 Suppose, for example, in our mean calculation, we want to convert the petal length measurement from centimeters to millimeters, using a conversion factor `cm2mm = 10` that is an object available in the global environment.  Of course this is a silly example because we could simply multiply the result by 10 in the reduce without passing the object, and also because we could do the conversion after reading the result back in.  More realistic cases will surely arise in your actual analyses, but for now, we use this example just to illustrate:
 
-```{r params_example, messages=FALSE, results="hide"}
+```{r params_example, message=FALSE, results="hide"}
 cm2mm <- 10
 
 meanMap3 <- expression({
@@ -344,7 +346,7 @@ meanMap3 <- expression({
    dlply(v, .(Species), function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length) * cm2mm, n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length) * cm2mm, n = nrow(x)))
    })
 })
 
@@ -380,7 +382,7 @@ A call to `counter()` tells the MapReduce job to add an increment of `value` to 
 
 For example, let's add a counter to our example job:
 
-```{r counter_example}
+```{r counter_example, message=FALSE}
 meanMap4 <- expression({
    counter("counterTest", "mapValuesProcessed", length(map.values))
 
@@ -388,7 +390,7 @@ meanMap4 <- expression({
    dlply(v, .(Species), function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length) * cm2mm, n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length) * cm2mm, n = nrow(x)))
    })
 })
 

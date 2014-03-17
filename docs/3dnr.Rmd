@@ -1,3 +1,5 @@
+```
+
 ## Division and Recombination ##
 
 ### High-Level Interface ###
@@ -19,10 +21,10 @@ Currently there are two types of divisions supported: *conditioning variable*, a
 
 In the previous section, we were looking at a division of the `iris` data by species.  We manually split the data into key-value pairs.  We can achieve the same result by doing conditioning variable division:
 
-```{r iris_divide_byspecies}
+```{r iris_divide_byspecies, message=FALSE}
 irisDdf <- ddf(iris)
 # divide irisDdf by species
-bySpecies <- divide(irisDdf, by="Species", update=TRUE)
+bySpecies <- divide(irisDdf, by = "Species", update = TRUE)
 ```
 
 `divide()` must take an object of class "ddo" or "ddf", and will return an object of either "ddo" or "ddf" ("ddf" if the resulting values are data frames).
@@ -37,9 +39,9 @@ We see the same printout as we had with our manually-created division, with the 
 
 In the above example, conditioning variable division was specified with the `by` argument.  Here, simply specifying a character string or vector of character strings (for multiple conditioning variables) will invoke conditioning variable division.  A more formal way to achieve this is by using `condDiv()` to build the division specification:
 
-```{r iris_divide_byspecies_formal}
+```{r iris_divide_byspecies_formal, message=FALSE}
 # divide irisDdf by species using condDiv()
-bySpecies <- divide(irisDdf, by=condDiv("Species"), update=TRUE)
+bySpecies <- divide(irisDdf, by = condDiv("Species"), update = TRUE)
 ```
 
 Using `condDiv()` is not necessary but follows the general idea of using a function to build a division specification that is and will be followed for other division methods.
@@ -48,7 +50,7 @@ Here's what a subset of the divide data looks like:
 
 ```{r byspecies_subset}
 # look at a subset of bySpecies
-bySpecies[[1]]
+str(bySpecies[[1]])
 ```
 
 Note that the "Species" column is missing in the value data frame.  This is because it is the variable we split on, and therefore has the same value for the entire subset.  All conditioning variables for a given subset are stored in a "splitVars" attribute, and can be retrieved by `getSplitVars()`:
@@ -72,10 +74,10 @@ Another way to divide data that is currently implemented is *random replicate* d
 
 Suppose we want to split the iris data into random subsets with roughly 10 rows per subset:
 
-```{r byrandom}
+```{r byrandom, message=FALSE}
 # divide iris data into random subsets of 10 rows per subset
 set.seed(123)
-byRandom <- divide(bySpecies, by=rrDiv(10), update=TRUE)
+byRandom <- divide(bySpecies, by = rrDiv(10), update = TRUE)
 ```
 
 Note that we passed `bySpecies` as the input data.  We could just as well have specified `irisDdf` or any other division of the iris data.  The input partitioning doesn't matter.
@@ -89,7 +91,7 @@ We see there are still 150 rows (as there should be), but now there are 15 subse
 We can look at the distribution of the of the number of rows in each subset:
 
 ```{r byrandom_row_distn, fig.height=4, echo=2:3}
-par(mar=c(4.1, 4.1, 1, 0.2))
+par(mar = c(4.1, 4.1, 1, 0.2))
 # plot distribution of the number of rows in each subset
 plot(splitRowDistn(byRandom))
 ```
@@ -110,14 +112,14 @@ We will show an example of random replicate division in use later in this sectio
 
 `preTransFn` can also be used when the input is "ddf" but we would like to make some change to it prior to division.  For example, suppose we only want `divide()` to operate on the `Sepal.Length` column:
 
-```{r preTransFn_example}
+```{r preTransFn_example, message=FALSE}
 # preTransFn to extract Sepal.Length from a value in a key-value pair
 extractSepalLength <- function(v)
    v[, c("Sepal.Length", "Species")]
 # test it on a subset to make sure it is doing what we want
-kvApply(extractSepalLength, irisDdf[[1]])
+head(kvApply(extractSepalLength, irisDdf[[1]]))
 # apply division with preTransFn
-bySpeciesSL <- divide(irisDdf, by="Species", preTransFn=extractSepalLength)
+bySpeciesSL <- divide(irisDdf, by = "Species", preTransFn = extractSepalLength)
 ```
 
 It is always a good practice to test any function that operates on key-value pairs on a subset prior to running it over the entire data set, as we have done here (if you missed it, see the discussion on [applying functions to key-value pairs](#key-value-pairs)).
@@ -138,19 +140,20 @@ summary(bySpecies)$Sepal.Length
 We see that its range is from 4.3 to 7.9.  Suppose we want to bin it by the integer.  We can create a new variable `slCut` by defining a `preTransFn` that adds this column to the data frame.  Then we specify that we want to divide the data both on `Species`, but also `slCut`, which doesn't exist in the input data but will exist in the data prior to division thanks to `preTransFn`.
 
 ```{r echo=FALSE, purl=FALSE}
-options(max.print=20)
+# options(max.print = 20)
 ```
 
-```{r slcut}
+```{r slcut, message=FALSE}
 # preTransFn to add a variable "slCut" of discretized Sepal.Length
 sepalLengthCut <- function(v) {
-   v$slCut <- cut(v$Sepal.Length, seq(0, 8, by=1))
+   v$slCut <- cut(v$Sepal.Length, seq(0, 8, by = 1))
    v
 }
 # test it on a subset
-kvApply(sepalLengthCut, irisDdf[[1]])
+slCutTest <- kvApply(sepalLengthCut, irisDdf[[1]])
+head(slCutTest)
 # divide on Species and slCut
-bySpeciesSL <- divide(irisDdf, by=c("Species", "slCut"), 
+bySpeciesSL <- divide(irisDdf, by = c("Species", "slCut"), 
    preTransFn = sepalLengthCut)
 ```
 
@@ -163,7 +166,7 @@ bySpeciesSL[[3]]
 ```
 
 ```{r echo=FALSE, purl=FALSE}
-options(max.print=10)
+# options(max.print = 10)
 ```
 
 As the key indicates, the species for this subset is "versicolor" and the sepal length is in the range `(4,5]`.  Recall that we can access the split variables for this subset with:
@@ -182,9 +185,9 @@ Many times a conditioning variable division of interest will result in a long-ta
 
 For example, suppose we want no more than 12 rows per subset in our by-species division:
 
-```{r bySpecies_spill}
+```{r bySpecies_spill, message=FALSE}
 # divide iris data by species, spilling to new key-value after 12 rows
-bySpeciesSpill <- divide(irisDdf, by="Species", spill=12, update=TRUE)
+bySpeciesSpill <- divide(irisDdf, by = "Species", spill = 12, update = TRUE)
 ```
 
 Let's see what our subsets look like now:
@@ -201,12 +204,12 @@ There are 5 different subsets for each species.  For example, "Species=setosa" h
 
 The `filter` argument to `divide()` is an optional function that is applied to each candidate post-division key-value pair to determine whether it should be part of the resulting division.  A common case of when the `filter` argument is useful is when a division may result in a very large number of very small subsets and we are only interested in studying subsets with adequate size.
 
-As an example, consider the iris splitting with `spill=12` from before.  Suppose that in addition to spilling records, we also only want to keep subsets that have more than 5 records in them.
+As an example, consider the iris splitting with `spill = 12` from before.  Suppose that in addition to spilling records, we also only want to keep subsets that have more than 5 records in them.
 
-```{r bySpecies_filter}
+```{r bySpecies_filter, message=FALSE}
 # divide iris data by species, spill, and filter out subsets with <=5 rows
-bySpeciesFilter <- divide(irisDdf, by="Species", spill=12,
-   filter=function(v) nrow(v) > 5, update=TRUE)
+bySpeciesFilter <- divide(irisDdf, by = "Species", spill = 12,
+   filter = function(v) nrow(v) > 5, update = TRUE)
 bySpeciesFilter
 ```
 
@@ -247,31 +250,31 @@ Some of the most common uses of `recombine()` are simple `lapply()`-like operati
 
 For example, suppose we would like to compute the mean petal width for each species in our `bySpecies` division:
 
-```{r recombine_meanpetalwidth}
-recombine(bySpecies, apply=function(v) mean(v$Petal.Width))
+```{r recombine_meanpetalwidth, message=FALSE}
+recombine(bySpecies, apply = function(v) mean(v$Petal.Width))
 ```
 
 Here, the default `combCollect()` was used to combine the results, giving us a list of key-value pairs with the value being the mean petal width.
 
 Suppose we would like the result to be a data frame.  We can do this with `combRbind()`:
 
-```{r recombine_meanpetalwidth_rbind}
-recombine(bySpecies, apply=function(v) mean(v$Petal.Width), comb=combRbind())
+```{r recombine_meanpetalwidth_rbind, message=FALSE}
+recombine(bySpecies, apply = function(v) mean(v$Petal.Width), comb = combRbind())
 ```
 
 The `apply` function here returns a scalar which is coerced into a data frame.  Note that by default if the input data keys are characters, they will be added to the data frame.  Here is another example of using `combRbind()` with an `apply` function that returns a data frame:
 
-```{r rec_mean_combrbind}
+```{r rec_mean_combrbind, message=FALSE}
 meanApply <- function(v) {
-   data.frame(mpw=mean(v$Petal.Width), mpl=mean(v$Petal.Length))
+   data.frame(mpw = mean(v$Petal.Width), mpl = mean(v$Petal.Length))
 }
-recombine(bySpecies, apply=meanApply, comb=combRbind())
+recombine(bySpecies, apply = meanApply, comb = combRbind())
 ```
 
 Sometimes we would like the result to be a new division object, in which case we use `combDdo()` 
 
-```{r rec_mean_combddo}
-recombine(bySpecies, apply=meanApply, comb=combDdo())
+```{r rec_mean_combddo, message=FALSE}
+recombine(bySpecies, apply = meanApply, comb = combDdo())
 ```
 
 <div class="alert alert-warning">
@@ -303,10 +306,10 @@ The data is adult income from the 1994 census database, pulled from the [UCI mac
 
 First, we load the data (available as part of the `datadr` package) and turn it into a "ddf" object:
 
-```{r load_adult}
+```{r load_adult, message=FALSE}
 data(adult)
 # turn adult into a ddf
-adultDdf <- ddf(adult, update=TRUE)
+adultDdf <- ddf(adult, update = TRUE)
 adultDdf
 #look at the names
 names(adultDdf)
@@ -314,13 +317,13 @@ names(adultDdf)
 
 We see that there are about 32K observations, and we see the various variables available.
 
-We'll start with some simple exploratory analysis.  One variable of interest in the data is education.  We can look at the summary statistics to see the frequency distribution of `education` (which were computed since we specified `update=TRUE` when we created `adultDdf`):
+We'll start with some simple exploratory analysis.  One variable of interest in the data is education.  We can look at the summary statistics to see the frequency distribution of `education` (which were computed since we specified `update = TRUE` when we created `adultDdf`):
 
 ```{r ed_table, fig.height=4}
 library(lattice)
 edTable <- summary(adultDdf)$education$freqTable
 edTable$var <- with(edTable, reorder(var, Freq, mean))
-dotplot(var ~ Freq, data=edTable)
+dotplot(var ~ Freq, data = edTable)
 ```
 
 #### Division by education group
@@ -346,20 +349,20 @@ edGroups <- function(v) {
 
 This adds a variable `edGroup` with the desired grouping of education levels.  We can now divide the data by `edGroup`.  We specify a `filterFn` to only allow data to be output that does not correspond to "Preschool".
 
-```{r by_edgroup}
+```{r by_edgroup, message=FALSE}
 # divide by edGroup and filter out "Preschool"
-byEdGroup <- divide(adultDdf, by="edGroup", 
-   preTransFn=edGroups, 
-   filterFn=function(x) x$edGroup[1] != "Preschool",
-   update=TRUE)
+byEdGroup <- divide(adultDdf, by = "edGroup", 
+   preTransFn = edGroups, 
+   filterFn = function(x) x$edGroup[1] != "Preschool",
+   update = TRUE)
 byEdGroup
 ```
 
 We can look at the distribution of number of people in each education group with the following simple recombination:
 
-```{r edgrouptable}
+```{r edgrouptable, message=FALSE}
 # tabulate number of people in each education group
-edGroupTable <- recombine(byEdGroup, apply=nrow, combine=combRbind())
+edGroupTable <- recombine(byEdGroup, apply = nrow, combine = combRbind())
 edGroupTable
 ```
 
@@ -371,12 +374,12 @@ There are many things we might be interested in doing with our `byEdGroup` divis
 
 One thing we might be interested in is how different the distribution of gender is within each of the education groups.  One way to do this is to look at the ratio of men to women.  We can compute this ratio with a simple recombination:
 
-```{r sexratio}
+```{r sexratio, message=FALSE}
 # compute male/female ratio by education group
-sexRatio <- recombine(byEdGroup, apply=function(x) {
+sexRatio <- recombine(byEdGroup, apply = function(x) {
    tab <- table(x$sex)
-   data.frame(maleFemaleRatio=tab["Male"] / tab["Female"])
-}, combine=combRbind())
+   data.frame(maleFemaleRatio = tab["Male"] / tab["Female"])
+}, combine = combRbind())
 sexRatio
 ```
 
@@ -385,7 +388,7 @@ We can visualize it with the following:
 ```{r vis_sexratio, fig.height=4}
 # make dotplot of male/female ratio by education group
 sexRatio$edGroup <- with(sexRatio, reorder(edGroup, maleFemaleRatio, mean))
-dotplot(edGroup ~ maleFemaleRatio, data=sexRatio)
+dotplot(edGroup ~ maleFemaleRatio, data = sexRatio)
 ```
 
 We know the marginal distribution of gender is lopsided to begin with (see `summary(byEdGroup)$sex`), but we don't know if the sample we are dealing with is biased or not...  There are obviously many many directions to go with the exploratory analysis and hopefully these few examples provide a start and a feel for how to go about
@@ -401,12 +404,12 @@ Therefore, we now turn to some examples of ways to apply analytical methods acro
 Before doing it with `datadr`, let's first apply the method to the original data frame, so that we can compare the results.  Recall again that since this is a small data set, we can do things the "usual" way:
 
 ```{r echo=FALSE, purl=FALSE}
-options(max.print=30)
+# options(max.print = 30)
 ```
 
 ```{r fit_glm}
 # fit a glm to the original adult data frame
-rglm <- glm(incomebin ~ educationnum + hoursperweek + sex, data=adult, family=binomial())
+rglm <- glm(incomebin ~ educationnum + hoursperweek + sex, data = adult, family = binomial())
 summary(rglm)
 ```
 
@@ -422,17 +425,17 @@ Now let's compare this to a few `datadr` approaches.  Note that these approaches
 
 For the results of `drGLM()` and `drBLB()` to be valid, we need a random-replicate division of the data.  We will choose a division that provides about 500 rows in each subset and that only has the variables that we care about:
 
-```{r rr_adult}
-rrAdult <- divide(adultDdf, by=rrDiv(500), update=TRUE,
-   postTrans=function(x) 
+```{r rr_adult, message=FALSE}
+rrAdult <- divide(adultDdf, by = rrDiv(500), update = TRUE,
+   postTrans = function(x) 
       x[,c("incomebin", "educationnum", "hoursperweek", "sex")])
 ```
 
 <!-- plot(splitRowDistn(rrAdult)) -->
 
-Now, we can call `recombine()` with `apply=drGLM(...)`.  `drGLM()` has been designed to take any arguments you might pass to `glm()` and pass them on to the function being applied to each subset.  We use `combine=combMeanCoef()`, which is a function that has been designed specifically to take coefficient results from model fits applied to each subset and average them:
+Now, we can call `recombine()` with `apply = drGLM(...)`.  `drGLM()` has been designed to take any arguments you might pass to `glm()` and pass them on to the function being applied to each subset.  We use `combine = combMeanCoef()`, which is a function that has been designed specifically to take coefficient results from model fits applied to each subset and average them:
 
-```{r drglm, cache=TRUE}
+```{r drglm, cache=TRUE, message=FALSE}
 recombine(
    data = rrAdult, 
    apply = drGLM(incomebin ~ educationnum + hoursperweek + sex, 
@@ -452,18 +455,18 @@ One important thing to keep in mind is that BLB requires each subset be resample
 
 We apply `drBLB()` to each subset, specifying the `statistic` to be computed for each bootstrap sample, the `metric` to compute on the statistics, and the number of bootstrap replications `R`.  We also need to tell it the total number of rows in the data set.  Right now, `drBLB()` simply returns a numeric vector, which is combined using `combMean()`.
 
-```{r drblb, cache=TRUE}
+```{r drblb, cache=TRUE, message=FALSE}
 recombine(rrAdult,
-   apply=drBLB(
+   apply = drBLB(
       statistic = function(x, weights)
          coef(glm(incomebin ~ educationnum + hoursperweek + sex, 
-            data=x, weights=weights, family=binomial())),
+            data = x, weights = weights, family = binomial())),
       metric = function(x)
          quantile(x, c(0.05, 0.95)),
       R = 100,
       n = nrow(rrAdult)
    ),
-   combine=combMean()
+   combine = combMean()
 )
 ```
 
@@ -497,7 +500,7 @@ The result here is simply a vector, where each successive pair of elements repre
 -7.35496959   0.36326367   0.03365385   1.23792439 -->
 
 ```{r echo=FALSE, purl=FALSE}
-options(max.print=10)
+# options(max.print = 10)
 ```
 
 

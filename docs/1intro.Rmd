@@ -1,9 +1,12 @@
+```
+
+
 ```{r echo=FALSE, purl=FALSE}
-options(max.print=10)
+# options(max.print = 10)
 set.seed(1234)
 cache.path <- file.path(getwd(), "cache")
-opts_chunk$set(cache.path=cache.path)
-# opts_chunk$set(cache=TRUE, autodep=TRUE)
+opts_chunk$set(cache.path = cache.path)
+# opts_chunk$set(cache = TRUE, autodep = TRUE)
 ```
 
 # datadr: Divide and Recombine in R #
@@ -67,7 +70,7 @@ Then we load the package:
 ```{r echo=FALSE, include=FALSE}
 # require(digest)
 # require(data.table)
-# ff <- list.files("/Users/hafe647/Documents/Code/datadr/R", full.names=TRUE)
+# ff <- list.files("/Users/hafe647/Documents/Code/datadr/R", full.names = TRUE)
 # for(f in ff) {
 #    cat(f, "\n"); source(f)
 # }

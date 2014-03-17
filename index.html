@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>datadr R Package Documentation</title>
+    <title>datadr: Divide and Recombine in R</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="css/pygment.css" rel="stylesheet">
+    <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/pygment.css" rel="stylesheet">
     
     <style type="text/css">
       body {
@@ -92,7 +92,7 @@
       "HTML-CSS": { scale: 100}    
     });    
     </script>
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -113,9 +113,7 @@
 
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="index.html">Docs</a></li>
-          <li class=""><a href="functionref.html">Function Ref</a></li>
-          <li><a href="https://www.github.com/hafen/datadr">Github</a></li>
+           <li class='active'><a href='index.html'>Docs</a></li><li class=''><a href='functionref.html'>Function Ref</a></li><li><a href='https://github.com/hafen/datadr'>Github</a></li>
         </ul>
         <p class="myHeader">datadr: Divide and Recombine in R</p>
       </div>
@@ -127,7 +125,7 @@
    
    <div class="span3 well">
    <ul class = "nav nav-list" id="toc">
-   <li class='nav-header unselectable' data-edit-href='https://www.github.com/hafen/datadr/edit/gh-pages/docs/1intro.Rmd'>Intro</li>
+   <li class='nav-header unselectable' data-edit-href='https://github.com/hafen/datadr/edit/gh-pages/docs/1intro.Rmd'>Intro</li>
       
       <li class='active'>
          <a target='_self' class='nav-not-header' href='#background'>Background</a>
@@ -139,7 +137,7 @@
       </li>
 
 
-<li class='nav-header unselectable' data-edit-href='https://www.github.com/hafen/datadr/edit/gh-pages/docs/2data.Rmd'>Dealing with Data in D&R</li>
+<li class='nav-header unselectable' data-edit-href='https://github.com/hafen/datadr/edit/gh-pages/docs/2data.Rmd'>Dealing with Data in D&R</li>
       
       <li class='active'>
          <a target='_self' class='nav-not-header' href='#key-value-pairs'>Key-Value Pairs</a>
@@ -161,7 +159,7 @@
       </li>
 
 
-<li class='nav-header unselectable' data-edit-href='https://www.github.com/hafen/datadr/edit/gh-pages/docs/3dnr.Rmd'>Division and Recombination</li>
+<li class='nav-header unselectable' data-edit-href='https://github.com/hafen/datadr/edit/gh-pages/docs/3dnr.Rmd'>Division and Recombination</li>
       
       <li class='active'>
          <a target='_self' class='nav-not-header' href='#high-level-interface'>High-Level Interface</a>
@@ -188,7 +186,7 @@
       </li>
 
 
-<li class='nav-header unselectable' data-edit-href='https://www.github.com/hafen/datadr/edit/gh-pages/docs/4mr.Rmd'>MapReduce</li>
+<li class='nav-header unselectable' data-edit-href='https://github.com/hafen/datadr/edit/gh-pages/docs/4mr.Rmd'>MapReduce</li>
       
       <li class='active'>
          <a target='_self' class='nav-not-header' href='#introduction-to-mapreduce'>Introduction to MapReduce</a>
@@ -210,7 +208,7 @@
       </li>
 
 
-<li class='nav-header unselectable' data-edit-href='https://www.github.com/hafen/datadr/edit/gh-pages/docs/5divag.Rmd'>Division-Agnostic Methods</li>
+<li class='nav-header unselectable' data-edit-href='https://github.com/hafen/datadr/edit/gh-pages/docs/5divag.Rmd'>Division-Agnostic Methods</li>
       
       <li class='active'>
          <a target='_self' class='nav-not-header' href='#all-data-computation'>All-Data Computation</a>
@@ -222,7 +220,7 @@
       </li>
 
 
-<li class='nav-header unselectable' data-edit-href='https://www.github.com/hafen/datadr/edit/gh-pages/docs/6backend.Rmd'>Store/Compute Backends</li>
+<li class='nav-header unselectable' data-edit-href='https://github.com/hafen/datadr/edit/gh-pages/docs/6backend.Rmd'>Store/Compute Backends</li>
       
       <li class='active'>
          <a target='_self' class='nav-not-header' href='#backend-choices'>Backend Choices</a>
@@ -254,7 +252,7 @@
       </li>
 
 
-<li class='nav-header unselectable' data-edit-href='https://www.github.com/hafen/datadr/edit/gh-pages/docs/7faq.Rmd'>Misc</li>
+<li class='nav-header unselectable' data-edit-href='https://github.com/hafen/datadr/edit/gh-pages/docs/7faq.Rmd'>Misc</li>
       
       <li class='active'>
          <a target='_self' class='nav-not-header' href='#debugging'>Debugging</a>
@@ -348,6 +346,13 @@ install_github(&quot;datadr&quot;, &quot;hafen&quot;)
 <pre><code class="r">library(datadr)
 </code></pre>
 
+<pre><code>Loading required package: parallel
+Loading required package: data.table
+data.table 1.9.2  For help type: help(&quot;data.table&quot;)
+Loading required package: codetools
+Loading required package: testthat
+</code></pre>
+
 <p>and we are ready to go.</p>
 
 <h4>RHIPE</h4>
@@ -402,53 +407,32 @@ list(1:5, rnorm(10))
 
 <pre><code class="r"># create by-species key-value pairs
 irisKV &lt;- list(
-   list(&quot;setosa&quot;, subset(iris, Species==&quot;setosa&quot;)[,1:2]),
-   list(&quot;versicolor&quot;, subset(iris, Species==&quot;versicolor&quot;)[,1:2]),
-   list(&quot;virginica&quot;, subset(iris, Species==&quot;virginica&quot;)[,1:2])
+   list(&quot;setosa&quot;, subset(iris, Species == &quot;setosa&quot;)[,c(1:2, 5)]),
+   list(&quot;versicolor&quot;, subset(iris, Species == &quot;versicolor&quot;)[,c(1:2, 5)]),
+   list(&quot;virginica&quot;, subset(iris, Species == &quot;virginica&quot;)[,c(1:2, 5)])
 )
-irisKV
+str(irisKV)
 </code></pre>
 
-<pre><code>[[1]]
-[[1]][[1]]
-[1] &quot;setosa&quot;
-
-[[1]][[2]]
-   Sepal.Length Sepal.Width
-1           5.1         3.5
-2           4.9         3.0
-3           4.7         3.2
-4           4.6         3.1
-5           5.0         3.6
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
-
-
-[[2]]
-[[2]][[1]]
-[1] &quot;versicolor&quot;
-
-[[2]][[2]]
-    Sepal.Length Sepal.Width
-51           7.0         3.2
-52           6.4         3.2
-53           6.9         3.1
-54           5.5         2.3
-55           6.5         2.8
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
-
-
-[[3]]
-[[3]][[1]]
-[1] &quot;virginica&quot;
-
-[[3]][[2]]
-    Sepal.Length Sepal.Width
-101          6.3         3.3
-102          5.8         2.7
-103          7.1         3.0
-104          6.3         2.9
-105          6.5         3.0
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
+<pre><code>List of 3
+ $ :List of 2
+  ..$ : chr &quot;setosa&quot;
+  ..$ :&#39;data.frame&#39;:    50 obs. of  3 variables:
+  .. ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  .. ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ :List of 2
+  ..$ : chr &quot;versicolor&quot;
+  ..$ :&#39;data.frame&#39;:    50 obs. of  3 variables:
+  .. ..$ Sepal.Length: num [1:50] 7 6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 ...
+  .. ..$ Sepal.Width : num [1:50] 3.2 3.2 3.1 2.3 2.8 2.8 3.3 2.4 2.9 2.7 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 2 2 2 2 2 2 2 2 2 2 ...
+ $ :List of 2
+  ..$ : chr &quot;virginica&quot;
+  ..$ :&#39;data.frame&#39;:    50 obs. of  3 variables:
+  .. ..$ Sepal.Length: num [1:50] 6.3 5.8 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 ...
+  .. ..$ Sepal.Width : num [1:50] 3.3 2.7 3 2.9 3 3 2.5 2.9 2.5 3.6 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
 </code></pre>
 
 <p>The result is a list of 3 key-value pairs.  We chose the species to be the key and the corresponding data frame of sepal measurements to be the value for each pair.</p>
@@ -490,7 +474,7 @@ kvApply(meanSepalLength1, irisKV[[1]])
 
 <pre><code class="r"># kvApply example operating on key and value
 meanSepalLength2 &lt;- function(k, v)
-   data.frame(species=k, mean=mean(v$Sepal.Length))
+   data.frame(species = k, mean = mean(v$Sepal.Length))
 
 kvApply(meanSepalLength2, irisKV[[1]])
 </code></pre>
@@ -522,9 +506,6 @@ Keep in mind that this is how things are done for all supplied functions to argu
 irisDdo &lt;- ddo(irisKV)
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
 <p><code>ddo()</code> simply takes the collection of key-value pairs and attaches additional attributes to the resulting &quot;ddo&quot; object.  Note that in this example, since the data is in memory, we are supplying the data directly as the argument to <code>ddo()</code>.  For larger datasets stored in more scalable backends, instead of passing the data directly, a connection that points to where the key-value pairs are stored is provided.  This is discussed in more detail in the <a href="#backend-choices">Store/Compute Backends</a> sections.</p>
 
 <p>Objects of class &quot;ddo&quot; have several methods that can be invoked on them.  The most simple of these is a print method:</p>
@@ -538,7 +519,8 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 5.57 KB
+ totStorageSize | 8.12 KB
+ totObjectSize  | 8.12 KB
  nDiv           | 3
  splitSizeDistn | [empty] call updateAttributes(dat) to get this value
  example        | use kvExample(dat) to get an example subset
@@ -584,13 +566,57 @@ kvExample(irisDdo)
 [1] &quot;setosa&quot;
 
 [[2]]
-   Sepal.Length Sepal.Width
-1           5.1         3.5
-2           4.9         3.0
-3           4.7         3.2
-4           4.6         3.1
-5           5.0         3.6
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
+   Sepal.Length Sepal.Width Species
+1           5.1         3.5  setosa
+2           4.9         3.0  setosa
+3           4.7         3.2  setosa
+4           4.6         3.1  setosa
+5           5.0         3.6  setosa
+6           5.4         3.9  setosa
+7           4.6         3.4  setosa
+8           5.0         3.4  setosa
+9           4.4         2.9  setosa
+10          4.9         3.1  setosa
+11          5.4         3.7  setosa
+12          4.8         3.4  setosa
+13          4.8         3.0  setosa
+14          4.3         3.0  setosa
+15          5.8         4.0  setosa
+16          5.7         4.4  setosa
+17          5.4         3.9  setosa
+18          5.1         3.5  setosa
+19          5.7         3.8  setosa
+20          5.1         3.8  setosa
+21          5.4         3.4  setosa
+22          5.1         3.7  setosa
+23          4.6         3.6  setosa
+24          5.1         3.3  setosa
+25          4.8         3.4  setosa
+26          5.0         3.0  setosa
+27          5.0         3.4  setosa
+28          5.2         3.5  setosa
+29          5.2         3.4  setosa
+30          4.7         3.2  setosa
+31          4.8         3.1  setosa
+32          5.4         3.4  setosa
+33          5.2         4.1  setosa
+34          5.5         4.2  setosa
+35          4.9         3.1  setosa
+36          5.0         3.2  setosa
+37          5.5         3.5  setosa
+38          4.9         3.6  setosa
+39          4.4         3.0  setosa
+40          5.1         3.4  setosa
+41          5.0         3.5  setosa
+42          4.5         2.3  setosa
+43          4.4         3.2  setosa
+44          5.0         3.5  setosa
+45          5.1         3.8  setosa
+46          4.8         3.0  setosa
+47          5.1         3.8  setosa
+48          4.6         3.2  setosa
+49          5.3         3.7  setosa
+50          5.0         3.3  setosa
 </code></pre>
 
 <p><code>kvExample</code> is useful for obtaining a subset key-value pair against which we can test out different analytical methods before applying them across the entire data set.</p>
@@ -607,13 +633,7 @@ kvExample(irisDdo)
 
 <pre><code class="r"># update irisDdo attributes
 irisDdo &lt;- updateAttributes(irisDdo)
-</code></pre>
-
-<pre><code>* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r">irisDdo
+irisDdo
 </code></pre>
 
 <pre><code>
@@ -622,7 +642,8 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 5.57 KB
+ totStorageSize | 8.12 KB
+ totObjectSize  | 8.12 KB
  nDiv           | 3
  splitSizeDistn | use splitSizeDistn(dat) to get distribution
  example        | use kvExample(dat) to get an example subset
@@ -637,17 +658,12 @@ In-memory data connection
 plot(splitSizeDistn(irisDdo))
 </code></pre>
 
-<p><img src="figure/plot_iris_split_size.png" alt="plot of chunk plot_iris_split_size"> </p>
+<p><img src="figures/knitr/plot_iris_split_size.png" alt="plot of chunk plot_iris_split_size"> </p>
 
-<p>Another way to get updated attributes is at the time the &quot;ddo&quot; object is created, by setting <code>update=TRUE</code>:</p>
+<p>Another way to get updated attributes is at the time the &quot;ddo&quot; object is created, by setting <code>update = TRUE</code>:</p>
 
 <pre><code class="r"># update at the time ddo() is called
-irisDdo &lt;- ddo(irisKV, update=TRUE)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
+irisDdo &lt;- ddo(irisKV, update = TRUE)
 </code></pre>
 
 <h4>Note about storage and computation</h4>
@@ -660,98 +676,62 @@ irisDdo &lt;- ddo(irisKV, update=TRUE)
 
 <p>We can access subsets of the data by key or by index:</p>
 
-<pre><code class="r">irisDdo[[&quot;setosa&quot;]]
+<pre><code class="r">str(irisDdo[[&quot;setosa&quot;]])
 </code></pre>
 
-<pre><code>[[1]]
-[1] &quot;setosa&quot;
-
-[[2]]
-   Sepal.Length Sepal.Width
-1           5.1         3.5
-2           4.9         3.0
-3           4.7         3.2
-4           4.6         3.1
-5           5.0         3.6
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
+<pre><code>List of 2
+ $ : chr &quot;setosa&quot;
+ $ :&#39;data.frame&#39;:   50 obs. of  3 variables:
+  ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
 </code></pre>
 
-<pre><code class="r">irisDdo[[1]]
+<pre><code class="r">str(irisDdo[[1]])
 </code></pre>
 
-<pre><code>[[1]]
-[1] &quot;setosa&quot;
-
-[[2]]
-   Sepal.Length Sepal.Width
-1           5.1         3.5
-2           4.9         3.0
-3           4.7         3.2
-4           4.6         3.1
-5           5.0         3.6
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
+<pre><code>List of 2
+ $ : chr &quot;setosa&quot;
+ $ :&#39;data.frame&#39;:   50 obs. of  3 variables:
+  ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
 </code></pre>
 
-<pre><code class="r">irisDdo[c(&quot;setosa&quot;, &quot;virginica&quot;)]
+<pre><code class="r">str(irisDdo[c(&quot;setosa&quot;, &quot;virginica&quot;)])
 </code></pre>
 
-<pre><code>[[1]]
-[[1]][[1]]
-[1] &quot;setosa&quot;
-
-[[1]][[2]]
-   Sepal.Length Sepal.Width
-1           5.1         3.5
-2           4.9         3.0
-3           4.7         3.2
-4           4.6         3.1
-5           5.0         3.6
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
-
-
-[[2]]
-[[2]][[1]]
-[1] &quot;virginica&quot;
-
-[[2]][[2]]
-    Sepal.Length Sepal.Width
-101          6.3         3.3
-102          5.8         2.7
-103          7.1         3.0
-104          6.3         2.9
-105          6.5         3.0
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
+<pre><code>List of 2
+ $ :List of 2
+  ..$ : chr &quot;setosa&quot;
+  ..$ :&#39;data.frame&#39;:    50 obs. of  3 variables:
+  .. ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  .. ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ :List of 2
+  ..$ : chr &quot;virginica&quot;
+  ..$ :&#39;data.frame&#39;:    50 obs. of  3 variables:
+  .. ..$ Sepal.Length: num [1:50] 6.3 5.8 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 ...
+  .. ..$ Sepal.Width : num [1:50] 3.3 2.7 3 2.9 3 3 2.5 2.9 2.5 3.6 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
 </code></pre>
 
-<pre><code class="r">irisDdo[1:2]
+<pre><code class="r">str(irisDdo[1:2])
 </code></pre>
 
-<pre><code>[[1]]
-[[1]][[1]]
-[1] &quot;setosa&quot;
-
-[[1]][[2]]
-   Sepal.Length Sepal.Width
-1           5.1         3.5
-2           4.9         3.0
-3           4.7         3.2
-4           4.6         3.1
-5           5.0         3.6
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
-
-
-[[2]]
-[[2]][[1]]
-[1] &quot;versicolor&quot;
-
-[[2]][[2]]
-    Sepal.Length Sepal.Width
-51           7.0         3.2
-52           6.4         3.2
-53           6.9         3.1
-54           5.5         2.3
-55           6.5         2.8
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
+<pre><code>List of 2
+ $ :List of 2
+  ..$ : chr &quot;setosa&quot;
+  ..$ :&#39;data.frame&#39;:    50 obs. of  3 variables:
+  .. ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  .. ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ :List of 2
+  ..$ : chr &quot;versicolor&quot;
+  ..$ :&#39;data.frame&#39;:    50 obs. of  3 variables:
+  .. ..$ Sepal.Length: num [1:50] 7 6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 ...
+  .. ..$ Sepal.Width : num [1:50] 3.2 3.2 3.1 2.3 2.8 2.8 3.3 2.4 2.9 2.7 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 2 2 2 2 2 2 2 2 2 2 ...
 </code></pre>
 
 <p>Accessing by key is much simpler when the key is a character string, but subsetting works even when passing a list of non-string keys.</p>
@@ -769,16 +749,8 @@ irisDdo &lt;- ddo(irisKV, update=TRUE)
 <p>Our <code>irisKV</code> data we created earlier has values that are data frames, so we can cast it as a distributed data frame like this:</p>
 
 <pre><code class="r"># create ddf object from irisKV
-irisDdf &lt;- ddf(irisKV, update=TRUE)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Getting basic &#39;ddf&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r">irisDdf
+irisDdf &lt;- ddf(irisKV, update = TRUE)
+irisDdf
 </code></pre>
 
 <pre><code>
@@ -787,7 +759,8 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 5.57 KB
+ totStorageSize | 8.12 KB
+ totObjectSize  | 8.12 KB
  nDiv           | 3
  splitSizeDistn | use splitSizeDistn(dat) to get distribution
  example        | use kvExample(dat) to get an example subset
@@ -795,7 +768,7 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 
 &#39;ddf&#39; attribute | value
 ----------------+-----------------------------------------------------------
- vars           | Sepal.Length(num), Sepal.Width(num)
+ vars           | Sepal.Length(num), Sepal.Width(num), Species(fac)
  transFn        | identity (original data is a data frame)
  nRow           | 150
  splitRowDistn  | use splitRowDistn(dat) to get distribution
@@ -806,7 +779,7 @@ In-memory data connection
 
 <h4>&quot;ddf&quot; attributes</h4>
 
-<p>The printout of <code>irisDdf</code> above shows data-frame-related attributes (which were automatically updated because we specified <code>update=TRUE</code>) in addition to the &quot;ddo&quot; attributes we saw earlier.  These include:</p>
+<p>The printout of <code>irisDdf</code> above shows data-frame-related attributes (which were automatically updated because we specified <code>update = TRUE</code>) in addition to the &quot;ddo&quot; attributes we saw earlier.  These include:</p>
 
 <ul>
 <li><code>vars</code>: a list of the variables</li>
@@ -842,13 +815,16 @@ In-memory data connection
 summary(irisDdf)
 </code></pre>
 
-<pre><code>   Sepal.Length        Sepal.Width    
- -----------------  ----------------- 
-  missing :      0   missing :      0 
-      min :    4.3       min :      2 
-      max :    7.9       max :    4.4 
-     mean :  5.843      mean :  3.057 
- [ reached getOption(&quot;max.print&quot;) -- omitted 4 rows ]
+<pre><code>   Sepal.Length        Sepal.Width          Species       
+ -----------------  -----------------  ------------------ 
+  missing :      0   missing :      0          levels : 3 
+      min :    4.3       min :      2         missing : 0 
+      max :    7.9       max :    4.4  &gt; freqTable head &lt; 
+     mean :  5.843      mean :  3.057      setosa : 50    
+  std dev : 0.8281   std dev : 0.4359  versicolor : 50    
+ skewness : 0.3118  skewness : 0.3158   virginica : 50    
+ kurtosis :  2.426  kurtosis :  3.181                     
+ -----------------  -----------------  ------------------ 
 </code></pre>
 
 <p>This prints the summary statistics.  For categorical variables, the top four values and their frequency is pritned.  To access the values themselves, we can do, for example:</p>
@@ -885,7 +861,20 @@ attr(,&quot;class&quot;)
 <pre><code class="r">summary(irisDdf)$Species
 </code></pre>
 
-<pre><code>NULL
+<pre><code>$nna
+[1] 0
+
+$freqTable
+         var Freq
+1     setosa   50
+2 versicolor   50
+3  virginica   50
+
+$complete
+[1] TRUE
+
+attr(,&quot;class&quot;)
+[1] &quot;ddfSummFactor&quot; &quot;list&quot;         
 </code></pre>
 
 <h4>Data frame-like &quot;ddf&quot; methods</h4>
@@ -901,13 +890,13 @@ attr(,&quot;class&quot;)
 <pre><code class="r">ncol(irisDdf)
 </code></pre>
 
-<pre><code>[1] 2
+<pre><code>[1] 3
 </code></pre>
 
 <pre><code class="r">names(irisDdf)
 </code></pre>
 
-<pre><code>[1] &quot;Sepal.Length&quot; &quot;Sepal.Width&quot; 
+<pre><code>[1] &quot;Sepal.Length&quot; &quot;Sepal.Width&quot;  &quot;Species&quot;     
 </code></pre>
 
 <h4>Passing a data frame to <code>ddo()</code> and <code>ddf()</code></h4>
@@ -915,13 +904,7 @@ attr(,&quot;class&quot;)
 <p>It is worth noting that it is possible to pass a single data frame to <code>ddo()</code> or <code>ddf()</code>.  The result is a single key-value pair with the data frame as the value, and &quot;&quot; as the key.  This is an option strictly for convenience and with the idea that further down the line operations will be applied that split the data up into a more useful set of key-value pairs.  Here is an example:</p>
 
 <pre><code class="r"># initialize ddf from a data frame
-irisDf &lt;- ddf(iris, update=TRUE)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Getting basic &#39;ddf&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
+irisDf &lt;- ddf(iris, update = TRUE)
 </code></pre>
 
 <p>This of course only makes sense for data small enough to fit in memory in the first place.  In the <a href="#small-memory--cpu">backends</a> section, we will discuss other backends for larger data and how data can be added to objects in these cases.</p>
@@ -935,10 +918,10 @@ irisDf &lt;- ddf(iris, update=TRUE)
 <pre><code class="r"># example of some &quot;less-structured&quot; key-value pairs
 people &lt;- list(
    list(&quot;fred&quot;, 
-      list(age=74, statesLived=c(&quot;NJ&quot;, &quot;MA&quot;, &quot;ND&quot;, &quot;TX&quot;))
+      list(age = 74, statesLived = c(&quot;NJ&quot;, &quot;MA&quot;, &quot;ND&quot;, &quot;TX&quot;))
    ),
    list(&quot;bob&quot;, 
-      list(age=42, statesLived=&quot;NJ&quot;)
+      list(age = 42, statesLived = &quot;NJ&quot;)
    )
 )
 </code></pre>
@@ -961,11 +944,7 @@ as.data.frame(people[[1]][[2]])
 <p>We see that <code>as.data.frame</code> is able to coerce the list to a data frame.  So if we want to treat <code>people</code> as a distributed data frame, we might simply provide <code>as.data.frame</code> as the transformation function:</p>
 
 <pre><code class="r"># ddf with transFn
-peopleDdf &lt;- ddf(people, transFn=as.data.frame)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Getting basic &#39;ddf&#39; attributes...
+peopleDdf &lt;- ddf(people, transFn = as.data.frame)
 </code></pre>
 
 <p><code>ddf()</code> actually tries <code>as.data.frame</code> if the default (<code>identity</code>) does not yield a data frame:</p>
@@ -974,20 +953,14 @@ peopleDdf &lt;- ddf(people, transFn=as.data.frame)
 peopleDdf &lt;- ddf(people)
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
 <pre><code>Warning: Data is not strictly a data frame, but coercible using
 as.data.frame
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddf&#39; attributes...
 </code></pre>
 
 <p>With this data representation, is what things will look like to <code>datadr</code> methods that need the data to be a data frame:</p>
 
 <pre><code class="r"># get a ddf key-value pair with transFn applied
-kvExample(peopleDdf, transform=TRUE)
+kvExample(peopleDdf, transform = TRUE)
 </code></pre>
 
 <pre><code>[[1]]
@@ -1001,7 +974,7 @@ kvExample(peopleDdf, transform=TRUE)
 4  74          TX
 </code></pre>
 
-<!-- The `transform=TRUE` argument tells `kvExample()` to apply `transFn` to the result. -->
+<!-- The `transform = TRUE` argument tells `kvExample()` to apply `transFn` to the result. -->
 
 <p>But how the data actually is stored is still the same:</p>
 
@@ -1034,22 +1007,13 @@ kvExample(peopleDdf)
 
 <h4>lapply</h4>
 
-<p>It is convenient to be able use the familiar <code>lapply()</code> approach to apply a function to each key-value pair.  This method is available for &quot;ddo&quot; and &quot;ddf&quot; objects.  The function you specify follows the same convention as described earlier (if it has one argument, it is applied to the value only, if it has two arguments, it is applied to the key and value).  A &quot;ddo&quot; object is returned.</p>
+<p>It is convenient to be able use the familiar <code>lapply()</code> approach to apply a function to each key-value pair.  An <code>lapply()</code> method, called <code>drLapply()</code> is available for &quot;ddo&quot; and &quot;ddf&quot; objects.  The function you specify follows the same convention as described earlier (if it has one argument, it is applied to the value only, if it has two arguments, it is applied to the key and value).  A &quot;ddo&quot; object is returned.</p>
 
-<p>Here is an example of using <code>lapply()</code> to the <code>irisDdf</code> data:</p>
+<p>Here is an example of using <code>drLapply()</code> to the <code>irisDdf</code> data:</p>
 
 <pre><code class="r"># get the mean Sepal.Width for each key-value pair in irisDdf
-means &lt;- lapply(irisDdf, function(x) mean(x$Sepal.Width))
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the &#39;apply&#39; method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r"># turn the resulting &quot;ddo&quot; object into a list
+means &lt;- drLapply(irisDdf, function(x) mean(x$Sepal.Width))
+# turn the resulting &quot;ddo&quot; object into a list
 as.list(means)
 </code></pre>
 
@@ -1087,16 +1051,14 @@ as.list(means)
 drFilter(irisDdf, function(v) mean(v$Sepal.Width) &lt; 3)
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
 <pre><code>
 Distributed data object of class &#39;kvMemory&#39; with attributes: 
 
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 3.85 KB
+ totStorageSize | 5.55 KB
+ totObjectSize  | 5.55 KB
  nDiv           | 2
  splitSizeDistn | [empty] call updateAttributes(dat) to get this value
  example        | use kvExample(dat) to get an example subset
@@ -1112,8 +1074,8 @@ In-memory data connection
 <p>Suppose with the iris data that we have two separate input sources, one that reports the sepal width and another that reports the sepal length for each species:</p>
 
 <pre><code class="r"># create two new &quot;ddo&quot; objects that contain sepal width and sepal length
-sw &lt;- lapply(irisDdf, function(x) x$Sepal.Width)
-sl &lt;- lapply(irisDdf, function(x) x$Sepal.Length)
+sw &lt;- drLapply(irisDdf, function(x) x$Sepal.Width)
+sl &lt;- drLapply(irisDdf, function(x) x$Sepal.Length)
 </code></pre>
 
 <p>An example subset of <code>sw</code> looks like this:</p>
@@ -1125,8 +1087,9 @@ sl &lt;- lapply(irisDdf, function(x) x$Sepal.Length)
 [1] &quot;setosa&quot;
 
 [[2]]
- [1] 3.5 3.0 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1
- [ reached getOption(&quot;max.print&quot;) -- omitted 40 entries ]
+ [1] 3.5 3.0 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 3.7 3.4 3.0 3.0 4.0 4.4 3.9
+[18] 3.5 3.8 3.8 3.4 3.7 3.6 3.3 3.4 3.0 3.4 3.5 3.4 3.2 3.1 3.4 4.1 4.2
+[35] 3.1 3.2 3.5 3.6 3.0 3.4 3.5 2.3 3.2 3.5 3.8 3.0 3.8 3.2 3.7 3.3
 </code></pre>
 
 <p>Both <code>sw</code> and <code>sl</code> have the same set of keys, and the value is a vector of either the sepal width or length.  To join them together, we can call <code>drJoin()</code>.  This function takes any number of &quot;ddo&quot; or &quot;ddf&quot; input objects, and they must be named.  It also optionally takes a <code>postTransFn</code> argument, which allows a transformation function to be applied the joined result.</p>
@@ -1135,12 +1098,7 @@ sl &lt;- lapply(irisDdf, function(x) x$Sepal.Length)
 
 <pre><code class="r"># join sw and sl by key
 joinRes &lt;- drJoin(Sepal.Width=sw, Sepal.Length=sl)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r"># look at first key-value pair
+# look at first key-value pair
 joinRes[[1]]
 </code></pre>
 
@@ -1149,12 +1107,14 @@ joinRes[[1]]
 
 [[2]]
 [[2]]$Sepal.Width
- [1] 3.5 3.0 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1
- [ reached getOption(&quot;max.print&quot;) -- omitted 40 entries ]
+ [1] 3.5 3.0 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 3.7 3.4 3.0 3.0 4.0 4.4 3.9
+[18] 3.5 3.8 3.8 3.4 3.7 3.6 3.3 3.4 3.0 3.4 3.5 3.4 3.2 3.1 3.4 4.1 4.2
+[35] 3.1 3.2 3.5 3.6 3.0 3.4 3.5 2.3 3.2 3.5 3.8 3.0 3.8 3.2 3.7 3.3
 
 [[2]]$Sepal.Length
- [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9
- [ reached getOption(&quot;max.print&quot;) -- omitted 40 entries ]
+ [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9 5.4 4.8 4.8 4.3 5.8 5.7 5.4
+[18] 5.1 5.7 5.1 5.4 5.1 4.6 5.1 4.8 5.0 5.0 5.2 5.2 4.7 4.8 5.4 5.2 5.5
+[35] 4.9 5.0 5.5 4.9 4.4 5.1 5.0 4.5 4.4 5.0 5.1 4.8 5.1 4.6 5.3 5.0
 </code></pre>
 
 <p>The resulting object, <code>joinRes</code>, has subsets with the same keys, but the values are now named lists that consist of the values from both data sets.</p>
@@ -1163,12 +1123,7 @@ joinRes[[1]]
 
 <pre><code class="r"># join sw and sl by key and turn the result into a data frame
 joinRes &lt;- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r"># look at first key-value pair
+# look at first key-value pair
 joinRes[[1]]
 </code></pre>
 
@@ -1182,7 +1137,51 @@ joinRes[[1]]
 3          3.2          4.7
 4          3.1          4.6
 5          3.6          5.0
- [ reached getOption(&quot;max.print&quot;) -- omitted 45 rows ]
+6          3.9          5.4
+7          3.4          4.6
+8          3.4          5.0
+9          2.9          4.4
+10         3.1          4.9
+11         3.7          5.4
+12         3.4          4.8
+13         3.0          4.8
+14         3.0          4.3
+15         4.0          5.8
+16         4.4          5.7
+17         3.9          5.4
+18         3.5          5.1
+19         3.8          5.7
+20         3.8          5.1
+21         3.4          5.4
+22         3.7          5.1
+23         3.6          4.6
+24         3.3          5.1
+25         3.4          4.8
+26         3.0          5.0
+27         3.4          5.0
+28         3.5          5.2
+29         3.4          5.2
+30         3.2          4.7
+31         3.1          4.8
+32         3.4          5.4
+33         4.1          5.2
+34         4.2          5.5
+35         3.1          4.9
+36         3.2          5.0
+37         3.5          5.5
+38         3.6          4.9
+39         3.0          4.4
+40         3.4          5.1
+41         3.5          5.0
+42         2.3          4.5
+43         3.2          4.4
+44         3.5          5.0
+45         3.8          5.1
+46         3.0          4.8
+47         3.8          5.1
+48         3.2          4.6
+49         3.7          5.3
+50         3.3          5.0
 </code></pre>
 
 <h4>Sample</h4>
@@ -1193,16 +1192,14 @@ joinRes[[1]]
 drSample(irisDdf, fraction = 0.25)
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
 <pre><code>
 Distributed data object of class &#39;kvMemory&#39; with attributes: 
 
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 1.75 KB
+ totStorageSize | 2.6 KB
+ totObjectSize  | 2.6 KB
  nDiv           | 1
  splitSizeDistn | [empty] call updateAttributes(dat) to get this value
  example        | use kvExample(dat) to get an example subset
@@ -1242,21 +1239,8 @@ In-memory data connection
 <p>In the previous section, we were looking at a division of the <code>iris</code> data by species.  We manually split the data into key-value pairs.  We can achieve the same result by doing conditioning variable division:</p>
 
 <pre><code class="r">irisDdf &lt;- ddf(iris)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Getting basic &#39;ddf&#39; attributes...
-</code></pre>
-
-<pre><code class="r"># divide irisDdf by species
-bySpecies &lt;- divide(irisDdf, by=&quot;Species&quot;, update=TRUE)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
+# divide irisDdf by species
+bySpecies &lt;- divide(irisDdf, by = &quot;Species&quot;, update = TRUE)
 </code></pre>
 
 <p><code>divide()</code> must take an object of class &quot;ddo&quot; or &quot;ddf&quot;, and will return an object of either &quot;ddo&quot; or &quot;ddf&quot; (&quot;ddf&quot; if the resulting values are data frames).</p>
@@ -1272,7 +1256,8 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 10.9 KB
+ totStorageSize | 10.9 KB
+ totObjectSize  | 10.9 KB
  nDiv           | 3
  splitSizeDistn | use splitSizeDistn(dat) to get distribution
  example        | use kvExample(dat) to get an example subset
@@ -1298,14 +1283,7 @@ In-memory data connection
 <p>In the above example, conditioning variable division was specified with the <code>by</code> argument.  Here, simply specifying a character string or vector of character strings (for multiple conditioning variables) will invoke conditioning variable division.  A more formal way to achieve this is by using <code>condDiv()</code> to build the division specification:</p>
 
 <pre><code class="r"># divide irisDdf by species using condDiv()
-bySpecies &lt;- divide(irisDdf, by=condDiv(&quot;Species&quot;), update=TRUE)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
+bySpecies &lt;- divide(irisDdf, by = condDiv(&quot;Species&quot;), update = TRUE)
 </code></pre>
 
 <p>Using <code>condDiv()</code> is not necessary but follows the general idea of using a function to build a division specification that is and will be followed for other division methods.</p>
@@ -1313,17 +1291,18 @@ bySpecies &lt;- divide(irisDdf, by=condDiv(&quot;Species&quot;), update=TRUE)
 <p>Here&#39;s what a subset of the divide data looks like:</p>
 
 <pre><code class="r"># look at a subset of bySpecies
-bySpecies[[1]]
+str(bySpecies[[1]])
 </code></pre>
 
-<pre><code>[[1]]
-[1] &quot;Species=setosa&quot;
-
-[[2]]
-   Sepal.Length Sepal.Width Petal.Length Petal.Width
-1           5.1         3.5          1.4         0.2
-2           4.9         3.0          1.4         0.2
- [ reached getOption(&quot;max.print&quot;) -- omitted 48 rows ]
+<pre><code>List of 2
+ $ : chr &quot;Species=setosa&quot;
+ $ :Classes &#39;divValue&#39; and &#39;data.frame&#39;:    50 obs. of  4 variables:
+  ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  ..$ Petal.Length: num [1:50] 1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+  ..$ Petal.Width : num [1:50] 0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+  ..- attr(*, &quot;split&quot;)=&#39;data.frame&#39;:    1 obs. of  1 variable:
+  .. ..$ Species: chr &quot;setosa&quot;
 </code></pre>
 
 <p>Note that the &quot;Species&quot; column is missing in the value data frame.  This is because it is the variable we split on, and therefore has the same value for the entire subset.  All conditioning variables for a given subset are stored in a &quot;splitVars&quot; attribute, and can be retrieved by <code>getSplitVars()</code>:</p>
@@ -1367,14 +1346,7 @@ getKeys(bySpecies)
 
 <pre><code class="r"># divide iris data into random subsets of 10 rows per subset
 set.seed(123)
-byRandom &lt;- divide(bySpecies, by=rrDiv(10), update=TRUE)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
+byRandom &lt;- divide(bySpecies, by = rrDiv(10), update = TRUE)
 </code></pre>
 
 <p>Note that we passed <code>bySpecies</code> as the input data.  We could just as well have specified <code>irisDdf</code> or any other division of the iris data.  The input partitioning doesn&#39;t matter.</p>
@@ -1388,7 +1360,8 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 24.46 KB
+ totStorageSize | 24.46 KB
+ totObjectSize  | 24.46 KB
  nDiv           | 15
  splitSizeDistn | use splitSizeDistn(dat) to get distribution
  example        | use kvExample(dat) to get an example subset
@@ -1417,7 +1390,7 @@ In-memory data connection
 plot(splitRowDistn(byRandom))
 </code></pre>
 
-<p><img src="figure/byrandom_row_distn.png" alt="plot of chunk byrandom_row_distn"> </p>
+<p><img src="figures/knitr/byrandom_row_distn.png" alt="plot of chunk byrandom_row_distn"> </p>
 
 <p>We see that there are not exactly 10 rows in each subset, but 10 rows on average.  The random replicate algorithm simply randomly assigns each row of the input data into the number of bins \(K\) determined by the total number of rows \(n\) in the data divided by the desired number of rows per subset.  Thus the distribution of the number of rows in each subset is like a draw from a multinomial with number of trials \(n\) and event probabilities of being put into one of \(K\) bins as \(p_i=1/K, i=1, \ldots, K\).  We are working on a scalable approach to randomly assign exactly \(n/K\) rows to each subset.</p>
 
@@ -1456,7 +1429,20 @@ plot(splitRowDistn(byRandom))
 [[10]]
 [1] &quot;rr_4&quot;
 
- [ reached getOption(&quot;max.print&quot;) -- omitted 5 entries ]
+[[11]]
+[1] &quot;rr_5&quot;
+
+[[12]]
+[1] &quot;rr_6&quot;
+
+[[13]]
+[1] &quot;rr_7&quot;
+
+[[14]]
+[1] &quot;rr_8&quot;
+
+[[15]]
+[1] &quot;rr_9&quot;
 </code></pre>
 
 <p>We will show an example of random replicate division in use later in this section.</p>
@@ -1471,25 +1457,20 @@ plot(splitRowDistn(byRandom))
 extractSepalLength &lt;- function(v)
    v[, c(&quot;Sepal.Length&quot;, &quot;Species&quot;)]
 # test it on a subset to make sure it is doing what we want
-kvApply(extractSepalLength, irisDdf[[1]])
+head(kvApply(extractSepalLength, irisDdf[[1]]))
 </code></pre>
 
-<pre><code>    Sepal.Length    Species
-1            5.1     setosa
-2            4.9     setosa
-3            4.7     setosa
-4            4.6     setosa
-5            5.0     setosa
- [ reached getOption(&quot;max.print&quot;) -- omitted 145 rows ]
+<pre><code>  Sepal.Length Species
+1          5.1  setosa
+2          4.9  setosa
+3          4.7  setosa
+4          4.6  setosa
+5          5.0  setosa
+6          5.4  setosa
 </code></pre>
 
 <pre><code class="r"># apply division with preTransFn
-bySpeciesSL &lt;- divide(irisDdf, by=&quot;Species&quot;, preTransFn=extractSepalLength)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
+bySpeciesSL &lt;- divide(irisDdf, by = &quot;Species&quot;, preTransFn = extractSepalLength)
 </code></pre>
 
 <p>It is always a good practice to test any function that operates on key-value pairs on a subset prior to running it over the entire data set, as we have done here (if you missed it, see the discussion on <a href="#key-value-pairs">applying functions to key-value pairs</a>).</p>
@@ -1534,28 +1515,26 @@ attr(,&quot;class&quot;)
 
 <pre><code class="r"># preTransFn to add a variable &quot;slCut&quot; of discretized Sepal.Length
 sepalLengthCut &lt;- function(v) {
-   v$slCut &lt;- cut(v$Sepal.Length, seq(0, 8, by=1))
+   v$slCut &lt;- cut(v$Sepal.Length, seq(0, 8, by = 1))
    v
 }
 # test it on a subset
-kvApply(sepalLengthCut, irisDdf[[1]])
+slCutTest &lt;- kvApply(sepalLengthCut, irisDdf[[1]])
+head(slCutTest)
 </code></pre>
 
-<pre><code>    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species slCut
-1            5.1         3.5          1.4         0.2     setosa (5,6]
-2            4.9         3.0          1.4         0.2     setosa (4,5]
-3            4.7         3.2          1.3         0.2     setosa (4,5]
- [ reached getOption(&quot;max.print&quot;) -- omitted 147 rows ]
+<pre><code>  Sepal.Length Sepal.Width Petal.Length Petal.Width Species slCut
+1          5.1         3.5          1.4         0.2  setosa (5,6]
+2          4.9         3.0          1.4         0.2  setosa (4,5]
+3          4.7         3.2          1.3         0.2  setosa (4,5]
+4          4.6         3.1          1.5         0.2  setosa (4,5]
+5          5.0         3.6          1.4         0.2  setosa (4,5]
+6          5.4         3.9          1.7         0.4  setosa (5,6]
 </code></pre>
 
 <pre><code class="r"># divide on Species and slCut
-bySpeciesSL &lt;- divide(irisDdf, by=c(&quot;Species&quot;, &quot;slCut&quot;), 
+bySpeciesSL &lt;- divide(irisDdf, by = c(&quot;Species&quot;, &quot;slCut&quot;), 
    preTransFn = sepalLengthCut)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <p>Since we added the variable <code>slCut</code> in our <code>preTransFn</code>, we can specify for divide to split on that variable.</p>
@@ -1598,14 +1577,7 @@ $slCut
 <p>For example, suppose we want no more than 12 rows per subset in our by-species division:</p>
 
 <pre><code class="r"># divide iris data by species, spilling to new key-value after 12 rows
-bySpeciesSpill &lt;- divide(irisDdf, by=&quot;Species&quot;, spill=12, update=TRUE)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
+bySpeciesSpill &lt;- divide(irisDdf, by = &quot;Species&quot;, spill = 12, update = TRUE)
 </code></pre>
 
 <p>Let&#39;s see what our subsets look like now:</p>
@@ -1621,7 +1593,16 @@ bySpeciesSpill[[1]]
    Sepal.Length Sepal.Width Petal.Length Petal.Width
 1           5.1         3.5          1.4         0.2
 2           4.9         3.0          1.4         0.2
- [ reached getOption(&quot;max.print&quot;) -- omitted 10 rows ]
+3           4.7         3.2          1.3         0.2
+4           4.6         3.1          1.5         0.2
+5           5.0         3.6          1.4         0.2
+6           5.4         3.9          1.7         0.4
+7           4.6         3.4          1.4         0.3
+8           5.0         3.4          1.5         0.2
+9           4.4         2.9          1.4         0.2
+10          4.9         3.1          1.5         0.1
+11          5.4         3.7          1.5         0.2
+12          4.8         3.4          1.6         0.2
 </code></pre>
 
 <pre><code class="r">bySpeciesSpill[[5]]
@@ -1642,21 +1623,12 @@ bySpeciesSpill[[1]]
 
 <p>The <code>filter</code> argument to <code>divide()</code> is an optional function that is applied to each candidate post-division key-value pair to determine whether it should be part of the resulting division.  A common case of when the <code>filter</code> argument is useful is when a division may result in a very large number of very small subsets and we are only interested in studying subsets with adequate size.</p>
 
-<p>As an example, consider the iris splitting with <code>spill=12</code> from before.  Suppose that in addition to spilling records, we also only want to keep subsets that have more than 5 records in them.</p>
+<p>As an example, consider the iris splitting with <code>spill = 12</code> from before.  Suppose that in addition to spilling records, we also only want to keep subsets that have more than 5 records in them.</p>
 
 <pre><code class="r"># divide iris data by species, spill, and filter out subsets with &lt;=5 rows
-bySpeciesFilter &lt;- divide(irisDdf, by=&quot;Species&quot;, spill=12,
-   filter=function(v) nrow(v) &gt; 5, update=TRUE)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r">bySpeciesFilter
+bySpeciesFilter &lt;- divide(irisDdf, by = &quot;Species&quot;, spill = 12,
+   filter = function(v) nrow(v) &gt; 5, update = TRUE)
+bySpeciesFilter
 </code></pre>
 
 <pre><code>
@@ -1665,7 +1637,8 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 30.79 KB
+ totStorageSize | 30.79 KB
+ totObjectSize  | 30.79 KB
  nDiv           | 12
  splitSizeDistn | use splitSizeDistn(dat) to get distribution
  example        | use kvExample(dat) to get an example subset
@@ -1731,14 +1704,7 @@ In-memory data connection
 
 <p>For example, suppose we would like to compute the mean petal width for each species in our <code>bySpecies</code> division:</p>
 
-<pre><code class="r">recombine(bySpecies, apply=function(v) mean(v$Petal.Width))
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the &#39;apply&#39; method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
+<pre><code class="r">recombine(bySpecies, apply = function(v) mean(v$Petal.Width))
 </code></pre>
 
 <pre><code>[[1]]
@@ -1769,14 +1735,7 @@ In-memory data connection
 
 <p>Suppose we would like the result to be a data frame.  We can do this with <code>combRbind()</code>:</p>
 
-<pre><code class="r">recombine(bySpecies, apply=function(v) mean(v$Petal.Width), comb=combRbind())
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the &#39;apply&#39; method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
+<pre><code class="r">recombine(bySpecies, apply = function(v) mean(v$Petal.Width), comb = combRbind())
 </code></pre>
 
 <pre><code>     Species   val
@@ -1788,16 +1747,9 @@ In-memory data connection
 <p>The <code>apply</code> function here returns a scalar which is coerced into a data frame.  Note that by default if the input data keys are characters, they will be added to the data frame.  Here is another example of using <code>combRbind()</code> with an <code>apply</code> function that returns a data frame:</p>
 
 <pre><code class="r">meanApply &lt;- function(v) {
-   data.frame(mpw=mean(v$Petal.Width), mpl=mean(v$Petal.Length))
+   data.frame(mpw = mean(v$Petal.Width), mpl = mean(v$Petal.Length))
 }
-recombine(bySpecies, apply=meanApply, comb=combRbind())
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the &#39;apply&#39; method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
+recombine(bySpecies, apply = meanApply, comb = combRbind())
 </code></pre>
 
 <pre><code>     Species   mpw   mpl
@@ -1808,14 +1760,7 @@ recombine(bySpecies, apply=meanApply, comb=combRbind())
 
 <p>Sometimes we would like the result to be a new division object, in which case we use <code>combDdo()</code> </p>
 
-<pre><code class="r">recombine(bySpecies, apply=meanApply, comb=combDdo())
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the &#39;apply&#39; method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
+<pre><code class="r">recombine(bySpecies, apply = meanApply, comb = combDdo())
 </code></pre>
 
 <pre><code>
@@ -1824,7 +1769,8 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 5.37 KB
+ totStorageSize | 5.37 KB
+ totObjectSize  | 5.37 KB
  nDiv           | 3
  splitSizeDistn | [empty] call updateAttributes(dat) to get this value
  example        | use kvExample(dat) to get an example subset
@@ -1871,16 +1817,8 @@ When the result of a recombine is large, we can store  -->
 
 <pre><code class="r">data(adult)
 # turn adult into a ddf
-adultDdf &lt;- ddf(adult, update=TRUE)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Getting basic &#39;ddf&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r">adultDdf
+adultDdf &lt;- ddf(adult, update = TRUE)
+adultDdf
 </code></pre>
 
 <pre><code>
@@ -1889,7 +1827,8 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 2.12 MB
+ totStorageSize | 2.12 MB
+ totObjectSize  | 2.12 MB
  nDiv           | 1
  splitSizeDistn | use splitSizeDistn(dat) to get distribution
  example        | use kvExample(dat) to get an example subset
@@ -1910,23 +1849,23 @@ In-memory data connection
 names(adultDdf)
 </code></pre>
 
-<pre><code> [1] &quot;age&quot;          &quot;workclass&quot;    &quot;fnlwgt&quot;       &quot;education&quot;   
- [5] &quot;educationnum&quot; &quot;marital&quot;      &quot;occupation&quot;   &quot;relationship&quot;
- [9] &quot;race&quot;         &quot;sex&quot;         
- [ reached getOption(&quot;max.print&quot;) -- omitted 6 entries ]
+<pre><code> [1] &quot;age&quot;           &quot;workclass&quot;     &quot;fnlwgt&quot;        &quot;education&quot;    
+ [5] &quot;educationnum&quot;  &quot;marital&quot;       &quot;occupation&quot;    &quot;relationship&quot; 
+ [9] &quot;race&quot;          &quot;sex&quot;           &quot;capgain&quot;       &quot;caploss&quot;      
+[13] &quot;hoursperweek&quot;  &quot;nativecountry&quot; &quot;income&quot;        &quot;incomebin&quot;    
 </code></pre>
 
 <p>We see that there are about 32K observations, and we see the various variables available.</p>
 
-<p>We&#39;ll start with some simple exploratory analysis.  One variable of interest in the data is education.  We can look at the summary statistics to see the frequency distribution of <code>education</code> (which were computed since we specified <code>update=TRUE</code> when we created <code>adultDdf</code>):</p>
+<p>We&#39;ll start with some simple exploratory analysis.  One variable of interest in the data is education.  We can look at the summary statistics to see the frequency distribution of <code>education</code> (which were computed since we specified <code>update = TRUE</code> when we created <code>adultDdf</code>):</p>
 
 <pre><code class="r">library(lattice)
 edTable &lt;- summary(adultDdf)$education$freqTable
 edTable$var &lt;- with(edTable, reorder(var, Freq, mean))
-dotplot(var ~ Freq, data=edTable)
+dotplot(var ~ Freq, data = edTable)
 </code></pre>
 
-<p><img src="figure/ed_table.png" alt="plot of chunk ed_table"> </p>
+<p><img src="figures/knitr/ed_table.png" alt="plot of chunk ed_table"> </p>
 
 <h4>Division by education group</h4>
 
@@ -1951,20 +1890,11 @@ edGroups &lt;- function(v) {
 <p>This adds a variable <code>edGroup</code> with the desired grouping of education levels.  We can now divide the data by <code>edGroup</code>.  We specify a <code>filterFn</code> to only allow data to be output that does not correspond to &quot;Preschool&quot;.</p>
 
 <pre><code class="r"># divide by edGroup and filter out &quot;Preschool&quot;
-byEdGroup &lt;- divide(adultDdf, by=&quot;edGroup&quot;, 
-   preTransFn=edGroups, 
-   filterFn=function(x) x$edGroup[1] != &quot;Preschool&quot;,
-   update=TRUE)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r">byEdGroup
+byEdGroup &lt;- divide(adultDdf, by = &quot;edGroup&quot;, 
+   preTransFn = edGroups, 
+   filterFn = function(x) x$edGroup[1] != &quot;Preschool&quot;,
+   update = TRUE)
+byEdGroup
 </code></pre>
 
 <pre><code>
@@ -1973,7 +1903,8 @@ Distributed data object of class &#39;kvMemory&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | keys are available through getKeys(dat)
- totSize        | 3.3 MB
+ totStorageSize | 3.3 MB
+ totObjectSize  | 3.3 MB
  nDiv           | 11
  splitSizeDistn | use splitSizeDistn(dat) to get distribution
  example        | use kvExample(dat) to get an example subset
@@ -1997,17 +1928,8 @@ In-memory data connection
 <p>We can look at the distribution of number of people in each education group with the following simple recombination:</p>
 
 <pre><code class="r"># tabulate number of people in each education group
-edGroupTable &lt;- recombine(byEdGroup, apply=nrow, combine=combRbind())
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the &#39;apply&#39; method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r">edGroupTable
+edGroupTable &lt;- recombine(byEdGroup, apply = nrow, combine = combRbind())
+edGroupTable
 </code></pre>
 
 <pre><code>           edGroup   val
@@ -2016,7 +1938,12 @@ edGroupTable &lt;- recombine(byEdGroup, apply=nrow, combine=combRbind())
 3        Bachelors  5355
 4        Doctorate   413
 5          HS-grad 10501
- [ reached getOption(&quot;max.print&quot;) -- omitted 6 rows ]
+6          Masters  1723
+7      Prof-school   576
+8     Some-college  7291
+9  Some-elementary   501
+10         Some-HS  2541
+11     Some-middle  1160
 </code></pre>
 
 <p>A similar dotplot as before can be made with this data.</p>
@@ -2028,20 +1955,11 @@ edGroupTable &lt;- recombine(byEdGroup, apply=nrow, combine=combRbind())
 <p>One thing we might be interested in is how different the distribution of gender is within each of the education groups.  One way to do this is to look at the ratio of men to women.  We can compute this ratio with a simple recombination:</p>
 
 <pre><code class="r"># compute male/female ratio by education group
-sexRatio &lt;- recombine(byEdGroup, apply=function(x) {
+sexRatio &lt;- recombine(byEdGroup, apply = function(x) {
    tab &lt;- table(x$sex)
-   data.frame(maleFemaleRatio=tab[&quot;Male&quot;] / tab[&quot;Female&quot;])
-}, combine=combRbind())
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the &#39;apply&#39; method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r">sexRatio
+   data.frame(maleFemaleRatio = tab[&quot;Male&quot;] / tab[&quot;Female&quot;])
+}, combine = combRbind())
+sexRatio
 </code></pre>
 
 <pre><code>           edGroup maleFemaleRatio
@@ -2050,17 +1968,22 @@ sexRatio &lt;- recombine(byEdGroup, apply=function(x) {
 3        Bachelors           2.308
 4        Doctorate           3.802
 5          HS-grad           2.098
- [ reached getOption(&quot;max.print&quot;) -- omitted 6 rows ]
+6          Masters           2.215
+7      Prof-school           5.261
+8     Some-college           1.598
+9  Some-elementary           2.854
+10         Some-HS           1.917
+11     Some-middle           2.816
 </code></pre>
 
 <p>We can visualize it with the following:</p>
 
 <pre><code class="r"># make dotplot of male/female ratio by education group
 sexRatio$edGroup &lt;- with(sexRatio, reorder(edGroup, maleFemaleRatio, mean))
-dotplot(edGroup ~ maleFemaleRatio, data=sexRatio)
+dotplot(edGroup ~ maleFemaleRatio, data = sexRatio)
 </code></pre>
 
-<p><img src="figure/vis_sexratio.png" alt="plot of chunk vis_sexratio"> </p>
+<p><img src="figures/knitr/vis_sexratio.png" alt="plot of chunk vis_sexratio"> </p>
 
 <p>We know the marginal distribution of gender is lopsided to begin with (see <code>summary(byEdGroup)$sex</code>), but we don&#39;t know if the sample we are dealing with is biased or not...  There are obviously many many directions to go with the exploratory analysis and hopefully these few examples provide a start and a feel for how to go about</p>
 
@@ -2075,7 +1998,7 @@ dotplot(edGroup ~ maleFemaleRatio, data=sexRatio)
 <p>Before doing it with <code>datadr</code>, let&#39;s first apply the method to the original data frame, so that we can compare the results.  Recall again that since this is a small data set, we can do things the &quot;usual&quot; way:</p>
 
 <pre><code class="r"># fit a glm to the original adult data frame
-rglm &lt;- glm(incomebin ~ educationnum + hoursperweek + sex, data=adult, family=binomial())
+rglm &lt;- glm(incomebin ~ educationnum + hoursperweek + sex, data = adult, family = binomial())
 summary(rglm)
 </code></pre>
 
@@ -2118,34 +2041,20 @@ length(which(tmp == adult$income)) / nrow(adult) -->
 
 <p>For the results of <code>drGLM()</code> and <code>drBLB()</code> to be valid, we need a random-replicate division of the data.  We will choose a division that provides about 500 rows in each subset and that only has the variables that we care about:</p>
 
-<pre><code class="r">rrAdult &lt;- divide(adultDdf, by=rrDiv(500), update=TRUE,
-   postTrans=function(x) 
+<pre><code class="r">rrAdult &lt;- divide(adultDdf, by = rrDiv(500), update = TRUE,
+   postTrans = function(x) 
       x[,c(&quot;incomebin&quot;, &quot;educationnum&quot;, &quot;hoursperweek&quot;, &quot;sex&quot;)])
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <!-- plot(splitRowDistn(rrAdult)) -->
 
-<p>Now, we can call <code>recombine()</code> with <code>apply=drGLM(...)</code>.  <code>drGLM()</code> has been designed to take any arguments you might pass to <code>glm()</code> and pass them on to the function being applied to each subset.  We use <code>combine=combMeanCoef()</code>, which is a function that has been designed specifically to take coefficient results from model fits applied to each subset and average them:</p>
+<p>Now, we can call <code>recombine()</code> with <code>apply = drGLM(...)</code>.  <code>drGLM()</code> has been designed to take any arguments you might pass to <code>glm()</code> and pass them on to the function being applied to each subset.  We use <code>combine = combMeanCoef()</code>, which is a function that has been designed specifically to take coefficient results from model fits applied to each subset and average them:</p>
 
 <pre><code class="r">recombine(
    data = rrAdult, 
    apply = drGLM(incomebin ~ educationnum + hoursperweek + sex, 
       family = binomial()), 
    combine = combMeanCoef())
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <pre><code> (Intercept) educationnum hoursperweek      sexMale 
@@ -2165,24 +2074,17 @@ length(which(tmp == adult$income)) / nrow(adult) -->
 <p>We apply <code>drBLB()</code> to each subset, specifying the <code>statistic</code> to be computed for each bootstrap sample, the <code>metric</code> to compute on the statistics, and the number of bootstrap replications <code>R</code>.  We also need to tell it the total number of rows in the data set.  Right now, <code>drBLB()</code> simply returns a numeric vector, which is combined using <code>combMean()</code>.</p>
 
 <pre><code class="r">recombine(rrAdult,
-   apply=drBLB(
+   apply = drBLB(
       statistic = function(x, weights)
          coef(glm(incomebin ~ educationnum + hoursperweek + sex, 
-            data=x, weights=weights, family=binomial())),
+            data = x, weights = weights, family = binomial())),
       metric = function(x)
          quantile(x, c(0.05, 0.95)),
       R = 100,
       n = nrow(rrAdult)
    ),
-   combine=combMean()
+   combine = combMean()
 )
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <pre><code>[1] -7.52217 -7.20250  0.35162  0.37333  0.03200  0.03612  1.17694  1.29583
@@ -2251,77 +2153,40 @@ length(which(tmp == adult$income)) / nrow(adult) -->
 
 <pre><code class="r"># split iris data randomly into 4 key-value pairs
 set.seed(1234)
-ind &lt;- split(sample(1:150), sample(1:4, 150, replace=TRUE))
+ind &lt;- split(sample(1:150), sample(1:4, 150, replace = TRUE))
 irisRKV &lt;- lapply(seq_along(ind), function(i) {
    list(i, iris[ind[[i]], c(&quot;Petal.Length&quot;, &quot;Species&quot;)])
 })
-irisRKV
+str(irisRKV)
 </code></pre>
 
-<pre><code>[[1]]
-[[1]][[1]]
-[1] 1
-
-[[1]][[2]]
-    Petal.Length    Species
-93           4.0 versicolor
-91           4.4 versicolor
-126          6.0  virginica
-127          4.8  virginica
-138          5.5  virginica
- [ reached getOption(&quot;max.print&quot;) -- omitted 23 rows ]
-
-
-[[2]]
-[[2]][[1]]
-[1] 2
-
-[[2]][[2]]
-    Petal.Length    Species
-18           1.4     setosa
-95           4.2 versicolor
-98           4.3 versicolor
-40           1.5     setosa
-39           1.3     setosa
- [ reached getOption(&quot;max.print&quot;) -- omitted 38 rows ]
-
-
-[[3]]
-[[3]][[1]]
-[1] 3
-
-[[3]][[2]]
-    Petal.Length    Species
-2            1.4     setosa
-73           4.9 versicolor
-76           4.4 versicolor
-114          5.0  virginica
-136          6.1  virginica
- [ reached getOption(&quot;max.print&quot;) -- omitted 38 rows ]
-
-
-[[4]]
-[[4]][[1]]
-[1] 4
-
-[[4]][[2]]
-    Petal.Length    Species
-92           4.6 versicolor
-149          5.4  virginica
-34           1.4     setosa
-25           1.9     setosa
-42           1.3     setosa
- [ reached getOption(&quot;max.print&quot;) -- omitted 31 rows ]
+<pre><code>List of 4
+ $ :List of 2
+  ..$ : int 1
+  ..$ :&#39;data.frame&#39;:    28 obs. of  2 variables:
+  .. ..$ Petal.Length: num [1:28] 4 4.4 6 4.8 5.5 1.2 5.7 3.9 4.4 5.1 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 2 2 3 3 3 1 3 2 2 3 ...
+ $ :List of 2
+  ..$ : int 2
+  ..$ :&#39;data.frame&#39;:    43 obs. of  2 variables:
+  .. ..$ Petal.Length: num [1:43] 1.4 4.2 4.3 1.5 1.3 1.6 1.7 1.5 4.4 5.6 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 2 2 1 1 1 1 1 2 3 ...
+ $ :List of 2
+  ..$ : int 3
+  ..$ :&#39;data.frame&#39;:    43 obs. of  2 variables:
+  .. ..$ Petal.Length: num [1:43] 1.4 4.9 4.4 5 6.1 1.7 5.5 5.6 1.6 4 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 2 2 3 3 1 3 3 1 2 ...
+ $ :List of 2
+  ..$ : int 4
+  ..$ :&#39;data.frame&#39;:    36 obs. of  2 variables:
+  .. ..$ Petal.Length: num [1:36] 4.6 5.4 1.4 1.9 1.3 5.1 1.5 1 4.8 4.5 ...
+  .. ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 2 3 1 1 1 3 1 1 2 2 ...
 </code></pre>
 
 <p>All inputs and outputs to MapReduce jobs in <code>datadr</code> are &quot;ddo&quot; or &quot;ddf&quot; objects.  Hence, we turn <code>irisRKV</code> into a &quot;ddf&quot; object:</p>
 
 <pre><code class="r"># represent irisRKV as a distributed data frame
 irisRddf &lt;- ddf(irisRKV)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Getting basic &#39;ddf&#39; attributes...
 </code></pre>
 
 </div>
@@ -2449,13 +2314,13 @@ maxMap &lt;- expression({
 
 <pre><code class="r"># reduce expression to compute global max petal length
 maxReduce &lt;- expression(
-   pre={
+   pre = {
       globalMax &lt;- NULL
    },
-   reduce={
+   reduce = {
       globalMax &lt;- max(c(globalMax, unlist(reduce.values)))
    },
-   post={
+   post = {
       collect(reduce.key, globalMax)
    }
 )
@@ -2468,9 +2333,6 @@ maxRes &lt;- mrExec(irisDdf,
    map = maxMap,
    reduce = maxReduce
 )
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <p>The output of <code>mrExec</code> is a &quot;ddo&quot; object.  Since we only output one key-value pair, and the key is <code>&quot;globalMax&quot;</code>, we can get the result with:</p>
@@ -2522,7 +2384,7 @@ meanMap &lt;- expression({
    tmp &lt;- by(v, v$Species, function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length), n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length), n = nrow(x)))
    })
 })
 </code></pre>
@@ -2533,16 +2395,16 @@ meanMap &lt;- expression({
 
 <pre><code class="r"># reduce to compute mean Petal.Length
 meanReduce &lt;- expression(
-   pre={
+   pre = {
       total &lt;- 0
       nn &lt;- 0
    },
-   reduce={
+   reduce = {
       tmp &lt;- do.call(rbind, reduce.values)
       total &lt;- total + sum(tmp[, &quot;tot&quot;])
       nn &lt;- nn + sum(tmp[, &quot;n&quot;])
    },
-   post={
+   post = {
       collect(reduce.key, total / nn)
    }
 )
@@ -2557,9 +2419,6 @@ meanRes &lt;- mrExec(irisRddf,
 )
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
 <p>And we can look at the result:</p>
 
 <pre><code class="r"># look at the result for virginica and versicolor
@@ -2568,18 +2427,18 @@ meanRes[c(&quot;virginica&quot;, &quot;versicolor&quot;)]
 
 <pre><code>[[1]]
 [[1]][[1]]
-[1] &quot;versicolor&quot;
+[1] &quot;virginica&quot;
 
 [[1]][[2]]
-[1] 4.26
+[1] 5.552
 
 
 [[2]]
 [[2]][[1]]
-[1] &quot;virginica&quot;
+[1] &quot;versicolor&quot;
 
 [[2]][[2]]
-[1] 5.552
+[1] 4.26
 </code></pre>
 
 <p>And now we illustrate what happened in this job:</p>
@@ -2637,7 +2496,7 @@ meanMap2 &lt;- expression({
    dlply(v, .(Species), function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length), n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length), n = nrow(x)))
    })
 })
 </code></pre>
@@ -2649,9 +2508,6 @@ meanMap2 &lt;- expression({
    map = meanMap2,
    reduce = meanReduce
 )
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <h4>The <code>params</code> argument</h4>
@@ -2667,7 +2523,7 @@ meanMap3 &lt;- expression({
    dlply(v, .(Species), function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length) * cm2mm, n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length) * cm2mm, n = nrow(x)))
    })
 })
 
@@ -2677,9 +2533,6 @@ meanRes &lt;- mrExec(irisRddf,
    reduce = meanReduce,
    params = list(cm2mm = cm2mm)
 )
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <h4>The <code>control</code> argument</h4>
@@ -2712,7 +2565,7 @@ meanRes &lt;- mrExec(irisRddf,
    dlply(v, .(Species), function(x) {
       collect(
          as.character(x$Species[1]),
-         cbind(tot=sum(x$Petal.Length) * cm2mm, n=nrow(x)))
+         cbind(tot = sum(x$Petal.Length) * cm2mm, n = nrow(x)))
    })
 })
 
@@ -2722,9 +2575,6 @@ meanRes &lt;- mrExec(irisRddf,
    reduce = meanReduce,
    params = list(cm2mm = cm2mm)
 )
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <p>We added a counter to the map expression that increments the distributed counter in group <code>&quot;counterTest&quot;</code> with the name <code>&quot;mapValuesProcessed&quot;</code>.  As map tasks running in parallel are provided new data, the length of <code>map.values</code> is added to this distributed counter.  Counters are stored as an attribute of the result, and we can look at the counters with the following:</p>
@@ -2769,7 +2619,7 @@ The output from the map function is processed before being sent to the reduce fu
 
 <p>To be able to compute quantiles, a &quot;ddf&quot; object must be supplied, and the <code>range</code> attribute of the variable of interest must have been computed using <code>updateAttributes()</code>.  The range is required because the quantile estimation algorithm takes the range of the variable and slices it into a grid of <code>nBins</code> bins.  Each observation of the variable is placed into the bin of the interval that it falls in and the bin counts are tabulated.  Then the resulting table is turned into a quantile estimate.</p>
 
-<p>The quantile estimation returns results similar to that of <code>type=1</code> in R&#39;s base <code>quantile()</code> function.</p>
+<p>The quantile estimation returns results similar to that of <code>type = 1</code> in R&#39;s base <code>quantile()</code> function.</p>
 
 <h4>Example: adult data</h4>
 
@@ -2780,22 +2630,9 @@ The output from the map function is processed before being sent to the reduce fu
 <pre><code class="r"># load adult data for quantile example
 data(adult)
 adultDdf &lt;- ddf(adult)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Getting basic &#39;ddf&#39; attributes...
-</code></pre>
-
-<pre><code class="r"># divide it by education
-# must have update=TRUE to get range of variables
-byEd &lt;- divide(adultDdf, by=&quot;education&quot;, update=TRUE)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
-* Running map/reduce to get missing attributes...
-* Getting basic &#39;ddo&#39; attributes...
+# divide it by education
+# must have update = TRUE to get range of variables
+byEd &lt;- divide(adultDdf, by = &quot;education&quot;, update = TRUE)
 </code></pre>
 
 <p>There&#39;s no reason to divide by education other than to illustrate that this method operates on arbitrary divisions of the data.</p>
@@ -2803,22 +2640,17 @@ byEd &lt;- divide(adultDdf, by=&quot;education&quot;, update=TRUE)
 <p>We can compute the quantiles with:</p>
 
 <pre><code class="r"># compute quantiles of hoursperweek
-hpwQuant &lt;- quantile(byEd, var=&quot;hoursperweek&quot;)
+hpwQuant &lt;- quantile(byEd, var = &quot;hoursperweek&quot;)
+head(hpwQuant)
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r">hpwQuant
-</code></pre>
-
-<pre><code>          fval      q
-1    0.000e+00  1.000
-2    3.071e-05  1.000
-3    6.142e-05  1.000
-4    9.213e-05  1.000
-5    1.228e-04  1.000
- [ reached getOption(&quot;max.print&quot;) -- omitted 394 rows ]
+<pre><code>       fval q
+1 0.000e+00 1
+2 3.071e-05 1
+3 6.142e-05 1
+4 9.213e-05 1
+5 1.228e-04 1
+6 1.536e-04 1
 </code></pre>
 
 <p>The result is simply a data frame of &quot;f-values&quot; <code>fval</code> and quantiles <code>q</code>.  We can plot the result with:</p>
@@ -2826,29 +2658,26 @@ hpwQuant &lt;- quantile(byEd, var=&quot;hoursperweek&quot;)
 <pre><code class="r">plot(hpwQuant)
 </code></pre>
 
-<p><img src="figure/plot_hpw_quant.png" alt="plot of chunk plot_hpw_quant"> </p>
+<p><img src="figures/knitr/plot_hpw_quant.png" alt="plot of chunk plot_hpw_quant"> </p>
 
 <p>Recall the quantiles (y-axis) are hours worked in a week.  Some people work too much.</p>
 
 <h4>Keeping all data at the tails</h4>
 
-<p>A common thing we want to do with all-data quantile estimates is retain more observations in the tails.  With large data sets and heavy tails, it can be good to know about all of the observations located in the tails.  With the <code>quantile()</code> method for &quot;ddf&quot; objects, it is possible to specify a parameter <code>tails</code>, which you can set to a positive integer.  The <code>tails</code> argument tells the quantile method how many exact observations to keep at each side of the distribution.  These exact values are appended to the quantile estimates to provide more detail at the tails of the distribution.  The default is <code>tails=100</code>.</p>
+<p>A common thing we want to do with all-data quantile estimates is retain more observations in the tails.  With large data sets and heavy tails, it can be good to know about all of the observations located in the tails.  With the <code>quantile()</code> method for &quot;ddf&quot; objects, it is possible to specify a parameter <code>tails</code>, which you can set to a positive integer.  The <code>tails</code> argument tells the quantile method how many exact observations to keep at each side of the distribution.  These exact values are appended to the quantile estimates to provide more detail at the tails of the distribution.  The default is <code>tails = 100</code>.</p>
 
 <h4>Conditioning on variables</h4>
 
 <p>It is possible to condition on a categorical variable when computing quantiles, so that you get a distribution per level of that categorical variable.  This can be useful when the data is very large for each category (otherwise, you can do this using <code>divide()</code> and <code>recombine()</code>).  Here is an example of the quantiles of hours worked per week by gender:</p>
 
 <pre><code class="r"># compute quantiles of hoursperweek by sex
-hpwBySexQuant &lt;- quantile(byEd, var=&quot;hoursperweek&quot;, by=&quot;sex&quot;)
+hpwBySexQuant &lt;- quantile(byEd, var = &quot;hoursperweek&quot;, by = &quot;sex&quot;)
+xyplot(q ~ fval, groups = group, data = hpwBySexQuant, auto.key = TRUE)
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
+<p><img src="figures/knitr/hpw_quant_bysex.png" alt="plot of chunk hpw_quant_bysex"> </p>
 
-<pre><code class="r">xyplot(q ~ fval, groups=group, data=hpwBySexQuant, auto.key=TRUE)
-</code></pre>
-
-<p><img src="figure/hpw_quant_bysex.png" alt="plot of chunk hpw_quant_bysex"> </p>
+<!-- TODO: more quantile examples and drXtabs -->
 
 </div>
 
@@ -2914,10 +2743,6 @@ hpwBySexQuant &lt;- quantile(byEd, var=&quot;hoursperweek&quot;, by=&quot;sex&qu
 irisDdf &lt;- ddf(irisKV)
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-* Getting basic &#39;ddf&#39; attributes...
-</code></pre>
-
 <h4>D&amp;R example</h4>
 
 <p>For a quick example, let&#39;s create a &quot;by species&quot; division of the data, and then do a recombination to compute the coefficients of a linear model of sepal length vs. sepal width:</p>
@@ -2927,25 +2752,13 @@ bySpecies &lt;- divide(irisDdf,
    by = &quot;Species&quot;)
 </code></pre>
 
-<pre><code>* Verifying parameters...
-* Applying division...
-* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
 <pre><code class="r"># compute lm coefficients for each division and rbind them
 recombine(bySpecies, 
    apply = function(x) {
-      coefs &lt;- coef(lm(Sepal.Length ~ Petal.Length, data=x))
-      data.frame(slope=coefs[2], intercept=coefs[1])
+      coefs &lt;- coef(lm(Sepal.Length ~ Petal.Length, data = x))
+      data.frame(slope = coefs[2], intercept = coefs[1])
    },
    combine = combRbind())
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the &#39;apply&#39; method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <pre><code>     Species  slope intercept
@@ -2961,7 +2774,7 @@ recombine(bySpecies,
 <pre><code class="r"># map returns top 5 rows according to sepal width
 top5map &lt;- expression({
    v &lt;- do.call(rbind, map.values)
-   collect(&quot;top5&quot;, v[order(v$Sepal.Width, decreasing=TRUE)[1:5],])
+   collect(&quot;top5&quot;, v[order(v$Sepal.Width, decreasing = TRUE)[1:5],])
 })
 
 # reduce collects map results and then iteratively rbinds them and returns top 5
@@ -2970,7 +2783,7 @@ top5reduce &lt;- expression(
       top5 &lt;- NULL
    }, reduce = {
       top5 &lt;- rbind(top5, do.call(rbind, reduce.values))
-      top5 &lt;- top5[order(top5$Sepal.Width, decreasing=TRUE)[1:5],]
+      top5 &lt;- top5[order(top5$Sepal.Width, decreasing = TRUE)[1:5],]
    }, post = {
       collect(reduce.key, top5)
    }
@@ -2978,12 +2791,7 @@ top5reduce &lt;- expression(
 
 # execute the job
 top5 &lt;- mrExec(bySpecies, map = top5map, reduce = top5reduce)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r"># get the result
+# get the result
 top5[[1]]
 </code></pre>
 
@@ -3014,13 +2822,10 @@ top5[[1]]
 <p>To initiate an local disk connection, we use the function <code>localDiskConn()</code>, and simply point it to a directory on our local file system.</p>
 
 <pre><code class="r"># initiate a disk connection to a new directory /private/tmp/irisKV
-irisDiskConn &lt;- localDiskConn(&quot;/private/tmp/irisKV&quot;, autoYes=TRUE)
+irisDiskConn &lt;- localDiskConn(&quot;/private/tmp/irisKV&quot;, autoYes = TRUE)
 </code></pre>
 
-<pre><code>* Loading connection attributes
-</code></pre>
-
-<p>By default, if the directory does not exist, <code>localDiskConn()</code> will ask you if you would like to create the directory.  Since we specify <code>autoYes=TRUE</code>, the directory is automatically created.</p>
+<p>By default, if the directory does not exist, <code>localDiskConn()</code> will ask you if you would like to create the directory.  Since we specify <code>autoYes = TRUE</code>, the directory is automatically created.</p>
 
 <pre><code class="r"># print the connection object
 irisDiskConn
@@ -3035,12 +2840,9 @@ irisDiskConn
 <pre><code class="r">irisDiskConn &lt;- localDiskConn(&quot;/private/tmp/irisKV&quot;)
 </code></pre>
 
-<pre><code>* Loading connection attributes
-</code></pre>
+<p>Any meta data that was there is also read in.  If you would like to connect to a directory but reset all meta data, you can call <code>localDiskConn()</code> with <code>reset = TRUE</code>.</p>
 
-<p>Any meta data that was there is also read in.  If you would like to connect to a directory but reset all meta data, you can call <code>localDiskConn()</code> with <code>reset=TRUE</code>.</p>
-
-<p>Data is stored in a local disk connection by creating a new <code>.Rdata</code> file for each key-value pair.  For data with a very large number of key-value pairs, we can end up with too many files in a directory for the file system to handle efficiently.  It is possible to specify a parameter <code>nBins</code> to <code>localDiskConn()</code>, which tells the connection that new data should be equally placed into <code>nbins</code> subdirectories.  The default is <code>nBins=0</code>.</p>
+<p>Data is stored in a local disk connection by creating a new <code>.Rdata</code> file for each key-value pair.  For data with a very large number of key-value pairs, we can end up with too many files in a directory for the file system to handle efficiently.  It is possible to specify a parameter <code>nBins</code> to <code>localDiskConn()</code>, which tells the connection that new data should be equally placed into <code>nbins</code> subdirectories.  The default is <code>nBins = 0</code>.</p>
 
 <h4>Adding data</h4>
 
@@ -3057,10 +2859,6 @@ irisDiskConn
 <pre><code class="r">addData(irisDiskConn, irisKV[1:2])
 </code></pre>
 
-<pre><code>Warning: Element 1 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
-Warning: Element 2 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
-</code></pre>
-
 <p>Here we added the first 2 key-value pairs to disk.  We can verify this by looking in the directory:</p>
 
 <pre><code class="r">list.files(irisDiskConn$loc)
@@ -3068,8 +2866,7 @@ Warning: Element 2 of input data has data already on disk of the same key.  Set 
 
 <pre><code>[1] &quot;_meta&quot;                                 
 [2] &quot;07abaecdababc84098369b43ae953523.Rdata&quot;
-[3] &quot;ac3c8cadb82078a1a3de9d0d59822e4d.Rdata&quot;
-[4] &quot;b1f1dba2f126bc3208b6b84121503757.Rdata&quot;
+[3] &quot;b1f1dba2f126bc3208b6b84121503757.Rdata&quot;
 </code></pre>
 
 <p><code>&quot;_meta&quot;</code> is a directory where the connection metadata is stored.  The two <code>.Rdata</code> files are the two key-value pairs we just added.  The file name is determined by the md5 hash of the data in the key (and we don&#39;t have to worry about this).</p>
@@ -3077,10 +2874,6 @@ Warning: Element 2 of input data has data already on disk of the same key.  Set 
 <p>We can call <code>addData()</code> as many times as we would like to continue to add data to the directory.  Let&#39;s add the final key-value pair:</p>
 
 <pre><code class="r">addData(irisDiskConn, irisKV[3])
-</code></pre>
-
-<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
-Set overwrite to TRUE or change key of input data.
 </code></pre>
 
 <p>Now we have a connection with all of the data in it.</p>
@@ -3091,10 +2884,6 @@ Set overwrite to TRUE or change key of input data.
 
 <pre><code class="r"># initialize a &quot;ddf&quot; object from irisDiskConn
 irisDdf &lt;- ddf(irisDiskConn)
-</code></pre>
-
-<pre><code>* Reading in existing &#39;ddo&#39; attributes
-* Reading in existing &#39;ddf&#39; attributes
 </code></pre>
 
 <p>As noted before, with in-memory data, we initialize &quot;ddo&quot; or &quot;ddf&quot; objects with in-memory key-value pairs.  For all other backends, we pass a connection object.  <code>irisDdf</code> is now a distributed data frame that behaves in the same way as the one we created for the in-memory case.  The data itself though is located on disk.  </p>
@@ -3110,10 +2899,11 @@ Distributed data object of class &#39;kvLocalDisk&#39; with attributes:
 
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
- keys           | keys are available through getKeys(dat)
- totSize        | 1.94 KB
+ keys           | [empty] call updateAttributes(dat) to get this value
+ totStorageSize | 1.94 KB
+ totObjectSize  | [empty] call updateAttributes(dat) to get this value
  nDiv           | 3
- splitSizeDistn | use splitSizeDistn(dat) to get distribution
+ splitSizeDistn | [empty] call updateAttributes(dat) to get this value
  example        | use kvExample(dat) to get an example subset
  bsvInfo        | [empty] no BSVs have been specified
 
@@ -3121,9 +2911,9 @@ Distributed data object of class &#39;kvLocalDisk&#39; with attributes:
 ----------------+-----------------------------------------------------------
  vars           | Sepal.Length(num), Sepal.Width(num), and 3 more
  transFn        | identity (original data is a data frame)
- nRow           | 150
- splitRowDistn  | use splitRowDistn(dat) to get distribution
- summary        | use summary(dat) to see summaries
+ nRow           | [empty] call updateAttributes(dat) to get this value
+ splitRowDistn  | [empty] call updateAttributes(dat) to get this value
+ summary        | [empty] call updateAttributes(dat) to get this value
 
 localDiskConn connection
   loc=/private/tmp/irisKV; nBins=0
@@ -3135,9 +2925,6 @@ localDiskConn connection
 irisDdf &lt;- updateAttributes(irisDdf)
 </code></pre>
 
-<pre><code>All (implemented) attributes have already been computed.
-</code></pre>
-
 <h4>D&amp;R Example</h4>
 
 <p>Let&#39;s see how the code looks for the D&amp;R example on the local disk data:</p>
@@ -3145,22 +2932,8 @@ irisDdf &lt;- updateAttributes(irisDdf)
 <pre><code class="r"># divide local disk data by species
 bySpecies &lt;- divide(irisDdf, 
    by = &quot;Species&quot;,
-   output = localDiskConn(&quot;/private/tmp/bySpecies&quot;, autoYes=TRUE),
+   output = localDiskConn(&quot;/private/tmp/bySpecies&quot;, autoYes = TRUE),
    update = TRUE)
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Loading connection attributes
-</code></pre>
-
-<pre><code>Warning: Element 1 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
-Warning: Element 1 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
-Warning: Element 1 of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data.
-</code></pre>
-
-<pre><code>* Reading in existing &#39;ddo&#39; attributes
-All (implemented) attributes have already been computed.
 </code></pre>
 
 <p>This code is the same as what we used for the in-memory data except that in <code>divide()</code>, we also need to specify an output connection.  If <code>output</code> is not provided, an attempt is made to read the data in to an in-memory connection.  Here we specify that we would like the output of the division to be stored on local disk in <code>&quot;/private/tmp/bySpecies&quot;</code>.  </p>
@@ -3173,27 +2946,15 @@ rm(bySpecies)
 bySpecies &lt;- ddf(localDiskConn(&quot;/private/tmp/bySpecies&quot;))
 </code></pre>
 
-<pre><code>* Loading connection attributes
-* Reading in existing &#39;ddo&#39; attributes
-* Reading in existing &#39;ddf&#39; attributes
-</code></pre>
-
 <p>The code for the recombination remains exactly the same:</p>
 
 <pre><code class="r"># compute lm coefficients for each division and rbind them
 recombine(bySpecies, 
    apply = function(x) {
-      coefs &lt;- coef(lm(Sepal.Length ~ Petal.Length, data=x))
-      data.frame(slope=coefs[2], intercept=coefs[1])
+      coefs &lt;- coef(lm(Sepal.Length ~ Petal.Length, data = x))
+      data.frame(slope = coefs[2], intercept = coefs[1])
    },
    combine = combRbind())
-</code></pre>
-
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the &#39;apply&#39; method on a subset...
-* Applying to all subsets...
-* Getting basic &#39;ddo&#39; attributes...
 </code></pre>
 
 <pre><code>     Species  slope intercept
@@ -3208,30 +2969,32 @@ recombine(bySpecies,
 
 <p>For example, I can access data by index or by key:</p>
 
-<pre><code class="r">bySpecies[[1]]
+<pre><code class="r">str(bySpecies[[1]])
 </code></pre>
 
-<pre><code>[[1]]
-[1] &quot;Species=setosa&quot;
-
-[[2]]
-   Sepal.Length Sepal.Width Petal.Length Petal.Width
-1           5.1         3.5          1.4         0.2
-2           4.9         3.0          1.4         0.2
- [ reached getOption(&quot;max.print&quot;) -- omitted 48 rows ]
+<pre><code>List of 2
+ $ : chr &quot;Species=setosa&quot;
+ $ :Classes &#39;divValue&#39; and &#39;data.frame&#39;:    50 obs. of  4 variables:
+  ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  ..$ Petal.Length: num [1:50] 1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+  ..$ Petal.Width : num [1:50] 0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+  ..- attr(*, &quot;split&quot;)=&#39;data.frame&#39;:    1 obs. of  1 variable:
+  .. ..$ Species: chr &quot;setosa&quot;
 </code></pre>
 
-<pre><code class="r">bySpecies[[&quot;Species=setosa&quot;]]
+<pre><code class="r">str(bySpecies[[&quot;Species=setosa&quot;]])
 </code></pre>
 
-<pre><code>[[1]]
-[1] &quot;Species=setosa&quot;
-
-[[2]]
-   Sepal.Length Sepal.Width Petal.Length Petal.Width
-1           5.1         3.5          1.4         0.2
-2           4.9         3.0          1.4         0.2
- [ reached getOption(&quot;max.print&quot;) -- omitted 48 rows ]
+<pre><code>List of 2
+ $ : chr &quot;Species=setosa&quot;
+ $ :Classes &#39;divValue&#39; and &#39;data.frame&#39;:    50 obs. of  4 variables:
+  ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  ..$ Petal.Length: num [1:50] 1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+  ..$ Petal.Width : num [1:50] 0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+  ..- attr(*, &quot;split&quot;)=&#39;data.frame&#39;:    1 obs. of  1 variable:
+  .. ..$ Species: chr &quot;setosa&quot;
 </code></pre>
 
 <p>These extractors find the appropriate key-value pair files on disk, read them in, and return them.</p>
@@ -3259,7 +3022,7 @@ recombine(bySpecies,
 top5map &lt;- expression({
    counter(&quot;map&quot;, &quot;mapTasks&quot;, 1)
    v &lt;- do.call(rbind, map.values)
-   collect(&quot;top5&quot;, v[order(v$Sepal.Width, decreasing=TRUE)[1:5],])
+   collect(&quot;top5&quot;, v[order(v$Sepal.Width, decreasing = TRUE)[1:5],])
 })
 
 # reduce collects map results and then iteratively rbinds them and returns top 5
@@ -3268,7 +3031,7 @@ top5reduce &lt;- expression(
       top5 &lt;- NULL
    }, reduce = {
       top5 &lt;- rbind(top5, do.call(rbind, reduce.values))
-      top5 &lt;- top5[order(top5$Sepal.Width, decreasing=TRUE)[1:5],]
+      top5 &lt;- top5[order(top5$Sepal.Width, decreasing = TRUE)[1:5],]
    }, post = {
       collect(reduce.key, top5)
    }
@@ -3276,12 +3039,7 @@ top5reduce &lt;- expression(
 
 # execute the job
 top5 &lt;- mrExec(bySpecies, map = top5map, reduce = top5reduce)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r"># get the result
+# get the result
 top5[[1]]
 </code></pre>
 
@@ -3337,9 +3095,6 @@ top5a &lt;- mrExec(bySpecies,
    control = localDiskControl(cluster = cl))
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
 <p>The map and reduce tasks for this job were run on a 3-core cluster.  </p>
 
 <!-- We set `map_buff_size_bytes` to 10.  This means that when sending key-value pairs to the map tasks, input key-value pairs will be bundled into batches of key-value pairs (minimum of 1 key-value pair per batch) that don't exceed 10 bytes.  Since our data is very small, this very low limit ensures that there is only one key-value pair per batch, and therefore that the 3 map tasks will all be doing work.  With the default buffer size of 10 Mb, all 3 input key-value pairs are sent to one map task, and in that case, it is pointless to run a multicore job because only one map task will be run. -->
@@ -3377,7 +3132,8 @@ counters(top5a)$map$mapTasks
 <pre><code class="r">library(Rhipe)
 </code></pre>
 
-<pre><code>------------------------------------------------
+<pre><code>Loading required package: rJava
+------------------------------------------------
 | Please call rhinit() else RHIPE will not run |
 ------------------------------------------------
 </code></pre>
@@ -3386,7 +3142,7 @@ counters(top5a)$map$mapTasks
 </code></pre>
 
 <pre><code>Rhipe: Using Rhipe.jar file
-Initializing Rhipe v0.73
+Initializing Rhipe v0.74.0
 Initializing mapfile caches
 </code></pre>
 
@@ -3397,9 +3153,9 @@ rhls(&quot;/&quot;)
 </code></pre>
 
 <pre><code>  permission   owner      group size          modtime  file
-1 drwxr-xr-x hafe647 supergroup    0 2013-09-25 14:57 /test
-2 drwxr-xr-x hafe647 supergroup    0 2013-11-09 11:49  /tmp
-3 drwxr-xr-x hafe647 supergroup    0 2013-09-13 13:12 /user
+1 drwxr-xr-x hafe647 supergroup    0 2013-12-17 01:16 /test
+2 drwxr-xr-x hafe647 supergroup    0 2014-03-17 13:41  /tmp
+3 drwxr-xr-x hafe647 supergroup    0 2014-03-11 09:42 /user
 </code></pre>
 
 <pre><code class="r"># make a directory /tmp/testfile
@@ -3410,7 +3166,7 @@ rhmkdir(&quot;/tmp/testfile&quot;)
 </code></pre>
 
 <pre><code class="r"># write a couple of key-value pairs to /tmp/testfile/1
-rhwrite(list(list(1, 1), list(2, 2)), file=&quot;/tmp/testfile/1&quot;)
+rhwrite(list(list(1, 1), list(2, 2)), file = &quot;/tmp/testfile/1&quot;)
 </code></pre>
 
 <pre><code>Wrote 0.39 KB,2 chunks, and 2 elements (100% complete)
@@ -3425,7 +3181,7 @@ a &lt;- rhread(&quot;/tmp/testfile/1&quot;)
 
 <pre><code class="r"># create an R object and save a .Rdata file containing it to HDFS
 d &lt;- rnorm(10)
-rhsave(d, file=&quot;/tmp/testfile/d.Rdata&quot;)
+rhsave(d, file = &quot;/tmp/testfile/d.Rdata&quot;)
 # load that object back into the session
 rhload(&quot;/tmp/testfile/d.Rdata&quot;)
 # list the files in /tmp/testfile
@@ -3433,8 +3189,8 @@ rhls(&quot;/tmp/testfile&quot;)
 </code></pre>
 
 <pre><code>  permission   owner      group        size          modtime
-1 drwxr-xr-x hafe647 supergroup           0 2013-11-09 11:54
-2 -rw-r--r-- hafe647 supergroup   144 bytes 2013-11-09 11:54
+1 drwxr-xr-x hafe647 supergroup           0 2014-03-17 13:47
+2 -rw-r--r-- hafe647 supergroup   142 bytes 2014-03-17 13:47
                    file
 1       /tmp/testfile/1
 2 /tmp/testfile/d.Rdata
@@ -3447,8 +3203,8 @@ rhls()
 </code></pre>
 
 <pre><code>  permission   owner      group        size          modtime
-1 drwxr-xr-x hafe647 supergroup           0 2013-11-09 11:54
-2 -rw-r--r-- hafe647 supergroup   144 bytes 2013-11-09 11:54
+1 drwxr-xr-x hafe647 supergroup           0 2014-03-17 13:47
+2 -rw-r--r-- hafe647 supergroup   142 bytes 2014-03-17 13:47
                    file
 1       /tmp/testfile/1
 2 /tmp/testfile/d.Rdata
@@ -3461,8 +3217,8 @@ rhls()
 </code></pre>
 
 <pre><code>  permission   owner      group        size          modtime
-1 drwxrwxrwx hafe647 supergroup           0 2013-11-09 11:54
-2 -rw-r--r-- hafe647 supergroup   144 bytes 2013-11-09 11:54
+1 drwxrwxrwx hafe647 supergroup           0 2014-03-17 13:47
+2 -rw-r--r-- hafe647 supergroup   142 bytes 2014-03-17 13:47
                    file
 1       /tmp/testfile/1
 2 /tmp/testfile/d.Rdata
@@ -3479,15 +3235,10 @@ rhdel(&quot;/tmp/testfile&quot;)
 <p>To initiate a connection to data on HDFS, we use the function <code>hdfsConn()</code>, and simply point it to a directory on HDFS.</p>
 
 <pre><code class="r"># initiate an HDFS connection to a new HDFS directory /tmp/irisKV
-irisHDFSconn &lt;- hdfsConn(&quot;/tmp/irisKV&quot;, autoYes=TRUE)
+irisHDFSconn &lt;- hdfsConn(&quot;/tmp/irisKV&quot;, autoYes = TRUE)
 </code></pre>
 
-<pre><code>* Attempting to create directory... success
-* Saving connection attributes
-* To initialize the data in this directory as a distributed data object or data frame, call ddo() or ddf()
-</code></pre>
-
-<p>Similar to local disk connections, by default, if the HDFS directory does not exist, <code>hdfsConn()</code> will ask you if you would like to create the directory.  Since we specify <code>autoYes=TRUE</code>, the directory is automatically created.  Also, as with local disk connections, <code>irisHDFSconn</code> is simply a &quot;kvConnection&quot; object that points to the HDFS directory which contains or will contain data, and where meta data is stored for the connection.</p>
+<p>Similar to local disk connections, by default, if the HDFS directory does not exist, <code>hdfsConn()</code> will ask you if you would like to create the directory.  Since we specify <code>autoYes = TRUE</code>, the directory is automatically created.  Also, as with local disk connections, <code>irisHDFSconn</code> is simply a &quot;kvConnection&quot; object that points to the HDFS directory which contains or will contain data, and where meta data is stored for the connection.</p>
 
 <pre><code class="r"># print the connection object
 irisHDFSconn
@@ -3522,14 +3273,7 @@ addData(irisHDFSconn, irisKV)
 
 <pre><code class="r"># initialize a &quot;ddf&quot; object from hdfsConn
 irisDdf &lt;- ddf(irisHDFSconn)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-Read 1 objects(1.56 KB) in 0.02 seconds
-* Getting basic &#39;ddf&#39; attributes...
-</code></pre>
-
-<pre><code class="r">irisDdf
+irisDdf
 </code></pre>
 
 <pre><code>
@@ -3538,7 +3282,8 @@ Distributed data object of class &#39;kvHDFS&#39; with attributes:
 &#39;ddo&#39; attribute | value
 ----------------+-----------------------------------------------------------
  keys           | [empty] call updateAttributes(dat) to get this value
- totSize        | 5.92 KB
+ totStorageSize | 5.92 KB
+ totObjectSize  | [empty] call updateAttributes(dat) to get this value
  nDiv           | [empty] call updateAttributes(dat) to get this value
  splitSizeDistn | [empty] call updateAttributes(dat) to get this value
  example        | use kvExample(dat) to get an example subset
@@ -3562,57 +3307,6 @@ hdfsConn connection
 irisDdf &lt;- updateAttributes(irisDdf)
 </code></pre>
 
-<pre><code>* Running map/reduce to get missing attributes...
-* Attempting to create directory... success
-* Saving connection attributes
-* To initialize the data in this directory as a distributed data object or data frame, call ddo() or ddf()
-Loading required package: codetools
-Saving 3 paramaters to /tmp/rhipe-temp-params-a91f11002e0d77ffbfba779b8f9ef6f6 (use rhclean to delete all temp files)
-</code></pre>
-
-<pre><code>[Sat Nov  9 11:54:20 2013] Name:2013-11-09 11:54:20 Job: job_201311091036_0023  State: PREP Duration: 0.141
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0023
-       pct numtasks pending running complete killed failed_attempts
-map      0        0       0       0        0      0               0
-reduce   0        0       0       0        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:54:25 2013] Name:2013-11-09 11:54:20 Job: job_201311091036_0023  State: RUNNING Duration: 5.205
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0023
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   0        1       0       1        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:54:30 2013] Name:2013-11-09 11:54:20 Job: job_201311091036_0023  State: RUNNING Duration: 10.242
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0023
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   0        1       0       1        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:54:35 2013] Name:2013-11-09 11:54:20 Job: job_201311091036_0023  State: RUNNING Duration: 15.275
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0023
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   1        1       0       0        1      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-Read 1 objects(0.05 KB) in 0.02 seconds
-Read 10 objects(4.43 KB) in 0.02 seconds
-</code></pre>
-
 <h4>D&amp;R Example</h4>
 
 <p>Let&#39;s see how the code looks for the D&amp;R example on the HDFS data:</p>
@@ -3624,106 +3318,12 @@ bySpecies &lt;- divide(irisDdf,
    update = TRUE)
 </code></pre>
 
-<pre><code>* Verifying parameters...
-* Applying division...
-* Attempting to create directory... success
-* Saving connection attributes
-* To initialize the data in this directory as a distributed data object or data frame, call ddo() or ddf()
-Saving 9 paramaters to /tmp/rhipe-temp-params-346ea712173ab721283a06f121fcfa29 (use rhclean to delete all temp files)
-</code></pre>
-
-<pre><code>[Sat Nov  9 11:54:41 2013] Name:2013-11-09 11:54:41 Job: job_201311091036_0024  State: PREP Duration: 0.082
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0024
-       pct numtasks pending running complete killed failed_attempts
-map      0        0       0       0        0      0               0
-reduce   0        0       0       0        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:54:46 2013] Name:2013-11-09 11:54:41 Job: job_201311091036_0024  State: RUNNING Duration: 5.126
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0024
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   0        1       0       1        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:54:51 2013] Name:2013-11-09 11:54:41 Job: job_201311091036_0024  State: RUNNING Duration: 10.168
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0024
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   0        1       0       1        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-Read 1 objects(1.85 KB) in 0.02 seconds
-* Running map/reduce to get missing attributes...
-* Attempting to create directory... success
-* Saving connection attributes
-* To initialize the data in this directory as a distributed data object or data frame, call ddo() or ddf()
-Saving 3 paramaters to /tmp/rhipe-temp-params-3ee5dfd11ee0b4672ab3a64f3eb70d0a (use rhclean to delete all temp files)
-</code></pre>
-
-<pre><code>[Sat Nov  9 11:54:57 2013] Name:2013-11-09 11:54:57 Job: job_201311091036_0025  State: PREP Duration: 0.077
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0025
-       pct numtasks pending running complete killed failed_attempts
-map      0        0       0       0        0      0               0
-reduce   0        0       0       0        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:55:02 2013] Name:2013-11-09 11:54:57 Job: job_201311091036_0025  State: RUNNING Duration: 5.136
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0025
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   0        1       0       1        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:55:07 2013] Name:2013-11-09 11:54:57 Job: job_201311091036_0025  State: RUNNING Duration: 10.185
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0025
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   0        1       0       1        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:55:12 2013] Name:2013-11-09 11:54:57 Job: job_201311091036_0025  State: RUNNING Duration: 15.214
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0025
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   1        1       0       0        1      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-Read 1 objects(0.09 KB) in 0.02 seconds
-Read 9 objects(4.22 KB) in 0.02 seconds
-</code></pre>
-
 <p>As with the local disk data, we specify an HDFS output connection, indicating to store the results of the division to <code>&quot;/tmp/bySpecies&quot;</code> on HDFS.  As with local disk data, this object and all meta data persists on disk.  </p>
 
 <p>If we were to leave our R session and want to reinstate our <code>bySpecies</code> object in a new session:</p>
 
 <pre><code class="r"># reinitialize &quot;bySpecies&quot; by connecting to its path on HDFS
 bySpecies &lt;- ddf(hdfsConn(&quot;/tmp/bySpecies&quot;))
-</code></pre>
-
-<pre><code>* Loading connection attributes
-* Reading in existing &#39;ddo&#39; attributes
-* Reading in existing &#39;ddf&#39; attributes
 </code></pre>
 
 <p>The code for the recombination remains exactly the same:</p>
@@ -3737,92 +3337,36 @@ recombine(bySpecies,
    combine = combRbind())
 </code></pre>
 
-<pre><code>* Verifying suitability of &#39;apply&#39; for division type...
-* Verifying suitability of &#39;output&#39; for specified &#39;combine&#39;...
-* Testing the division method on a subset...
-* Applying to all subsets...
-* Attempting to create directory... success
-* Saving connection attributes
-* To initialize the data in this directory as a distributed data object or data frame, call ddo() or ddf()
-Saving 2 paramaters to /tmp/rhipe-temp-params-607ff5c939910e022db0067094a168c1 (use rhclean to delete all temp files)
-</code></pre>
-
-<pre><code>[Sat Nov  9 11:55:19 2013] Name:2013-11-09 11:55:19 Job: job_201311091036_0026  State: PREP Duration: 0.07
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0026
-       pct numtasks pending running complete killed failed_attempts
-map      0        0       0       0        0      0               0
-reduce   0        0       0       0        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:55:24 2013] Name:2013-11-09 11:55:19 Job: job_201311091036_0026  State: RUNNING Duration: 5.112
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0026
-       pct numtasks pending running complete killed failed_attempts
-map      0        1       0       1        0      0               0
-reduce   0        1       1       0        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:55:30 2013] Name:2013-11-09 11:55:19 Job: job_201311091036_0026  State: RUNNING Duration: 10.302
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0026
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   0        1       0       1        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:55:35 2013] Name:2013-11-09 11:55:19 Job: job_201311091036_0026  State: RUNNING Duration: 15.332
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0026
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   1        1       0       0        1      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-Read 1 objects(0.22 KB) in 0.02 seconds
-Read 1 objects(0.22 KB) in 0.02 seconds
-</code></pre>
-
-<pre><code>     Species  slope intercept
-1     setosa 0.5423     4.213
-2  virginica 0.9957     1.060
-3 versicolor 0.8283     2.408
-</code></pre>
-
 <h4>Interacting with HDFS &quot;ddo/ddf&quot; objects</h4>
 
 <p>All interactions with HDFS &quot;ddo/ddf&quot; objects are still the same as those we have seen so far.  </p>
 
-<pre><code class="r">bySpecies[[1]]
+<pre><code class="r">str(bySpecies[[1]])
 </code></pre>
 
-<pre><code>Read 1 objects(1.85 KB) in 0.02 seconds
+<pre><code>List of 2
+ $ : chr &quot;Species=setosa&quot;
+ $ :Classes &#39;divValue&#39; and &#39;data.frame&#39;:    50 obs. of  4 variables:
+  ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  ..$ Petal.Length: num [1:50] 1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+  ..$ Petal.Width : num [1:50] 0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+  ..- attr(*, &quot;split&quot;)=&#39;data.frame&#39;:    1 obs. of  1 variable:
+  .. ..$ Species: chr &quot;setosa&quot;
 </code></pre>
 
-<pre><code>[[1]]
-[1] &quot;Species=setosa&quot;
-
-[[2]]
-   Sepal.Length Sepal.Width Petal.Length Petal.Width
-1           5.1         3.5          1.4         0.2
-2           4.9         3.0          1.4         0.2
- [ reached getOption(&quot;max.print&quot;) -- omitted 48 rows ]
+<pre><code class="r">str(bySpecies[[&quot;Species=setosa&quot;]])
 </code></pre>
 
-<pre><code class="r">bySpecies[[&quot;Species=setosa&quot;]]
-</code></pre>
-
-<pre><code>   Sepal.Length Sepal.Width Petal.Length Petal.Width
-1           5.1         3.5          1.4         0.2
-2           4.9         3.0          1.4         0.2
- [ reached getOption(&quot;max.print&quot;) -- omitted 48 rows ]
+<pre><code>List of 2
+ $ : chr &quot;Species=setosa&quot;
+ $ :Classes &#39;divValue&#39; and &#39;data.frame&#39;:    50 obs. of  4 variables:
+  ..$ Sepal.Length: num [1:50] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  ..$ Sepal.Width : num [1:50] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  ..$ Petal.Length: num [1:50] 1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+  ..$ Petal.Width : num [1:50] 0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+  ..- attr(*, &quot;split&quot;)=&#39;data.frame&#39;:    1 obs. of  1 variable:
+  .. ..$ Species: chr &quot;setosa&quot;
 </code></pre>
 
 <p>However, there are a few caveats about extractors for these objects.  If you specify a numeric index, <code>i</code>, the extractor method returns the key-value pair for the <code>i</code>th key, as available from <code>getKeys()</code>.  Thus, if you don&#39;t have your object keys read in, you can&#39;t access data in this way.  Another important thing to keep in mind is that retrieving data by key for data on HDFS requires that the data is in a Hadoop <em>mapfile</em>.  </p>
@@ -3833,11 +3377,11 @@ Read 1 objects(0.22 KB) in 0.02 seconds
 
 <p>For example, recall from our original data object, <code>irisDdf</code>, that the connection stated that the file type was a <em>sequence</em> file.  Let&#39;s try to retrieve the subset with key &quot;key1&quot;:</p>
 
-<pre><code class="r">irisDdf[[&quot;key1&quot;]]
+<pre><code class="r">str(irisDdf[[&quot;key1&quot;]])
 </code></pre>
 
-<pre><code>Error: This data must not be a valid mapfile -- cannot extract subsets by
-key.  Call makeExtractable() on this data.
+<pre><code>Error: error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;str&#39;: Error in `[.kvHDFS`(x, i) : 
+  This data must not be a valid mapfile -- cannot extract subsets by key.  Call makeExtractable() on this data.
 </code></pre>
 
 <p>We have been told to call <code>makeExtractable()</code> on this data to make subsets extractable by key.</p>
@@ -3846,50 +3390,21 @@ key.  Call makeExtractable() on this data.
 irisDdf &lt;- makeExtractable(irisDdf)
 </code></pre>
 
-<pre><code>Saving 1 paramater to /tmp/rhipe-temp-params-95f69974b843850dedb4db9da095825f (use rhclean to delete all temp files)
-</code></pre>
-
-<pre><code>[Sat Nov  9 11:55:42 2013] Name:2013-11-09 11:55:42 Job: job_201311091036_0027  State: PREP Duration: 0.07
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0027
-       pct numtasks pending running complete killed failed_attempts
-map      0        0       0       0        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:55:47 2013] Name:2013-11-09 11:55:42 Job: job_201311091036_0027  State: RUNNING Duration: 5.105
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0027
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:55:52 2013] Name:2013-11-09 11:55:42 Job: job_201311091036_0027  State: RUNNING Duration: 10.139
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0027
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-Read 1 objects(1.56 KB) in 0.02 seconds
-</code></pre>
-
 <p>Note that this requires a complete read and write of your data.  You should only worry about doing this if you absolutely need random access by key.  The only major requirement for this outside of your own purposes is for use in Trelliscope.</p>
 
 <p>Let&#39;s try to get that subset by key again:</p>
 
-<pre><code class="r">irisDdf[[&quot;key1&quot;]]
+<pre><code class="r">str(irisDdf[[&quot;key1&quot;]])
 </code></pre>
 
-<pre><code>   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
-1           5.1         3.5          1.4         0.2  setosa
-2           4.9         3.0          1.4         0.2  setosa
- [ reached getOption(&quot;max.print&quot;) -- omitted 38 rows ]
+<pre><code>List of 2
+ $ : chr &quot;key1&quot;
+ $ :&#39;data.frame&#39;:   40 obs. of  5 variables:
+  ..$ Sepal.Length: num [1:40] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+  ..$ Sepal.Width : num [1:40] 3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+  ..$ Petal.Length: num [1:40] 1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+  ..$ Petal.Width : num [1:40] 0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+  ..$ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
 </code></pre>
 
 <h4>MapReduce Example</h4>
@@ -3917,62 +3432,8 @@ top5reduce &lt;- expression(
 
 # execute the job
 top5 &lt;- mrExec(bySpecies, map = top5map, reduce = top5reduce)
-</code></pre>
-
-<pre><code>* Attempting to create directory... success
-* Saving connection attributes
-* To initialize the data in this directory as a distributed data object or data frame, call ddo() or ddf()
-Saving 1 paramater to /tmp/rhipe-temp-params-ea95f204a6636f593777a1aed7d274d6 (use rhclean to delete all temp files)
-</code></pre>
-
-<pre><code>[Sat Nov  9 11:55:58 2013] Name:2013-11-09 11:55:58 Job: job_201311091036_0028  State: PREP Duration: 0.078
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0028
-       pct numtasks pending running complete killed failed_attempts
-map      0        0       0       0        0      0               0
-reduce   0        0       0       0        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:56:03 2013] Name:2013-11-09 11:55:58 Job: job_201311091036_0028  State: RUNNING Duration: 5.136
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0028
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   0        1       0       1        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-[Sat Nov  9 11:56:08 2013] Name:2013-11-09 11:55:58 Job: job_201311091036_0028  State: RUNNING Duration: 10.201
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0028
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-reduce   0        1       0       1        0      0               0
-       killed_attempts
-map                  0
-reduce               0
-Waiting 5 seconds
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-Read 1 objects(0.43 KB) in 0.02 seconds
-Read 1 objects(0.43 KB) in 0.02 seconds
-</code></pre>
-
-<pre><code class="r"># get the result
+# get the result
 top5[[1]]
-</code></pre>
-
-<pre><code>[[1]]
-[1] &quot;top5&quot;
-
-[[2]]
-   Sepal.Length Sepal.Width Petal.Length Petal.Width
-16          5.7         4.4          1.5         0.4
-34          5.5         4.2          1.4         0.2
-33          5.2         4.1          1.5         0.1
-15          5.8         4.0          1.2         0.2
-6           5.4         3.9          1.7         0.4
 </code></pre>
 
 <h4>Working with existing data</h4>
@@ -3990,6 +3451,10 @@ write.table(adult,
 
 <p>To move the file to HDFS, we call the system <code>hadoop fs -copyFromLocal</code> command to specify that we want to move a local file to HDFS.  We will put the csv file in a directory <code>adult_raw_data</code>:</p>
 
+<!-- TODO: use rhput, etc. so no system commands -->
+
+<!-- TODO: use drRead.table -->
+
 <pre><code class="r"># create /tmp/adult_raw_data directory on HDFS
 rhmkdir(&quot;/tmp/adult_raw_data&quot;)
 </code></pre>
@@ -3998,13 +3463,13 @@ rhmkdir(&quot;/tmp/adult_raw_data&quot;)
 </code></pre>
 
 <pre><code class="r"># copy the csv from local disk to this directory on HDFS
-system(&quot;hadoop fs -copyFromLocal /tmp/adult.csv /tmp/adult_raw_data/adult.csv&quot;)
+rhput(&quot;/tmp/adult.csv&quot;, &quot;/tmp/adult_raw_data/adult.csv&quot;)
 # make sure it is there
 rhls(&quot;/tmp/adult_raw_data&quot;)
 </code></pre>
 
 <pre><code>  permission   owner      group     size          modtime
-1 -rw-r--r-- hafe647 supergroup 3.418 mb 2013-11-09 11:56
+1 -rw-r--r-- hafe647 supergroup 3.418 mb 2014-03-17 13:48
                            file
 1 /tmp/adult_raw_data/adult.csv
 </code></pre>
@@ -4013,20 +3478,9 @@ rhls(&quot;/tmp/adult_raw_data&quot;)
 
 <pre><code class="r"># connect to the csv file on HDFS
 adultConn &lt;- hdfsConn(&quot;/tmp/adult_raw_data&quot;, type=&quot;text&quot;)
-</code></pre>
-
-<pre><code>* Saving connection attributes
-* To initialize the data in this directory as a distributed data object or data frame, call ddo() or ddf()
-</code></pre>
-
-<pre><code class="r"># initialize ddo object
+# initialize ddo object
 adultDdo &lt;- ddo(adultConn)
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
-<pre><code class="r"># look at a key-value pair
+# look at a key-value pair
 adultDdo[[1]]
 </code></pre>
 
@@ -4043,9 +3497,9 @@ adultDdo[[1]]
 
 <pre><code class="r"># transformation function to turn line of csv text into data frame
 adult2df &lt;- function(line) {
-   read.table(textConnection(line), sep=&quot;,&quot;, 
-      header=FALSE,
-      col.names=c(&quot;age&quot;, &quot;workclass&quot;, &quot;fnlwgt&quot;, &quot;education&quot;, &quot;educationnum&quot;, 
+   read.table(textConnection(line), sep = &quot;,&quot;, 
+      header = FALSE,
+      col.names = c(&quot;age&quot;, &quot;workclass&quot;, &quot;fnlwgt&quot;, &quot;education&quot;, &quot;educationnum&quot;, 
          &quot;marital&quot;, &quot;occupation&quot;, &quot;relationship&quot;, &quot;race&quot;, &quot;sex&quot;, &quot;capgain&quot;, 
          &quot;caploss&quot;, &quot;hoursperweek&quot;, &quot;nativecountry&quot;, &quot;income&quot;, &quot;incomebin&quot;),
          stringsAsFactors=FALSE
@@ -4057,16 +3511,12 @@ adult2df &lt;- function(line) {
 
 <p>We can specify this transformation function as the <code>transFn</code> argument to <code>ddf()</code> to obtain a data frame representation of the data:</p>
 
-<pre><code class="r">adultDdf &lt;- ddf(adultConn, transFn=adult2df)
-</code></pre>
-
-<pre><code>* Reading in existing &#39;ddo&#39; attributes
-* Getting basic &#39;ddf&#39; attributes...
+<pre><code class="r">adultDdf &lt;- ddf(adultConn, transFn = adult2df)
 </code></pre>
 
 <p>We can see what a transformed key-value pair looks like with:</p>
 
-<pre><code class="r">kvExample(adultDdf, transform=TRUE)
+<pre><code class="r">kvExample(adultDdf, transform = TRUE)
 </code></pre>
 
 <pre><code>[[1]]
@@ -4083,116 +3533,8 @@ adult2df &lt;- function(line) {
 
 <p>Now we can use this data to, for example, carry out a division:</p>
 
-<pre><code class="r">byEd &lt;- divide(adultDdf, by=&quot;education&quot;, 
-   output=hdfsConn(&quot;/tmp/adultDdf&quot;, autoYes=TRUE))
-</code></pre>
-
-<pre><code>* Verifying parameters...
-* Applying division...
-* Loading connection attributes
-Saving 10 paramaters to /tmp/rhipe-temp-params-43f3cc37015609165428d6ddeaec830a (use rhclean to delete all temp files)
-</code></pre>
-
-<pre><code>[Sat Nov  9 11:56:20 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: PREP Duration: 0.075
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-       pct numtasks pending running complete killed failed_attempts
-map      0        0       0       0        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:56:25 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 5.1
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-       pct numtasks pending running complete killed failed_attempts
-map      0        1       0       1        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:56:30 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 10.132
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-          pct numtasks pending running complete killed failed_attempts
-map    0.1891        1       0       1        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:56:35 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 15.158
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-          pct numtasks pending running complete killed failed_attempts
-map    0.2811        1       0       1        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:56:40 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 20.179
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-          pct numtasks pending running complete killed failed_attempts
-map    0.3732        1       0       1        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:56:45 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 25.199
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-          pct numtasks pending running complete killed failed_attempts
-map    0.5598        1       0       1        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:56:50 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 30.224
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-          pct numtasks pending running complete killed failed_attempts
-map    0.6518        1       0       1        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:56:55 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 35.241
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-         pct numtasks pending running complete killed failed_attempts
-map    0.836        1       0       1        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:57:00 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 40.258
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       1        0      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:57:05 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 45.278
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:57:10 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 50.297
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-[Sat Nov  9 11:57:15 2013] Name:2013-11-09 11:56:20 Job: job_201311091036_0029  State: RUNNING Duration: 55.378
-URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311091036_0029
-       pct numtasks pending running complete killed failed_attempts
-map      1        1       0       0        1      0               0
-       killed_attempts
-map                  0
- [ reached getOption(&quot;max.print&quot;) -- omitted 1 row ]
-Waiting 5 seconds
-</code></pre>
-
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-Read 1 objects(56.14 KB) in 0.02 seconds
+<pre><code class="r">byEd &lt;- divide(adultDdf, by = &quot;education&quot;, 
+   output = hdfsConn(&quot;/tmp/adultDdf&quot;, autoYes = TRUE))
 </code></pre>
 
 <p>It is not optimal to operate on one line at a time like this, and we are working on a simple solution that will batches of lines to be read in instead of individually.</p>
@@ -4272,27 +3614,11 @@ attr(,&quot;class&quot;)
 
 <pre><code class="r"># initialize irisDdf HDFS ddf object
 irisDdf &lt;- ddo(hdfsConn(&quot;/tmp/irisKV&quot;))
-</code></pre>
-
-<pre><code>* Loading connection attributes
-* Reading in existing &#39;ddo&#39; attributes
-</code></pre>
-
-<pre><code class="r"># convert from HDFS to in-memory ddf
-irisDdfMem &lt;- convert(from=irisDdf)
-</code></pre>
-
-<pre><code>Read 3 objects(5.81 KB) in 0.02 seconds
-</code></pre>
-
-<pre><code class="r"># convert from HDFS to local disk ddf
-irisDdfDisk &lt;- convert(from=irisDdf, 
+# convert from HDFS to in-memory ddf
+irisDdfMem &lt;- convert(from = irisDdf)
+# convert from HDFS to local disk ddf
+irisDdfDisk &lt;- convert(from = irisDdf, 
    to=localDiskConn(&quot;/private/tmp/irisKVdisk&quot;, autoYes=TRUE))
-</code></pre>
-
-<pre><code>* Attempting to create directory ... ok
-* Saving connection attributes
-* Directory is empty - use addData() to add k/v pairs to this directory
 </code></pre>
 
 <p>All possible conversions (disk -&gt; HDFS, disk -&gt; memory, HDFS -&gt; disk, HDFS -&gt; memory, memory -&gt; disk, memory -&gt; HDFS) have <code>convert()</code> methods implemented.</p>
@@ -4323,14 +3649,7 @@ system(paste(&quot;head&quot;, csvFile))
 <pre><code class="r"># read chunks of the csv file in, process them, 
 # and store them in a local disk connection
 irisTextConn &lt;- localDiskConn(file.path(tempdir(), &quot;irisText&quot;), autoYes = TRUE)
-</code></pre>
-
-<pre><code>* Attempting to create directory ... ok
-* Saving connection attributes
-* Directory is empty - use addData() to add k/v pairs to this directory
-</code></pre>
-
-<pre><code class="r">a &lt;- readTextFileByChunk(input = csvFile, 
+a &lt;- readTextFileByChunk(input = csvFile, 
    output = irisTextConn, linesPerBlock = 10, 
    fn = function(x, header) {
       colNames &lt;- strsplit(header, &quot;,&quot;)[[1]]
@@ -4357,9 +3676,6 @@ Processing chunk  15
 Processing chunk  16 
 </code></pre>
 
-<pre><code>* Getting basic &#39;ddo&#39; attributes...
-</code></pre>
-
 <pre><code class="r">a[[1]]
 </code></pre>
 
@@ -4370,16 +3686,24 @@ Processing chunk  16
    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
 1           7.0         3.2          4.7         1.4 versicolor
 2           6.4         3.2          4.5         1.5 versicolor
- [ reached getOption(&quot;max.print&quot;) -- omitted 8 rows ]
+3           6.9         3.1          4.9         1.5 versicolor
+4           5.5         2.3          4.0         1.3 versicolor
+5           6.5         2.8          4.6         1.5 versicolor
+6           5.7         2.8          4.5         1.3 versicolor
+7           6.3         3.3          4.7         1.6 versicolor
+8           4.9         2.4          3.3         1.0 versicolor
+9           6.6         2.9          4.6         1.3 versicolor
+10          5.2         2.7          3.9         1.4 versicolor
 </code></pre>
 
-<h4>Reading in text files on HDFS</h4>
+<!-- 
+#### Reading in text files on HDFS
 
-<p>In many cases, reading data from text files on HDFS can be a very complex process, and you might want to write your own mapReduce jobs to handle it.  However, in some cases it can be more straightforward, and a convenience function for reading text into HDFS is available, <code>readHDFStextFile()</code>.</p>
+In many cases, reading data from text files on HDFS can be a very complex process, and you might want to write your own mapReduce jobs to handle it.  However, in some cases it can be more straightforward, and a convenience function for reading text into HDFS is available, `readHDFStextFile()`.
 
-<p>Example to come.</p>
+Example to come.
 
-<!-- TODO: example of writing your own MR job to read in data from text file -->
+TODO: example of writing your own MR job to read in data from text file -->
 
 </div>
 
@@ -4394,7 +3718,7 @@ Processing chunk  16
 <li>With large datasets, read in a small collection of subsets and test those in-memory by calling the same methods on the in-memory object.  <code>browser()</code> is your friend - you can stick this in any user-defined function or inside your map and reduce expressions, which allows you to step into the environment in which your code is operating.</li>
 </ul>
 
-<!-- Will be adding capability to set `debug=TRUE` in your `control()` method, in which case whenever there is an error, the key is returned or something along those lines so you can pull out the troublesome key-value pair and see why it was causing problems. -->
+<!-- Will be adding capability to set `debug = TRUE` in your `control()` method, in which case whenever there is an error, the key is returned or something along those lines so you can pull out the troublesome key-value pair and see why it was causing problems. -->
 
 </div>
 
@@ -4493,7 +3817,6 @@ Processing chunk  16
 </div>
 
    
-   
    <ul class="pager">
       <li><a href="#" id="previous">&larr; Previous</a></li> 
       <li><a href="#" id="next">Next &rarr;</a></li> 
@@ -4507,13 +3830,13 @@ Processing chunk  16
 <hr>
 
 <div class="footer">
-   <p>&copy; Ryan Hafen, 2013</p>
+   <p>&copy; Ryan Hafen, 2014</p>
 </div>
 </div> <!-- /container -->
 
-<script src="js/jquery.js"></script>
-<script src="bootstrap/js/bootstrap.js"></script>
-<script src="js/jquery.ba-hashchange.min.js"></script>
+<script src="assets/js/jquery.js"></script>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
+<script src="assets/js/jquery.ba-hashchange.min.js"></script>
 <script>
 function manageNextPrev() {
    $('a#next').parent().toggleClass('disabled', $('#toc.nav li.active').nextAll('li:not(.nav-header)').size() == 0);
