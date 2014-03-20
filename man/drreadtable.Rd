@@ -1,0 +1,119 @@
+\name{drRead.table}
+\alias{drRead.csv}
+\alias{drRead.csv2}
+\alias{drRead.delim}
+\alias{drRead.delim2}
+\alias{drRead.table}
+\title{Data Input}
+\usage{
+drRead.table(file, header = FALSE, sep = "",
+  quote = "\\"'", dec = ".", skip = 0, fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#", allowEscapes = FALSE, encoding = "unknown", rowsPerBlock = 50000, postTransFn = identity, output = NULL, overwrite = FALSE, params = NULL, control = NULL, ...)
+
+drRead.csv(file, header = TRUE, sep = ",",
+  quote = "\\"", dec = ".", fill = TRUE, comment.char = "", ...)
+
+drRead.csv2(file, header = TRUE, sep = ";",
+  quote = "\\"", dec = ",", fill = TRUE, comment.char = "", ...)
+
+drRead.delim(file, header = TRUE, sep = "\\t",
+  quote = "\\"", dec = ".", fill = TRUE, comment.char = "", ...)
+
+drRead.delim2(file, header = TRUE, sep = "\\t",
+  quote = "\\"", dec = ",", fill = TRUE, comment.char = "", ...)
+}
+\arguments{
+  \item{file}{input text file - can either be character
+  string pointing to a file on local disk, or an
+  \code{\link{hdfsConn}} object pointing to a text file on
+  HDFS (see \code{output} argument below)}
+
+  \item{header}{this and parameters other parameters below
+  are passed to \code{\link{read.table}} for each chunk
+  being processed - see \code{\link{read.table}} for more
+  info.  Most all have defaults or appropriate defaults are
+  set through other format-specific functions such as
+  \code{drRead.csv} and \code{drRead.delim}.}
+
+  \item{sep}{see \code{\link{read.table}} for more info}
+
+  \item{quote}{see \code{\link{read.table}} for more info}
+
+  \item{dec}{see \code{\link{read.table}} for more info}
+
+  \item{skip}{see \code{\link{read.table}} for more info}
+
+  \item{fill}{see \code{\link{read.table}} for more info}
+
+  \item{blank.lines.skip}{see \code{\link{read.table}} for
+  more info}
+
+  \item{comment.char}{see \code{\link{read.table}} for more
+  info}
+
+  \item{allowEscapes}{see \code{\link{read.table}} for more
+  info}
+
+  \item{encoding}{see \code{\link{read.table}} for more
+  info}
+
+  \item{\ldots}{see \code{\link{read.table}} for more info}
+
+  \item{rowsPerBlock}{how many rows of the input file
+  should make up a block (key-value pair) of output?}
+
+  \item{postTransFn}{a function to be applied after a block
+  is read in to provide any additional processingn before
+  the block is stored}
+
+  \item{output}{a "kvConnection" object indicating where
+  the output data should reside.  Must be a
+  \code{\link{localDiskConn}} object if input is a text
+  file on local disk, or a \code{\link{hdfsConn}} object if
+  input is a text file on HDFS.}
+
+  \item{overwrite}{logical; should existing output location
+  be overwritten? (also can specify \code{overwrite =
+  "backup"} to move the existing output to _bak)}
+
+  \item{params}{a named list of parameters external to the
+  input data that are needed in \code{postTransFn}}
+
+  \item{control}{parameters specifying how the backend
+  should handle things (most-likely parameters to
+  \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
+  and \code{\link{localDiskControl}}}
+}
+\value{
+an object of class "ddf"
+}
+\description{
+Reads a text file in table format and creates a distributed
+data frame from it, with cases corresponding to lines and
+variables to fields in the file.
+}
+\note{
+For local disk, the file is actually read in sequentially
+instead of in parallel.  This is because of possible
+performance issues when trying to read from the same disk
+in parallel.
+
+Note that if \code{skip} is positive and/or if
+\code{header} is \code{TRUE}, it will first read these in
+as they only occur once in the data, and we then check for
+these lines in each block and remove those lines if they
+appear.
+
+Also note that if you supply \code{"Factor"} column
+classes, they will be converted to character.
+}
+\examples{
+\dontrun{   csvFile <- file.path(tempdir(), "iris.csv")
+   write.csv(iris, file = csvFile, row.names = FALSE, quote = FALSE)
+   irisTextConn <- localDiskConn(file.path(tempdir(), "irisText2"), autoYes = TRUE)
+   a <- drRead.csv(csvFile, output = irisTextConn, rowsPerBlock = 10)
+}
+}
+\author{
+Ryan Hafen
+}
+
