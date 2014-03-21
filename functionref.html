@@ -7,64 +7,25 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Le styles -->
     <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/custom.css" rel="stylesheet">
     <link href="assets/css/pygment.css" rel="stylesheet">
-    <link href='css/highlight.css' rel='stylesheet'>
-    <style type="text/css">
-      body {
-        padding-top: 20px;
-        padding-bottom: 40px;
-      }
+    <!-- font-awesome -->
+    <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
-      /* Custom container */
-      .container-narrow {
-        margin: 0 auto;
-        max-width: 900px;
-      }
-      .container-narrow > hr {
-        margin: 15px 0 20px 0;
-      }
-      
-      #next {
-         font-size: 14px;
-      }
+    <link href='assets/css/highlight.css' rel='stylesheet'>
 
-      #previous {
-         font-size: 14px;
-      }
-
-      .fref_title {
-         border-bottom:1px solid #EEE;
-      }
-
-      .myHeader {
-         font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif; font-weight: 400;
-         letter-spacing: -1px;
-         font-size: 28px;
-         line-height: 40px;
-         color: #d14;
-         text-shadow: 8px 2px 6 rgba(55, 55, 55, 0.5);
-      }
-
-      .unselectable {
-         -moz-user-select: none;
-         -webkit-user-select: none;
-         -ms-user-select: none;
-      }
-
-/*      #main-content {
-         margin-top: -15px;
-      }
-*/
-    </style>
     
-    <link href="assets/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="js/html5shiv.js"></script>
     <![endif]-->
+    
+    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    <!-- <link href='http://fonts.googleapis.com/css?family=Lustria' rel='stylesheet' type='text/css'> -->
+    <link href='http://fonts.googleapis.com/css?family=Bitter' rel='stylesheet' type='text/css'>
+    
 
     <!-- Fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
@@ -80,7 +41,7 @@
 
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
-           <li class=''><a href='index.html'>Docs</a></li><li class='active'><a href='functionref.html'>Function Ref</a></li><li><a href='https://github.com/hafen/datadr'>Github</a></li>
+           <li class=''><a href='index.html'>Docs</a></li><li class='active'><a href='functionref.html'>Function Ref</a></li><li><a href='https://github.com/hafen/datadr'>Github <i class='fa fa-github'></i></a></li>
         </ul>
         <p class="myHeader">datadr  R function reference</p>
       </div>
@@ -90,7 +51,7 @@
 <div class="container-fluid">
    <div class="row-fluid">
    
-   <div class="span3 well">
+   <div class="col-md-3 well">
    <ul class = "nav nav-list" id="toc">
    <li class='nav-header'>Contents</li> <li class="active">
    <a target="_self" class="nav-not-header" href="#packagemain">Package Info</a>
@@ -174,6 +135,9 @@
    <a target="_self" class="nav-not-header" href="#drlapply">drLapply</a>
 </li>
 <li class="">
+   <a target="_self" class="nav-not-header" href="#drreadtable">drRead.table</a>
+</li>
+<li class="">
    <a target="_self" class="nav-not-header" href="#drsample">drSample</a>
 </li>
 <li class="">
@@ -248,7 +212,7 @@
    </ul>
    </div>
 
-<div class="span9 tab-content" id="main-content">
+<div class="col-md-9 tab-content" id="main-content">
 
 <!-- packagemain -->   
 <div class="tab-pane active" id="packagemain">
@@ -256,7 +220,7 @@
 <h3>Divide and Recombine for Large, Complex Data</h3>
 
 <p><strong>Author:</strong> Ryan Hafen</p>
-<p><strong>Version:</strong> 0.6.6</p>
+<p><strong>Version:</strong> 0.6.7</p>
 <p><strong>Date:</strong> 2014-03-15</p>
 <p><strong>License:</strong> BSD_3_clause + file LICENSE</p>
 
@@ -287,10 +251,10 @@ testthat</p>
 
 <h3 class="fref_title">Add Key-Value Pairs to a Data Connection</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>addData(conn, data, overwrite = FALSE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>conn</dt>
   <dd>a kvConnection object</dd>
@@ -304,12 +268,12 @@ testthat</p>
   work for HDFS connections)</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Add key-value pairs to a data connection</p>
 
 
-  <h5>Note</h5>
+  <h4>Note</h4>
 
   <p>This is generally not recommended for HDFS as it writes a
 new file each time it is called, and can result in more
@@ -318,13 +282,13 @@ individual files than Hadoop likes to deal with.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#removedata'>removeData</a></code>, <code><a href='#localdiskconn'>localDiskConn</a></code>,
 <code><a href='#hdfsconn'>hdfsConn</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -336,10 +300,10 @@ Ryan Hafen
 
 <h3 class="fref_title">"Census Income" Dataset</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>adult</pre>
 
-  <h5>Format</h5>
+  <h4>Format</h4>
 
   <p>(From UCI machine learning repository)</p>
 
@@ -378,16 +342,16 @@ Ryan Hafen
 </ul></p>
 
 
-  <h5>&quot;Census Income&quot; Dataset</h5>
+  <h4>&quot;Census Income&quot; Dataset</h4>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>"Census Income" dataset from UCI machine learning
 repository</p>
 
 
-  <h5>References</h5>
+  <h4>References</h4>
 
   <p>Bache, K. & Lichman, M. (2013). UCI Machine Learning
 Repository [<a href = 'http://archive.ics.uci.edu/ml'>http://archive.ics.uci.edu/ml</a>]. Irvine,
@@ -404,11 +368,11 @@ Computer Science.</p>
 
 <h3 class="fref_title">Turn 'ddf' Object into Data Frame</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>as.data.frame(x, row.names = NULL, optional = FALSE, keys = TRUE, splitVars = TRUE, 
   bsvs = FALSE, ...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a 'ddf' object</dd>
@@ -431,7 +395,7 @@ Computer Science.</p>
   as.data.frame</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Rbind all the rows of a 'ddf' object into a single data
 frame</p>
@@ -446,10 +410,10 @@ frame</p>
 
 <h3 class="fref_title">Turn 'ddo' / 'ddf' Object into a list</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>as.list(x, ...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a 'ddo' / 'ddf' object</dd>
@@ -458,7 +422,7 @@ frame</p>
   <code>as.list</code></dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Turn 'ddo' / 'ddf' Object into a list</p>
 
@@ -472,10 +436,10 @@ frame</p>
 
 <h3 class="fref_title">Construct Between Subset Variable (BSV)</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>bsv(val = NULL, desc = "")</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>val</dt>
   <dd>a scalar character, numeric, or date</dd>
@@ -483,12 +447,12 @@ frame</p>
   <dd>a character string describing the BSV</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Construct between subset variable (BSV)</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>Should be called inside the <code>bsvFn</code> argument to
 <code>divide</code> used for constructing a BSV list for each
@@ -497,13 +461,13 @@ subset of a division.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#getbsvs'>getBsvs</a></code>,
 <code><a href='ddo-ddf-#accessors'>bsvInfo</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -515,10 +479,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Character File Hash Function</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>charFileHash(keys, conn)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>keys</dt>
   <dd>keys to be hashed</dd>
@@ -526,7 +490,7 @@ Ryan Hafen
   <dd>a "localDiskConn" object</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Function to be used to specify the file where key-value
 pairs get stored for local disk connections, useful when
@@ -534,7 +498,7 @@ keys are scalar strings.  Should be passed as the argument
 <code>fileHashFn</code> to <code><a href='#localdiskconn'>localDiskConn</a></code>.</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>You shouldn't need to call this directly other than to
 experiment with what the output looks like or to get ideas
@@ -543,12 +507,12 @@ on how to write your own custom hash.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code>localDiskConn</code>, <code><a href='#digestfilehash'>digestFileHash</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -560,22 +524,22 @@ Ryan Hafen
 
 <h3 class="fref_title">"Collect" Recombination</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>combCollect(...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>...</dt>
   <dd>...</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>"Collect" recombination - simply collect the results into a
 local list of key-value pairs</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This is an experimental prototype.  It is to be passed as
 the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.</p>
@@ -583,14 +547,14 @@ the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></c
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
 <code><a href='#combddo'>combDdo</a></code>, <code><a href='#combmeancoef'>combMeanCoef</a></code>,
 <code><a href='#combrbind'>combRbind</a></code>, <code><a href='#combmean'>combMean</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -602,22 +566,22 @@ Ryan Hafen
 
 <h3 class="fref_title">"DDO" Recombination</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>combDdo(...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>...</dt>
   <dd>...</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>"DDO" recombination - simply collect the results into a
 "ddo" object</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This is an experimental prototype.  It is to be passed as
 the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.</p>
@@ -625,14 +589,14 @@ the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></c
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
 <code><a href='#combcollect'>combCollect</a></code>, <code><a href='#combmeancoef'>combMeanCoef</a></code>,
 <code><a href='#combrbind'>combRbind</a></code>, <code><a href='#combmean'>combMean</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -644,21 +608,21 @@ Ryan Hafen
 
 <h3 class="fref_title">Mean Recombination</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>combMean(...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>...</dt>
   <dd>...</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Mean recombination</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This is an experimental prototype.  It is to be passed as
 the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.</p>
@@ -666,14 +630,14 @@ the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></c
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
 <code><a href='#combcollect'>combCollect</a></code>, <code><a href='#combddo'>combDdo</a></code>,
 <code><a href='#combrbind'>combRbind</a></code>, <code><a href='#combmeancoef'>combMeanCoef</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -685,21 +649,21 @@ Ryan Hafen
 
 <h3 class="fref_title">Mean Coefficient Recombination</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>combMeanCoef(...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>...</dt>
   <dd>...</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Mean coefficient recombination</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This is an experimental prototype.  It is to be passed as
 the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.  It
@@ -710,7 +674,7 @@ subset.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
 <code><a href='#rrdiv'>rrDiv</a></code>, <code><a href='#combcollect'>combCollect</a></code>,
@@ -718,7 +682,7 @@ subset.</p>
 <code><a href='#combmean'>combMean</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -730,21 +694,21 @@ Ryan Hafen
 
 <h3 class="fref_title">"rbind" Recombination</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>combRbind(...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>...</dt>
   <dd>...</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>"rbind" recombination</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This is an experimental prototype.  It is to be passed as
 the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></code>.</p>
@@ -752,14 +716,14 @@ the argument <code>combine</code> to <code><a href='#recombine'>recombine</a></c
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
 <code><a href='#combddo'>combDdo</a></code>, <code><a href='#combcollect'>combCollect</a></code>,
 <code><a href='#combmeancoef'>combMeanCoef</a></code>, <code><a href='#combmean'>combMean</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -771,10 +735,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Conditioning Variable Division</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>condDiv(vars)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>vars</dt>
   <dd>a character string or vector of character
@@ -782,26 +746,26 @@ Ryan Hafen
   which to divide</dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>a list to be used for the "by" argument to
 <code><a href='#divide'>divide</a></code></p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Specify conditioning variable division parameters for data
 division</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>Currently each unique combination of values of <code>vars</code>
 constitutes a subset.  In the future, specifying shingles
 for numeric conditioning variables will be implemented.</p>
 
 
-  <h5>References</h5>
+  <h4>References</h4>
 
   <p><ul>
 <li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
@@ -817,13 +781,13 @@ recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#getsplitvars'>getSplitVars</a></code>,
 <code><a href='#getsplitvar'>getSplitVar</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -835,10 +799,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Convert 'ddo' / 'ddf' Objects</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>convert(from, to)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>from</dt>
   <dd>a 'ddo' or 'ddf' object</dd>
@@ -848,7 +812,7 @@ Ryan Hafen
   <code>NULL</code> if an in-memory 'ddo' / 'ddf' is desired</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Convert 'ddo' / 'ddf' objects between different storage
 backends</p>
@@ -863,7 +827,7 @@ backends</p>
 
 <h3 class="fref_title">'ddf' accessors</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>nrow(x)
 
 NROW(x)
@@ -880,13 +844,13 @@ ncol(x)
 
 NCOL(x)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a 'ddf' object</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>'ddf' accessors</p>
 
@@ -909,10 +873,10 @@ NCOL(x)</pre>
 <h3 class="fref_title">Instantiate a Distributed Data Frame ('ddf')
 Instantiate a distributed data frame ('ddf')</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>ddf(conn, transFn = identity, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>conn</dt>
   <dd>an object pointing to where data is or will
@@ -945,7 +909,7 @@ Instantiate a distributed data frame ('ddf')</h3>
   being done</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Instantiate a Distributed Data Frame ('ddf') Instantiate a
 distributed data frame ('ddf')</p>
@@ -960,7 +924,7 @@ distributed data frame ('ddf')</p>
 
 <h3 class="fref_title">Accessor Functions</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>kvExample(x, transform = FALSE)
 
 bsvInfo(x)
@@ -981,7 +945,7 @@ names(x)
 
 length(x)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a 'ddf'/'ddo' object</dd>
@@ -994,7 +958,7 @@ length(x)</pre>
   <dd>additional arguments</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Accessor functions for attributes of ddo/ddf objects.
 Methods also include <code>nrow</code> and <code>ncol</code> for ddf
@@ -1013,10 +977,10 @@ objects.</p>
 <h3 class="fref_title">Instantiate a Distributed Data Object ('ddo')
 Instantiate a distributed data object ('ddo')</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>ddo(conn, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>conn</dt>
   <dd>an object pointing to where data is or will
@@ -1044,7 +1008,7 @@ Instantiate a distributed data object ('ddo')</h3>
   being done</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Instantiate a Distributed Data Object ('ddo') Instantiate a
 distributed data object ('ddo')</p>
@@ -1059,7 +1023,7 @@ distributed data object ('ddo')</p>
 
 <h3 class="fref_title">Managing attributes of 'ddo' or 'ddf' objects</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>setAttributes(obj, ...)
 
 setAttributes(obj, attrs)
@@ -1074,7 +1038,7 @@ hasAttributes(obj, ...)
 
 hasAttributes(obj, attrNames)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>attrs</dt>
   <dd>a named list of attributes to set</dd>
@@ -1089,7 +1053,7 @@ hasAttributes(obj, attrNames)</pre>
   get</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Managing attributes of 'ddo' or 'ddf' objects</p>
 
@@ -1103,10 +1067,10 @@ hasAttributes(obj, attrNames)</pre>
 
 <h3 class="fref_title">Digest File Hash Function</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>digestFileHash(keys, conn)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>keys</dt>
   <dd>keys to be hashed</dd>
@@ -1114,7 +1078,7 @@ hasAttributes(obj, attrNames)</pre>
   <dd>a "localDiskConn" object</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Function to be used to specify the file where key-value
 pairs get stored for local disk connections, useful when
@@ -1124,7 +1088,7 @@ argument for <code>fileHashFn</code> in
 <code><a href='#localdiskconn'>localDiskConn</a></code>.</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>You shouldn't need to call this directly other than to
 experiment with what the output looks like or to get ideas
@@ -1133,12 +1097,12 @@ on how to write your own custom hash.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code>localDiskConn</code>, <code><a href='#charfilehash'>charFileHash</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1150,12 +1114,12 @@ Ryan Hafen
 
 <h3 class="fref_title">Divide a Distributed Data Object</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL, output = NULL, 
   overwrite = FALSE, preTransFn = NULL, postTransFn = NULL, params = NULL, control = NULL, 
   update = FALSE, verbose = TRUE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>data</dt>
   <dd>an object of class "ddf" or "ddo" - in the
@@ -1212,19 +1176,19 @@ Ryan Hafen
   being done</dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>an object of class "ddf" if the resulting subsets are data
 frames.  Otherwise, an object of class "ddo".</p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Divide a ddo/ddf object into subsets based on different
 criteria</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>The division methods this function will support include
 conditioning variable division for factors (implemented --
@@ -1237,7 +1201,7 @@ this can be specified by e.g.  <code>condDiv(c("var1",
 "var2"))</code>.</p>
 
 
-  <h5>References</h5>
+  <h4>References</h4>
 
   <p><ul>
 <li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
@@ -1253,14 +1217,14 @@ recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#recombine'>recombine</a></code>, <code><a href='#ddo'>ddo</a></code>,
 <code><a href='#ddf'>ddf</a></code>, <code><a href='#conddiv'>condDiv</a></code>,
 <code><a href='#rrdiv'>rrDiv</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1272,12 +1236,12 @@ Ryan Hafen
 
 <h3 class="fref_title">Functions used in divide()</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>dfSplit(curDF, by, seed)
 
 addSplitAttrs(curSplit, bsvFn, by, postTransFn = NULL)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>curDF,seed</dt>
   <dd>arguments</dd>
@@ -1285,7 +1249,7 @@ addSplitAttrs(curSplit, bsvFn, by, postTransFn = NULL)</pre>
   <dd>arguments</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Functions used in divide()</p>
 
@@ -1299,10 +1263,10 @@ addSplitAttrs(curSplit, bsvFn, by, postTransFn = NULL)</pre>
 
 <h3 class="fref_title">Bag of Little Bootstraps Recombination 'apply' Method</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>drBLB(statistic, metric, R, n)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>statistic</dt>
   <dd>a function to apply to each subset
@@ -1320,12 +1284,12 @@ addSplitAttrs(curSplit, bsvFn, by, postTransFn = NULL)</pre>
   <dd>the total number of observations in the data</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Bag of little bootstraps recombination 'apply' method</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>It is necessary to specify <code>weights</code> as a parameter to
 the <code>statistic</code> function because for BLB to work
@@ -1336,19 +1300,19 @@ reference for details).  Therefore, only methods with a
 weights option can legitimately be used here.</p>
 
 
-  <h5>References</h5>
+  <h4>References</h4>
 
   <p>BLB paper</p>
 
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1360,10 +1324,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Filter a 'ddo' or 'ddf' Object</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL, control = NULL)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>an object of class 'ddo' or 'ddf'</dd>
@@ -1394,24 +1358,24 @@ Ryan Hafen
   and <code><a href='#localdiskcontrol'>localDiskControl</a></code></dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>a 'ddo' or 'ddf' object</p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Filter a 'ddo' or 'ddf' object</p>
 
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#drjoin'>drJoin</a></code>, <code><a href='#drlapply'>drLapply</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1423,22 +1387,22 @@ Ryan Hafen
 
 <h3 class="fref_title">GLM Recombination 'apply' Method</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>drGLM(...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>...</dt>
   <dd>arguments you would pass to the
   <code><a href='http://www.inside-r.org/r-doc/stats/glm'>glm</a></code> function</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>GLM recombination 'apply' method</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This provides a function to be called for each subset in a
 recombination MapReduce job that applies R's glm method and
@@ -1448,13 +1412,13 @@ argument <code>method</code> to <code><a href='#recombine'>recombine</a></code>.
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
 <code><a href='#rrdiv'>rrDiv</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1466,11 +1430,11 @@ Ryan Hafen
 
 <h3 class="fref_title">Join Two Data Sources by Key</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>drJoin(..., output = NULL, overwrite = FALSE, postTransFn = NULL, params = NULL, 
   control = NULL)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>...</dt>
   <dd>named lists of input objects - assumed that
@@ -1501,7 +1465,7 @@ Ryan Hafen
   and <code><a href='#localdiskcontrol'>localDiskControl</a></code></dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>a 'ddo' object stored in the <code>output</code> connection,
 where the values are named lists with names according to
@@ -1509,19 +1473,19 @@ the names given to the input data objects, and values are
 the corresponding data</p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Join two data sources by key</p>
 
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#drfilter'>drFilter</a></code>, <code><a href='#drlapply'>drLapply</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1533,11 +1497,11 @@ Ryan Hafen
 
 <h3 class="fref_title">Apply a function to all key/value pairs of a ddo/ddf object</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>drLapply(data, apply = NULL, combine = combDdo(), output = NULL, overwrite = FALSE, 
   params = NULL, control = NULL, verbose = TRUE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>data</dt>
   <dd>an object of class "ddo" of "ddf"</dd>
@@ -1570,12 +1534,12 @@ Ryan Hafen
   being done</dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>depends on <code>combine</code></p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Apply a function to all key/value pairs of a ddo/ddf object
 and get a new ddo object back, unless a different
@@ -1584,14 +1548,140 @@ and get a new ddo object back, unless a different
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#recombine'>recombine</a></code>, <code><a href='#drfilter'>drFilter</a></code>,
 <code><a href='#drjoin'>drJoin</a></code>, <code><a href='#combddo'>combDdo</a></code>,
 <code><a href='#combrbind'>combRbind</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
+
+Ryan Hafen
+
+</div>
+
+
+<!-- drRead.table -->   
+<div class="tab-pane" id="drreadtable">
+
+<h3 class="fref_title">Data Input</h3>
+
+<h4>Usage</h4>
+<pre>drRead.table(file, header = FALSE, sep = "", quote = "\"'", dec = ".", skip = 0, 
+  fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#", allowEscapes = FALSE, 
+  encoding = "unknown", rowsPerBlock = 50000, postTransFn = identity, output = NULL, 
+  overwrite = FALSE, params = NULL, control = NULL, ...)
+
+drRead.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, 
+  comment.char = "", ...)
+
+drRead.csv2(file, header = TRUE, sep = ";", quote = "\"", dec = ",", fill = TRUE, 
+  comment.char = "", ...)
+
+drRead.delim(file, header = TRUE, sep = "\t", quote = "\"", dec = ".", fill = TRUE, 
+  comment.char = "", ...)
+
+drRead.delim2(file, header = TRUE, sep = "\t", quote = "\"", dec = ",", fill = TRUE, 
+  comment.char = "", ...)</pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>file</dt>
+  <dd>input text file - can either be character
+  string pointing to a file on local disk, or an
+  <code><a href='#hdfsconn'>hdfsConn</a></code> object pointing to a text file on
+  HDFS (see <code>output</code> argument below)</dd>
+  <dt>header</dt>
+  <dd>this and parameters other parameters below
+  are passed to <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for each chunk
+  being processed - see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more
+  info.  Most all have defaults or appropriate defaults are
+  set through other format-specific functions such as
+  <code>drRead.csv</code> and <code>drRead.delim</code>.</dd>
+  <dt>sep</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more info</dd>
+  <dt>quote</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more info</dd>
+  <dt>dec</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more info</dd>
+  <dt>skip</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more info</dd>
+  <dt>fill</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more info</dd>
+  <dt>blank.lines.skip</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for
+  more info</dd>
+  <dt>comment.char</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more
+  info</dd>
+  <dt>allowEscapes</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more
+  info</dd>
+  <dt>encoding</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more
+  info</dd>
+  <dt>...</dt>
+  <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more info</dd>
+  <dt>rowsPerBlock</dt>
+  <dd>how many rows of the input file
+  should make up a block (key-value pair) of output?</dd>
+  <dt>postTransFn</dt>
+  <dd>a function to be applied after a block
+  is read in to provide any additional processingn before
+  the block is stored</dd>
+  <dt>output</dt>
+  <dd>a "kvConnection" object indicating where
+  the output data should reside.  Must be a
+  <code><a href='#localdiskconn'>localDiskConn</a></code> object if input is a text
+  file on local disk, or a <code><a href='#hdfsconn'>hdfsConn</a></code> object if
+  input is a text file on HDFS.</dd>
+  <dt>overwrite</dt>
+  <dd>logical; should existing output location
+  be overwritten? (also can specify <code>overwrite =
+  "backup"</code> to move the existing output to _bak)</dd>
+  <dt>params</dt>
+  <dd>a named list of parameters external to the
+  input data that are needed in <code>postTransFn</code></dd>
+  <dt>control</dt>
+  <dd>parameters specifying how the backend
+  should handle things (most-likely parameters to
+  <code>rhwatch</code> in RHIPE) - see <code><a href='#rhipecontrol'>rhipeControl</a></code>
+  and <code><a href='#localdiskcontrol'>localDiskControl</a></code></dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>an object of class "ddf"</p>
+
+
+  <h4>Description</h4>
+
+  <p>Reads a text file in table format and creates a distributed
+data frame from it, with cases corresponding to lines and
+variables to fields in the file.</p>
+
+
+  <h4>Note</h4>
+
+  <p>For local disk, the file is actually read in sequentially
+instead of in parallel.  This is because of possible
+performance issues when trying to read from the same disk
+in parallel.</p>
+
+  <p>Note that if <code>skip</code> is positive and/or if
+<code>header</code> is <code>TRUE</code>, it will first read these in
+as they only occur once in the data, and we then check for
+these lines in each block and remove those lines if they
+appear.</p>
+
+  <p>Also note that if you supply <code>"Factor"</code> column
+classes, they will be converted to character.</p>
+
+
+
+
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1604,10 +1694,10 @@ Ryan Hafen
 <h3 class="fref_title">Take a Sample of Key-Value Pairs
 Take a sample of key-value Pairs</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>drSample(x, fraction, output = NULL, overwrite = FALSE, control = NULL)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a 'ddo' or 'ddf' object</dd>
@@ -1631,7 +1721,7 @@ Take a sample of key-value Pairs</h3>
   and <code><a href='#localdiskcontrol'>localDiskControl</a></code></dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Take a Sample of Key-Value Pairs Take a sample of key-value
 Pairs</p>
@@ -1646,11 +1736,11 @@ Pairs</p>
 
 <h3 class="fref_title">Division-Agnostic Tabulation</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>drXtabs(formula, data = data, by = NULL, transFn = NULL, maxUnique = NULL, params = NULL, 
   control = NULL)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>formula</dt>
   <dd>a <code><a href='http://www.inside-r.org/r-doc/stats/formula'>formula</a></code> object with the
@@ -1697,14 +1787,14 @@ Pairs</p>
   and <code><a href='#localdiskcontrol'>localDiskControl</a></code></dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>a data frame of the tabulations.  When "by" is specified,
 it is a named list, with each element corresponding to a
 unique "by" value, containing a data frame of tabulations.</p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Creates contingency tables from cross-classifying factors,
 with a formula interface similar to <code>xtabs</code></p>
@@ -1712,12 +1802,12 @@ with a formula interface similar to <code>xtabs</code></p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='http://www.inside-r.org/r-doc/stats/xtabs'>xtabs</a></code>, <code><a href='#updateattributes'>updateAttributes</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1729,10 +1819,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Get Between Subset Variable</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>getBsv(x, name)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a key-value pair or a value</dd>
@@ -1740,7 +1830,7 @@ Ryan Hafen
   <dd>the name of the BSV to get</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>For a given key-value pair, get a BSV variable value by
 name (if present)</p>
@@ -1755,16 +1845,16 @@ name (if present)</p>
 
 <h3 class="fref_title">Get Between Subset Variables</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>getBsvs(x)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a key-value pair or a value</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>For a given key-value pair, exract all BSVs</p>
 
@@ -1778,10 +1868,10 @@ name (if present)</p>
 
 <h3 class="fref_title">Extract "Split" Variable</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>getSplitVar(x, name)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a key-value pair or a value</dd>
@@ -1789,7 +1879,7 @@ name (if present)</p>
   <dd>the name of the split variable to get</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>For a given key-value pair or value, get a split variable
 value by name, if present (split variables are variables
@@ -1805,16 +1895,16 @@ that define how the data was divided).</p>
 
 <h3 class="fref_title">Extract "Split" Variables</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>getSplitVars(x)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a key-value pair or a value</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>For a given k/v pair or value, exract all split variables
 (split variables are variables that define how the data was
@@ -1830,10 +1920,10 @@ divided).</p>
 
 <h3 class="fref_title">Connect to Data Source on HDFS</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>hdfsConn(loc, type = "sequence", autoYes = FALSE, reset = FALSE, verbose = TRUE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>loc</dt>
   <dd>location on HDFS for the data source</dd>
@@ -1850,17 +1940,17 @@ divided).</p>
   being done</dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>a "kvConnection" object of class "hdfsConn"</p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Connect to a data source on HDFS</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This simply creates a "connection" to a directory on HDFS
 (which need not have data in it).  To actually do things
@@ -1869,13 +1959,13 @@ with this data, see <code><a href='#ddo'>ddo</a></code>, etc.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code>addData</code>, <code><a href='#ddo'>ddo</a></code>, <code><a href='#ddf'>ddf</a></code>,
 <code><a href='#localdiskconn'>localDiskConn</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1887,10 +1977,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Apply Function to Key-Value Pair</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>kvApply(fn, kvPair, returnKV = FALSE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>fn</dt>
   <dd>a function</dd>
@@ -1900,13 +1990,13 @@ Ryan Hafen
   <dd>should the key and value be returned?</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Apply a function to a single key-value pair - not a
 traditional R "apply" function.</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>Determines how a function should be applied to a key-value
 pair and then applies it: if the function has two formals,
@@ -1927,11 +2017,11 @@ be used if desired.</p>
 
 <h3 class="fref_title">Connect to Data Source on Local Disk</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>localDiskConn(loc, nBins = 0, fileHashFn = NULL, autoYes = FALSE, reset = FALSE, 
   verbose = TRUE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>loc</dt>
   <dd>location on local disk for the data source</dd>
@@ -1956,17 +2046,17 @@ be used if desired.</p>
   being done</dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>a "kvConnection" object of class "localDiskConn"</p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Connect to a data source on local disk</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This simply creates a "connection" to a directory on local
 disk (which need not have data in it).  To actually do
@@ -1979,13 +2069,13 @@ stored in this directory.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code>addData</code>, <code><a href='#ddo'>ddo</a></code>, <code><a href='#ddf'>ddf</a></code>,
 <code><a href='#localdiskconn'>localDiskConn</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -1997,11 +2087,11 @@ Ryan Hafen
 
 <h3 class="fref_title">Specify Control Parameters for MapReduce on a Local Disk Connection</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>localDiskControl(cluster = NULL, map_buff_size_bytes = 10485760, reduce_buff_size_bytes = 10485760, 
   map_temp_buff_size_bytes = 10485760)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>cluster</dt>
   <dd>a "cluster" object obtained from
@@ -2018,13 +2108,13 @@ Ryan Hafen
   chunks written to disk in between the map and reduce</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Specify control parameters for a MapReduce on a local disk
 connection.  Currently the parameters include:</p>
 
 
-  <h5>Note</h5>
+  <h4>Note</h4>
 
   <p>If you have data on a shared drive that multiple nodes can
 access or a high performance shared file system like
@@ -2046,17 +2136,17 @@ the key-value pairs will be split across cores.</p>
 
 <h3 class="fref_title">Take a ddo/ddf HDFS data object and turn it into a mapfile</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>makeExtractable(obj)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>obj</dt>
   <dd>object of class 'ddo' or 'ddf' with an HDFS
   connection</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Take a ddo/ddf HDFS data object and turn it into a mapfile</p>
 
@@ -2070,11 +2160,11 @@ the key-value pairs will be split across cores.</p>
 
 <h3 class="fref_title">Execute a MapReduce Job</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, overwrite = FALSE, 
   control = NULL, params = NULL, verbose = TRUE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>data</dt>
   <dd>a ddo/ddf object, or list of ddo/ddf objects</dd>
@@ -2118,20 +2208,20 @@ the key-value pairs will be split across cores.</p>
   being done</dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>"ddo" object - to keep it simple.  It is up to the user to
 update or cast as "ddf" if that is the desired result.</p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Execute a MapReduce job</p>
 
 
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -2143,7 +2233,7 @@ Ryan Hafen
 
 <h3 class="fref_title">Functions to Compute Summary Statistics in MapReduce</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>tabulateMap(formula, data)
 
 tabulateReduce(result, reduce.values, maxUnique = NULL)
@@ -2156,7 +2246,7 @@ combineMultipleMoments(...)
 
 moments2statistics(m)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>formula</dt>
   <dd>a formula to be used in
@@ -2188,7 +2278,7 @@ moments2statistics(m)</pre>
   parameters</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Functions that are used to tabulate categorical variables
 and compute moments for numeric variables inside through
@@ -2205,10 +2295,10 @@ the MapReduce framework.  Used in
 
 <h3 class="fref_title">Print a "ddo" or "ddf" Object</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>print(x, ...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>object to be printed</dd>
@@ -2216,7 +2306,7 @@ the MapReduce framework.  Used in
   <dd>additional arguments</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Print an overview of attributes of distributed data objects
 (ddo) or distributed data frames (ddf)</p>
@@ -2224,7 +2314,7 @@ the MapReduce framework.  Used in
 
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -2236,11 +2326,11 @@ Ryan Hafen
 
 <h3 class="fref_title">Sample Quantiles for 'ddf' Objects</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>quantile(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = identity, varTransFn = identity, 
   nBins = 10000, tails = 100, params = NULL, control = NULL, ...)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>x</dt>
   <dd>a 'ddf' object</dd>
@@ -2282,19 +2372,19 @@ Ryan Hafen
   <dd>additional arguments</dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>data frame of quantiles <code>q</code> and their associated
 f-value <code>fval</code>.  If <code>by</code> is specified, then also
 a variable <code>group</code>.</p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Compute sample quantiles for 'ddf' objects</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This division-agnostic quantile calculation algorithm takes
 the range of the variable of interest and splits it into
@@ -2310,12 +2400,12 @@ for which you would like more detail in the tails.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#updateattributes'>updateAttributes</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -2327,11 +2417,11 @@ Ryan Hafen
 
 <h3 class="fref_title">Experimental HDFS text reader helper function</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>readHDFStextFile(input, output = NULL, overwrite = FALSE, fn = NULL, keyFn = NULL, 
   linesPerBlock = 10000, control = NULL, update = FALSE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>input</dt>
   <dd>a RHIPE input text handle created with
@@ -2363,7 +2453,7 @@ Ryan Hafen
   returning?</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Experimental helper function for reading text data on HDFS
 into a HDFS connection</p>
@@ -2378,11 +2468,11 @@ into a HDFS connection</p>
 
 <h3 class="fref_title">Experimental sequential text reader helper function</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>readTextFileByChunk(input, output, overwrite = FALSE, linesPerBlock = 10000, fn = NULL, 
   header = TRUE, skip = 0, recordEndRegex = NULL, cl = NULL)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>input</dt>
   <dd>the path to an input text file</dd>
@@ -2412,14 +2502,14 @@ into a HDFS connection</p>
   processing, created using <code>makeCluster</code></dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Experimental helper function for reading text data
 sequentially from a file on disk and adding to connection
 using <code><a href='#adddata'>addData</a></code></p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>The function <code>fn</code> should have one argument, which
 should expect to receive a vector of strings, each element
@@ -2438,11 +2528,11 @@ methods might need to know the header).</p>
 
 <h3 class="fref_title">Recombine</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>recombine(data, apply = NULL, combine = NULL, output = NULL, overwrite = FALSE, params = NULL, 
   control = NULL, verbose = TRUE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>data</dt>
   <dd>an object of class "ddo" of "ddf"</dd>
@@ -2478,18 +2568,18 @@ methods might need to know the header).</p>
   being done</dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>depends on <code>combine</code></p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Apply an analytic recombination method to a ddo/ddf object
 and combine the results</p>
 
 
-  <h5>References</h5>
+  <h4>References</h4>
 
   <p><ul>
 <li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
@@ -2505,7 +2595,7 @@ recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#ddo'>ddo</a></code>, <code><a href='#ddf'>ddf</a></code>,
 <code><a href='#drglm'>drGLM</a></code>, <code><a href='#drblb'>drBLB</a></code>,
@@ -2514,7 +2604,7 @@ recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
 <code><a href='#drlapply'>drLapply</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -2526,10 +2616,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Remove Key-Value Pairs from a Data Connection</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>removeData(conn, keys)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>conn</dt>
   <dd>a kvConnection object</dd>
@@ -2538,12 +2628,12 @@ Ryan Hafen
   remove</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Remove key-value pairs from a data connection</p>
 
 
-  <h5>Note</h5>
+  <h4>Note</h4>
 
   <p>This is generally not recommended for HDFS as it writes a
 new file each time it is called, and can result in more
@@ -2552,13 +2642,13 @@ individual files than Hadoop likes to deal with.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#removedata'>removeData</a></code>, <code><a href='#localdiskconn'>localDiskConn</a></code>,
 <code><a href='#hdfsconn'>hdfsConn</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -2570,18 +2660,18 @@ Ryan Hafen
 
 <h3 class="fref_title">Specify Control Parameters for RHIPE Job</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>rhipeControl(mapred = NULL, setup = NULL, combiner = FALSE, cleanup = NULL, orderby = "bytes", 
   shared = NULL, jarfiles = NULL, zips = NULL, jobname = "")</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>mapred,setup,combiner,cleanup,orderby,shared,jarfiles,zips,jobname</dt>
   <dd>arguments
   to <code>rhwatch</code> in RHIPE</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Specify control parameters for a RHIPE job.  See
 <code>rhwatch</code> for details about each of the parameters.</p>
@@ -2596,10 +2686,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Random Replicate Division</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>rrDiv(nrows = NULL, seed = NULL)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>nrows</dt>
   <dd>number of rows each subset should have</dd>
@@ -2607,19 +2697,19 @@ Ryan Hafen
   <dd>the random seed to use (experimental)</dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>a list to be used for the "by" argument to
 <code><a href='#divide'>divide</a></code></p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Specify random replicate division parameters for data
 division</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>The random replicate division method currently gets the
 total number of rows of the input data and divides it by
@@ -2630,7 +2720,7 @@ subsets, resulting in subsets with approximately
 subset have exactly <code>nrows</code> rows.</p>
 
 
-  <h5>References</h5>
+  <h4>References</h4>
 
   <p><ul>
 <li> <a href = 'http://www.datadr.org'>http://www.datadr.org</a> </li>
@@ -2646,13 +2736,13 @@ recombine (D&R) with RHIPE. <em>Stat</em>, 1(1), 53-67.</a> </li>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#divide'>divide</a></code>, <code><a href='#recombine'>recombine</a></code>,
 <code><a href='#conddiv'>condDiv</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -2664,10 +2754,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Specify Control Parameters for Spark Job</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>sparkControl()</pre>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Specify control parameters for a Spark job.  See
 <code>rhwatch</code> for details about each of the parameters.</p>
@@ -2682,10 +2772,10 @@ Ryan Hafen
 
 <h3 class="fref_title">Connect to Spark Data Source</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>sparkDataConn(data = NULL, init = list(), verbose = TRUE)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>data</dt>
   <dd>a data frame or list of key-value pairs</dd>
@@ -2697,12 +2787,12 @@ Ryan Hafen
   being done</dd>
 </dl>
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Connect to Spark data source (experimental).</p>
 
 
-  <h5>Note</h5>
+  <h4>Note</h4>
 
   <p>This is currently a proof-of-concept.  It only allows
 in-memory data to be initialized as a Spark RDD, which is
@@ -2719,10 +2809,10 @@ allow connections to link to data on HDFS.</p>
 
 <h3 class="fref_title">Update Attributes of a 'ddo' or 'ddf' Object</h3>
 
-<h5>Usage</h5>
+<h4>Usage</h4>
 <pre>updateAttributes(obj, control = NULL)</pre>
 
-<h5>Arguments</h5>
+<h4>Arguments</h4>
 <dl>
   <dt>obj</dt>
   <dd>an object of class 'ddo' or 'ddf'</dd>
@@ -2733,17 +2823,17 @@ allow connections to link to data on HDFS.</p>
   <code><a href='#rhipecontrol'>rhipeControl</a></code></dd>
 </dl>
 
-  <h5>Value</h5>
+  <h4>Value</h4>
 
   <p>an object of class 'ddo' or 'ddf'</p>
 
 
-  <h5>Description</h5>
+  <h4>Description</h4>
 
   <p>Update attributes of a 'ddo' or 'ddf' object</p>
 
 
-  <h5>Details</h5>
+  <h4>Details</h4>
 
   <p>This function looks for missing attributes related to a ddo
 or ddf (distributed data object or data frame) object and
@@ -2756,7 +2846,7 @@ attributes, and thus it should be used as <code>obj <-
 updateAttributes(obj)</code>.</p>
 
 
-  <h5>References</h5>
+  <h4>References</h4>
 
   <p>Bennett, Janine, et al. "Numerically stable, single-pass,
 parallel statistics algorithms." Cluster Computing and
@@ -2766,12 +2856,12 @@ Conference on.</em> IEEE, 2009.</p>
 
 
 
-<h5>See also</h5>
+<h4>See also</h4>
 
 <code><a href='#ddo'>ddo</a></code>, <code><a href='#ddf'>ddf</a></code>, <code><a href='#divide'>divide</a></code>
 
 
-<h5>Author</h5>
+<h4>Author</h4>
 
 Ryan Hafen
 
@@ -2799,43 +2889,7 @@ Ryan Hafen
 <script src="assets/js/jquery.js"></script>
 <script src="assets/bootstrap/js/bootstrap.js"></script>
 <script src="assets/js/jquery.ba-hashchange.min.js"></script>
-<script>
-function manageNextPrev() {
-   $('a#next').parent().toggleClass('disabled', $('#toc.nav li.active').nextAll('li:not(.nav-header)').size() == 0);
-   $('a#previous').parent().toggleClass('disabled', $('#toc.nav li.active').prevAll('li:not(.nav-header)').size() == 0);
-   $("html, body").animate({ scrollTop: 0 }, "fast");
-}
-manageNextPrev();
+<script src="assets/js/nav.js"></script>
 
-$('a#next').click(function(e) {
-   e.preventDefault();
-   location.href = $('#toc.nav li.active').nextAll('li:not(.nav-header)').first().find('a').attr('href');
-   manageNextPrev();
-});
-$('a#previous').click(function(e) {
-   e.preventDefault();
-   location.href = $('#toc.nav li.active').prevAll('li:not(.nav-header)').first().find('a').attr('href');
-   manageNextPrev();
-});
-
-$(window).hashchange(function() {
-  $('.tab-pane').hide();
-  var tab = location.hash || '#packagemain';
-  $(tab + '.tab-pane').show();
-
-  $('#toc.nav li.active').removeClass('active');
-  $('#toc.nav li a[href="' + tab + '"]').parent().addClass('active');
-  manageNextPrev();
-});
-$(window).hashchange();
-
-$('li.nav-header').dblclick(function(e) {
-   var url = $(this).data('edit-href');
-   if(url!="")
-      window.open(url, '', '');
-   return false;
-});
-
-</script>
 </body>
 </html>
