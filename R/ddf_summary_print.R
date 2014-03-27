@@ -74,7 +74,7 @@ getPrintVals.ddfSummFactor <- function(x) {
       paste("> freqTable head <"))
    
    n <- nrow(x$freqTable)
-   names <- x$freqTable$var[seq_len(min(c(n, nShow)))]
+   names <- x$freqTable$value[seq_len(min(c(n, nShow)))]
    vals <- sapply(x$freqTable$Freq[seq_len(min(c(n, nShow)))], format)
    
    nn <- max(nchar(names))

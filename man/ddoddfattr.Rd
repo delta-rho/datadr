@@ -2,21 +2,27 @@
 \alias{getAttribute}
 \alias{getAttributes}
 \alias{getAttributes.ddf}
+\alias{getAttributes.ddo}
 \alias{hasAttributes}
 \alias{hasAttributes.ddf}
 \alias{setAttributes}
 \alias{setAttributes.ddf}
+\alias{setAttributes.ddo}
 \title{Managing attributes of 'ddo' or 'ddf' objects}
 \usage{
 setAttributes(obj, ...)
 
 \method{setAttributes}{ddf}(obj, attrs)
 
+\method{setAttributes}{ddo}(obj, attrs)
+
 getAttribute(obj, attrName)
 
 getAttributes(obj, ...)
 
 \method{getAttributes}{ddf}(obj, attrNames)
+
+\method{getAttributes}{ddo}(obj, attrNames)
 
 hasAttributes(obj, ...)
 

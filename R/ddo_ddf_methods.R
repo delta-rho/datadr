@@ -26,6 +26,7 @@ setAttributes <- function(obj, ...)
 
 #' @rdname ddoddfattr
 #' @param attrs a named list of attributes to set
+#' @S3method setAttributes ddf
 setAttributes.ddf <- function(obj, attrs) {
    ind <- which(names(attrs) %in% requiredObjAttrs(obj)$ddf)
    if(length(ind) > 0)
@@ -35,6 +36,8 @@ setAttributes.ddf <- function(obj, attrs) {
    setAttributes.ddo(obj, attrs[setdiff(seq_len(length(attrs)), ind)])
 }
 
+#' @rdname ddoddfattr
+#' @S3method setAttributes ddo
 setAttributes.ddo <- function(obj, attrs) {
    attrNames <- names(attrs)
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddo)
@@ -99,6 +102,7 @@ getAttributes <- function(obj, ...)
 
 #' @rdname ddoddfattr
 #' @param attrNames vector of names of the attributes to get
+#' @S3method getAttributes ddf
 getAttributes.ddf <- function(obj, attrNames) {
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddf)
    res <- list(ddf = NULL)
@@ -109,6 +113,8 @@ getAttributes.ddf <- function(obj, attrNames) {
 }
 
 # obj is the data object, attrs is a named list of attributes
+#' @rdname ddoddfattr
+#' @S3method getAttributes ddo
 getAttributes.ddo <- function(obj, attrNames) {
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddo)
    res <- list(ddo = NULL)

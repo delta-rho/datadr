@@ -7,7 +7,7 @@
 \title{Data Input}
 \usage{
 drRead.table(file, header = FALSE, sep = "",
-  quote = "\\"'", dec = ".", skip = 0, fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#", allowEscapes = FALSE, encoding = "unknown", rowsPerBlock = 50000, postTransFn = identity, output = NULL, overwrite = FALSE, params = NULL, control = NULL, ...)
+  quote = "\\"'", dec = ".", skip = 0, fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#", allowEscapes = FALSE, encoding = "unknown", autoColClasses = TRUE, rowsPerBlock = 50000, postTransFn = identity, output = NULL, overwrite = FALSE, params = NULL, control = NULL, ...)
 
 drRead.csv(file, header = TRUE, sep = ",",
   quote = "\\"", dec = ".", fill = TRUE, comment.char = "", ...)
@@ -57,6 +57,12 @@ drRead.delim2(file, header = TRUE, sep = "\\t",
   info}
 
   \item{\ldots}{see \code{\link{read.table}} for more info}
+
+  \item{autoColClasses}{should column classes be determined
+  automatically by reading in a sample?  This can sometimes
+  be problematic because of strange ways R handles quotes
+  in \code{read.table}, but keeping the default of
+  \code{TRUE} is advantageous for speed.}
 
   \item{rowsPerBlock}{how many rows of the input file
   should make up a block (key-value pair) of output?}
