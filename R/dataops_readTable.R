@@ -22,6 +22,7 @@
 #' @param allowEscapes see \code{\link{read.table}} for more info
 #' @param encoding see \code{\link{read.table}} for more info
 #' @param \ldots see \code{\link{read.table}} for more info
+#' @param autoColClasses should column classes be determined automatically by reading in a sample?  This can sometimes be problematic because of strange ways R handles quotes in \code{read.table}, but keeping the default of \code{TRUE} is advantageous for speed.
 #' @param rowsPerBlock how many rows of the input file should make up a block (key-value pair) of output?
 #' @param postTransFn a function to be applied after a block is read in to provide any additional processingn before the block is stored
 #' @param output a "kvConnection" object indicating where the output data should reside.  Must be a \code{\link{localDiskConn}} object if input is a text file on local disk, or a \code{\link{hdfsConn}} object if input is a text file on HDFS.
@@ -58,6 +59,7 @@ drRead.table <- function(file,
    comment.char = "#",
    allowEscapes = FALSE,
    encoding = "unknown",
+   autoColClasses = TRUE,
    rowsPerBlock = 50000,
    postTransFn = identity,
    output = NULL,
@@ -113,7 +115,9 @@ drRead.table <- function(file,
    # set them (if not already set) based on tmp read-in
    if(is.null(readTabParams$colClasses))
       readTabParams$colClasses <- sapply(res, class)
-   
+   if(!autoColClasses)
+      readTabParams$colClasses <- NULL
+      
    # for now, force factors to be character
    readTabParams$colClasses[readTabParams$colClasses == "factor"] <- "character"
    
@@ -149,7 +153,6 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
    
    con <- file(description = file, open = "r")
    on.exit(close(con))
-   browser()
    curPos <- 1
    
    if(skip > 0) {
@@ -162,32 +165,31 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
       curPos <- curPos + 1
    }
    
-   system.time(data <- readLines(con, n = rowsPerBlock))
+   readTabParams$file <- con
+   readTabParams$nrows <- rowsPerBlock
+   data <- do.call(read.table, readTabParams)
    
    i <- 1
    repeat {
       cat("Processing chunk ", i, "\n")
-      if (length(data) == 0)
+      if(is.null(data))
          break
       
-      readTabParams$file <- textConnection(paste(data, collapse = "\n"))
-      res <- do.call(read.table, readTabParams)
       if(is.null(readTabParams$col.names))
-         names(res) <- hd
-
-      if(!is.null(res))
-         addData(output, list(list(i, postTransFn(res))))
+         names(data) <- hd
+      
+      addData(output, list(list(i, postTransFn(data))))
       
       data <- tryCatch({
-         data <- readLines(con, n = rowsPerBlock)
+         do.call(read.table, readTabParams)
       }, error=function(err) {
          if (identical(conditionMessage(err), "no lines available in input"))
-            data
+            NULL
          else stop(err)
       })
       i <- i + 1
    }
-   
+
    ddf(output)
 }
 
@@ -223,15 +225,20 @@ drRead.csv <- function(file, header = TRUE, sep = ",", quote = "\"", dec = ".", 
 #' @rdname drreadtable
 #' @export
 drRead.csv2 <- function(file, header = TRUE, sep = ";", quote = "\"", dec = ",", fill = TRUE, comment.char = "", ...)
-   read.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)
+   drRead.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)
 
 #' @rdname drreadtable
 #' @export
 drRead.delim <- function(file, header = TRUE, sep = "\t", quote = "\"", dec = ".", fill = TRUE, comment.char = "", ...) 
-   read.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)
+   drRead.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)
 
 #' @rdname drreadtable
 #' @export
 drRead.delim2 <- function(file, header = TRUE, sep = "\t", quote = "\"", dec = ",", fill = TRUE, comment.char = "", ...) 
-   read.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)
+   drRead.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)
+
+# #' @rdname drreadtable
+# #' @export
+# drRead.fwf <- function(file, widths, header = FALSE, sep = "\t", skip = 0, row.names, col.names, n = -1, buffersize = 2000, ...)
+#    read.fwf(file, widths = width, header = header, sep = sep, skip = sep, row.names = row.names, col.names = col.names, n = n, buffersize = buffersize, ...)
 
