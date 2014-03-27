@@ -272,6 +272,7 @@ updateAttributes <- function(obj, control = NULL) {
                class(v) <- c("ddfSummFactor", "list")
                # were there more unique levels than we could handle?
                v$complete <- attrs[["nRow"]] == sum(v$freqTable$Freq)               
+               names(v$freqTable)[1] <- "value"
                summaryList[[varName]] <- v
             } else if(varType == "datetime") {
                v <- list(nna = v$nna, range = c(v$min, v$max))
