@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/hafen/datadr.png?branch=master)](https://travis-ci.org/hafen/datadr)
 
-datadr is an experimantal R package that leverages [RHIPE](https://github.com/saptarshiguha/RHIPE) to provide a simple interface to division and recombination (D&R) methods for large complex data.
+`datadr` is an R package that leverages [RHIPE](https://github.com/saptarshiguha/RHIPE) to provide a simple interface to division and recombination (D&R) methods for large complex data.
 
 Visualization tools based on D&R can be found [here](https://github.com/hafen/trelliscope).
 
