@@ -1,7 +1,7 @@
 Package: datadr
 Type: Package
 Title: Divide and Recombine for Large, Complex Data
-Version: 0.6.8
+Version: 0.6.9
 Date: 2014-03-15
 Author: Ryan Hafen
 Maintainer: Ryan Hafen <ryan.hafen@pnnl.gov>
@@ -21,4 +21,5 @@ Depends:
     data.table,
     digest,
     codetools,
+    hexbin,
     testthat
