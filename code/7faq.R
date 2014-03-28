@@ -80,10 +80,10 @@ Instead of making direct comparisons, I will try to point out some things that I
 
 If you would like to run through all of the code examples in this documentation without having to pick out each line of code from the text, below are files with the R code for each section.
 
-- [Dealing with Data in D&R](docs/code/2data.R)
-- [Division and Recombination](docs/code/3dnr.R)
-- [MapReduce](docs/code/4mr.R)
-- [Division Agnostic Methods](docs/code/5divag.R)
-- [Store/Compute Backends](docs/code/6backend.R)
+- [Dealing with Data in D&R](code/2data.R)
+- [Division and Recombination](code/3dnr.R)
+- [MapReduce](code/4mr.R)
+- [Division Agnostic Methods](code/5divag.R)
+- [Store/Compute Backends](code/6backend.R)
 
 

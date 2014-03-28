@@ -8,15 +8,20 @@
     <meta name="author" content="">
 
     <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="assets/css/custom.css" rel="stylesheet">
-    <link href="assets/css/pygment.css" rel="stylesheet">
+    <link href="assets/custom/custom.css" rel="stylesheet">
     <!-- font-awesome -->
     <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
-    <link href='assets/css/highlight.css' rel='stylesheet'>
-
+    <!-- prism -->
+    <link href="assets/prism/prism.css" rel="stylesheet">
+    <link href="assets/prism/prism.r.css" rel="stylesheet">
+    <script type='text/javascript' src='assets/prism/prism.js'></script>
+    <script type='text/javascript' src='assets/prism/prism.r.js'></script>
     
-
+    
+    
+    
+    
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="js/html5shiv.js"></script>
@@ -129,6 +134,9 @@
    <a target="_self" class="nav-not-header" href="#drglm">drGLM</a>
 </li>
 <li class="">
+   <a target="_self" class="nav-not-header" href="#drhexbin">drHexBin</a>
+</li>
+<li class="">
    <a target="_self" class="nav-not-header" href="#drjoin">drJoin</a>
 </li>
 <li class="">
@@ -220,7 +228,7 @@
 <h3>Divide and Recombine for Large, Complex Data</h3>
 
 <p><strong>Author:</strong> Ryan Hafen</p>
-<p><strong>Version:</strong> 0.6.7</p>
+<p><strong>Version:</strong> 0.6.9</p>
 <p><strong>Date:</strong> 2014-03-15</p>
 <p><strong>License:</strong> BSD_3_clause + file LICENSE</p>
 
@@ -240,6 +248,7 @@ parallel,
 data.table,
 digest,
 codetools,
+hexbin,
 testthat</p>
 
 <h4>Suggests</h4>
@@ -252,7 +261,7 @@ testthat</p>
 <h3 class="fref_title">Add Key-Value Pairs to a Data Connection</h3>
 
 <h4>Usage</h4>
-<pre>addData(conn, data, overwrite = FALSE)</pre>
+<pre><code class="language-r">addData(conn, data, overwrite = FALSE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -301,7 +310,7 @@ Ryan Hafen
 <h3 class="fref_title">"Census Income" Dataset</h3>
 
 <h4>Usage</h4>
-<pre>adult</pre>
+<pre><code class="language-r">adult</code></pre>
 
   <h4>Format</h4>
 
@@ -369,8 +378,8 @@ Computer Science.</p>
 <h3 class="fref_title">Turn 'ddf' Object into Data Frame</h3>
 
 <h4>Usage</h4>
-<pre>as.data.frame(x, row.names = NULL, optional = FALSE, keys = TRUE, splitVars = TRUE, 
-  bsvs = FALSE, ...)</pre>
+<pre><code class="language-r">as.data.frame(x, row.names = NULL, optional = FALSE, keys = TRUE, splitVars = TRUE, 
+  bsvs = FALSE, ...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -411,7 +420,7 @@ frame</p>
 <h3 class="fref_title">Turn 'ddo' / 'ddf' Object into a list</h3>
 
 <h4>Usage</h4>
-<pre>as.list(x, ...)</pre>
+<pre><code class="language-r">as.list(x, ...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -437,7 +446,7 @@ frame</p>
 <h3 class="fref_title">Construct Between Subset Variable (BSV)</h3>
 
 <h4>Usage</h4>
-<pre>bsv(val = NULL, desc = "")</pre>
+<pre><code class="language-r">bsv(val = NULL, desc = "")</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -480,7 +489,7 @@ Ryan Hafen
 <h3 class="fref_title">Character File Hash Function</h3>
 
 <h4>Usage</h4>
-<pre>charFileHash(keys, conn)</pre>
+<pre><code class="language-r">charFileHash(keys, conn)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -525,7 +534,7 @@ Ryan Hafen
 <h3 class="fref_title">"Collect" Recombination</h3>
 
 <h4>Usage</h4>
-<pre>combCollect(...)</pre>
+<pre><code class="language-r">combCollect(...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -567,7 +576,7 @@ Ryan Hafen
 <h3 class="fref_title">"DDO" Recombination</h3>
 
 <h4>Usage</h4>
-<pre>combDdo(...)</pre>
+<pre><code class="language-r">combDdo(...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -609,7 +618,7 @@ Ryan Hafen
 <h3 class="fref_title">Mean Recombination</h3>
 
 <h4>Usage</h4>
-<pre>combMean(...)</pre>
+<pre><code class="language-r">combMean(...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -650,7 +659,7 @@ Ryan Hafen
 <h3 class="fref_title">Mean Coefficient Recombination</h3>
 
 <h4>Usage</h4>
-<pre>combMeanCoef(...)</pre>
+<pre><code class="language-r">combMeanCoef(...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -695,7 +704,7 @@ Ryan Hafen
 <h3 class="fref_title">"rbind" Recombination</h3>
 
 <h4>Usage</h4>
-<pre>combRbind(...)</pre>
+<pre><code class="language-r">combRbind(...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -736,7 +745,7 @@ Ryan Hafen
 <h3 class="fref_title">Conditioning Variable Division</h3>
 
 <h4>Usage</h4>
-<pre>condDiv(vars)</pre>
+<pre><code class="language-r">condDiv(vars)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -800,7 +809,7 @@ Ryan Hafen
 <h3 class="fref_title">Convert 'ddo' / 'ddf' Objects</h3>
 
 <h4>Usage</h4>
-<pre>convert(from, to)</pre>
+<pre><code class="language-r">convert(from, to)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -828,7 +837,7 @@ backends</p>
 <h3 class="fref_title">'ddf' accessors</h3>
 
 <h4>Usage</h4>
-<pre>nrow(x)
+<pre><code class="language-r">nrow(x)
 
 NROW(x)
 
@@ -842,7 +851,7 @@ NROW(x)
 
 ncol(x)
 
-NCOL(x)</pre>
+NCOL(x)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -874,7 +883,7 @@ NCOL(x)</pre>
 Instantiate a distributed data frame ('ddf')</h3>
 
 <h4>Usage</h4>
-<pre>ddf(conn, transFn = identity, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE)</pre>
+<pre><code class="language-r">ddf(conn, transFn = identity, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -925,7 +934,7 @@ distributed data frame ('ddf')</p>
 <h3 class="fref_title">Accessor Functions</h3>
 
 <h4>Usage</h4>
-<pre>kvExample(x, transform = FALSE)
+<pre><code class="language-r">kvExample(x, transform = FALSE)
 
 bsvInfo(x)
 
@@ -943,7 +952,7 @@ hasExtractableKV(x)
 
 names(x)
 
-length(x)</pre>
+length(x)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -978,7 +987,7 @@ objects.</p>
 Instantiate a distributed data object ('ddo')</h3>
 
 <h4>Usage</h4>
-<pre>ddo(conn, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE)</pre>
+<pre><code class="language-r">ddo(conn, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1024,7 +1033,9 @@ distributed data object ('ddo')</p>
 <h3 class="fref_title">Managing attributes of 'ddo' or 'ddf' objects</h3>
 
 <h4>Usage</h4>
-<pre>setAttributes(obj, ...)
+<pre><code class="language-r">setAttributes(obj, ...)
+
+setAttributes(obj, attrs)
 
 setAttributes(obj, attrs)
 
@@ -1034,9 +1045,11 @@ getAttributes(obj, ...)
 
 getAttributes(obj, attrNames)
 
+getAttributes(obj, attrNames)
+
 hasAttributes(obj, ...)
 
-hasAttributes(obj, attrNames)</pre>
+hasAttributes(obj, attrNames)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1068,7 +1081,7 @@ hasAttributes(obj, attrNames)</pre>
 <h3 class="fref_title">Digest File Hash Function</h3>
 
 <h4>Usage</h4>
-<pre>digestFileHash(keys, conn)</pre>
+<pre><code class="language-r">digestFileHash(keys, conn)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1115,9 +1128,9 @@ Ryan Hafen
 <h3 class="fref_title">Divide a Distributed Data Object</h3>
 
 <h4>Usage</h4>
-<pre>divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL, output = NULL, 
+<pre><code class="language-r">divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL, output = NULL, 
   overwrite = FALSE, preTransFn = NULL, postTransFn = NULL, params = NULL, control = NULL, 
-  update = FALSE, verbose = TRUE)</pre>
+  update = FALSE, verbose = TRUE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1237,9 +1250,9 @@ Ryan Hafen
 <h3 class="fref_title">Functions used in divide()</h3>
 
 <h4>Usage</h4>
-<pre>dfSplit(curDF, by, seed)
+<pre><code class="language-r">dfSplit(curDF, by, seed)
 
-addSplitAttrs(curSplit, bsvFn, by, postTransFn = NULL)</pre>
+addSplitAttrs(curSplit, bsvFn, by, postTransFn = NULL)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1264,7 +1277,7 @@ addSplitAttrs(curSplit, bsvFn, by, postTransFn = NULL)</pre>
 <h3 class="fref_title">Bag of Little Bootstraps Recombination 'apply' Method</h3>
 
 <h4>Usage</h4>
-<pre>drBLB(statistic, metric, R, n)</pre>
+<pre><code class="language-r">drBLB(statistic, metric, R, n)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1325,7 +1338,7 @@ Ryan Hafen
 <h3 class="fref_title">Filter a 'ddo' or 'ddf' Object</h3>
 
 <h4>Usage</h4>
-<pre>drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL, control = NULL)</pre>
+<pre><code class="language-r">drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL, control = NULL)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1388,7 +1401,7 @@ Ryan Hafen
 <h3 class="fref_title">GLM Recombination 'apply' Method</h3>
 
 <h4>Usage</h4>
-<pre>drGLM(...)</pre>
+<pre><code class="language-r">drGLM(...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1425,14 +1438,83 @@ Ryan Hafen
 </div>
 
 
+<!-- drHexBin -->   
+<div class="tab-pane" id="drhexbin">
+
+<h3 class="fref_title">HexBin Aggregation for Distributed Data Frames</h3>
+
+<h4>Usage</h4>
+<pre><code class="language-r">drHexBin(data, xVar, yVar, xTransFn = identity, yTransFn = identity, xBins = 30, 
+  shape = 1, params = NULL, control = NULL)</code></pre>
+
+<h4>Arguments</h4>
+<dl>
+  <dt>a</dt>
+  <dd>distributed data frame</dd>
+  <dt>xVar,yVar</dt>
+  <dd>names of the variables to use</dd>
+  <dt>xTransFn,yTransFn</dt>
+  <dd>a transformation function to
+  apply to the x and y variables prior to binning</dd>
+  <dt>xBins</dt>
+  <dd>the number of bins partitioning the range of
+  xbnds</dd>
+  <dt>shape</dt>
+  <dd>the shape = yheight/xwidth of the plotting
+  regions</dd>
+  <dt>params</dt>
+  <dd>a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)</dd>
+  <dt>control</dt>
+  <dd>parameters specifying how the backend
+  should handle things (most-likely parameters to
+  <code>rhwatch</code> in RHIPE) - see <code><a href='#rhipecontrol'>rhipeControl</a></code>
+  and <code><a href='#localdiskcontrol'>localDiskControl</a></code></dd>
+</dl>
+
+  <h4>Value</h4>
+
+  <p>a "hexbin" object</p>
+
+
+  <h4>Description</h4>
+
+  <p>Create "hexbin" object of hexagonally binned data for a
+distributed data frame.  This computation is division
+agnostic - it does not matter how the data frame is split
+up.</p>
+
+
+  <h4>References</h4>
+
+  <p>Carr, D. B. et al. (1987) Scatterplot Matrix Techniques for
+Large <code class = 'eq'>N</code>. <em>JASA</em> <b>83</b>, 398, 424--436.</p>
+
+
+
+
+<h4>See also</h4>
+
+<code><a href='#quantileddf'>quantile.ddf</a></code>
+
+
+<h4>Author</h4>
+
+Ryan Hafen
+
+</div>
+
+
 <!-- drJoin -->   
 <div class="tab-pane" id="drjoin">
 
 <h3 class="fref_title">Join Two Data Sources by Key</h3>
 
 <h4>Usage</h4>
-<pre>drJoin(..., output = NULL, overwrite = FALSE, postTransFn = NULL, params = NULL, 
-  control = NULL)</pre>
+<pre><code class="language-r">drJoin(..., output = NULL, overwrite = FALSE, postTransFn = NULL, params = NULL, 
+  control = NULL)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1498,8 +1580,8 @@ Ryan Hafen
 <h3 class="fref_title">Apply a function to all key/value pairs of a ddo/ddf object</h3>
 
 <h4>Usage</h4>
-<pre>drLapply(data, apply = NULL, combine = combDdo(), output = NULL, overwrite = FALSE, 
-  params = NULL, control = NULL, verbose = TRUE)</pre>
+<pre><code class="language-r">drLapply(data, apply = NULL, combine = combDdo(), output = NULL, overwrite = FALSE, 
+  params = NULL, control = NULL, verbose = TRUE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1568,10 +1650,10 @@ Ryan Hafen
 <h3 class="fref_title">Data Input</h3>
 
 <h4>Usage</h4>
-<pre>drRead.table(file, header = FALSE, sep = "", quote = "\"'", dec = ".", skip = 0, 
+<pre><code class="language-r">drRead.table(file, header = FALSE, sep = "", quote = "\"'", dec = ".", skip = 0, 
   fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#", allowEscapes = FALSE, 
-  encoding = "unknown", rowsPerBlock = 50000, postTransFn = identity, output = NULL, 
-  overwrite = FALSE, params = NULL, control = NULL, ...)
+  encoding = "unknown", autoColClasses = TRUE, rowsPerBlock = 50000, postTransFn = identity, 
+  output = NULL, overwrite = FALSE, params = NULL, control = NULL, ...)
 
 drRead.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, 
   comment.char = "", ...)
@@ -1583,7 +1665,7 @@ drRead.delim(file, header = TRUE, sep = "\t", quote = "\"", dec = ".", fill = TR
   comment.char = "", ...)
 
 drRead.delim2(file, header = TRUE, sep = "\t", quote = "\"", dec = ",", fill = TRUE, 
-  comment.char = "", ...)</pre>
+  comment.char = "", ...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1623,6 +1705,12 @@ drRead.delim2(file, header = TRUE, sep = "\t", quote = "\"", dec = ",", fill = T
   info</dd>
   <dt>...</dt>
   <dd>see <code><a href='http://www.inside-r.org/r-doc/utils/read.table'>read.table</a></code> for more info</dd>
+  <dt>autoColClasses</dt>
+  <dd>should column classes be determined
+  automatically by reading in a sample?  This can sometimes
+  be problematic because of strange ways R handles quotes
+  in <code>read.table</code>, but keeping the default of
+  <code>TRUE</code> is advantageous for speed.</dd>
   <dt>rowsPerBlock</dt>
   <dd>how many rows of the input file
   should make up a block (key-value pair) of output?</dd>
@@ -1695,7 +1783,7 @@ Ryan Hafen
 Take a sample of key-value Pairs</h3>
 
 <h4>Usage</h4>
-<pre>drSample(x, fraction, output = NULL, overwrite = FALSE, control = NULL)</pre>
+<pre><code class="language-r">drSample(x, fraction, output = NULL, overwrite = FALSE, control = NULL)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1737,8 +1825,8 @@ Pairs</p>
 <h3 class="fref_title">Division-Agnostic Tabulation</h3>
 
 <h4>Usage</h4>
-<pre>drXtabs(formula, data = data, by = NULL, transFn = NULL, maxUnique = NULL, params = NULL, 
-  control = NULL)</pre>
+<pre><code class="language-r">drXtabs(formula, data = data, by = NULL, transFn = NULL, maxUnique = NULL, params = NULL, 
+  control = NULL)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1820,7 +1908,7 @@ Ryan Hafen
 <h3 class="fref_title">Get Between Subset Variable</h3>
 
 <h4>Usage</h4>
-<pre>getBsv(x, name)</pre>
+<pre><code class="language-r">getBsv(x, name)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1846,7 +1934,7 @@ name (if present)</p>
 <h3 class="fref_title">Get Between Subset Variables</h3>
 
 <h4>Usage</h4>
-<pre>getBsvs(x)</pre>
+<pre><code class="language-r">getBsvs(x)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1869,7 +1957,7 @@ name (if present)</p>
 <h3 class="fref_title">Extract "Split" Variable</h3>
 
 <h4>Usage</h4>
-<pre>getSplitVar(x, name)</pre>
+<pre><code class="language-r">getSplitVar(x, name)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1896,7 +1984,7 @@ that define how the data was divided).</p>
 <h3 class="fref_title">Extract "Split" Variables</h3>
 
 <h4>Usage</h4>
-<pre>getSplitVars(x)</pre>
+<pre><code class="language-r">getSplitVars(x)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1921,7 +2009,7 @@ divided).</p>
 <h3 class="fref_title">Connect to Data Source on HDFS</h3>
 
 <h4>Usage</h4>
-<pre>hdfsConn(loc, type = "sequence", autoYes = FALSE, reset = FALSE, verbose = TRUE)</pre>
+<pre><code class="language-r">hdfsConn(loc, type = "sequence", autoYes = FALSE, reset = FALSE, verbose = TRUE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -1978,7 +2066,7 @@ Ryan Hafen
 <h3 class="fref_title">Apply Function to Key-Value Pair</h3>
 
 <h4>Usage</h4>
-<pre>kvApply(fn, kvPair, returnKV = FALSE)</pre>
+<pre><code class="language-r">kvApply(fn, kvPair, returnKV = FALSE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2018,8 +2106,8 @@ be used if desired.</p>
 <h3 class="fref_title">Connect to Data Source on Local Disk</h3>
 
 <h4>Usage</h4>
-<pre>localDiskConn(loc, nBins = 0, fileHashFn = NULL, autoYes = FALSE, reset = FALSE, 
-  verbose = TRUE)</pre>
+<pre><code class="language-r">localDiskConn(loc, nBins = 0, fileHashFn = NULL, autoYes = FALSE, reset = FALSE, 
+  verbose = TRUE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2088,8 +2176,8 @@ Ryan Hafen
 <h3 class="fref_title">Specify Control Parameters for MapReduce on a Local Disk Connection</h3>
 
 <h4>Usage</h4>
-<pre>localDiskControl(cluster = NULL, map_buff_size_bytes = 10485760, reduce_buff_size_bytes = 10485760, 
-  map_temp_buff_size_bytes = 10485760)</pre>
+<pre><code class="language-r">localDiskControl(cluster = NULL, map_buff_size_bytes = 10485760, reduce_buff_size_bytes = 10485760, 
+  map_temp_buff_size_bytes = 10485760)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2137,7 +2225,7 @@ the key-value pairs will be split across cores.</p>
 <h3 class="fref_title">Take a ddo/ddf HDFS data object and turn it into a mapfile</h3>
 
 <h4>Usage</h4>
-<pre>makeExtractable(obj)</pre>
+<pre><code class="language-r">makeExtractable(obj)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2161,8 +2249,8 @@ the key-value pairs will be split across cores.</p>
 <h3 class="fref_title">Execute a MapReduce Job</h3>
 
 <h4>Usage</h4>
-<pre>mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, overwrite = FALSE, 
-  control = NULL, params = NULL, verbose = TRUE)</pre>
+<pre><code class="language-r">mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, overwrite = FALSE, 
+  control = NULL, params = NULL, verbose = TRUE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2234,7 +2322,7 @@ Ryan Hafen
 <h3 class="fref_title">Functions to Compute Summary Statistics in MapReduce</h3>
 
 <h4>Usage</h4>
-<pre>tabulateMap(formula, data)
+<pre><code class="language-r">tabulateMap(formula, data)
 
 tabulateReduce(result, reduce.values, maxUnique = NULL)
 
@@ -2244,7 +2332,7 @@ combineMoments(m1, m2)
 
 combineMultipleMoments(...)
 
-moments2statistics(m)</pre>
+moments2statistics(m)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2296,7 +2384,7 @@ the MapReduce framework.  Used in
 <h3 class="fref_title">Print a "ddo" or "ddf" Object</h3>
 
 <h4>Usage</h4>
-<pre>print(x, ...)</pre>
+<pre><code class="language-r">print(x, ...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2327,8 +2415,8 @@ Ryan Hafen
 <h3 class="fref_title">Sample Quantiles for 'ddf' Objects</h3>
 
 <h4>Usage</h4>
-<pre>quantile(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = identity, varTransFn = identity, 
-  nBins = 10000, tails = 100, params = NULL, control = NULL, ...)</pre>
+<pre><code class="language-r">quantile(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = identity, varTransFn = identity, 
+  nBins = 10000, tails = 100, params = NULL, control = NULL, ...)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2418,8 +2506,8 @@ Ryan Hafen
 <h3 class="fref_title">Experimental HDFS text reader helper function</h3>
 
 <h4>Usage</h4>
-<pre>readHDFStextFile(input, output = NULL, overwrite = FALSE, fn = NULL, keyFn = NULL, 
-  linesPerBlock = 10000, control = NULL, update = FALSE)</pre>
+<pre><code class="language-r">readHDFStextFile(input, output = NULL, overwrite = FALSE, fn = NULL, keyFn = NULL, 
+  linesPerBlock = 10000, control = NULL, update = FALSE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2469,8 +2557,8 @@ into a HDFS connection</p>
 <h3 class="fref_title">Experimental sequential text reader helper function</h3>
 
 <h4>Usage</h4>
-<pre>readTextFileByChunk(input, output, overwrite = FALSE, linesPerBlock = 10000, fn = NULL, 
-  header = TRUE, skip = 0, recordEndRegex = NULL, cl = NULL)</pre>
+<pre><code class="language-r">readTextFileByChunk(input, output, overwrite = FALSE, linesPerBlock = 10000, fn = NULL, 
+  header = TRUE, skip = 0, recordEndRegex = NULL, cl = NULL)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2529,8 +2617,8 @@ methods might need to know the header).</p>
 <h3 class="fref_title">Recombine</h3>
 
 <h4>Usage</h4>
-<pre>recombine(data, apply = NULL, combine = NULL, output = NULL, overwrite = FALSE, params = NULL, 
-  control = NULL, verbose = TRUE)</pre>
+<pre><code class="language-r">recombine(data, apply = NULL, combine = NULL, output = NULL, overwrite = FALSE, params = NULL, 
+  control = NULL, verbose = TRUE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2617,7 +2705,7 @@ Ryan Hafen
 <h3 class="fref_title">Remove Key-Value Pairs from a Data Connection</h3>
 
 <h4>Usage</h4>
-<pre>removeData(conn, keys)</pre>
+<pre><code class="language-r">removeData(conn, keys)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2661,8 +2749,8 @@ Ryan Hafen
 <h3 class="fref_title">Specify Control Parameters for RHIPE Job</h3>
 
 <h4>Usage</h4>
-<pre>rhipeControl(mapred = NULL, setup = NULL, combiner = FALSE, cleanup = NULL, orderby = "bytes", 
-  shared = NULL, jarfiles = NULL, zips = NULL, jobname = "")</pre>
+<pre><code class="language-r">rhipeControl(mapred = NULL, setup = NULL, combiner = FALSE, cleanup = NULL, orderby = "bytes", 
+  shared = NULL, jarfiles = NULL, zips = NULL, jobname = "")</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2687,7 +2775,7 @@ Ryan Hafen
 <h3 class="fref_title">Random Replicate Division</h3>
 
 <h4>Usage</h4>
-<pre>rrDiv(nrows = NULL, seed = NULL)</pre>
+<pre><code class="language-r">rrDiv(nrows = NULL, seed = NULL)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2755,7 +2843,7 @@ Ryan Hafen
 <h3 class="fref_title">Specify Control Parameters for Spark Job</h3>
 
 <h4>Usage</h4>
-<pre>sparkControl()</pre>
+<pre><code class="language-r">sparkControl()</code></pre>
 
   <h4>Description</h4>
 
@@ -2773,7 +2861,7 @@ Ryan Hafen
 <h3 class="fref_title">Connect to Spark Data Source</h3>
 
 <h4>Usage</h4>
-<pre>sparkDataConn(data = NULL, init = list(), verbose = TRUE)</pre>
+<pre><code class="language-r">sparkDataConn(data = NULL, init = list(), verbose = TRUE)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2810,7 +2898,7 @@ allow connections to link to data on HDFS.</p>
 <h3 class="fref_title">Update Attributes of a 'ddo' or 'ddf' Object</h3>
 
 <h4>Usage</h4>
-<pre>updateAttributes(obj, control = NULL)</pre>
+<pre><code class="language-r">updateAttributes(obj, control = NULL)</code></pre>
 
 <h4>Arguments</h4>
 <dl>
@@ -2886,10 +2974,11 @@ Ryan Hafen
 </div>
 </div> <!-- /container -->
 
-<script src="assets/js/jquery.js"></script>
+<script src="assets/jquery/jquery.js"></script>
+<script type='text/javascript' src='assets/custom/custom.js'></script>
 <script src="assets/bootstrap/js/bootstrap.js"></script>
-<script src="assets/js/jquery.ba-hashchange.min.js"></script>
-<script src="assets/js/nav.js"></script>
+<script src="assets/custom/jquery.ba-hashchange.min.js"></script>
+<script src="assets/custom/nav.js"></script>
 
 </body>
 </html>

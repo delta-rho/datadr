@@ -8,20 +8,25 @@
     <meta name="author" content="">
 
     <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="assets/css/custom.css" rel="stylesheet">
-    <link href="assets/css/pygment.css" rel="stylesheet">
+    <link href="assets/custom/custom.css" rel="stylesheet">
     <!-- font-awesome -->
     <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
-    <link href='assets/css/rsyntax.css' rel='stylesheet'><script type='text/javascript' src='assets/js/rsyntax.js'></script>
-
-    <script type="text/javascript" src="assets/js/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    <!-- prism -->
+    <link href="assets/prism/prism.css" rel="stylesheet">
+    <link href="assets/prism/prism.r.css" rel="stylesheet">
+    <script type='text/javascript' src='assets/prism/prism.js'></script>
+    <script type='text/javascript' src='assets/prism/prism.r.js'></script>
+    
+    
+    
+    <script type="text/javascript" src="assets/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
    MathJax.Hub.Config({    
      extensions: ["tex2jax.js"],    
      "HTML-CSS": { scale: 100}    
    });
    </script>
-
+    
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="js/html5shiv.js"></script>
@@ -277,13 +282,6 @@ install_github(&quot;datadr&quot;, &quot;hafen&quot;)
 <p>Then we load the package:</p>
 
 <pre><code class="r">library(datadr)
-</code></pre>
-
-<pre><code>Loading required package: parallel
-Loading required package: data.table
-data.table 1.9.2  For help type: help(&quot;data.table&quot;)
-Loading required package: codetools
-Loading required package: testthat
 </code></pre>
 
 <p>and we are ready to go.</p>
@@ -798,7 +796,7 @@ attr(,&quot;class&quot;)
 [1] 0
 
 $freqTable
-         var Freq
+       value Freq
 1     setosa   50
 2 versicolor   50
 3  virginica   50
@@ -1794,8 +1792,8 @@ names(adultDdf)
 
 <pre><code class="r">library(lattice)
 edTable &lt;- summary(adultDdf)$education$freqTable
-edTable$var &lt;- with(edTable, reorder(var, Freq, mean))
-dotplot(var ~ Freq, data = edTable)
+edTable$value &lt;- with(edTable, reorder(value, Freq, mean))
+dotplot(value ~ Freq, data = edTable)
 </code></pre>
 
 <p><img src="figures/knitr/ed_table.png" alt="plot of chunk ed_table"> </p>
@@ -3592,21 +3590,111 @@ a &lt;- readTextFileByChunk(input = csvFile,
 </code></pre>
 
 <pre><code>Processing chunk  1 
-Processing chunk  2 
-Processing chunk  3 
-Processing chunk  4 
-Processing chunk  5 
-Processing chunk  6 
-Processing chunk  7 
-Processing chunk  8 
-Processing chunk  9 
-Processing chunk  10 
-Processing chunk  11 
-Processing chunk  12 
-Processing chunk  13 
-Processing chunk  14 
-Processing chunk  15 
-Processing chunk  16 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  2 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  3 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  4 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  5 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  6 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  7 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  8 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  9 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  10 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  11 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  12 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  13 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  14 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  15 
+</code></pre>
+
+<pre><code>Warning: Element 1 of input data has data already on disk of the same key.
+Set overwrite to TRUE or change key of input data.
+</code></pre>
+
+<pre><code>Processing chunk  16 
 </code></pre>
 
 <pre><code class="r">a[[1]]
@@ -3740,11 +3828,11 @@ TODO: example of writing your own MR job to read in data from text file -->
 <p>If you would like to run through all of the code examples in this documentation without having to pick out each line of code from the text, below are files with the R code for each section.</p>
 
 <ul>
-<li><a href="docs/code/2data.R">Dealing with Data in D&amp;R</a></li>
-<li><a href="docs/code/3dnr.R">Division and Recombination</a></li>
-<li><a href="docs/code/4mr.R">MapReduce</a></li>
-<li><a href="docs/code/5divag.R">Division Agnostic Methods</a></li>
-<li><a href="docs/code/6backend.R">Store/Compute Backends</a></li>
+<li><a href="code/2data.R">Dealing with Data in D&amp;R</a></li>
+<li><a href="code/3dnr.R">Division and Recombination</a></li>
+<li><a href="code/4mr.R">MapReduce</a></li>
+<li><a href="code/5divag.R">Division Agnostic Methods</a></li>
+<li><a href="code/6backend.R">Store/Compute Backends</a></li>
 </ul>
 
 </div>
@@ -3767,10 +3855,11 @@ TODO: example of writing your own MR job to read in data from text file -->
 </div>
 </div> <!-- /container -->
 
-<script src="assets/js/jquery.js"></script>
+<script src="assets/jquery/jquery.js"></script>
+<script type='text/javascript' src='assets/custom/custom.js'></script>
 <script src="assets/bootstrap/js/bootstrap.js"></script>
-<script src="assets/js/jquery.ba-hashchange.min.js"></script>
-<script src="assets/js/nav.js"></script>
+<script src="assets/custom/jquery.ba-hashchange.min.js"></script>
+<script src="assets/custom/nav.js"></script>
 
 </body>
 </html>

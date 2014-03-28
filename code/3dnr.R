@@ -140,8 +140,8 @@ names(adultDdf)
 
 library(lattice)
 edTable <- summary(adultDdf)$education$freqTable
-edTable$var <- with(edTable, reorder(var, Freq, mean))
-dotplot(var ~ Freq, data = edTable)
+edTable$value <- with(edTable, reorder(value, Freq, mean))
+dotplot(value ~ Freq, data = edTable)
 
 
 
