@@ -21,7 +21,7 @@ requiredObjAttrs <- function(obj, ...)
 
 #' @rdname ddoddfattr
 #' @export
-setAttributes <- function(obj, ...)
+setAttributes <- function(obj, attrs)
    UseMethod("setAttributes")
 
 #' @rdname ddoddfattr
@@ -97,7 +97,7 @@ getAttribute <- function(obj, attrName) {
 #' @rdname ddoddfattr
 #' @param \ldots additional arguments
 #' @export
-getAttributes <- function(obj, ...)
+getAttributes <- function(obj, attrNames)
    UseMethod("getAttributes")
 
 #' @rdname ddoddfattr

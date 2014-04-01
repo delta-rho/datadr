@@ -2,7 +2,7 @@
 #' 
 #' Create "hexbin" object of hexagonally binned data for a distributed data frame.  This computation is division agnostic - it does not matter how the data frame is split up.
 #' 
-#' @param a distributed data frame
+#' @param data a distributed data frame
 #' @param xVar,yVar names of the variables to use
 #' @param xTransFn,yTransFn a transformation function to apply to the x and y variables prior to binning
 #' @param xBins the number of bins partitioning the range of xbnds

@@ -66,7 +66,9 @@ getPrintVals.ddfSummFactor <- function(x) {
    nShow <- 4
    maxNchar <- 50
    
-   nLevels <- ifelse(x$complete, as.character(nrow(x$freqTable)), "10000+")
+   nLevels <- nrow(x$freqTable)
+   if(nLevels == 10000 && !x$complete)
+      nLevels <- "10000+"
    
    res <- c(
       paste("        levels :", nLevels), 

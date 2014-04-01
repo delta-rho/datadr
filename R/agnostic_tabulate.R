@@ -39,18 +39,22 @@ drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique =
          v <- kvApply(transFn, list(map.keys[[i]], map.values[[i]]))
          tabulateMap(formula, v)
       }))
-      res <- as.data.frame(xtabs(Freq ~ ., data = res), stringsAsFactors = FALSE)
       
-      if(is.null(by)) {
-         collect("global", res)
-      } else {
-         # go through for each "by"
-         unique.by <- as.character(unique(res[,by]))
-         lapply(unique.by, function(uby) {
-            ind <- which(res[,by] == uby)
-            if(length(ind) > 0)
-               collect(uby, res[ind,])
-         })
+      tmp <- xtabs(Freq ~ ., data = res)
+      if(length(tmp) > 0) { # tabulation of all NAs yields empty table
+         res <- as.data.frame(tmp, stringsAsFactors = FALSE)
+
+         if(is.null(by)) {
+            collect("global", res)
+         } else {
+            # go through for each "by"
+            unique.by <- as.character(unique(res[,by]))
+            lapply(unique.by, function(uby) {
+               ind <- which(res[,by] == uby)
+               if(length(ind) > 0)
+                  collect(uby, res[ind,])
+            })
+         }
       }
    })
    
