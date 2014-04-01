@@ -6,7 +6,7 @@ drHexBin(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
   xBins = 30, shape = 1, params = NULL, control = NULL)
 }
 \arguments{
-  \item{a}{distributed data frame}
+  \item{data}{a distributed data frame}
 
   \item{xVar,yVar}{names of the variables to use}
 

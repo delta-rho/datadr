@@ -10,7 +10,7 @@
 \alias{setAttributes.ddo}
 \title{Managing attributes of 'ddo' or 'ddf' objects}
 \usage{
-setAttributes(obj, ...)
+setAttributes(obj, attrs)
 
 \method{setAttributes}{ddf}(obj, attrs)
 
@@ -18,7 +18,7 @@ setAttributes(obj, ...)
 
 getAttribute(obj, attrName)
 
-getAttributes(obj, ...)
+getAttributes(obj, attrNames)
 
 \method{getAttributes}{ddf}(obj, attrNames)
 
