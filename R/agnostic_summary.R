@@ -13,7 +13,12 @@
 #' @export
 #' @rdname mrSummaryStats
 tabulateMap <- function(formula, data) {
-   as.data.frame(xtabs(formula, data=data), stringsAsFactors=FALSE)
+   tmp <- xtabs(formula, data = data)
+   if(length(tmp) > 0) {
+      return(as.data.frame(tmp, stringsAsFactors = FALSE))
+   } else {
+      return(NULL)
+   }
 }
 
 #' @param result,reduce.values inconsequential \code{tabulateReduce} parameters
@@ -23,17 +28,22 @@ tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
    suppressWarnings(suppressMessages(require(data.table)))
    tmp <- data.frame(rbindlist(reduce.values))
    tmp <- rbind(result, tmp)
-   tmp <- as.data.frame(xtabs(Freq ~ ., data=tmp), stringsAsFactors=FALSE)
-   # only tabulate top and bottom maxUnique values
-   idx <- order(tmp$Freq, decreasing = TRUE)
-   if(is.null(maxUnique)) {
-      return(tmp[idx,])
-   } else {
-      if(nrow(tmp) > maxUnique) {
-         return(tmp[c(head(idx, maxUnique / 2), tail(idx, maxUnique / 2)),])
-      } else {
+   tmp <- xtabs(Freq ~ ., data=tmp)
+   if(length(tmp) > 0) {
+      tmp <- as.data.frame(tmp, stringsAsFactors=FALSE)
+      # only tabulate top and bottom maxUnique values
+      idx <- order(tmp$Freq, decreasing = TRUE)
+      if(is.null(maxUnique)) {
          return(tmp[idx,])
-      }
+      } else {
+         if(nrow(tmp) > maxUnique) {
+            return(tmp[c(head(idx, maxUnique / 2), tail(idx, maxUnique / 2)),])
+         } else {
+            return(tmp[idx,])
+         }
+      }      
+   } else {
+      return(NULL)
    }
 }
 

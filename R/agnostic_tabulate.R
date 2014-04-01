@@ -43,7 +43,7 @@ drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique =
       tmp <- xtabs(Freq ~ ., data = res)
       if(length(tmp) > 0) { # tabulation of all NAs yields empty table
          res <- as.data.frame(tmp, stringsAsFactors = FALSE)
-
+         
          if(is.null(by)) {
             collect("global", res)
          } else {
