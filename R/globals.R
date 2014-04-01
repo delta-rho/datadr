@@ -6,13 +6,18 @@
 
 ## internal
 drFindGlobals <- function(f) {
+   on.exit({
+      try(assign("~", tildeHandler, envir = codetools:::collectUsageHandlers), silent = TRUE)
+   })
+   
    if(!is.function(f)) 
       return(character(0))
-
+   
    tildeHandler <- codetools:::collectUsageHandlers[["~"]]
-   remove("~", envir = codetools:::collectUsageHandlers)
-   res <- codetools::findGlobals(f, merge = FALSE)$variables
-   assign("~", tildeHandler, envir = codetools:::collectUsageHandlers)
+   try(remove("~", envir = codetools:::collectUsageHandlers), silent = TRUE)
+   res <- try(codetools::findGlobals(f, merge = FALSE)$variables, silent = TRUE)
+   if(inherits(res, "try-error"))
+      res <- NULL
    res
 }
 
