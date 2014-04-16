@@ -22,8 +22,11 @@ test_that("read local text with drRead.csv", {
    a <- drRead.csv(csvFile, output = irisTextConn, rowsPerBlock = 10)
    a <- updateAttributes(a)
    
-   expect_equivalent(head(a[[7]][[2]][,1:4]), head(iris)[,1:4])
-   expect_equivalent(nrow(a), nrow(iris))
+   tmp <- do.call(rbind, lapply(a[1:15], "[[", 2))
+   tmp <- tmp[order(tmp$Species, tmp$Sepal.Length, tmp$Sepal.Width, tmp$Petal.Length, tmp$Petal.Width),]
+   iris2 <- iris[order(iris$Species, iris$Sepal.Length, iris$Sepal.Width, iris$Petal.Length, iris$Petal.Width),]
+   iris2$Species <- as.character(iris2$Species)
+   expect_equivalent(iris2, tmp)
 })
 
 unlink(csvFile)

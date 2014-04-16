@@ -153,13 +153,13 @@ getTextFileTopLines <- function(x, ...)
 #' @S3method getTextFileTopLines character
 getTextFileTopLines.character <- function(x, skip, header, n = 1000) {
    tmp <- readLines(x, n = skip + header + n)
-   tail(tmp, n)
+   tail(tmp, length(tmp) - skip - header)
 }
 
 #' @S3method getTextFileTopLines hdfsConn
 getTextFileTopLines.hdfsConn <- function(x, skip, header, n = 1000) {
    tmp <- rhread(x$loc, type = "text", max = skip + header + n)
-   tail(tmp, n)
+   tail(tmp, length(tmp) - skip - header)
 }
 
 ############################################################################
