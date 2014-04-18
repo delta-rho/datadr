@@ -22,6 +22,24 @@ test_that("date/time summaries", {
 })
 
 
+context("test update with cat NAs")
+
+test_that("update with all NA subset", {
+   iris2 <- iris
+   iris2$let <- sample(letters, 150, replace = TRUE)
+   iris2$let[iris2$Species == "setosa"] <- NA
+   tmp <- divide(iris2, by = "Species")
+   tmp <- updateAttributes(tmp)
+   
+   expect_true(summary(tmp)$let$nna == 50)
+   
+   letTab <- summary(tmp)$let$freqTable
+   letTab <- letTab[order(letTab$value),]
+   orig <- data.frame(xtabs(~ let, data = iris2))
+   expect_true(all(orig$Freq == letTab$Freq))
+})
+
+
 context("test drXtabs")
 
 set.seed(1234)
@@ -64,7 +82,6 @@ test_that("xtabs results match", {
    # using "by"
    drXtabs(ct ~ let, by = "byvar", data = bbddf)
 })
-
 
 
 

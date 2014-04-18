@@ -127,9 +127,15 @@ quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn
       tails = tails
    )
    
-   setup <- as.expression(bquote({
-      suppressWarnings(suppressMessages(library(data.table)))
-   }))
+   if(! "package:datadr" %in% search()) {
+      setup <- expression({
+         suppressWarnings(suppressMessages(library(data.table)))
+      })
+   } else {
+      setup <- expression({
+         suppressWarnings(suppressMessages(library(datadr)))
+      })
+   }
    
    mrRes <- mrExec(x,
       map = map,

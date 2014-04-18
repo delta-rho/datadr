@@ -101,10 +101,12 @@ drRead.table <- function(file,
    )
    
    message("* testing read on a subset... ", appendLF = FALSE)
+   topLines <- getTextFileTopLines(file, skip = skip, header = header)
+   
    readTabParamsTmp <- readTabParams
-   readTabParamsTmp$skip <- skip + as.integer(header)
-   readTabParamsTmp$nrows <- 1000
-   readTabParamsTmp$file <- file
+   readTabParamsTmp$header <- FALSE
+   readTabParamsTmp$skip <- 0
+   readTabParamsTmp$file <- textConnection(paste(topLines, collapse = "\n"))
    res <- do.call(read.table, readTabParamsTmp)
    if(is.null(readTabParamsTmp$col.names))
       names(res) <- hd
@@ -117,7 +119,7 @@ drRead.table <- function(file,
       readTabParams$colClasses <- sapply(res, class)
    if(!autoColClasses)
       readTabParams$colClasses <- NULL
-      
+   
    # for now, force factors to be character
    readTabParams$colClasses[readTabParams$colClasses == "factor"] <- "character"
    
@@ -139,6 +141,25 @@ getTextFileHeaderLines.character <- function(x, skip) {
 #' @S3method getTextFileHeaderLines hdfsConn
 getTextFileHeaderLines.hdfsConn <- function(x, skip) {
    rhread(x$loc, type = "text", max = skip + 1)
+}
+
+############################################################################
+### method to get top lines
+############################################################################
+
+getTextFileTopLines <- function(x, ...)
+   UseMethod("getTextFileTopLines", x)
+
+#' @S3method getTextFileTopLines character
+getTextFileTopLines.character <- function(x, skip, header, n = 1000) {
+   tmp <- readLines(x, n = skip + header + n)
+   tail(tmp, length(tmp) - skip - header)
+}
+
+#' @S3method getTextFileTopLines hdfsConn
+getTextFileTopLines.hdfsConn <- function(x, skip, header, n = 1000) {
+   tmp <- rhread(x$loc, type = "text", max = skip + header + n)
+   tail(tmp, length(tmp) - skip - header)
 }
 
 ############################################################################
@@ -195,22 +216,28 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
 
 #' @S3method readTable hdfsConn
 readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, control) {
+   
    map <- expression({
-      for(i in seq_along(map.values)) {
-         tmp <- map.values[[i]]
-         readTabParams$file <- textConnection(paste(tmp[!tmp %in% hdText], collapse = "\n"))
-         res <- do.call(read.table, readTabParams)
-         if(is.null(readTabParams$col.names))
-            names(res) <- hd
-         id <- paste(Sys.getenv("mapred.task.id"), i, sep = "_")
-         collect(id, postTransFn(res))
-      }
+      tmp <- unlist(map.values)
+      readTabParams$file <- textConnection(paste(tmp[!tmp %in% hdText], collapse = "\n"))
+      res <- do.call(read.table, readTabParams)
+      if(is.null(readTabParams$col.names))
+         names(res) <- hd
+      id <- Sys.getenv("mapred.task.id")
+      collect(id, postTransFn(res))
    })
    control$mapred$rhipe_map_buff_size <- rowsPerBlock
-   params$postTransFn <- postTransFn
-   params$hdText <- hdText
    
-   ddf(mrExec(map = map, control = control, output = output, overwrite = overwrite, params = params))
+   parList <- list(
+      skip = skip,
+      header = header,
+      hd = hd,
+      hdText = hdText,
+      readTabParams = readTabParams,
+      postTransFn = postTransFn
+   )
+   
+   ddf(mrExec(ddo(file), map = map, control = control, output = output, overwrite = overwrite, params = c(params, parList)))
 }
 
 #############################################################################
