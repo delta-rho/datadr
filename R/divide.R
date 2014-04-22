@@ -212,6 +212,7 @@ divide <- function(data,
       reduce    = reduce, 
       output    = output,
       overwrite = overwrite,
+      control   = control,
       params    = c(params, parList)
    )
    
@@ -287,6 +288,18 @@ getSplitVars <- function(x) {
    if(length(res) == 0)
       res <- NULL
    res
+}
+
+#' "Flatten" a ddf Subset
+#' 
+#' Add split variables and BSVs (if any) as columns to a subset of a ddf.
+#' @param x a value of a key-value pair
+#' @seealso \code{\link{getSplitVars}}, \code{\link{getBsvs}}
+#' @export
+flatten <- function(x) {
+   svs <- getSplitVars(x)
+   bsvs <- getBsvs(x)
+   data.frame(c(x, svs, bsvs))
 }
 
 # take a data frame (or one that becomes a data frame with preTransFn)
