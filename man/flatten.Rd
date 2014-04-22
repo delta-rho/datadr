@@ -1,0 +1,17 @@
+\name{flatten}
+\alias{flatten}
+\title{"Flatten" a ddf Subset}
+\usage{
+flatten(x)
+}
+\arguments{
+  \item{x}{a value of a key-value pair}
+}
+\description{
+Add split variables and BSVs (if any) as columns to a
+subset of a ddf.
+}
+\seealso{
+\code{\link{getSplitVars}}, \code{\link{getBsvs}}
+}
+
