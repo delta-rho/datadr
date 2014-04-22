@@ -33,3 +33,15 @@ test_that("sample", {
    expect_true(sampleRes[[1]][[1]] == "Species=virginica")
 })
 
+test_that("subset", {
+   a <- divide(iris, by = "Species")
+   tmp <- drSubset(a, Sepal.Length > 6, preTransFn = flatten)
+   tmp <- tmp[order(tmp$Sepal.Length),]
+
+   comp <- subset(iris, Sepal.Length > 6)
+   comp <- comp[order(comp$Sepal.Length),]
+
+   expect_true(all(comp$Sepal.Length == tmp$Sepal.Length))
+})
+
+

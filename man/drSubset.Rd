@@ -1,0 +1,48 @@
+\name{drSubset}
+\alias{drSubset}
+\title{Subsetting Distributed Data Frames}
+\usage{
+drSubset(data, subset = NULL, select = NULL, drop = FALSE,
+  preTransFn = NULL, maxRows = 5e+05, params = NULL, control = NULL,
+  verbose = TRUE)
+}
+\arguments{
+  \item{data}{object to be subsetted -- an object of class
+  "ddf" or "ddo" - in the latter case, need to specify
+  \code{preTransFn} to coerce each subset into a data
+  frame}
+
+  \item{subset}{logical expression indicating elements or
+  rows to keep: missing values are taken as false}
+
+  \item{select}{expression, indicating columns to select
+  from a data frame}
+
+  \item{drop}{passed on to [ indexing operator}
+
+  \item{preTransFn}{a transformation function (if desired)
+  to applied to each subset prior to division}
+
+  \item{params}{a named list of parameters external to the
+  input data that are needed in the distributed computing
+  (most should be taken care of automatically such that
+  this is rarely necessary to specify)}
+
+  \item{control}{parameters specifying how the backend
+  should handle things (most-likely parameters to
+  \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}}
+  and \code{\link{localDiskControl}}}
+
+  \item{verbose}{logical - print messages about what is
+  being done}
+}
+\value{
+data frame
+}
+\description{
+Return a subset of a "ddf" object to memory
+}
+\author{
+Ryan Hafen
+}
+

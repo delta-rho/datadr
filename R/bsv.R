@@ -1,4 +1,3 @@
-
 #' Construct Between Subset Variable (BSV)
 #' 
 #' Construct between subset variable (BSV)
