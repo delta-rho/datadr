@@ -33,6 +33,16 @@ drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique =
       if(!by %in% labels(terms(formula)))
          formula <- eval(parse(text = paste("update(formula, ~ . + ", by, ")", sep = "")))
    
+   if(! "package:datadr" %in% search()) {
+      setup <- expression({
+         suppressWarnings(suppressMessages(library(data.table)))
+      })
+   } else {
+      setup <- expression({
+         suppressWarnings(suppressMessages(library(datadr)))
+      })
+   }
+   
    map <- expression({
       # tabulate all, group, and then collect for each unique "by"
       res <- do.call(rbind, lapply(seq_along(map.values), function(i) {
@@ -74,6 +84,7 @@ drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique =
    )
    
    res <- mrExec(data,
+      setup = setup,
       map = map,
       reduce = reduce,
       params = c(globalVarList, parList, params),
