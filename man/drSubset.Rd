@@ -2,8 +2,9 @@
 \alias{drSubset}
 \title{Subsetting Distributed Data Frames}
 \usage{
-drSubset(data, subset, select = NULL, drop = FALSE, preTransFn = NULL,
-  maxRows = 5e+05, params = NULL, control = NULL, verbose = TRUE)
+drSubset(data, subset = NULL, select = NULL, drop = FALSE,
+  preTransFn = NULL, maxRows = 5e+05, params = NULL, control = NULL,
+  verbose = TRUE)
 }
 \arguments{
   \item{data}{object to be subsetted -- an object of class
