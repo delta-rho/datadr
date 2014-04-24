@@ -50,20 +50,23 @@ drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique =
          tabulateMap(formula, v)
       }))
       
-      tmp <- xtabs(Freq ~ ., data = res)
-      if(length(tmp) > 0) { # tabulation of all NAs yields empty table
-         res <- as.data.frame(tmp, stringsAsFactors = FALSE)
-         
-         if(is.null(by)) {
-            collect("global", res)
-         } else {
-            # go through for each "by"
-            unique.by <- as.character(unique(res[,by]))
-            lapply(unique.by, function(uby) {
-               ind <- which(res[,by] == uby)
-               if(length(ind) > 0)
-                  collect(uby, res[ind,])
-            })
+      if(nrow(res) > 0) {
+         tmp <- xtabs(Freq ~ ., data = res)
+         # tabulation of all NAs yields empty table
+         if(length(tmp) > 0) { 
+            res <- as.data.frame(tmp, stringsAsFactors = FALSE)
+
+            if(is.null(by)) {
+               collect("global", res)
+            } else {
+               # go through for each "by"
+               unique.by <- as.character(unique(res[,by]))
+               lapply(unique.by, function(uby) {
+                  ind <- which(res[,by] == uby)
+                  if(length(ind) > 0)
+                     collect(uby, res[ind,])
+               })
+            }
          }
       }
    })
