@@ -75,7 +75,7 @@ drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique =
       reduce = { res <- tabulateReduce(res, reduce.values, maxUnique) }, 
       post = { collect(reduce.key, res) }
    )
-
+   
    globalVars <- drFindGlobals(transFn)
    globalVarList <- getGlobalVarList(globalVars, parent.frame())
    parList <- list(
@@ -102,5 +102,4 @@ drXtabs <- function(formula, data = data, by = NULL, transFn = NULL, maxUnique =
    
    res
 }
-
 
