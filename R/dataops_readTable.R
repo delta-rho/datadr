@@ -75,6 +75,9 @@ drRead.table <- function(file,
    if(is.character(file)) {
       if(!inherits(output, "localDiskConn"))
          stop("output must be a localDiskConn object with input text file on disk")
+      file <- normalizePath(file)
+      if(file.info(file)$isdir)
+         file <- list.files(file, recursive = TRUE, full.names = TRUE)
    } else {
       if(!inherits(output, "hdfsConn"))
          stop("output must be a hdfsConn object with input text file on HDFS")
@@ -135,7 +138,7 @@ getTextFileHeaderLines <- function(x, ...)
 
 #' @S3method getTextFileHeaderLines character
 getTextFileHeaderLines.character <- function(x, skip) {
-   readLines(x, n = skip + 1)
+   readLines(x[1], n = skip + 1)
 }
 
 #' @S3method getTextFileHeaderLines hdfsConn
@@ -152,7 +155,7 @@ getTextFileTopLines <- function(x, ...)
 
 #' @S3method getTextFileTopLines character
 getTextFileTopLines.character <- function(x, skip, header, n = 1000) {
-   tmp <- readLines(x, n = skip + header + n)
+   tmp <- readLines(x[1], n = skip + header + n)
    tail(tmp, length(tmp) - skip - header)
 }
 
@@ -172,45 +175,50 @@ readTable <- function(file, ...)
 #' @S3method readTable character
 readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, control) {
    
-   con <- file(description = file, open = "r")
-   on.exit(close(con))
-   curPos <- 1
-   
-   if(skip > 0) {
-      garbage <- readLines(con, n = skip)
-      curPos <- curPos + skip
-   }
-   
-   if(header) {
-      tmp <- readLines(con, n = 1)
-      curPos <- curPos + 1
-   }
-   
-   readTabParams$file <- con
-   readTabParams$nrows <- rowsPerBlock
-   data <- do.call(read.table, readTabParams)
-   
    i <- 1
-   repeat {
-      cat("Processing chunk ", i, "\n")
-      if(is.null(data))
-         break
+   for(ff in file) {
+      cat("-- In file ", ff, "\n")
+      con <- file(description = ff, open = "r")
+      on.exit(close(con))
+      curPos <- 1
       
-      if(is.null(readTabParams$col.names))
-         names(data) <- hd
+      if(skip > 0) {
+         garbage <- readLines(con, n = skip)
+         curPos <- curPos + skip
+      }
       
-      addData(output, list(list(i, postTransFn(data))))
+      if(header) {
+         tmp <- readLines(con, n = 1)
+         curPos <- curPos + 1
+      }
       
-      data <- tryCatch({
-         do.call(read.table, readTabParams)
-      }, error=function(err) {
-         if (identical(conditionMessage(err), "no lines available in input"))
-            NULL
-         else stop(err)
-      })
-      i <- i + 1
+      readTabParams$file <- con
+      readTabParams$nrows <- rowsPerBlock
+      data <- do.call(read.table, readTabParams)
+      
+      repeat {
+         cat("   Processing chunk ", i, "\n")
+         if(is.null(data)) {
+            cat("   * End of file - no data for chunk ", i, "\n")
+            break
+         }
+         
+         if(is.null(readTabParams$col.names))
+            names(data) <- hd
+         
+         addData(output, list(list(i, postTransFn(data))))
+         
+         data <- tryCatch({
+            do.call(read.table, readTabParams)
+         }, error=function(err) {
+            if (identical(conditionMessage(err), "no lines available in input"))
+               NULL
+            else stop(err)
+         })
+         i <- i + 1
+      }
    }
-
+   
    ddf(output)
 }
 
