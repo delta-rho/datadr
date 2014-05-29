@@ -2,7 +2,7 @@
 
 #' @S3method ddoInit localDiskConn
 ddoInit.localDiskConn <- function(obj, ...) {
-   structure(list(), class="kvLocalDisk")
+   structure(list(), class = "kvLocalDisk")
 }
 
 #' @S3method ddoInitConn localDiskConn
@@ -13,7 +13,7 @@ ddoInitConn.localDiskConn <- function(obj, ...) {
 #' @S3method requiredObjAttrs kvLocalDisk
 requiredObjAttrs.kvLocalDisk <- function(obj) {
    list(
-      ddo = c(getDr("requiredDdoAttrs"), "prefix", "files", "sizes"),
+      ddo = c(getDr("requiredDdoAttrs"), "files", "sizes"),
       ddf = getDr("requiredDdfAttrs")
    )
 }
@@ -21,12 +21,11 @@ requiredObjAttrs.kvLocalDisk <- function(obj) {
 #' @S3method getBasicDdoAttrs kvLocalDisk
 getBasicDdoAttrs.kvLocalDisk <- function(obj, conn) {
    fp <- conn$loc
-   ff <- list.files(fp, recursive=TRUE)
-   ff <- ff[!grepl("^_meta", ff)]
+   ff <- list.files(fp, recursive = TRUE)
+   ff <- ff[!grepl("_meta\\/", ff)]
    if(length(ff) == 0)
       stop("No data")
    sz <- file.info(file.path(fp, ff))$size
-   
    getDat <- function(f) {
       load(f)
       obj
@@ -36,7 +35,6 @@ getBasicDdoAttrs.kvLocalDisk <- function(obj, conn) {
       conn = conn,
       extractableKV = FALSE, 
       totStorageSize = sum(sz),
-      prefix = fp,
       files = ff,
       sizes = sz,
       nDiv = length(ff),
@@ -75,9 +73,9 @@ hasExtractableKV.kvLocalDisk <- function(x) {
    # - a hash digest of the desired keys, in which case the appropriate
    #     file will be located
 
-   pr <- getAttribute(x, "prefix")
    ff <- getAttribute(x, "files")
    conn <- getAttribute(x, "conn")
+   pr <- conn$loc
    nBins <- conn$nBins
    fileHashFn <- conn$fileHashFn
    
@@ -93,7 +91,7 @@ hasExtractableKV.kvLocalDisk <- function(x) {
          idx <- unlist(lapply(i, function(x) which(ff == x)))
       } else {
          # then try i as actual keys:
-         tmp <- try(fileHashFn(i, conn), silent=TRUE)
+         tmp <- try(fileHashFn(i, conn), silent = TRUE)
          if(!inherits(tmp, "try-error"))
             idx <- unlist(lapply(tmp, function(x) which(ff == x)))
          
@@ -146,7 +144,7 @@ convertImplemented.kvLocalDisk <- function(obj) {
 }
 
 #' @S3method convert kvLocalDisk
-convert.kvLocalDisk <- function(from, to=NULL) {
+convert.kvLocalDisk <- function(from, to = NULL) {
    convertKvLocalDisk(to, from)
 }
 
@@ -155,29 +153,30 @@ convertKvLocalDisk <- function(obj, ...)
 
 # from local disk to local disk
 #' @S3method convertKvLocalDisk localDiskConn
-convertKvLocalDisk.localDiskConn <- function(to, from, verbose=FALSE) {
+convertKvLocalDisk.localDiskConn <- function(to, from, verbose = FALSE) {
    from
 }
 
 # from local disk to memory
 #' @S3method convertKvLocalDisk NULL
-convertKvLocalDisk.NULL <- function(to, from, verbose=FALSE) {
+convertKvLocalDisk.NULL <- function(to, from, verbose = FALSE) {
    size <- getAttribute(from, "totObjectSize")
    if(is.na(size))
       size <- getAttribute(from, "totStorageSize")
    if(size / 1024^2 > 100)
       warning("Reading over 100MB of data into memory - probably not a good idea...")
-   pr <- getAttribute(from, "prefix")
    ff <- getAttribute(from, "files")
+   conn <- getAttribute(from, "conn")
+   pr <- conn$loc
    res <- do.call(c, lapply(file.path(pr, ff), function(x) {
       load(x)
       obj
    }))
    
    if(inherits(from, "ddf")) {
-      res <- ddf(res, update=FALSE, verbose=verbose)
+      res <- ddf(res, update = FALSE, verbose = verbose)
    } else {
-      res <- ddo(res, update=FALSE, verbose=verbose)
+      res <- ddo(res, update = FALSE, verbose = verbose)
    }
    
    addNeededAttrs(res, from)
@@ -185,8 +184,9 @@ convertKvLocalDisk.NULL <- function(to, from, verbose=FALSE) {
 
 # from local disk to HDFS
 #' @S3method convertKvLocalDisk hdfsConn
-convertKvLocalDisk.hdfsConn <- function(to, from, verbose=FALSE) {
-   pr <- getAttribute(from, "prefix")
+convertKvLocalDisk.hdfsConn <- function(to, from, verbose = FALSE) {
+   conn <- getAttribute(from, "conn")
+   pr <- conn$loc
    ff <- getAttribute(from, "files")
    
    # TODO: check to make sure "to" is a fresh location
@@ -198,18 +198,18 @@ convertKvLocalDisk.hdfsConn <- function(to, from, verbose=FALSE) {
       objSize <- objSize + object.size(obj)
       # flush it to HDFS once the list is bigger than 100MB (make this configurable?)
       if(objSize / 1024^2 > 100) {
-         rhwrite(writeDat, file=paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep=""))
+         rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep = ""))
          writeDat <- list()
          objSize <- 0
       }
    }
    if(length(writeDat) > 0)
-      rhwrite(writeDat, file=paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep=""))
+      rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep = ""))
    
    if(inherits(from, "ddf")) {
-      res <- ddf(to, update=FALSE, verbose=verbose)
+      res <- ddf(to, update = FALSE, verbose = verbose)
    } else {
-      res <- ddo(to, update=FALSE, verbose=verbose)
+      res <- ddo(to, update = FALSE, verbose = verbose)
    }
    
    addNeededAttrs(res, from)
