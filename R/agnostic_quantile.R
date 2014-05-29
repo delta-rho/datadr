@@ -33,17 +33,19 @@
 #' 
 #' # approximate quantiles over the divided data set
 #' probs <- seq(0, 1, 0.005)
-#' iq <- quantile(irisSplit, var = "Sepal.Length", tails = 0, probs = probs)
+#' iq <- drQuantile(irisSplit, var = "Sepal.Length", tails = 0, probs = probs)
 #' plot(iq$fval, iq$q)
 #' 
 #' # compare to the all-data quantile "type 1" result
 #' plot(probs, quantile(iris$Sepal.Length, probs = probs, type = 1))
 #' 
-#' @method quantile ddf
-#' @importFrom stats quantile
 #' @export
-quantile.ddf <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = identity, varTransFn = identity, nBins = 10000, tails = 100, params = NULL, control = NULL, ...) {
+drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = identity, varTransFn = identity, nBins = 10000, tails = 100, params = NULL, control = NULL, ...) {
    # nBins <- 10000; tails <- 0; probs <- seq(0, 1, 0.0005); by <- "Species"; var <- "Sepal.Length"; x <- ldd; trans <- identity
+   
+   if(!inherits(x, "ddf")) {
+      stop("Need a distributed data frame.")
+   }
    
    if(class(summary(x))[1] == "logical")
       stop("Need to know the range of the variable to compute quantiles - please run updateAttributes on this data.")
