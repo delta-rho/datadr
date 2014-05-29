@@ -28,7 +28,7 @@
 #' irisDdf <- ddf(conn, update=TRUE)
 #' irisDdf
 #' @export
-localDiskConn <- function(loc, nBins=0, fileHashFn=NULL, autoYes=FALSE, reset=FALSE, verbose=TRUE) {
+localDiskConn <- function(loc, nBins = 0, fileHashFn = NULL, autoYes = FALSE, reset = FALSE, verbose = TRUE) {
    if(length(loc) > 1)
       return("A local disk connection must be one directory")
    
@@ -42,13 +42,13 @@ localDiskConn <- function(loc, nBins=0, fileHashFn=NULL, autoYes=FALSE, reset=FA
       if(autoYes) {
          ans <- "y"
       } else {
-         ans <- readline(paste("The path '", loc, "' does not exist.  Should it be created? (y = yes) ", sep=""))
+         ans <- readline(paste("The path '", loc, "' does not exist.  Should it be created? (y = yes) ", sep = ""))
       }
    	if(!tolower(substr(ans, 1, 1)) == "y")
    	   stop("Backing out...")
       
       if(verbose)
-         message("* Attempting to create directory ... ", appendLF=FALSE)
+         message("* Attempting to create directory ... ", appendLF = FALSE)
       stopifnot(dir.create(loc))
       if(verbose)
          message("ok")
@@ -70,31 +70,31 @@ localDiskConn <- function(loc, nBins=0, fileHashFn=NULL, autoYes=FALSE, reset=FA
    }
    
    conn <- list(
-      loc = normalizePath(loc),
       nBins = nBins,
       fileHashFn = fileHashFn
    )
    class(conn) <- c("localDiskConn", "kvConnection")
    
    if(!file.exists(file.path(loc, "_meta"))) {
+      ## this must be a location where a connection hasn't existed
       if(verbose)
          message("* Saving connection attributes")
       dir.create(file.path(loc, "_meta"))
-      save(conn, file=file.path(loc, "_meta", "conn.Rdata"))
+      save(conn, file = file.path(loc, "_meta", "conn.Rdata"))
    } else if(!reset) {
+      ## load existing connection attributes
       if(verbose)
          message("* Loading connection attributes")
       if(file.exists(file.path(loc, "_meta", "conn.Rdata")))
          load(file.path(loc, "_meta", "conn.Rdata"))
-         # TODO: message that specified parameters are overridden?
+         # TODO: message that specified parameters are overridden by what was read in?
    } else {
-      save(conn, file=file.path(loc, "_meta", "conn.Rdata"))
+      save(conn, file = file.path(loc, "_meta", "conn.Rdata"))
       # if there are "ddo" attributes, we need to update the conn info there
       if(file.exists(file.path(loc, "_meta", "ddo.Rdata"))) {
          load(file.path(loc, "_meta", "ddo.Rdata"))
          attrs$conn <- conn
-         attrs$prefix <- loc
-         save(attrs, file=file.path(loc, "_meta", "ddo.Rdata"))
+         save(attrs, file = file.path(loc, "_meta", "ddo.Rdata"))
       }
    }
    
@@ -106,6 +106,10 @@ localDiskConn <- function(loc, nBins=0, fileHashFn=NULL, autoYes=FALSE, reset=FA
          message("* To initialize the data in this directory as a distributed data object of data frame, call ddo() or ddf()")
    }
    
+   ## don't store location with connection - user must always specify
+   ## location so just use it - this makes it easier for the user
+   ## to move data around without a hard-coded path saved in the metadata
+   conn$loc <- normalizePath(loc)
    conn
 }
 
@@ -125,8 +129,8 @@ localDiskConn <- function(loc, nBins=0, fileHashFn=NULL, autoYes=FALSE, reset=FA
 #' @examples
 #' # connect to empty localDisk directory
 #' path <- file.path(tempdir(), "irisSplit")
-#' unlink(path, recursive=TRUE)
-#' conn <- localDiskConn(path, autoYes=TRUE, fileHashFn=charFileHash)
+#' unlink(path, recursive = TRUE)
+#' conn <- localDiskConn(path, autoYes = TRUE, fileHashFn = charFileHash)
 #' # add some data
 #' addData(conn, list(list("key1", iris[1:10,])))
 #' addData(conn, list(list("key2", iris[11:110,])))
@@ -141,7 +145,7 @@ charFileHash <- function(keys, conn) {
    } else {
       files <- unlist(keys)
    }
-   paste(files, ".Rdata", sep="")
+   paste(files, ".Rdata", sep = "")
 }
 
 
@@ -161,8 +165,8 @@ charFileHash <- function(keys, conn) {
 #' @examples
 #' # connect to empty localDisk directory
 #' path <- file.path(tempdir(), "irisSplit")
-#' unlink(path, recursive=TRUE)
-#' conn <- localDiskConn(path, autoYes=TRUE, fileHashFn=digestFileHash)
+#' unlink(path, recursive = TRUE)
+#' conn <- localDiskConn(path, autoYes = TRUE, fileHashFn = digestFileHash)
 #' # add some data
 #' addData(conn, list(list("key1", iris[1:10,])))
 #' addData(conn, list(list("key2", iris[11:110,])))
@@ -175,18 +179,18 @@ digestFileHash <- function(keys, conn) {
    
    if(conn$nBins == 0) {
       keySubDirs <- rep("", length(digestKeys))
-      res <- paste(digestKeys, ".Rdata", sep="")
+      res <- paste(digestKeys, ".Rdata", sep = "")
    } else {
       keySubDirs <- sapply(digestKeys, function(x) digestKeyHash(x, conn$nBins))
-      padding <- paste("%0", nchar(as.character(conn$nBins)), "d", sep="")
+      padding <- paste("%0", nchar(as.character(conn$nBins)), "d", sep = "")
       keySubDirs <- sprintf(padding, keySubDirs)
-      res <- file.path(keySubDirs, paste(digestKeys, ".Rdata", sep=""))
+      res <- file.path(keySubDirs, paste(digestKeys, ".Rdata", sep = ""))
    }
    res
 }
 
 #' @S3method addData localDiskConn
-addData.localDiskConn <- function(conn, data, overwrite=FALSE) {
+addData.localDiskConn <- function(conn, data, overwrite = FALSE) {
    # takes a list of k/v pair lists and writes them to "conn"
    # if a k/v pair with the same key exists, it will overwrite if TRUE
    # for now, assumes unique keys
@@ -204,12 +208,12 @@ addData.localDiskConn <- function(conn, data, overwrite=FALSE) {
       obj <- data[i]
       if(file.exists(filePaths[i])) {
          if(overwrite) {
-            save(obj, file=filePaths[i])
+            save(obj, file = filePaths[i])
          } else {
             warning(paste("Element", i, "of input data has data already on disk of the same key.  Set overwrite to TRUE or change key of input data."))
          }
       } else {
-         save(obj, file=filePaths[i])
+         save(obj, file = filePaths[i])
       }
    }
 }
@@ -222,14 +226,16 @@ removeData.localDiskConn <- function(conn, keys) {
 
 #' @S3method print localDiskConn
 print.localDiskConn <- function(x, ...) {
-   cat(paste("localDiskConn connection\n  loc=", x$loc, "; nBins=", x$nBins, sep=""))
+   cat(paste("localDiskConn connection\n  loc=", x$loc, "; nBins=", x$nBins, sep = ""))
 }
 
 #' @S3method loadAttrs localDiskConn
-loadAttrs.localDiskConn <- function(obj, type="ddo") {
-   attrFile <- file.path(obj$loc, "_meta", paste(type, ".Rdata", sep=""))
+loadAttrs.localDiskConn <- function(obj, type = "ddo") {
+   attrFile <- file.path(obj$loc, "_meta", paste(type, ".Rdata", sep = ""))
    if(file.exists(attrFile)) {
       load(attrFile)
+      if(type == "ddo")
+         attrs$conn$loc <- obj$loc
       return(attrs)
    } else {
       return(NULL)
@@ -237,9 +243,11 @@ loadAttrs.localDiskConn <- function(obj, type="ddo") {
 }
 
 #' @S3method saveAttrs localDiskConn
-saveAttrs.localDiskConn <- function(obj, attrs, type="ddo") {
-   attrFile <- file.path(obj$loc, "_meta", paste(type, ".Rdata", sep=""))
-   save(attrs, file=attrFile)
+saveAttrs.localDiskConn <- function(obj, attrs, type = "ddo") {
+   if(type == "ddo")
+      attrs$conn$loc <- NULL
+   attrFile <- file.path(obj$loc, "_meta", paste(type, ".Rdata", sep = ""))
+   save(attrs, file = attrFile)
 }
 
 ############################################################################
@@ -247,7 +255,7 @@ saveAttrs.localDiskConn <- function(obj, attrs, type="ddo") {
 ############################################################################
 
 getFileLocs <- function(conn, keys) {
-   fileLocs <- do.call(conn$fileHashFn, list(keys=keys, conn=conn))
+   fileLocs <- do.call(conn$fileHashFn, list(keys = keys, conn = conn))
    fileLocs <- file.path(conn$loc, fileLocs)
    
    if(any(duplicated(fileLocs)))
@@ -256,7 +264,7 @@ getFileLocs <- function(conn, keys) {
    fileDirs <- dirname(fileLocs)
    uFileDirs <- unique(fileDirs)
    for(fp in uFileDirs)
-      if(!file.exists(fp)) dir.create(fp, recursive=TRUE)
+      if(!file.exists(fp)) dir.create(fp, recursive = TRUE)
    
    fileLocs
 }
