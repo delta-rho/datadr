@@ -2534,11 +2534,7 @@ The output from the map function is processed before being sent to the reduce fu
 <div class='tab-pane' id='all-data-computation'>
 <h3>All-Data Computation</h3>
 
-<p>While division and recombination methods focus on per-subset computation, there are times where we would like to compute statistics over the entire data set, regardless of division.  <code>datadr</code> aims to provide a set of methods for division-agnostic computations.</p>
-
-<p>Currently, we have implemented a <code>quantile()</code> function.  We have code to do other tabulations and summary statistics which are part of <code>updateAttributes()</code>, but currently we have not exposed a nice interface for this.  This will come shortly.</p>
-
-<p>With quantile estimation, we can obtain other related quantities of interest, such as histograms, boxplots, etc.</p>
+<p>While division and recombination methods focus on per-subset computation, there are times where we would like to compute statistics over the entire data set, regardless of division.  <code>datadr</code> provides a set of methods for division-agnostic computations.  Currently it supports tabulating data through a <code>drAggregate()</code> function, computing quantile estimates through a <code>drQuantile()</code> function (from which we can obtain other related quantities of interest, such as histograms, boxplots, etc.), and performing hexagonal binning of two quantitative variables through a <code>drHexbin()</code> function.</p>
 
 </div>
 
@@ -2554,7 +2550,7 @@ The output from the map function is processed before being sent to the reduce fu
 
 <h4>Example: adult data</h4>
 
-<p>Here we provide a quick example of how to compute quantiles.  We have implemented a <code>quantile()</code> method (see <code>?quantile.ddf</code>) that at a minimum requires a &quot;ddf&quot; object and a specification of <code>var</code>, the variable you would like to compute the quantiles of.</p>
+<p>Here we provide a quick example of how to compute quantiles.  We have implemented a function <code>drQquantile()</code> that at a minimum requires a &quot;ddf&quot; object and a specification of <code>var</code>, the variable you would like to compute the quantiles of.</p>
 
 <p>We will use the <code>adult</code> data from before.  Let&#39;s load it and create a by education division:</p>
 
@@ -2571,7 +2567,7 @@ byEd &lt;- divide(adultDdf, by = &quot;education&quot;, update = TRUE)
 <p>We can compute the quantiles with:</p>
 
 <pre><code class="r"># compute quantiles of hoursperweek
-hpwQuant &lt;- quantile(byEd, var = &quot;hoursperweek&quot;)
+hpwQuant &lt;- drQuantile(byEd, var = &quot;hoursperweek&quot;)
 head(hpwQuant)
 </code></pre>
 
@@ -2595,14 +2591,14 @@ head(hpwQuant)
 
 <h4>Keeping all data at the tails</h4>
 
-<p>A common thing we want to do with all-data quantile estimates is retain more observations in the tails.  With large data sets and heavy tails, it can be good to know about all of the observations located in the tails.  With the <code>quantile()</code> method for &quot;ddf&quot; objects, it is possible to specify a parameter <code>tails</code>, which you can set to a positive integer.  The <code>tails</code> argument tells the quantile method how many exact observations to keep at each side of the distribution.  These exact values are appended to the quantile estimates to provide more detail at the tails of the distribution.  The default is <code>tails = 100</code>.</p>
+<p>A common thing we want to do with all-data quantile estimates is retain more observations in the tails.  With large data sets and heavy tails, it can be good to know about all of the observations located in the tails.  With <code>drQuantile()</code>, it is possible to specify a parameter <code>tails</code>, which you can set to a positive integer.  The <code>tails</code> argument tells the quantile method how many exact observations to keep at each side of the distribution.  These exact values are appended to the quantile estimates to provide more detail at the tails of the distribution.  The default is <code>tails = 100</code>.</p>
 
 <h4>Conditioning on variables</h4>
 
 <p>It is possible to condition on a categorical variable when computing quantiles, so that you get a distribution per level of that categorical variable.  This can be useful when the data is very large for each category (otherwise, you can do this using <code>divide()</code> and <code>recombine()</code>).  Here is an example of the quantiles of hours worked per week by gender:</p>
 
 <pre><code class="r"># compute quantiles of hoursperweek by sex
-hpwBySexQuant &lt;- quantile(byEd, var = &quot;hoursperweek&quot;, by = &quot;sex&quot;)
+hpwBySexQuant &lt;- drQuantile(byEd, var = &quot;hoursperweek&quot;, by = &quot;sex&quot;)
 xyplot(q ~ fval, groups = group, data = hpwBySexQuant, auto.key = TRUE)
 </code></pre>
 
