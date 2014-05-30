@@ -4,11 +4,7 @@
 
 ### All-Data Computation ###
 
-While division and recombination methods focus on per-subset computation, there are times where we would like to compute statistics over the entire data set, regardless of division.  `datadr` aims to provide a set of methods for division-agnostic computations.
-
-Currently, we have implemented a `quantile()` function.  We have code to do other tabulations and summary statistics which are part of `updateAttributes()`, but currently we have not exposed a nice interface for this.  This will come shortly.
-
-With quantile estimation, we can obtain other related quantities of interest, such as histograms, boxplots, etc.
+While division and recombination methods focus on per-subset computation, there are times where we would like to compute statistics over the entire data set, regardless of division.  `datadr` provides a set of methods for division-agnostic computations.  Currently it supports tabulating data through a `drAggregate()` function, computing quantile estimates through a `drQuantile()` function (from which we can obtain other related quantities of interest, such as histograms, boxplots, etc.), and performing hexagonal binning of two quantitiative variables through a `drHexbin()` function.
 
 ### Quantiles ###
 
@@ -20,7 +16,7 @@ The quantile estimation returns results similar to that of `type = 1` in R's bas
 
 #### Example: adult data
 
-Here we provide a quick example of how to compute quantiles.  We have implemented a `quantile()` method (see `?quantile.ddf`) that at a minimum requires a "ddf" object and a specification of `var`, the variable you would like to compute the quantiles of.
+Here we provide a quick example of how to compute quantiles.  We have implemented function `drQuantile()` that at a minimum requires a "ddf" object and a specification of `var`, the variable you would like to compute the quantiles of.
 
 We will use the `adult` data from before.  Let's load it and create a by education division:
 
@@ -39,7 +35,7 @@ We can compute the quantiles with:
 
 ```{r hpw_quant, message = FALSE}
 # compute quantiles of hoursperweek
-hpwQuant <- quantile(byEd, var = "hoursperweek")
+hpwQuant <- drQuantile(byEd, var = "hoursperweek")
 head(hpwQuant)
 ```
 
@@ -53,7 +49,7 @@ Recall the quantiles (y-axis) are hours worked in a week.  Some people work too 
 
 #### Keeping all data at the tails
 
-A common thing we want to do with all-data quantile estimates is retain more observations in the tails.  With large data sets and heavy tails, it can be good to know about all of the observations located in the tails.  With the `quantile()` method for "ddf" objects, it is possible to specify a parameter `tails`, which you can set to a positive integer.  The `tails` argument tells the quantile method how many exact observations to keep at each side of the distribution.  These exact values are appended to the quantile estimates to provide more detail at the tails of the distribution.  The default is `tails = 100`.
+A common thing we want to do with all-data quantile estimates is retain more observations in the tails.  With large data sets and heavy tails, it can be good to know about all of the observations located in the tails.  With `drQuantile()`, it is possible to specify a parameter `tails`, which you can set to a positive integer.  The `tails` argument tells the quantile method how many exact observations to keep at each side of the distribution.  These exact values are appended to the quantile estimates to provide more detail at the tails of the distribution.  The default is `tails = 100`.
 
 #### Conditioning on variables
 
@@ -61,8 +57,33 @@ It is possible to condition on a categorical variable when computing quantiles, 
 
 ```{r hpw_quant_bysex, message = FALSE}
 # compute quantiles of hoursperweek by sex
-hpwBySexQuant <- quantile(byEd, var = "hoursperweek", by = "sex")
+hpwBySexQuant <- drQuantile(byEd, var = "hoursperweek", by = "sex")
 xyplot(q ~ fval, groups = group, data = hpwBySexQuant, auto.key = TRUE)
 ```
 
-<!-- TODO: more quantile examples and drXtabs -->
+### Aggregation ###
+
+Division-agnostic aggregation can be done with `drAggregate()`.  This function is similar to R's `aggregate()` and `xtabs()`.  It provides a formula interface to specifying both the quantity to sum and the variables to group by.  Unlike `xtabs()`, `drAggregate()` returns a data frame with rows only for combinations of factors for which there was a positive frequency.
+
+```{r aggregate_example, message = FALSE}
+# load adult data for aggregate example
+data(adult)
+adultDdf <- ddf(adult)
+# divide it by education, for fun
+byEd <- divide(adultDdf, by = "education", update = TRUE)
+
+# get counts by race and gender
+raceGender <- drAggregate(~ race + sex, data = byEd)
+raceGender
+
+# aggregate age by race and gender
+totAge <- drAggregate(age ~ race + sex, data = byEd)
+totAge
+```
+
+
+### Hexagonal Binning ###
+
+
+
+

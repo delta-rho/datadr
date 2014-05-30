@@ -205,7 +205,7 @@ The printout of `irisDdf` above shows data-frame-related attributes (which were 
 - `splitRowDistn`: which is similar to `splitSizeDistn`, except that it is the distribution of the number of rows of data in each subset
 - `summary` attribute holds summary statistics about each variable in the data frame
 
-The `summary` attribute can be useful for later computations, where doing it once up front is more efficient than .  A good example is quantile estimation (see `?quantile.ddo`), where the range is required to get a good quantile approximation.  Summary statistics are all computed simultaneously in one MapReduce job with a call to `updateAttributes()`.  
+The `summary` attribute can be useful for later computations, where doing it once up front is more efficient than .  A good example is quantile estimation (see `?drQuantile`), where the range is required to get a good quantile approximation.  Summary statistics are all computed simultaneously in one MapReduce job with a call to `updateAttributes()`.  
 
 The numerical summary statistics are computed using a numerically stable algorithm (cite).  Summary statistics include:
 

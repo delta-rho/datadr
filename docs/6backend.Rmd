@@ -314,7 +314,7 @@ The following functions all run MapReduce jobs and therefore have a `control` ar
 - `divide()`
 - `recombine()`
 - `updateAttributes()`
-- `quantile.ddf()`
+- `drQuantile()`
 
 Currently, the available control parameters for MapReduce on a local disk connection are:
 

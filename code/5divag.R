@@ -10,7 +10,7 @@ byEd <- divide(adultDdf, by = "education", update = TRUE)
 
 
 # compute quantiles of hoursperweek
-hpwQuant <- quantile(byEd, var = "hoursperweek")
+hpwQuant <- drQuantile(byEd, var = "hoursperweek")
 head(hpwQuant)
 
 
@@ -20,7 +20,7 @@ plot(hpwQuant)
 
 
 # compute quantiles of hoursperweek by sex
-hpwBySexQuant <- quantile(byEd, var = "hoursperweek", by = "sex")
+hpwBySexQuant <- drQuantile(byEd, var = "hoursperweek", by = "sex")
 xyplot(q ~ fval, groups = group, data = hpwBySexQuant, auto.key = TRUE)
 
 
