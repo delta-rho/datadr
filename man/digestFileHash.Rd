@@ -25,8 +25,8 @@ on how to write your own custom hash.
 \examples{
 # connect to empty localDisk directory
 path <- file.path(tempdir(), "irisSplit")
-unlink(path, recursive=TRUE)
-conn <- localDiskConn(path, autoYes=TRUE, fileHashFn=digestFileHash)
+unlink(path, recursive = TRUE)
+conn <- localDiskConn(path, autoYes = TRUE, fileHashFn = digestFileHash)
 # add some data
 addData(conn, list(list("key1", iris[1:10,])))
 addData(conn, list(list("key2", iris[11:110,])))

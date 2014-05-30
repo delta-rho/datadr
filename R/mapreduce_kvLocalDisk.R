@@ -47,7 +47,8 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
    # split ff into nSlots chunks with roughly equal size
    nms <- names(data)
    mFileList <- lapply(seq_along(data), function(i) {
-      fp <- getAttribute(data[[i]], "prefix")
+      conn <- getAttribute(data[[i]], "conn")
+      fp <- conn$loc
       ff <- getAttribute(data[[i]], "files")
       sz <- getAttribute(data[[i]], "sizes")
       

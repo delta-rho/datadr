@@ -146,11 +146,13 @@ divide <- function(data,
             kvApply(transFn, list(map.keys[[i]], map.values[[i]]),   
                returnKV = TRUE), returnKV = TRUE)
          
-         cutDat <- dfSplit(curKV[[2]], by, seed)
-         cdn <- names(cutDat)
-         
-         for(i in seq_along(cutDat)) {
-            collect(cdn[i], cutDat[[i]])
+         if(length(curKV[[2]]) > 0) {
+            cutDat <- dfSplit(curKV[[2]], by, seed)
+            cdn <- names(cutDat)
+            
+            for(i in seq_along(cutDat)) {
+               collect(cdn[i], cutDat[[i]])
+            }
          }
          
          # counter("datadr", "Divide map k/v processed", 1)

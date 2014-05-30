@@ -10,7 +10,7 @@ iris2$Sepal.Length[5:8] <- NA
 iris2$fac <- sample(letters, 150, replace = TRUE)
 data <- list()
 for(i in 1:25) {
-   kk <- paste(c("a", "b", "c"), i, sep="")
+   kk <- paste(c("a", "b", "c"), i, sep = "")
    data[c(length(data) + 1):(length(data) + 3)] <- list(
       list(kk[1], iris2[1:10,]),
       list(kk[2], iris2[11:110,]),
@@ -25,10 +25,10 @@ datadf <- data.frame(rbindlist(lapply(data, "[[", 2)))
 context("local disk connection checks")
 
 path <- file.path(tempdir(), "ldd_test")
-unlink(path, recursive=TRUE)
+unlink(path, recursive = TRUE)
 
 test_that("initialize", {
-   conn <- localDiskConn(path, autoYes=TRUE)   
+   conn <- localDiskConn(path, autoYes = TRUE)   
 })
 
 test_that("add data", {
@@ -45,14 +45,14 @@ test_that("add data", {
 
 # TODO: add test checking addition of data to already-existing k/v
 
-unlink(path, recursive=TRUE)
+unlink(path, recursive = TRUE)
 
 ############################################################################
 ############################################################################
 context("local disk connection checks with nBins")
 
 path <- file.path(tempdir(), "ldd_test_nbin")
-unlink(path, recursive=TRUE)
+unlink(path, recursive = TRUE)
 
 test_that("add data", {
    conn <- localDiskConn(path, nBins = 3, autoYes = TRUE)
@@ -66,18 +66,18 @@ test_that("add data", {
    expect_equivalent(data[[1]][[2]], obj[[1]][[2]], label = "values written correctly")
 })
 
-unlink(path, recursive=TRUE)
+unlink(path, recursive = TRUE)
 
 ############################################################################
 ############################################################################
 context("local disk connection checks with custom hash function")
 
 path <- file.path(tempdir(), "ldd_test_filehash")
-unlink(path, recursive=TRUE)
+unlink(path, recursive = TRUE)
 
 test_that("add data", {
    myFileHash <- function(keys, conn) {
-      paste(keys, ".Rdata", sep="")
+      paste(keys, ".Rdata", sep = "")
    }
    conn <- localDiskConn(path, fileHashFn = myFileHash, autoYes = TRUE)
    addData(conn, data)
@@ -90,15 +90,15 @@ test_that("add data", {
    expect_equivalent(data[[1]][[2]], obj[[1]][[2]], label = "values written correctly")
 })
 
-unlink(path, recursive=TRUE)
+unlink(path, recursive = TRUE)
 
 ############################################################################
 ############################################################################
 context("local disk ddo checks")
 
 path <- file.path(tempdir(), "ldd_test")
-unlink(path, recursive=TRUE)
-conn <- localDiskConn(path, autoYes=TRUE)   
+unlink(path, recursive = TRUE)
+conn <- localDiskConn(path, autoYes = TRUE)   
 addData(conn, data)
 
 test_that("initialize and print ddo", {
@@ -172,8 +172,8 @@ test_that("extraction checks", {
 })
 
 pathBins <- file.path(tempdir(), "ldd_testBins")
-unlink(pathBins, recursive=TRUE)
-connBins <- localDiskConn(pathBins, autoYes=TRUE)   
+unlink(pathBins, recursive = TRUE)
+connBins <- localDiskConn(pathBins, autoYes = TRUE)   
 addData(connBins, data)
 ldoBins <- ddo(connBins)
 
@@ -232,7 +232,7 @@ context("local disk parallel check")
 #    require(parallel)
 #    ldf <- ddf(conn, reset = TRUE)
 #    cl <- makeCluster(2)
-#    ldf <- updateAttributes(ldf, control=localDiskControl(cluster=cl))
+#    ldf <- updateAttributes(ldf, control = localDiskControl(cluster = cl))
 #    stopCluster(cl)
 #    
 #    expect_true(nrow(ldf) == 3750)
@@ -264,7 +264,7 @@ context("local disk divide() checks")
 
 test_that("conditioning division and bsv", {
    path2 <- file.path(tempdir(), "ldd_test_div")
-   unlink(path2, recursive=TRUE)
+   unlink(path2, recursive = TRUE)
    
    ldd <- divide(ldf, by = "Species", output = localDiskConn(path2, autoYes = TRUE), update = TRUE,
       bsvFn = function(x)
@@ -282,10 +282,10 @@ test_that("conditioning division and bsv", {
 
 test_that("random replicate division", {
    path2 <- file.path(tempdir(), "ldd_test_rrdiv")
-   unlink(path2, recursive=TRUE)
+   unlink(path2, recursive = TRUE)
    
    ldf <- ddf(conn)
-   ldr <- divide(ldf, by = rrDiv(nrow=200), output = localDiskConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
+   ldr <- divide(ldf, by = rrDiv(nrow = 200), output = localDiskConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
 })
 
 ############################################################################
@@ -303,15 +303,15 @@ test_that("simple recombination", {
 
 test_that("recombination with combRbind", {
    res <- recombine(ldd, apply = function(v) mean(v$Petal.Width), comb = combRbind())
-   expect_equal(res$val[res$Species=="setosa"], mpw)
+   expect_equal(res$val[res$Species == "setosa"], mpw)
 })
 
 test_that("recombination with combDdo", {
    meanApply <- function(v) {
-      data.frame(mpw=mean(v$Petal.Width), mpl=mean(v$Petal.Length))
+      data.frame(mpw = mean(v$Petal.Width), mpl = mean(v$Petal.Length))
    }
    
-   res <- recombine(ldd, apply=meanApply, comb=combDdo())
+   res <- recombine(ldd, apply = meanApply, comb = combDdo())
    
    expect_true(inherits(res, "ddo"))
 })
@@ -321,7 +321,7 @@ test_that("recombination with drGLM", {
    
    set.seed(1234)
    ldf <- ddf(conn)
-   ldr <- divide(ldf, by = rrDiv(nrow=200), output = localDiskConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
+   ldr <- divide(ldf, by = rrDiv(nrow = 200), output = localDiskConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
    
    a <- recombine(ldr, 
       apply = drGLM(vowel ~ Petal.Length, 
@@ -341,7 +341,7 @@ test_that("to memory", {
 if(TEST_HDFS) {
    test_that("to HDFS", {
       rhdel("/tmp/ldd_test_convert")
-      ldfHDFS <- convert(ldd, hdfsConn(loc="/tmp/ldd_test_convert", autoYes=TRUE))
+      ldfHDFS <- convert(ldd, hdfsConn(loc = "/tmp/ldd_test_convert", autoYes = TRUE))
       expect_true(nrow(ldfHDFS) == 3750)
    })
 }
@@ -351,8 +351,8 @@ if(TEST_HDFS) {
 context("local disk MR checks")
 
 path <- file.path(tempdir(), "ldd_test")
-unlink(path, recursive=TRUE)
-conn <- localDiskConn(path, autoYes=TRUE)   
+unlink(path, recursive = TRUE)
+conn <- localDiskConn(path, autoYes = TRUE)   
 addData(conn, data)
 
 irisDdo <- ddo(conn)
@@ -399,6 +399,23 @@ test_that("overwrite arguments", {
    
    ldo2 <- divide(iris, by = "Species", output = localDiskConn(loc), overwrite = TRUE)
    ldo3 <- divide(iris, by = "Species", output = localDiskConn(loc), overwrite = "backup")
+})
+
+############################################################################
+############################################################################
+context("test moving a local disk object and reconnecting")
+
+test_that("move local disk object", {
+   loc <- getAttributes(ldo, "conn")$ddo$conn$loc
+   loc2 <- file.path(dirname(loc), "testloc")
+   dir.create(loc2)
+   file.copy(list.files(loc, recursive = TRUE, full.names = TRUE), loc2, recursive = TRUE)
+   
+   ldo2 <- ddo(localDiskConn(loc2))
+   expect_true(getAttributes(ldo2, "conn")$ddo$conn$loc == loc2)
+   
+   # load(file.path(getAttributes(ldo2, "conn")$ddo$conn$loc, "_meta", "ddo.Rdata")
+   # attrs$conn
 })
 
 ## clean up

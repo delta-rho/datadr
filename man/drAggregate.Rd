@@ -1,8 +1,8 @@
-\name{drXtabs}
-\alias{drXtabs}
-\title{Division-Agnostic Tabulation}
+\name{drAggregate}
+\alias{drAggregate}
+\title{Division-Agnostic Aggregation}
 \usage{
-drXtabs(formula, data = data, by = NULL, transFn = NULL,
+drAggregate(formula, data = data, by = NULL, preTransFn = NULL,
   maxUnique = NULL, params = NULL, control = NULL)
 }
 \arguments{
@@ -21,11 +21,11 @@ drXtabs(formula, data = data, by = NULL, transFn = NULL,
   \item{by}{an optional variable by which to split up
   tabulations (i.e. tabulate independently inside of each
   unique "by" variable value).  The only difference between
-  specifying "by" and placing it in the right hand side of
-  the formula is how the computation is done and how the
-  result is returned.}
+  specifying "by" and placing the variable in the right
+  hand side of the formula is how the computation is done
+  and how the result is returned.}
 
-  \item{transFn}{an optional function to apply to each
+  \item{preTransFn}{an optional function to apply to each
   subset prior to performing tabulation.  The output from
   this function should be a data frame containing variables
   with names that match that of the formula provided.}
@@ -51,15 +51,22 @@ drXtabs(formula, data = data, by = NULL, transFn = NULL,
 }
 \value{
 a data frame of the tabulations.  When "by" is specified,
-it is a named list, with each element corresponding to a
+it is a named list with each element corresponding to a
 unique "by" value, containing a data frame of tabulations.
 }
 \description{
-Creates contingency tables from cross-classifying factors,
-with a formula interface similar to \code{xtabs}
+Aggregates data by cross-classifying factors, with a
+formula interface similar to \code{xtabs}
+}
+\note{
+The interface is similar to \code{\link{xtabs}}, but
+instead of returning a full contingency table, data is
+returned in the form of a data frame only with rows for
+which there were positive counts.  This result is more
+similar to what is returned by \code{\link{aggregate}}.
 }
 \examples{
-drXtabs(Sepal.Length ~ Species, data = ddf(iris))
+drAggregate(Sepal.Length ~ Species, data = ddf(iris))
 }
 \author{
 Ryan Hafen

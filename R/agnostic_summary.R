@@ -13,12 +13,14 @@
 #' @export
 #' @rdname mrSummaryStats
 tabulateMap <- function(formula, data) {
-   tmp <- xtabs(formula, data = data)
-   if(length(tmp) > 0) {
-      return(as.data.frame(tmp, stringsAsFactors = FALSE))
-   } else {
-      return(NULL)
+   if(length(data) > 0) {
+      tmp <- xtabs(formula, data = data)
+      if(length(tmp) > 0) {
+         tmp <- as.data.frame(tmp, stringsAsFactors = FALSE)
+         return(subset(tmp, Freq > 0))
+      }
    }
+   return(NULL)
 }
 
 #' @param result,reduce.values inconsequential \code{tabulateReduce} parameters
@@ -28,9 +30,10 @@ tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
    suppressWarnings(suppressMessages(require(data.table)))
    tmp <- data.frame(rbindlist(reduce.values))
    tmp <- rbind(result, tmp)
-   tmp <- xtabs(Freq ~ ., data=tmp)
+   tmp <- xtabs(Freq ~ ., data = tmp)
    if(length(tmp) > 0) {
-      tmp <- as.data.frame(tmp, stringsAsFactors=FALSE)
+      tmp <- as.data.frame(tmp, stringsAsFactors = FALSE)
+      tmp <- subset(tmp, Freq > 0)
       # only tabulate top and bottom maxUnique values
       idx <- order(tmp$Freq, decreasing = TRUE)
       if(is.null(maxUnique)) {
@@ -50,23 +53,23 @@ tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
 #' @param y,order,na.rm inconsequential \code{calculateMoments} parameters
 #' @export
 #' @rdname mrSummaryStats
-calculateMoments <- function(y, order=1, na.rm=TRUE) {
+calculateMoments <- function(y, order = 1, na.rm = TRUE) {
    if(na.rm)
       y <- y[!is.na(y)]
       
-   if(length(y)==0)
+   if(length(y) == 0)
       return(NA)
 
    # res is a list containing each moment and the number of observations
    res <- list()
    length(res) <- order + 1
-   res[[1]] <- mean(y, na.rm=TRUE)
+   res[[1]] <- mean(y, na.rm = TRUE)
    if(order > 1) {
       for(i in 2:order)
-         res[[i]] <- sum((y - res[[1]])^i, na.rm=TRUE)
+         res[[i]] <- sum((y - res[[1]])^i, na.rm = TRUE)
    }
    res[[order + 1]] <- as.numeric(length(y))
-   names(res) <- c(paste("M", 1:order, sep=""), "n")
+   names(res) <- c(paste("M", 1:order, sep = ""), "n")
    res
 }
 
@@ -93,7 +96,7 @@ combineMoments <- function(m1, m2) {
       }
    }
    res[[order + 1]] <- n
-   names(res) <- c(paste("M", 1:order, sep=""), "n")
+   names(res) <- c(paste("M", 1:order, sep = ""), "n")
    res
 }
 
@@ -131,9 +134,9 @@ moments2statistics <- function(m) {
    order <- length(m) - 1
    n <- m$n
    list(
-      mean=m[[1]], 
-      var=m[[2]]/(n-1), 
-      skewness=(m[[3]] / n) / (m[[2]] / n)^(3/2),
-      kurtosis=n * m[[4]] / m[[2]]^2
+      mean = m[[1]], 
+      var = m[[2]]/(n-1), 
+      skewness = (m[[3]] / n) / (m[[2]] / n)^(3/2),
+      kurtosis = n * m[[4]] / m[[2]]^2
    )
 }

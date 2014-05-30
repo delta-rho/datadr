@@ -1,8 +1,8 @@
-\name{quantile.ddf}
-\alias{quantile.ddf}
+\name{drQuantile}
+\alias{drQuantile}
 \title{Sample Quantiles for 'ddf' Objects}
 \usage{
-\method{quantile}{ddf}(x, var, by = NULL, probs = seq(0, 1, 0.005),
+drQuantile(x, var, by = NULL, probs = seq(0, 1, 0.005),
   preTransFn = identity, varTransFn = identity, nBins = 10000,
   tails = 100, params = NULL, control = NULL, ...)
 }
@@ -75,7 +75,7 @@ irisSplit <- ddf(irisSplit, update = TRUE)
 
 # approximate quantiles over the divided data set
 probs <- seq(0, 1, 0.005)
-iq <- quantile(irisSplit, var = "Sepal.Length", tails = 0, probs = probs)
+iq <- drQuantile(irisSplit, var = "Sepal.Length", tails = 0, probs = probs)
 plot(iq$fval, iq$q)
 
 # compare to the all-data quantile "type 1" result

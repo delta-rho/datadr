@@ -40,7 +40,7 @@ test_that("update with all NA subset", {
 })
 
 
-context("test drXtabs")
+context("test drAggregate")
 
 set.seed(1234)
 aa <- sample(letters, 100, replace=TRUE)
@@ -49,25 +49,29 @@ bb <- data.frame(ct=sample(1:10, 100, replace=TRUE), let=aa, byvar=sample(c("fac
 res1 <- data.frame(xtabs(~ let, data=bb))
 res1 <- res1[order(res1$Freq, res1$let, decreasing = TRUE),]
 res1$let <- as.character(res1$let)
+res1 <- subset(res1, Freq > 0)
 res2 <- data.frame(xtabs(ct ~ let, data=bb))
 res2 <- res2[order(res2$Freq, res2$let, decreasing = TRUE),]
+res2 <- subset(res2, Freq > 0)
 res2$let <- as.character(res2$let)
 res3 <- data.frame(xtabs(~ let + byvar, data=bb))
 res3 <- res3[order(res3$Freq, res3$let, res3$byvar, decreasing = TRUE),]
 res3$let <- as.character(res3$let)
 res3$byvar <- as.character(res3$byvar)
+res3 <- subset(res3, Freq > 0)
 res4 <- data.frame(xtabs(ct ~ let + byvar, data=bb))
 res4 <- res4[order(res4$Freq, res4$let, res4$byvar, decreasing = TRUE),]
 res4$let <- as.character(res4$let)
 res4$byvar <- as.character(res4$byvar)
+res4 <- subset(res4, Freq > 0)
 
-test_that("xtabs results match", {
+test_that("drAggregate results match", {
    bbddf <- ddf(list(list(1, bb[1:25,]), list(1, bb[26:75,]), list(1, bb[76:100,])))
    
-   drRes1 <- drXtabs(~ let, data = bbddf)
-   drRes2 <- drXtabs(ct ~ let, data = bbddf)
-   drRes3 <- drXtabs(~ let + byvar, data = bbddf)
-   drRes4 <- drXtabs(ct ~ let + byvar, data = bbddf)
+   drRes1 <- drAggregate(~ let, data = bbddf)
+   drRes2 <- drAggregate(ct ~ let, data = bbddf)
+   drRes3 <- drAggregate(~ let + byvar, data = bbddf)
+   drRes4 <- drAggregate(ct ~ let + byvar, data = bbddf)
    
    drRes1 <- drRes1[order(drRes1$Freq, drRes1$let, decreasing = TRUE),]
    drRes2 <- drRes2[order(drRes2$Freq, drRes2$let, decreasing = TRUE),]
@@ -80,9 +84,6 @@ test_that("xtabs results match", {
    expect_equal(drRes4, res4)
    
    # using "by"
-   drXtabs(ct ~ let, by = "byvar", data = bbddf)
+   drAggregate(ct ~ let, by = "byvar", data = bbddf)
 })
-
-
-
 

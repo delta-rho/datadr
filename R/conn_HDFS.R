@@ -28,7 +28,7 @@
 #'    hdd <- ddf(conn)
 #' }
 #' @export
-hdfsConn <- function(loc, type="sequence", autoYes=FALSE, reset=FALSE, verbose=TRUE) {
+hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, verbose = TRUE) {
    require(Rhipe)
    
    if(is.null(rhoptions()$server)) {
@@ -49,44 +49,45 @@ hdfsConn <- function(loc, type="sequence", autoYes=FALSE, reset=FALSE, verbose=T
       if(autoYes) {
          ans <- "y"
       } else {
-         ans <- readline(paste("The path '", loc, "' does not exist on HDFS.  Should it be created? (y = yes) ", sep=""))
+         ans <- readline(paste("The path '", loc, "' does not exist on HDFS.  Should it be created? (y = yes) ", sep = ""))
       }
    	if(!tolower(substr(ans, 1, 1)) == "y")
    	   stop("Backing out...")
       
       if(verbose)
-         message("* Attempting to create directory... ", appendLF=FALSE)
+         message("* Attempting to create directory... ", appendLF = FALSE)
       if(!rhmkdir(loc)) {
          message("")
          stop()
       }
       if(verbose)
          message("success")
+   } else {
+      # TODO: make sure it has the right type
    }
    
    conn <- list(
-      loc = loc,
       type = type
    )
    
-   metaDir <- paste(loc, "/_rh_meta", sep="")
-   connPath <- paste(metaDir, "/conn.Rdata", sep="")
+   metaDir <- paste(loc, "/_rh_meta", sep = "")
+   connPath <- paste(metaDir, "/conn.Rdata", sep = "")
    
    if(!existsOnHDFS(metaDir)) {
       if(verbose)
          message("* Saving connection attributes")
       rhmkdir(metaDir)
       rhchmod(metaDir, "777")
-      capture.output(rhsave(conn, file=paste(metaDir, "/conn.Rdata", sep="")), file="NUL")
-      rhchmod(paste(metaDir, "/conn.Rdata", sep=""), "777")
+      capture.output(rhsave(conn, file = paste(metaDir, "/conn.Rdata", sep = "")), file = "NUL")
+      rhchmod(paste(metaDir, "/conn.Rdata", sep = ""), "777")
    } else if(!reset) {
       if(verbose)
          message("* Loading connection attributes")
       if(existsOnHDFS(connPath))
-         capture.output(rhload(connPath), file="NUL")
+         capture.output(rhload(connPath), file = "NUL")
          # TODO: message that specified parameters are overridden?
    } else {
-      rhsave(conn, file=connPath)
+      rhsave(conn, file = connPath)
       rhchmod(connPath, "777")
    }
    
@@ -94,20 +95,25 @@ hdfsConn <- function(loc, type="sequence", autoYes=FALSE, reset=FALSE, verbose=T
    if(length(rhls(loc)) <= 1) {
       if(verbose)
          message("* Directory is empty... move some data in here")
-   } else if(!existsOnHDFS(paste(metaDir, "/ddo.Rdata", sep=""))) {
+   } else if(!existsOnHDFS(paste(metaDir, "/ddo.Rdata", sep = ""))) {
       if(verbose)
          message("* To initialize the data in this directory as a distributed data object or data frame, call ddo() or ddf()")
    }
+   
+   ## don't store location with connection - user must always specify
+   ## location so just use it - this makes it easier for the user
+   ## to move data around without a hard-coded path saved in the metadata
+   conn$loc <- loc
    
    class(conn) <- c("hdfsConn", "kvConnection")
    conn
 }
 
 #' @S3method addData hdfsConn
-addData.hdfsConn <- function(conn, data, overwrite=FALSE) {
+addData.hdfsConn <- function(conn, data, overwrite = FALSE) {
    # warning("This makes your mapfile go away")
    validateListKV(data)
-
+   
    # if(conn$charKeys)
    #    if(!all(sapply(data, function(x) is.character(x[[1]]))))
    #       stop("This connection expects keys to be characters only")
@@ -115,9 +121,9 @@ addData.hdfsConn <- function(conn, data, overwrite=FALSE) {
    # for now, just save the data with the name being the current system time
    # plus the hash for the data object - this should avoid any collisions
    # if it already exists, append stuff to it
-
+   
    op <- options(digits.secs = 6)
-   filename <- paste(conn$loc, "/", digest(data), "_", as.character(unclass(Sys.time())), sep="")
+   filename <- paste(conn$loc, "/", digest(data), "_", as.character(unclass(Sys.time())), sep = "")
    options(op)
    
    rhwrite(data, filename)
@@ -131,7 +137,7 @@ removeData.hdfsConn <- function(conn, keys) {
 
 #' @S3method print hdfsConn
 print.hdfsConn <- function(x, ...) {
-   cat(paste("hdfsConn connection\n  loc=", x$loc, "; type=", x$type, sep=""))
+   cat(paste("hdfsConn connection\n  loc=", x$loc, "; type=", x$type, sep = ""))
 }
 
 ############################################################################
@@ -139,11 +145,13 @@ print.hdfsConn <- function(x, ...) {
 ############################################################################
 
 #' @S3method loadAttrs hdfsConn
-loadAttrs.hdfsConn <- function(obj, type="ddo") {
-   attrFile <- paste(obj$loc, "/_rh_meta/", type, ".Rdata", sep="")
-
+loadAttrs.hdfsConn <- function(obj, type = "ddo") {
+   attrFile <- paste(obj$loc, "/_rh_meta/", type, ".Rdata", sep = "")
+   
    if(existsOnHDFS(attrFile)) {
       rhload(attrFile)
+      if(type == "ddo")
+         attrs$conn$loc <- obj$loc
       return(attrs)
    } else {
       return(NULL)
@@ -151,17 +159,19 @@ loadAttrs.hdfsConn <- function(obj, type="ddo") {
 }
 
 #' @S3method saveAttrs hdfsConn
-saveAttrs.hdfsConn <- function(obj, attrs, type="ddo") {
-   fp <- paste(obj$loc, "/_rh_meta/", type, ".Rdata", sep="")
-   rhsave(attrs, file=fp)
+saveAttrs.hdfsConn <- function(obj, attrs, type = "ddo") {
+   fp <- paste(obj$loc, "/_rh_meta/", type, ".Rdata", sep = "")
+   if(type == "ddo")
+      attrs$conn$loc <- NULL
+   rhsave(attrs, file = fp)
    rhchmod(fp, "777")
 }
 
 # check to see if file exists on HDFS
 existsOnHDFS <- function(...) {
    params <- list(...)
-   path <- rhabsolute.hdfs.path(paste(params, collapse="/"))
-   res <- try(rhls(path), silent=TRUE)
+   path <- rhabsolute.hdfs.path(paste(params, collapse = "/"))
+   res <- try(rhls(path), silent = TRUE)
    if(inherits(res, "try-error")) {
       return(FALSE)      
    } else {

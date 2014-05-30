@@ -28,14 +28,14 @@ context("all-data quantile checks")
 
 test_that("fail when min/max not known", {
    # expect error
-   expect_error(quantile(ldd, var = "Sepal.Length", tails = 0))
+   expect_error(drQuantile(ldd, var = "Sepal.Length", tails = 0))
 })
 
 ldd <- ddf(conn, update = TRUE)
 
 test_that("result matches quantile()", {
-   ### compare quantile.ddf() output to default quantile() method
-   sq <- quantile(ldd, var = "Sepal.Length", tails = 0)
+   ### compare drQuantile output to default quantile() method
+   sq <- drQuantile(ldd, var = "Sepal.Length", tails = 0)
    qq <- quantile(tmp$Sepal.Length, probs = seq(0, 1, by = 0.005), type=1)
    
    # plot(sq$fval, sq$q)
@@ -46,12 +46,12 @@ test_that("result matches quantile()", {
 
 test_that("tails check", {
    sls <- sort(tmp$Sepal.Length)
-   sq <- quantile(ldd, var="Sepal.Length", tails = 200)
+   sq <- drQuantile(ldd, var="Sepal.Length", tails = 200)
    expect_true(all(head(sls, 200) == head(sq$q, 200)))
 })
 
 test_that("by=TRUE", {
-   sq2 <- quantile(ldd, var = "Sepal.Length", by = "Species", tails = 0)
+   sq2 <- drQuantile(ldd, var = "Sepal.Length", by = "Species", tails = 0)
    # true quantiles
    tmpd <- divide(tmp, by="Species")
    tmp2 <- recombine(tmpd, 
@@ -74,12 +74,12 @@ test_that("map is cleaned up for mulitple blocks", {
    # a single map task -- this is more of a localDisk mapReduce test to make
    # sure that it cleans up the map each time
    # (the "by" argument gets updated but should be clean for each map call)
-   quantile(ldd, var = "Sepal.Length", control = list(map_buff_size_bytes = 10))   
+   drQuantile(ldd, var = "Sepal.Length", control = list(map_buff_size_bytes = 10))   
 })
 
 
 test_that("varTransFn", {
-   sq <- quantile(ldd, var = "Sepal.Length", by = "Species", tails = 0, varTransFn = function(x) log(x))
+   sq <- drQuantile(ldd, var = "Sepal.Length", by = "Species", tails = 0, varTransFn = function(x) log(x))
    
    tmpd <- divide(tmp, by="Species")
    tmp2 <- recombine(tmpd, 
@@ -95,7 +95,7 @@ test_that("varTransFn", {
 })
 
 test_that("preTransFn", {
-   sq <- quantile(ldd, var = "Sepal.Length", by = "Species2", tails = 0, varTransFn = function(x) log(x), preTransFn = function(x) { x$Species2 <- paste(x$Species, "2"); x })
+   sq <- drQuantile(ldd, var = "Sepal.Length", by = "Species2", tails = 0, varTransFn = function(x) log(x), preTransFn = function(x) { x$Species2 <- paste(x$Species, "2"); x })
    
    tmpd <- divide(tmp, by="Species")
    tmp2 <- recombine(tmpd, 
@@ -111,12 +111,7 @@ test_that("preTransFn", {
 })
 
 
-
-sq2 <- quantile(ldd, var = "Sepal.Length", by = "Species", tails = 0)
+sq2 <- drQuantile(ldd, var = "Sepal.Length", by = "Species", tails = 0)
 
 # TODO: test varTransFn, preTransFn
-
-
-
-
 

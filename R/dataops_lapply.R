@@ -23,4 +23,3 @@
 drLapply <- function(data, apply = NULL, combine = combDdo(), output = NULL, overwrite = FALSE, params = NULL, control = NULL, verbose = TRUE) {
    recombine(data = data, apply = apply, combine = combine, output = output, overwrite = overwrite, params = params, control = control, verbose = verbose)
 }
-
