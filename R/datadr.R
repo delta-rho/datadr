@@ -1,3 +1,12 @@
+#' datadr.
+#'
+#' @name datadr
+#' @docType package
+#' @import parallel data.table digest codetools hexbin testthat
+
+NULL
+
+
 #' "Census Income" Dataset
 #' 
 #' @name adult

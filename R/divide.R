@@ -9,7 +9,7 @@
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param spill integer telling the division method how many lines of data should be collected until spilling over into a new key-value pair
 #' @param filterFn a function that is applied to each candidate output key-value pair to determine whether it should be (if returns \code{TRUE}) part of the resulting division
-#' @param preTransFn a transformation function (if desired) to applied to each subset prior to division
+#' @param preTransFn a transformation function (if desired) to applied to each subset prior to division - note: this is deprecated - instead use \code{\link{addTransform}} prior to calling divide
 #' @param postTransFn a transformation function (if desired) to apply to each post-division subset
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
@@ -37,7 +37,6 @@ divide <- function(data,
    output = NULL, 
    overwrite = FALSE,
    preTransFn = NULL,
-   # blockPreTransFn = NULL,
    postTransFn = NULL,
    params = NULL,
    control = NULL,
@@ -66,8 +65,10 @@ divide <- function(data,
    if(is.null(seed))
       seed <- as.integer(runif(1)*1000000)
    
-   if(is.null(preTransFn))
-      preTransFn <- identity
+   if(!is.null(preTransFn)) {
+      message("** note **: preTransFn is deprecated - please apply this transformation using 'addTransform()' to your input data prior to calling 'divide()'")
+      data <- addTransform(data, preTransFn)
+   }
    
    if(is.null(filterFn)) {
       filterFn <- function(x) TRUE
@@ -75,8 +76,7 @@ divide <- function(data,
    }
    
    # get an example of what a subset will look like when it is to be divided
-   ex <- kvExample(data, transform = TRUE)
-   ex <- kvApply(preTransFn, ex, returnKV = TRUE)
+   ex <- kvExample(data)
    
    # make sure the division specification is good
    # and get any parameters that need to be sent to dfSplit
@@ -97,7 +97,6 @@ divide <- function(data,
    parList <- list(
       by = by,
       transFn = getAttribute(data, "transFn"),
-      preTransFn = preTransFn,
       postTransFn = postTransFn,
       seed = seed,
       bsvFn = bsvFn,
@@ -105,15 +104,16 @@ divide <- function(data,
       filterFn = filterFn
    )
    
-   globalVars <- unique(c(
-      drFindGlobals(preTransFn),
-      drFindGlobals(postTransFn),
-      drFindGlobals(bsvFn),
-      drFindGlobals(filterFn)
-   ))
-   globalVarList <- getGlobalVarList(globalVars, parent.frame())
+   # find globals in postTransFn, bsvFn, and filterFn
+   postGlobals <- drGetGlobals(postTransFn)
+   bsvGlobals <- drGetGlobals(bsvFn)
+   filterGlobals <- drGetGlobals(filterFn)
+   
+   globalVarList <- c(postGlobals$vars, bsvGlobals$vars, filterGlobals$vars)
+   packages <- c(postGlobals$packages, bsvGlobals$packages, filterGlobals$packages)
+   
    if(length(globalVarList) > 0)
-      parList <- c(parList, globalVarList)
+      parList <- c(parList, globalVarList$vars)
    
    if(! "package:datadr" %in% search()) {
       if(verbose)
@@ -142,12 +142,8 @@ divide <- function(data,
    
    map <- expression({
       for(i in seq_along(map.values)) {
-         curKV <- kvApply(preTransFn,
-            kvApply(transFn, list(map.keys[[i]], map.values[[i]]),   
-               returnKV = TRUE), returnKV = TRUE)
-         
-         if(length(curKV[[2]]) > 0) {
-            cutDat <- dfSplit(curKV[[2]], by, seed)
+         if(length(map.values[[i]]) > 0) {
+            cutDat <- dfSplit(map.values[[i]], by, seed)
             cdn <- names(cutDat)
             
             for(i in seq_along(cutDat)) {
@@ -215,7 +211,8 @@ divide <- function(data,
       output    = output,
       overwrite = overwrite,
       control   = control,
-      params    = c(params, parList)
+      params    = c(params, parList),
+      packages  = packages
    )
    
    # return ddo or ddf object

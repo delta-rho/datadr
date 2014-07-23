@@ -136,12 +136,12 @@ drRead.table <- function(file,
 getTextFileHeaderLines <- function(x, ...)
    UseMethod("getTextFileHeaderLines", x)
 
-#' @S3method getTextFileHeaderLines character
+#' @export
 getTextFileHeaderLines.character <- function(x, skip) {
    readLines(x[1], n = skip + 1)
 }
 
-#' @S3method getTextFileHeaderLines hdfsConn
+#' @export
 getTextFileHeaderLines.hdfsConn <- function(x, skip) {
    rhread(x$loc, type = "text", max = skip + 1)
 }
@@ -153,13 +153,13 @@ getTextFileHeaderLines.hdfsConn <- function(x, skip) {
 getTextFileTopLines <- function(x, ...)
    UseMethod("getTextFileTopLines", x)
 
-#' @S3method getTextFileTopLines character
+#' @export
 getTextFileTopLines.character <- function(x, skip, header, n = 1000) {
    tmp <- readLines(x[1], n = skip + header + n)
    tail(tmp, length(tmp) - skip - header)
 }
 
-#' @S3method getTextFileTopLines hdfsConn
+#' @export
 getTextFileTopLines.hdfsConn <- function(x, skip, header, n = 1000) {
    tmp <- rhread(x$loc, type = "text", max = skip + header + n)
    tail(tmp, length(tmp) - skip - header)
@@ -172,7 +172,7 @@ getTextFileTopLines.hdfsConn <- function(x, skip, header, n = 1000) {
 readTable <- function(file, ...)
    UseMethod("readTable", file)
 
-#' @S3method readTable character
+#' @export
 readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, control) {
    
    i <- 1
@@ -222,7 +222,7 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
    ddf(output)
 }
 
-#' @S3method readTable hdfsConn
+#' @export
 readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, control) {
    
    map <- expression({

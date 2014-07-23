@@ -5,7 +5,6 @@ bySpecies <- divide(iris, by="Species")
 test_that("lapply", {
    lapplyRes <- drLapply(bySpecies, function(x) mean(x$Sepal.Width))
    expect_true(inherits(lapplyRes, "ddo"))
-   expect_true(inherits(lapplyRes, "ddo"))
    resList <- as.list(lapplyRes)
    expect_true(is.list(resList))
    expect_equal(as.numeric(resList[[1]][[2]]), 3.428)
@@ -15,7 +14,7 @@ test_that("join", {
    sw <- drLapply(bySpecies, function(x) x$Sepal.Width)
    sl <- drLapply(bySpecies, function(x) x$Sepal.Length)
    
-   joinRes <- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
+   joinRes <- drJoin(Sepal.Width = sw, Sepal.Length = sl, postTransFn = as.data.frame)
    
    expect_true(all(names(joinRes[[1]][[2]]) == c("Sepal.Width", "Sepal.Length")))
 })
@@ -37,10 +36,10 @@ test_that("subset", {
    a <- divide(iris, by = "Species")
    tmp <- drSubset(a, Sepal.Length > 6, preTransFn = flatten)
    tmp <- tmp[order(tmp$Sepal.Length),]
-
+   
    comp <- subset(iris, Sepal.Length > 6)
    comp <- comp[order(comp$Sepal.Length),]
-
+   
    expect_true(all(comp$Sepal.Length == tmp$Sepal.Length))
 })
 

@@ -1,3 +1,6 @@
+library(digest)
+library(data.table)
+
 # not all test environments have Hadoop installed
 TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
 if(TEST_HDFS == "")
@@ -33,7 +36,7 @@ path <- file.path("/tmp", "hdd_test")
 try(rhdel(path), silent = TRUE)
 
 test_that("initialize", {
-   conn <- hdfsConn(path, autoYes=TRUE)   
+   conn <- hdfsConn(path, autoYes=TRUE)
 })
 
 test_that("add data", {

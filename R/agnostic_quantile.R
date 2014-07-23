@@ -6,7 +6,7 @@
 #' @param var the name of the variable to compute quantiles for
 #' @param by the (optional) variable by which to group quantile computations
 #' @param probs numeric vector of probabilities with values in [0-1]
-#' @param preTransFn a transformation function (if desired) to applied to each subset prior to division (here it may be useful for adding a "by" variable that is not present) - note: this transformation should not modify \code{var} (use \code{varTransFn} for that)
+#' @param preTransFn a transformation function (if desired) to applied to each subset prior to computing quantiles (here it may be useful for adding a "by" variable that is not present) - note: this transformation should not modify \code{var} (use \code{varTransFn} for that) - also note: this is deprecated - instead use \code{\link{addTransform}} prior to calling divide
 #' @param varTransFn transformation to apply to variable prior to computing quantiles
 #' @param nBins how many bins should the range of the variable be split into?
 #' @param tails how many exact values at each tail should be retained?
@@ -40,35 +40,43 @@
 #' plot(probs, quantile(iris$Sepal.Length, probs = probs, type = 1))
 #' 
 #' @export
-drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = identity, varTransFn = identity, nBins = 10000, tails = 100, params = NULL, control = NULL, ...) {
+drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL, varTransFn = identity, nBins = 10000, tails = 100, params = NULL, control = NULL, ...) {
    # nBins <- 10000; tails <- 0; probs <- seq(0, 1, 0.0005); by <- "Species"; var <- "Sepal.Length"; x <- ldd; trans <- identity
+   
+   # we need to know the range of the variables, which we don't
+   # when we have a transformed object - and can't update attributes
+   # (transformed objects are meant to be intermediate objects anyway)
+   if(inherits(x, "transformed")) {
+      stop("Cannot run drQuantile() on a transformed divided data object.", call. = FALSE)
+   }
    
    if(!inherits(x, "ddf")) {
       stop("Need a distributed data frame.")
    }
    
-   if(class(summary(x))[1] == "logical")
+   if(class(attr(x, "ddf")$summary)[1] == "logical")
       stop("Need to know the range of the variable to compute quantiles - please run updateAttributes on this data.")
    
-   ex <- kvApply(preTransFn, x[[1]])
+   if(!is.null(preTransFn)) {
+      message("** note **: preTransFn is deprecated - please apply this transformation using 'addTransform()' to your input data prior to calling 'drQuantile()'")
+      x <- addTransform(x, preTransFn)
+   }
+   ex <- kvExample(x)
    
-   rng <- varTransFn(summary(x)[[var]]$range)
+   rng <- varTransFn(attr(x, "ddf")$summary[[var]]$range)
    delta <- diff(rng) / (nBins - 1)
    cuts <- seq(rng[1] - delta / 2, rng[2] + delta/2, by=delta)
    mids <- seq(rng[1], rng[2], by=delta)
    
    map <- expression({
       dat <- data.frame(rbindlist(lapply(seq_along(map.values), function(i) {
-         curKV <- kvApply(preTransFn,
-            kvApply(dfTrans, list(map.keys[[i]], map.values[[i]]),   
-               returnKV = TRUE), returnKV = TRUE)
          res <- data.frame(
-            v = varTransFn(curKV[[2]][, var]),
+            v = varTransFn(map.values[[i]][, var]),
             by = "1",
             stringsAsFactors = FALSE
          )
          if(!is.null(by)) {
-            res$by <- as.character(curKV[[2]][, by])
+            res$by <- as.character(map.values[[i]][, by])
          }
          res
       })))
@@ -117,12 +125,9 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
       }
    )
    
-   globalVars <- c(drFindGlobals(varTransFn), drFindGlobals(preTransFn))
-   globalVarList <- getGlobalVarList(globalVars, parent.frame())
+   globalVarList <- drGetGlobals(varTransFn)
    parList <- list(
       varTransFn = varTransFn,
-      preTransFn = preTransFn,
-      dfTrans = getAttribute(x, "transFn"),
       var = var,
       by = by,
       cuts = cuts,
