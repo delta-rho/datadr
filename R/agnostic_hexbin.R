@@ -16,7 +16,7 @@
 #' 
 #' @author Ryan Hafen
 #' 
-#' @seealso \code{\link{quantile.ddf}}
+#' @seealso \code{\link{drQuantile}}
 #' @export
 drHexBin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity, xBins = 30, shape = 1, params = NULL, control = NULL) {
    

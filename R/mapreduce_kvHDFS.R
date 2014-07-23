@@ -1,6 +1,6 @@
 ### mrExec for kvHDFS objects
 
-#' @S3method mrExecInternal kvHDFSList
+#' @export
 mrExecInternal.kvHDFSList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {
    
    setup2 <- expression({
@@ -88,7 +88,7 @@ rhipeControl <- function(mapred = NULL, setup = NULL, combiner = FALSE, cleanup 
    res
 }
 
-#' @S3method defaultControl kvHDFS
+#' @export
 defaultControl.kvHDFS <- function(x) {
    rhipeControl()
 }

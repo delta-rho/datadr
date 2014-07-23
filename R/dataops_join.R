@@ -48,14 +48,14 @@ drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, pa
       res[length(res) + seq_along(reduce.values)] <- reduce.values
    }, post = {
       res <- unlist(res, recursive = FALSE)
+      attr(res, "split") <- attr(res[[1]], "split")
       if(!is.null(postTransFn)) {
          res <- postTransFn(res)
       }
       collect(reduce.key, res)
    })
    
-   globalVars <- drFindGlobals(postTransFn)
-   globalVarList <- getGlobalVarList(globalVars, parent.frame())
+   globalVarList <- drGetGlobals(postTransFn)
    parList <- list(postTransFn = postTransFn)
    
    mrExec(inputs,
@@ -67,6 +67,4 @@ drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, pa
       params = c(parList, globalVarList, params)
    )
 }
-
-
 

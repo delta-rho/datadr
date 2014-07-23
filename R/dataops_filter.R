@@ -30,8 +30,7 @@ drFilter <- function(x, filterFn, output = NULL, overwrite = FALSE, params = NUL
       }
    })
    
-   globalVars <- drFindGlobals(filterFn)
-   globalVarList <- getGlobalVarList(globalVars, parent.frame())
+   globalVarList <- drGetGlobals(filterFn)
    parList <- list(filterFn = filterFn, kvApply = kvApply)
    
    mrExec(x,

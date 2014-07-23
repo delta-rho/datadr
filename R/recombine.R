@@ -22,7 +22,7 @@
 #' @author Ryan Hafen
 #' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}, \code{\link{drLapply}}
 #' @export
-recombine <- function(data, apply = NULL, combine = NULL, output = NULL, overwrite = FALSE, params = NULL, control = NULL, verbose = TRUE) {
+recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwrite = FALSE, params = NULL, control = NULL, verbose = TRUE) {
    # apply <- function(x) {
    #    mean(x$Sepal.Length)
    # }
@@ -39,30 +39,14 @@ recombine <- function(data, apply = NULL, combine = NULL, output = NULL, overwri
       } else {
          combine <- combDdo()
       }
+   } else if(is.function(combine)) {
+      combine <- combine()
    }
    
-   ## if apply is a function, build a map expression that applies it
-   if(is.function(apply)) {
-      apply <- structure(list(
-         args = list(applyFn = apply),
-         applyFn = function(args, dat) {
-            kvApply(args$applyFn, dat)
-         }
-      ), class = "drGeneric")
-      environment(apply$applyFn) <- .GlobalEnv
+   if(!is.null(apply)) {
+      message("** note **: 'apply' argument is deprecated - please apply this transformation using 'addTransform()' to your input data prior to calling 'recombine()'")
+      data <- addTransform(data, apply)
    }
-   
-   if(verbose)
-      message("* Verifying suitability of 'apply' for division type...")
-   
-   divInfo <- getAttribute(data, "div")
-   divType <- ifelse(is.na(divInfo), "unknown", divInfo$divBy$type)
-   if(!is.null(apply$validate))
-      if(!divType %in% apply$validate)
-         warning("* Input data with division: ", divType, " is not known to be suitable for the 'apply' method provided.  Interpret results at your own risk.")
-   
-   # if(verbose)
-   #    message("* Verifying suitability of 'combine' for specified 'apply'...")
    
    if(verbose)
       message("* Verifying suitability of 'output' for specified 'combine'...")
@@ -72,44 +56,26 @@ recombine <- function(data, apply = NULL, combine = NULL, output = NULL, overwri
       if(!outClass %in% combine$validateOutput)
          stop("'output' of type ", outClass, " is not compatible with specified 'combine'")
    
-   # group == TRUE says to output a constant key ("1"), so that everything
-   # is bunched together in the reduce
-   # group == FALSE says to output the same key that was input
-   apply$args$group <- combine$group
-   if(is.null(apply$args$group))
-      apply$args$group <- TRUE
-   
-   if(!is.null(combine$mapHook)) {
-      apply$args$mapHook <- combine$mapHook
-      environment(apply$args$mapHook) <- .GlobalEnv
-   }
-   
    if(verbose)
-      message("* Testing the 'apply' method on a subset...")
-   tmp <- apply$applyFn(apply$args, kvExample(data))
+      message("* Applying recombination...")
    
-   if(verbose)
-      message("* Applying to all subsets...")
    map <- expression({
       for(i in seq_along(map.keys)) {
-         tmp <- apply$applyFn(apply$args, list(map.keys[[i]], map.values[[i]]))
-         if(apply$args$group) {
+         if(combine$group) {
             key <- "1"
          } else {
             key <- map.keys[[i]]
          }
-         if(is.function(apply$args$mapHook)) {
-            tmp <- apply$args$mapHook(map.keys[[i]], tmp, attributes(map.values[[i]]))
+         if(is.function(combine$mapHook)) {
+            map.values[[i]] <- combine$mapHook(map.keys[[i]], map.values[[i]])
          }
-         collect(key, tmp)
+         collect(key, map.values[[i]])
       }
    })
    
    reduce <- combine$reduce
    
-   parList <- list(
-      apply = apply
-   )
+   parList <- list(combine = combine)
    
    if(! "package:datadr" %in% search()) {
       if(verbose)
@@ -127,8 +93,7 @@ recombine <- function(data, apply = NULL, combine = NULL, output = NULL, overwri
       })
    }
    
-   globalVars <- drFindGlobals(apply)
-   globalVarList <- getGlobalVarList(globalVars, parent.frame())
+   globalVarList <- drGetGlobals(apply)
    if(length(globalVarList) > 0)
       parList <- c(parList, globalVarList)
    

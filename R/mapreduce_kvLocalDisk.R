@@ -1,13 +1,12 @@
 ## mrExec for kvLocalDisk objects
 
-#' @S3method mrExecInternal kvLocalDiskList
+#' @export
 mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {
    setup <- appendExpression(setup, 
       expression({
          suppressWarnings(suppressMessages(require(digest)))
       })
    )
-   
    if(is.null(reduce))
       reduce <- expression(pre = {}, reduce = {collect(reduce.key, reduce.values)}, post = {})
    
@@ -70,6 +69,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
    
    mapFn <- function(fl) {
       mapEnv <- new.env() # parent = baseenv())
+      assign(".mr_packages", params$.mr_packages, mapEnv)
       eval(setup, envir = mapEnv)
       
       # add a collect, counter functions to the environment
@@ -320,7 +320,7 @@ localDiskControl <- function(
    )
 }
 
-#' @S3method defaultControl kvLocalDisk
+#' @export
 defaultControl.kvLocalDisk <- function(x) {
    localDiskControl()
 }
