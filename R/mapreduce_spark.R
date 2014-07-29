@@ -1,6 +1,6 @@
 ### mrExec for sparkData objects
 
-#' @S3method mrExecInternal kvSparkDataList
+#' @export
 mrExecInternal.kvSparkDataList <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
    
    dat <- unlist(lapply(data, function(x) {
@@ -95,7 +95,7 @@ sparkControl <- function() {
    NULL
 }
 
-#' @S3method defaultControl kvSparkData
+#' @export
 defaultControl.kvSparkData <- function(x) {
    sparkControl()
 }

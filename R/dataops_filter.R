@@ -7,6 +7,7 @@
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
+#' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' 
 #' @return a 'ddo' or 'ddf' object
@@ -19,7 +20,7 @@
 #' bySpecies <- divide(iris, by = "Species")
 #' drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
 #' @export
-drFilter <- function(x, filterFn, output = NULL, overwrite = FALSE, params = NULL, control = NULL) {
+drFilter <- function(x, filterFn, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL) {
    # TODO: warn if output storage is not commensurate with input?
    # which will most-often happen when "output" is forgotten
    # TODO: check filterFn on a subset and make sure it returns a logical
@@ -30,16 +31,27 @@ drFilter <- function(x, filterFn, output = NULL, overwrite = FALSE, params = NUL
       }
    })
    
-   globalVars <- drFindGlobals(filterFn)
-   globalVarList <- getGlobalVarList(globalVars, parent.frame())
+   globalVarList <- drGetGlobals(filterFn)
    parList <- list(filterFn = filterFn, kvApply = kvApply)
+   
+   if(! "package:datadr" %in% search()) {
+      parList <- c(parList, list(
+         applyTransform = applyTransform,
+         setupTransformEnv = setupTransformEnv
+      ))
+   }
+   
+   # if the user supplies output as an unevaluated connection
+   # the verbosity can be misleading
+   suppressMessages(output <- output)
    
    mrExec(x,
       map = map,
       control = control,
       output = output,
       overwrite = overwrite,
-      params = c(parList, globalVarList, params)
+      params = c(parList, globalVarList$vars, params),
+      packages = c(globalVarList$packages, packages)
    )
 }
 

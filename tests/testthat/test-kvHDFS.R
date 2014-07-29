@@ -1,3 +1,6 @@
+library(digest)
+library(data.table)
+
 # not all test environments have Hadoop installed
 TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
 if(TEST_HDFS == "")
@@ -33,7 +36,7 @@ path <- file.path("/tmp", "hdd_test")
 try(rhdel(path), silent = TRUE)
 
 test_that("initialize", {
-   conn <- hdfsConn(path, autoYes=TRUE)   
+   conn <- hdfsConn(path, autoYes = TRUE)
 })
 
 test_that("add data", {
@@ -53,7 +56,7 @@ test_that("add data", {
 context("hdfs ddo checks")
 
 path <- file.path("/tmp", "hdd_test")
-conn <- hdfsConn(path, autoYes=TRUE)   
+conn <- hdfsConn(path, autoYes = TRUE)
 
 test_that("initialize and print ddo", {
    hdo <- ddo(conn)
@@ -109,9 +112,8 @@ test_that("extraction checks", {
    expect_true(all(sapply(hdo[c(1, 3)], digest) %in% dataDigest), label = "multiple extraction by index")
    keys <- c(data[[1]][[1]], data[[10]][[1]])
    expect_equivalent(hdo[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
-
+   
    expect_equivalent(hdo[[1]], hdo[[digest(hdo[[1]][[1]])]], label = "extraction by key hash")
-
 })
 
 ############################################################################
@@ -173,11 +175,23 @@ test_that("conditioning division and bsv", {
    hdd
 })
 
+test_that("division with addTransform", {
+   a <- 3
+   hdf2 <- addTransform(hdf, function(x) {
+      x$Petal.Width <- x$Petal.Width + a
+      x
+   })
+   rm(a)
+   hdd2 <- divide(hdf2, by = "Species")
+   
+   expect_true(min(hdd2[["Species=virginica"]][[2]]$Petal.Width) == 4.4)
+})
+
 test_that("random replicate division", {
    path2 <- file.path("/tmp", "hdd_test_rrdiv")
    try(rhdel(path2), silent = TRUE)
    
-   hdr <- divide(hdf, by = rrDiv(nrow=200), output = hdfsConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
+   hdr <- divide(hdf, by = rrDiv(nrow = 200), output = hdfsConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
    hdr
 })
 
@@ -191,20 +205,29 @@ mpw <- mean(hdd[[1]][[2]]$Petal.Width)
 test_that("simple recombination", {
    res <- recombine(hdd, apply = function(v) mean(v$Petal.Width))
    ind <- which(sapply(res, function(x) x[[1]] == "Species=setosa"))
-   expect_equal(res[[ind]][[2]], mpw)
+   expect_equal(as.numeric(res[[ind]][[2]]), mpw)
+})
+
+test_that("recombine with addTransform", {
+   a <- 3
+   hddMpw <- addTransform(hdd, function(v) mean(v$Petal.Width) + a)
+   rm(a)
+   res <- recombine(hddMpw, combRbind)
+   
+   expect_true(res$val[res$Species == "setosa"] == 3.246)
 })
 
 test_that("recombination with combRbind", {
    res <- recombine(hdd, apply = function(v) mean(v$Petal.Width), comb = combRbind())
-   expect_equal(res$val[res$Species=="setosa"], mpw)
+   expect_equal(res$val[res$Species == "setosa"], mpw)
 })
 
 test_that("recombination with combDdo", {
    meanApply <- function(v) {
-      data.frame(mpw=mean(v$Petal.Width), mpl=mean(v$Petal.Length))
+      data.frame(mpw = mean(v$Petal.Width), mpl = mean(v$Petal.Length))
    }
-
-   res <- recombine(hdd, apply=meanApply, comb=combDdo())
+   
+   res <- recombine(hdd, apply = meanApply, comb = combDdo())
    
    expect_true(inherits(res, "ddo"))
 })
@@ -230,7 +253,7 @@ test_that("to memory", {
 
 test_that("to local disk", {
    path <- file.path(tempdir(), "hdd_test_convert")
-   hdfDisk <- convert(hdd, localDiskConn(path, autoYes=TRUE))
+   hdfDisk <- convert(hdd, localDiskConn(path, autoYes = TRUE))
    expect_true(nrow(hdfDisk) == 3750)
 })
 

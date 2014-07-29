@@ -24,7 +24,7 @@ rrDiv <- function(nrows=NULL, seed=NULL) {
    res
 }
 
-#' @S3method getCuts rrDiv
+#' @export
 getCuts.rrDiv <- function(by, curDF) {
    splitVars <- "__random__"
    # get the number of splits necessary for specified nrows
@@ -36,7 +36,7 @@ getCuts.rrDiv <- function(by, curDF) {
    paste("rr_", cut(runif(n), seq(0, 1, length = ndiv + 1), labels = FALSE), sep = "")
 }
 
-#' @S3method validateDivSpec rrDiv
+#' @export
 validateDivSpec.rrDiv <- function(by, data, ex) {
    n <- suppressWarnings(nrow(data))
    nr <- by$nrows

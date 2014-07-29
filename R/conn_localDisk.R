@@ -189,7 +189,7 @@ digestFileHash <- function(keys, conn) {
    res
 }
 
-#' @S3method addData localDiskConn
+#' @export
 addData.localDiskConn <- function(conn, data, overwrite = FALSE) {
    # takes a list of k/v pair lists and writes them to "conn"
    # if a k/v pair with the same key exists, it will overwrite if TRUE
@@ -219,17 +219,17 @@ addData.localDiskConn <- function(conn, data, overwrite = FALSE) {
 }
 
 # takes a list of keys and removes data with those keys
-#' @S3method removeData localDiskConn
+#' @export
 removeData.localDiskConn <- function(conn, keys) {
    conn
 }
 
-#' @S3method print localDiskConn
+#' @export
 print.localDiskConn <- function(x, ...) {
    cat(paste("localDiskConn connection\n  loc=", x$loc, "; nBins=", x$nBins, sep = ""))
 }
 
-#' @S3method loadAttrs localDiskConn
+#' @export
 loadAttrs.localDiskConn <- function(obj, type = "ddo") {
    attrFile <- file.path(obj$loc, "_meta", paste(type, ".Rdata", sep = ""))
    if(file.exists(attrFile)) {
@@ -242,7 +242,7 @@ loadAttrs.localDiskConn <- function(obj, type = "ddo") {
    }
 }
 
-#' @S3method saveAttrs localDiskConn
+#' @export
 saveAttrs.localDiskConn <- function(obj, attrs, type = "ddo") {
    if(type == "ddo")
       attrs$conn$loc <- NULL
@@ -269,7 +269,7 @@ getFileLocs <- function(conn, keys) {
    fileLocs
 }
 
-#' @S3method mrCheckOutputLoc localDiskConn
+#' @export
 mrCheckOutputLoc.localDiskConn <- function(x, overwrite = FALSE) {
    if(file.exists(x$loc)) {
       tmp <- list.files(x$loc)

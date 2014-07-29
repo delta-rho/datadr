@@ -8,6 +8,7 @@
 #' @param xBins the number of bins partitioning the range of xbnds
 #' @param shape the shape = yheight/xwidth of the plotting regions
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
+#' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' 
 #' @return a "hexbin" object
@@ -16,9 +17,9 @@
 #' 
 #' @author Ryan Hafen
 #' 
-#' @seealso \code{\link{quantile.ddf}}
+#' @seealso \code{\link{drQuantile}}
 #' @export
-drHexBin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity, xBins = 30, shape = 1, params = NULL, control = NULL) {
+drHexBin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity, xBins = 30, shape = 1, params = NULL, packages = NULL, control = NULL) {
    
    if(class(summary(data))[1] == "logical")
       stop("Need to know the range of the variable to compute quantiles - please run updateAttributes on this data.")
@@ -71,7 +72,7 @@ drHexBin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
       tmpBin = tmpBin
    )
    
-   res <- mrExec(data, map = map, reduce = reduce, params = parList, verbose = FALSE)
+   res <- mrExec(data, map = map, reduce = reduce, params = parList, packages = packages, verbose = FALSE)
    res[[1]][[2]]
 }
 

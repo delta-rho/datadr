@@ -19,6 +19,10 @@
 updateAttributes <- function(obj, control = NULL) {
    # obj <- ddf(iris)
    
+   if(inherits(obj, "transformed")) {
+      stop("Cannot run updateAttributes() on a transformed divided data object.", call. = FALSE)
+   }
+   
    ddoVars <- requiredObjAttrs(obj)$ddo
    ddfVars <- requiredObjAttrs(obj)$ddf
    
