@@ -28,7 +28,6 @@
 #' @param output a "kvConnection" object indicating where the output data should reside.  Must be a \code{\link{localDiskConn}} object if input is a text file on local disk, or a \code{\link{hdfsConn}} object if input is a text file on HDFS.
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param params a named list of parameters external to the input data that are needed in \code{postTransFn}
-#' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' 
 #' @note For local disk, the file is actually read in sequentially instead of in parallel.  This is because of possible performance issues when trying to read from the same disk in parallel.
@@ -66,7 +65,6 @@ drRead.table <- function(file,
    output = NULL,
    overwrite = FALSE,
    params = NULL,
-   packages = NULL,
    control = NULL,
    ...
    ) {
@@ -128,11 +126,7 @@ drRead.table <- function(file,
    # for now, force factors to be character
    readTabParams$colClasses[readTabParams$colClasses == "factor"] <- "character"
    
-   # if the user supplies output as an unevaluated connection
-   # the verbosity can be misleading
-   suppressMessages(output <- output)
-   
-   readTable(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, packages, control)
+   readTable(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, control)
 }
 
 ############################################################################
@@ -142,12 +136,12 @@ drRead.table <- function(file,
 getTextFileHeaderLines <- function(x, ...)
    UseMethod("getTextFileHeaderLines", x)
 
-#' @export
+#' @S3method getTextFileHeaderLines character
 getTextFileHeaderLines.character <- function(x, skip) {
    readLines(x[1], n = skip + 1)
 }
 
-#' @export
+#' @S3method getTextFileHeaderLines hdfsConn
 getTextFileHeaderLines.hdfsConn <- function(x, skip) {
    rhread(x$loc, type = "text", max = skip + 1)
 }
@@ -159,13 +153,13 @@ getTextFileHeaderLines.hdfsConn <- function(x, skip) {
 getTextFileTopLines <- function(x, ...)
    UseMethod("getTextFileTopLines", x)
 
-#' @export
+#' @S3method getTextFileTopLines character
 getTextFileTopLines.character <- function(x, skip, header, n = 1000) {
    tmp <- readLines(x[1], n = skip + header + n)
    tail(tmp, length(tmp) - skip - header)
 }
 
-#' @export
+#' @S3method getTextFileTopLines hdfsConn
 getTextFileTopLines.hdfsConn <- function(x, skip, header, n = 1000) {
    tmp <- rhread(x$loc, type = "text", max = skip + header + n)
    tail(tmp, length(tmp) - skip - header)
@@ -178,8 +172,8 @@ getTextFileTopLines.hdfsConn <- function(x, skip, header, n = 1000) {
 readTable <- function(file, ...)
    UseMethod("readTable", file)
 
-#' @export
-readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, packages, control) {
+#' @S3method readTable character
+readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, control) {
    
    i <- 1
    for(ff in file) {
@@ -228,8 +222,8 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
    ddf(output)
 }
 
-#' @export
-readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, packages, control) {
+#' @S3method readTable hdfsConn
+readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, control) {
    
    map <- expression({
       tmp <- unlist(map.values)
@@ -251,7 +245,7 @@ readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, rea
       postTransFn = postTransFn
    )
    
-   ddf(mrExec(ddo(file), map = map, control = control, output = output, overwrite = overwrite, params = c(params, parList), packages = packages))
+   ddf(mrExec(ddo(file), map = map, control = control, output = output, overwrite = overwrite, params = c(params, parList)))
 }
 
 #############################################################################

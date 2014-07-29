@@ -1,4 +1,4 @@
-#' @export
+#' @S3method print ddfSummary
 print.ddfSummary <- function(x, ...) {
    sNames <- names(x)
    pv <- x

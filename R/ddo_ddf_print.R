@@ -12,12 +12,7 @@ print.ddo <- function(x, ...) {
    # objName <- as.character(substitute(x))
    
    objClass <- class(x)
-   objString <- ifelse(inherits(x, "ddf"), "frame", "object")
-   
-   titlePrefix <- "Distributed"
-   if(inherits(x, "transformed"))
-      titlePrefix <- "Transformed distributed"
-   title <- paste(titlePrefix, " data ", objString, " backed by '", objClass[which(objClass=="ddo") + 1], "' connection\n\n", sep="")
+   title <- paste("Distributed data object of class '", objClass[which(objClass=="ddo") + 1], "' with attributes: \n\n", sep="")
    
    ddoAttr <- getDr("ddoAttrPrintList")
    ddfAttr <- getDr("ddfAttrPrintList")
@@ -26,63 +21,29 @@ print.ddo <- function(x, ...) {
    nms <- names(getAttributes(x, names(ddoAttr))[["ddo"]])
    if("ddf" %in% objClass)
       nms <- c(nms, names(getAttributes(x, names(ddfAttr))[["ddf"]]))
-   
+      
    namewidth <- max(nchar(nms)) + 2
    options(namewidth=namewidth)
    
-   if("transformed" %in% objClass) {
-      ddfAccessAttrs <- NULL
-      ddfAccessNames <- ddfAccessAttrs
-      ddoAccessAttrs <- "keys"
-      ddoAccessNames <- "getKeys"      
-   } else {
-      ddfAccessAttrs <- c("splitRowDistn", "summary")
-      ddfAccessNames <- ddfAccessAttrs
-      ddoAccessAttrs <- c("keys", "splitSizeDistn")
-      ddoAccessNames <- c("getKeys", "splitSizeDistn")
-   }
-   
+   ddoTab <- buildPrintTable(x, ddoAttr, "ddo", namewidth)
+   ddoTab <- paste(ddoTab, "\n", sep="")
+   ddfTab <- NULL
    if("ddf" %in% objClass) {
-      accessAttrs <- c(
-         getAttributes(x, ddoAccessAttrs)[["ddo"]],
-         getAttributes(x, ddfAccessAttrs)[["ddf"]]
-      )
-      accessAttrNames <- c(ddoAccessNames, ddfAccessNames)
-      
-      ddoTab <- buildPrintTable(x, ddoAttr, "ddo", namewidth, doHeader = FALSE)
-      ddoTab <- paste(ddoTab, "\n", sep="")
       ddfTab <- buildPrintTable(x, ddfAttr, "ddf", namewidth)
-   } else {
-      accessAttrs <- getAttributes(x, ddoAccessAttrs)[["ddo"]]
-      accessAttrNames <- ddoAccessNames
-      
-      ddoTab <- buildPrintTable(x, ddoAttr, "ddo", namewidth)
-      ddoTab <- paste(ddoTab, "\n", sep="")
-      ddfTab <- NULL
+      ddfTab <- paste("\n", ddfTab, "\n", sep="")
    }
-   
-   ind <- sapply(accessAttrs, function(x) is.na(x) && length(x) == 1)
-   bottomTxt <- "\n"
-   
-   if(length(which(!ind)) > 0)
-      bottomTxt <- paste(bottomTxt, "* Other attributes: " ,
-         paste(paste(accessAttrNames[!ind], "()", sep = ""), 
-         collapse = ", ", sep = ""), "\n", sep = "")
-   
-   if(length(which(ind)) > 0)
-      bottomTxt <- paste(bottomTxt, "* Missing attributes: " ,
-         paste(names(accessAttrs)[ind], collapse = ", "), "\n", sep = "")
    
    ## text for div
-   divTxt <- NULL
+   divTab <- NULL
    divAttr <- getAttribute(x, "div")
    if(!is.na(divAttr)) {
-      divTxt <- buildDivText(divAttr, getDr("divAttrPrintList"))      
+      divTab <- buildDivText(divAttr, getDr("divAttrPrintList"))      
+      divTab <- paste("\n", divTab, sep="")
    }
    
-   # connText <- paste(capture.output(print(getAttribute(x, "conn"))), collapse="\n")
+   connText <- paste(capture.output(print(getAttribute(x, "conn"))), collapse="\n")
    
-   cat("\n", title, ddfTab, ddoTab, bottomTxt, divTxt, "\n", sep="")
+   cat("\n", title, ddoTab, ddfTab, divTab, "\n", connText, "\n", sep="")
 }
 
 # to get the name of the x:
@@ -144,44 +105,25 @@ printVars <- function(x, namewidth) {
 }
 
 printTrans <- function(x) {
-   text <- "user-defined - see kvExample(dat)"
+   text <- "user-defined - see kvExample(dat, transform=TRUE)"
    if(identical(x, identity)) {
       text <- "identity (original data is a data frame)"
    } else if(identical(x, as.data.frame)) {
-      text <- "as.data.frame - see kvExample(dat)"
+      text <- "as.data.frame - see kvExample(dat, transform=TRUE)"
    }
    text
 }
 
-buildPrintTable <- function(x, attrList, type, namewidth, doHeader = TRUE) {
+buildPrintTable <- function(x, attrList, type, namewidth) {
    xAttr <- getAttributes(x, names(attrList))[[type]]
-   
-   isTransformed <- inherits(x, "transformed")
-   if(isTransformed && type == "ddf") {
-      xAttr$vars <- attributes(x)$transforms$varNames
-   }
    xnm <- names(xAttr)
+   xnm2 <- paste("", xnm)
    
    vals <- rep("", length(xnm))
-   nms <- rep("", length(xnm))
    for(i in seq_along(vals)) {
       cur <- attrList[[xnm[i]]]
-      nms[i] <- cur$name
       vals[i] <- cur$render(xAttr[[xnm[i]]])
    }
-   if(isTransformed) {
-      ind <- grepl("^(size |nrow)", nms)
-      vals[ind] <- paste(vals[ind], "(before transformation)")
-   }
-   
-   ind <- which(is.na(vals))
-   if(length(ind) > 0) {
-      vals <- vals[-ind]
-      xnm <- xnm[-ind]
-      nms <- nms[-ind]
-   }
-   xnm2 <- paste("", xnm)
-   nms2 <- paste("", nms)
    
    # namewidth <- max(nchar(xnm2)) + 1
    # valwidth <- min(max(nchar(vals)), getOption("width") - namewidth - 1)
@@ -191,22 +133,26 @@ buildPrintTable <- function(x, attrList, type, namewidth, doHeader = TRUE) {
    fmt2 <- paste("%-", namewidth, "s| %s", sep="")
    
    tab <- do.call(c, lapply(seq_along(xnm), function(i) {
-      sprintf(fmt, nms2[i], vals[i])
+      sprintf(fmt, xnm2[i], vals[i])
    }))
    
-   header <- ""
-   if(doHeader)
-      header <- c(
-         sprintf(fmt, paste(" attribute", sep=""), "value"),
-         paste(c(rep("-", namewidth), "+", rep("-", valwidth + 1)), collapse="")
-      )
+   header <- c(
+      sprintf(fmt, paste("'", type, "' attribute", sep=""), "value"),
+      paste(c(rep("-", namewidth), "+", rep("-", valwidth + 1)), collapse="")
+   )
    paste(c(header, tab), collapse="\n")
 }
 
 buildDivText <- function(x, divAttrList) {
-   divTxt <- sapply(1, function(i) {
+   divTab <- sapply(1, function(i) {
       curName <- x$divBy$type
-      paste(divAttrList[[curName]]$render(x$divBy), "\n", sep="")
+      paste(
+         # ifelse(i==1, "First-order", "Second-order"),
+         "Division:\n",
+         "  Type: ", divAttrList[[curName]]$desc, "\n",
+         "    ", divAttrList[[curName]]$render(x$divBy), "\n",
+         sep=""
+      )
    })
-   paste("*", divTxt, collapse="\n")
+   paste(divTab, collapse="\n")
 }

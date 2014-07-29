@@ -109,7 +109,7 @@ hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, ver
    conn
 }
 
-#' @export
+#' @S3method addData hdfsConn
 addData.hdfsConn <- function(conn, data, overwrite = FALSE) {
    # warning("This makes your mapfile go away")
    validateListKV(data)
@@ -135,16 +135,16 @@ removeData.hdfsConn <- function(conn, keys) {
    message("* Sorry... removing individual k/v pairs from HDFS is not fun. (requires complete read and write of the data).")
 }
 
-#' @export
+#' @S3method print hdfsConn
 print.hdfsConn <- function(x, ...) {
-   cat(paste("hdfsConn connection\n  loc=", x$loc, "; type=", x$type, "\n", sep = ""))
+   cat(paste("hdfsConn connection\n  loc=", x$loc, "; type=", x$type, sep = ""))
 }
 
 ############################################################################
 ### internal
 ############################################################################
 
-#' @export
+#' @S3method loadAttrs hdfsConn
 loadAttrs.hdfsConn <- function(obj, type = "ddo") {
    attrFile <- paste(obj$loc, "/_rh_meta/", type, ".Rdata", sep = "")
    
@@ -158,7 +158,7 @@ loadAttrs.hdfsConn <- function(obj, type = "ddo") {
    }
 }
 
-#' @export
+#' @S3method saveAttrs hdfsConn
 saveAttrs.hdfsConn <- function(obj, attrs, type = "ddo") {
    fp <- paste(obj$loc, "/_rh_meta/", type, ".Rdata", sep = "")
    if(type == "ddo")
@@ -179,7 +179,7 @@ existsOnHDFS <- function(...) {
    }
 }
 
-#' @export
+#' @S3method mrCheckOutputLoc hdfsConn
 mrCheckOutputLoc.hdfsConn <- function(x, overwrite = FALSE) {
    if(existsOnHDFS(x$loc)) {
       ff <- rhls(x$loc)$file

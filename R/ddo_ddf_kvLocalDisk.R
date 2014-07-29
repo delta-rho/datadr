@@ -1,16 +1,16 @@
 ## Methods for object of class "kvLocalDisk" - key-value pairs as R objects stored on disk
 
-#' @export
+#' @S3method ddoInit localDiskConn
 ddoInit.localDiskConn <- function(obj, ...) {
    structure(list(), class = "kvLocalDisk")
 }
 
-#' @export
+#' @S3method ddoInitConn localDiskConn
 ddoInitConn.localDiskConn <- function(obj, ...) {
    obj
 }
 
-#' @export
+#' @S3method requiredObjAttrs kvLocalDisk
 requiredObjAttrs.kvLocalDisk <- function(obj) {
    list(
       ddo = c(getDr("requiredDdoAttrs"), "files", "sizes"),
@@ -18,7 +18,7 @@ requiredObjAttrs.kvLocalDisk <- function(obj) {
    )
 }
 
-#' @export
+#' @S3method getBasicDdoAttrs kvLocalDisk
 getBasicDdoAttrs.kvLocalDisk <- function(obj, conn) {
    fp <- conn$loc
    ff <- list.files(fp, recursive = TRUE)
@@ -42,15 +42,16 @@ getBasicDdoAttrs.kvLocalDisk <- function(obj, conn) {
    )
 }
 
-#' @export
-getBasicDdfAttrs.kvLocalDisk <- function(obj) {
+#' @S3method getBasicDdfAttrs kvLocalDisk
+getBasicDdfAttrs.kvLocalDisk <- function(obj, transFn) {
    list(
-      vars = lapply(kvExample(obj)[[2]], class)
+      vars = lapply(kvExample(obj)[[2]], class),
+      transFn = transFn
    )
 }
 
 # kvLocalDisk is always extractable
-#' @export
+#' @S3method hasExtractableKV kvLocalDisk
 hasExtractableKV.kvLocalDisk <- function(x) {
    kh <- getAttribute(x, "keyHashes")
    if(length(kh) == 1)
@@ -63,8 +64,8 @@ hasExtractableKV.kvLocalDisk <- function(x) {
 ### extract methods
 ######################################################################
 
-#' @export
-extract.kvLocalDisk <- function(x, i, ...) {
+#' @S3method [ kvLocalDisk
+`[.kvLocalDisk` <- function(x, i, ...) {
    # argument i can either be:
    # - a numeric index, in which case the data ff[i] will be obtained
    # - a list of actual keys, in which case the hash function is applied
@@ -120,17 +121,29 @@ extract.kvLocalDisk <- function(x, i, ...) {
    })
 }
 
+#' @S3method [[ kvLocalDisk
+`[[.kvLocalDisk` <- function(x, i, ...) {
+   if(length(i) == 1) {
+      res <- x[i]
+      if(is.null(res)) {
+         return(NULL)
+      } else {
+         return(res[[1]])
+      }
+   }
+}
+
 
 ######################################################################
 ### convert methods
 ######################################################################
 
-#' @export
+#' @S3method convertImplemented kvLocalDisk
 convertImplemented.kvLocalDisk <- function(obj) {
    c("hdfsConn", "NULL", "localDiskConn")
 }
 
-#' @export
+#' @S3method convert kvLocalDisk
 convert.kvLocalDisk <- function(from, to = NULL) {
    convertKvLocalDisk(to, from)
 }
@@ -139,13 +152,13 @@ convertKvLocalDisk <- function(obj, ...)
    UseMethod("convertKvLocalDisk", obj)
 
 # from local disk to local disk
-#' @export
+#' @S3method convertKvLocalDisk localDiskConn
 convertKvLocalDisk.localDiskConn <- function(to, from, verbose = FALSE) {
    from
 }
 
 # from local disk to memory
-#' @export
+#' @S3method convertKvLocalDisk NULL
 convertKvLocalDisk.NULL <- function(to, from, verbose = FALSE) {
    size <- getAttribute(from, "totObjectSize")
    if(is.na(size))
@@ -170,7 +183,7 @@ convertKvLocalDisk.NULL <- function(to, from, verbose = FALSE) {
 }
 
 # from local disk to HDFS
-#' @export
+#' @S3method convertKvLocalDisk hdfsConn
 convertKvLocalDisk.hdfsConn <- function(to, from, verbose = FALSE) {
    conn <- getAttribute(from, "conn")
    pr <- conn$loc

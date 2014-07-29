@@ -1,12 +1,13 @@
 ## mrExec for kvLocalDisk objects
 
-#' @export
+#' @S3method mrExecInternal kvLocalDiskList
 mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {
    setup <- appendExpression(setup, 
       expression({
          suppressWarnings(suppressMessages(require(digest)))
       })
    )
+   
    if(is.null(reduce))
       reduce <- expression(pre = {}, reduce = {collect(reduce.key, reduce.values)}, post = {})
    
@@ -69,7 +70,6 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
    
    mapFn <- function(fl) {
       mapEnv <- new.env() # parent = baseenv())
-      assign("mr___packages", params$mr___packages, mapEnv)
       eval(setup, envir = mapEnv)
       
       # add a collect, counter functions to the environment
@@ -224,7 +224,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
    # if output is a character string, construct a localDiskConn connection from it
    if(!inherits(output, "localDiskConn")) {
       if(is.character(output)) {
-         output <- localDiskConn(output, nBins = floor(length(outputKeyHash) / 1000), verbose = FALSE)
+         output <- localDiskConn(output, nBins = floor(length(outputKeyHash) / 1000))
       } else {
          output <- localDiskConn(tempfile(paste("job", jobNum, "_", sep = "")), nBins = floor(length(outputKeyHash) / 1000), autoYes = TRUE, verbose = FALSE)
       }
@@ -312,22 +312,17 @@ localDiskControl <- function(
    reduce_buff_size_bytes = 10485760,
    map_temp_buff_size_bytes = 10485760
 ) {
-   structure(list(
+   list(
       cluster = cluster,
       map_buff_size_bytes = map_buff_size_bytes,
       reduce_buff_size_bytes = reduce_buff_size_bytes,
       map_temp_buff_size_bytes = map_temp_buff_size_bytes
-   ), class = c("localDiskControl", "list"))
+   )
 }
 
-#' @export
+#' @S3method defaultControl kvLocalDisk
 defaultControl.kvLocalDisk <- function(x) {
-   res <- getOption("defaultLocalDiskControl")
-   if(inherits(res, "localDiskControl")) {
-      return(res)
-   } else {
-      return(localDiskControl())
-   }
+   localDiskControl()
 }
 
 # this will be used for both map and reduce

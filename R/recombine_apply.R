@@ -15,22 +15,22 @@ drGLM <- function(...) {
    args <- list(...)
    
    applyFn <- function(args, dat) {
-      fit <- do.call(glm, c(args[!names(args) == "group"], list(data = dat[[2]])))
+      fit <- do.call(glm, c(args[!names(args)=="group"], list(data=dat[[2]])))
       res <- list(
-         names = names(coef(fit)),
-         coef = as.numeric(coef(fit)),
-         n = nrow(dat[[2]])
+         names=names(coef(fit)),
+         coef=as.numeric(coef(fit)),
+         n=nrow(dat[[2]])
       )
       class(res) <- c("drCoef", "list")
       res
    }
    
    structure(list(
-      args = args, 
-      applyFn = applyFn, 
-      kvArgs = FALSE,
-      validate = c("rrDiv", "condDiv", "unknown")
-   ), class = "drGLM")
+      args=args, 
+      applyFn=applyFn, 
+      kvArgs=FALSE,
+      validate=c("rrDiv", "condDiv", "unknown")
+   ), class="drGLM")
 }
 
 
@@ -54,7 +54,7 @@ drGLM <- function(...) {
 #' 
 #' @export
 drBLB <- function(statistic, metric, R, n) {
-   args <- list(statistic = statistic, metric = metric, R = R, n = n)
+   args <- list(statistic=statistic, metric=metric, R=R, n=n)
    
    applyFn <- function(args, dat) {
       b <- nrow(dat[[2]])
@@ -71,10 +71,10 @@ drBLB <- function(statistic, metric, R, n) {
    }
    
    structure(list(
-      args = args, 
-      applyFn = applyFn, 
-      kvArgs = FALSE,
-      validate = "rrDiv"
-   ), class = "drBLB")
+      args=args, 
+      applyFn=applyFn, 
+      kvArgs=FALSE,
+      validate="rrDiv"
+   ), class="drBLB")
 }
 

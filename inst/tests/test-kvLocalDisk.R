@@ -1,6 +1,3 @@
-library(digest)
-library(data.table)
-
 # not all test environments have Hadoop installed
 TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
 if(TEST_HDFS == "")
@@ -231,15 +228,10 @@ test_that("update ddf - check attrs", {
 ############################################################################
 context("local disk parallel check")
 
-## These should be run manually from time to time
-## Using makeCluster causes R CMD check to hang
-
 # test_that("update in parallel and check", {
 #    require(parallel)
 #    ldf <- ddf(conn, reset = TRUE)
 #    cl <- makeCluster(2)
-#    # options(defaultLocalDiskControl = localDiskControl(cluster = cl))
-#    # ldf <- updateAttributes(ldf)
 #    ldf <- updateAttributes(ldf, control = localDiskControl(cluster = cl))
 #    stopCluster(cl)
 #    
@@ -265,21 +257,6 @@ context("local disk parallel check")
 #    
 #    ldfSumm
 # })
-# 
-# test_that("divide in parallel with parameters", {
-#    require(parallel)
-#    ldf <- ddf(conn, reset = TRUE)
-#    cl <- makeCluster(2)
-#    a <- 3
-#    ldf2 <- addTransform(ldf, function(x) {
-#       x$Petal.Width <- x$Petal.Width + a
-#       x$dg <- digest(x$Petal.Width)
-#       x
-#    })
-#    rm(a)
-#    ldd2 <- divide(ldf2, by = "Species", control = localDiskControl(cluster = cl))
-#    stopCluster(cl)
-# })
 
 ############################################################################
 ############################################################################
@@ -303,18 +280,6 @@ test_that("conditioning division and bsv", {
    ldd
 })
 
-test_that("division with addTransform", {
-   a <- 3
-   ldf2 <- addTransform(ldf, function(x) {
-      x$Petal.Width <- x$Petal.Width + a
-      x
-   })
-   rm(a)
-   ldd2 <- divide(ldf2, by = "Species")
-   
-   expect_true(min(ldd2[["Species=virginica"]][[2]]$Petal.Width) == 4.4)
-})
-
 test_that("random replicate division", {
    path2 <- file.path(tempdir(), "ldd_test_rrdiv")
    unlink(path2, recursive = TRUE)
@@ -327,28 +292,13 @@ test_that("random replicate division", {
 ############################################################################
 context("local disk recombine() checks")
 
-path2 <- file.path(tempdir(), "ldd_test_div")
-unlink(path2, recursive = TRUE)
-
-ldd <- divide(ldf, by = "Species", output = localDiskConn(path2, autoYes = TRUE), update = TRUE,
-   bsvFn = function(x)
-      list(meanSL = bsv(mean(x$Sepal.Length))))
-
+ldd <- ddf(localDiskConn(file.path(tempdir(), "ldd_test_div")))
 mpw <- mean(ldd[[1]][[2]]$Petal.Width)
 
 test_that("simple recombination", {
    res <- recombine(ldd, apply = function(v) mean(v$Petal.Width))
    
-   expect_equal(as.numeric(res[[1]][[2]]), mpw)
-})
-
-test_that("recombine with addTransform", {
-   a <- 3
-   lddMpw <- addTransform(ldd, function(v) mean(v$Petal.Width) + a)
-   rm(a)
-   res <- recombine(lddMpw, combRbind)
-   
-   expect_true(res$val[res$Species == "setosa"] == 3.246)
+   expect_equal(res[[1]][[2]], mpw)
 })
 
 test_that("recombination with combRbind", {
@@ -366,18 +316,18 @@ test_that("recombination with combDdo", {
    expect_true(inherits(res, "ddo"))
 })
 
-# test_that("recombination with drGLM", {
-#    path2 <- file.path(tempdir(), "ldd_test_drglm")
-#    
-#    set.seed(1234)
-#    ldf <- ddf(conn)
-#    ldr <- divide(ldf, by = rrDiv(nrow = 200), output = localDiskConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
-#    
-#    a <- recombine(ldr, 
-#       apply = drGLM(vowel ~ Petal.Length, 
-#          family = binomial()), 
-#       combine = combMeanCoef())
-# })
+test_that("recombination with drGLM", {
+   path2 <- file.path(tempdir(), "ldd_test_drglm")
+   
+   set.seed(1234)
+   ldf <- ddf(conn)
+   ldr <- divide(ldf, by = rrDiv(nrow = 200), output = localDiskConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
+   
+   a <- recombine(ldr, 
+      apply = drGLM(vowel ~ Petal.Length, 
+         family = binomial()), 
+      combine = combMeanCoef())
+})
 
 ############################################################################
 ############################################################################
@@ -471,7 +421,6 @@ test_that("move local disk object", {
 ## clean up
 
 unlink(file.path(tempdir(), "ldd_test"), recursive = TRUE)
-unlink(file.path(tempdir(), "testloc"), recursive = TRUE)
 unlink(file.path(tempdir(), "ldd_test_div"), recursive = TRUE)
 unlink(file.path(tempdir(), "ldd_test_drglm"), recursive = TRUE)
 unlink(file.path(tempdir(), "ldd_test_rrdiv"), recursive = TRUE)

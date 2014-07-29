@@ -54,11 +54,12 @@ test_that("by=TRUE", {
    sq2 <- drQuantile(ldd, var = "Sepal.Length", by = "Species", tails = 0)
    # true quantiles
    tmpd <- divide(tmp, by="Species")
-   tmpd2 <- addTransform(tmpd, function(x) 
-      data.frame(fval = seq(0, 1, by = 0.005),
-         q = quantile(x$Sepal.Length, 
-            probs = seq(0, 1, by = 0.005), type = 3)))
-   tmp2 <- recombine(tmpd2, combRbind)
+   tmp2 <- recombine(tmpd, 
+      apply = function(x) 
+         data.frame(fval = seq(0, 1, by = 0.005),
+            q = quantile(x$Sepal.Length, 
+               probs = seq(0, 1, by = 0.005), type = 3)),
+      combine = combRbind())
    
    # library(lattice)
    # xyplot(q ~ fval, groups = group, data = sq2, auto.key = TRUE, type = c("p", "g"))
@@ -73,7 +74,7 @@ test_that("map is cleaned up for mulitple blocks", {
    # a single map task -- this is more of a localDisk mapReduce test to make
    # sure that it cleans up the map each time
    # (the "by" argument gets updated but should be clean for each map call)
-   drQuantile(ldd, var = "Sepal.Length", control = list(map_buff_size_bytes = 10))
+   drQuantile(ldd, var = "Sepal.Length", control = list(map_buff_size_bytes = 10))   
 })
 
 
@@ -81,12 +82,13 @@ test_that("varTransFn", {
    sq <- drQuantile(ldd, var = "Sepal.Length", by = "Species", tails = 0, varTransFn = function(x) log(x))
    
    tmpd <- divide(tmp, by="Species")
-   tmpd2 <- addTransform(tmpd, function(x) 
-      data.frame(fval = seq(0, 1, by = 0.005),
-         q = quantile(log(x$Sepal.Length), 
-            probs = seq(0, 1, by = 0.005), type = 3)))
-   tmp2 <- recombine(tmpd2, combRbind)
-   
+   tmp2 <- recombine(tmpd, 
+      apply = function(x) 
+         data.frame(fval = seq(0, 1, by = 0.005),
+            q = quantile(log(x$Sepal.Length), 
+               probs = seq(0, 1, by = 0.005), type = 3)),
+      combine = combRbind())
+
    expect_true(mean(abs(sq$q - tmp2$q)) < 0.0001)
    # xyplot(q ~ fval | group, data = sq)
    # xyplot(q ~ fval | Species, data = tmp2)
@@ -102,30 +104,14 @@ test_that("preTransFn", {
             q = quantile(log(x$Sepal.Length), 
                probs = seq(0, 1, by = 0.005), type = 3)),
       combine = combRbind())
-   
+
    expect_true(mean(abs(sq$q - tmp2$q)) < 0.0001)
    # xyplot(q ~ fval | group, data = sq)
    # xyplot(q ~ fval | Species, data = tmp2)
 })
 
-
-test_that("preTransFn", {
-   sq <- drQuantile(ldd, var = "Sepal.Length", by = "Species2", tails = 0, varTransFn = function(x) log(x), preTransFn = function(x) { x$Species2 <- paste(x$Species, "2"); x })
-   
-   tmpd <- divide(tmp, by="Species")
-   tmp2 <- recombine(tmpd, 
-      apply = function(x) 
-         data.frame(fval = seq(0, 1, by = 0.005),
-            q = quantile(log(x$Sepal.Length), 
-               probs = seq(0, 1, by = 0.005), type = 3)),
-      combine = combRbind())
-   
-   expect_true(mean(abs(sq$q - tmp2$q)) < 0.0001)
-   # xyplot(q ~ fval | group, data = sq)
-   # xyplot(q ~ fval | Species, data = tmp2)
-})
 
 sq2 <- drQuantile(ldd, var = "Sepal.Length", by = "Species", tails = 0)
 
-# TODO: test varTransFn
+# TODO: test varTransFn, preTransFn
 

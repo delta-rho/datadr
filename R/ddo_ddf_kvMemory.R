@@ -1,39 +1,39 @@
 ## Methods for object of class "kvMemory" - key-value pairs as R objects stored in memory
 
-#' @export
+#' @S3method ddoInit data.frame
 ddoInit.data.frame <- function(obj, ...) {
    res <- list(list("", obj))
    ddoInit(res)
 }
 
-#' @export
+#' @S3method ddoInitConn data.frame
 ddoInitConn.data.frame <- function(obj, ...) {
    res <- list(list("", obj))
    ddoInitConn(res)
 }
 
-#' @export
+#' @S3method ddoInit list
 ddoInit.list <- function(obj, ...) {
    structure(list(), class="kvMemory")
 }
 
-#' @export
+#' @S3method ddoInitConn list
 ddoInitConn.list <- function(obj, ...) {
    validateListKV(obj)
    structure(list(data=obj), class=c("nullConn", "kvConnection"))
 }
 
-#' @export
+#' @S3method ddoInit nullConn
 ddoInit.nullConn <- function(obj, ...) {
    structure(list(), class="kvMemory")
 }
 
-#' @export
+#' @S3method ddoInitConn nullConn
 ddoInitConn.nullConn <- function(obj, ...) {
    obj
 }
 
-#' @export
+#' @S3method requiredObjAttrs kvMemory
 requiredObjAttrs.kvMemory <- function(obj) {
    list(
       ddo = getDr("requiredDdoAttrs"),
@@ -41,7 +41,7 @@ requiredObjAttrs.kvMemory <- function(obj) {
    )
 }
 
-#' @export
+#' @S3method getBasicDdoAttrs kvMemory
 getBasicDdoAttrs.kvMemory <- function(obj, conn) {
    # data gets stored in conn, since conn is how things are passed around for other methods
    dat <- conn$data
@@ -60,15 +60,16 @@ getBasicDdoAttrs.kvMemory <- function(obj, conn) {
    )
 }
 
-#' @export
-getBasicDdfAttrs.kvMemory <- function(obj) {
+#' @S3method getBasicDdfAttrs kvMemory
+getBasicDdfAttrs.kvMemory <- function(obj, transFn) {
    list(
-      vars = lapply(kvExample(obj)[[2]], class)
+      vars = lapply(getAttribute(obj, "conn")$data[[1]][[2]], class),
+      transFn = transFn
    )
 }
 
 # kvMemory is always extractable
-#' @export
+#' @S3method hasExtractableKV kvMemory
 hasExtractableKV.kvMemory <- function(x) {
    TRUE
 }
@@ -77,8 +78,8 @@ hasExtractableKV.kvMemory <- function(x) {
 ### extract methods
 ############################################################################
 
-#' @export
-extract.kvMemory <- function(x, i, ...) {
+#' @S3method [ kvMemory
+`[.kvMemory` <- function(x, i, ...) {
    idx <- NULL
    
    if(is.numeric(i)) {
@@ -101,16 +102,23 @@ extract.kvMemory <- function(x, i, ...) {
    getAttribute(x, "conn")$data[idx]
 }
 
+#' @S3method [[ kvMemory
+`[[.kvMemory` <- function(x, i, ...) {
+   if(length(i) == 1) {
+      x[i][[1]]
+   }
+}
+
 ############################################################################
 ### convert methods
 ############################################################################
 
-#' @export
+#' @S3method convertImplemented kvMemory
 convertImplemented.kvMemory <- function(obj) {
    c("localDiskConn", "hdfsConn", "NULL")
 }
 
-#' @export
+#' @S3method convert kvMemory
 convert.kvMemory <- function(from, to=NULL) {
    convertKvMemory(to, from)
 }
@@ -118,12 +126,12 @@ convert.kvMemory <- function(from, to=NULL) {
 convertKvMemory <- function(obj, ...)
    UseMethod("convertKvMemory", obj)
 
-#' @export
+#' @S3method convertKvMemory NULL
 convertKvMemory.NULL <- function(to, from, verbose=FALSE) {
    from
 }
 
-#' @export
+#' @S3method convertKvMemory localDiskConn
 convertKvMemory.localDiskConn <- function(to, from, verbose=FALSE) {
    # make sure "to" is empty
    # TODO: choose nBins based on nDiv, if it exists?
@@ -138,7 +146,7 @@ convertKvMemory.localDiskConn <- function(to, from, verbose=FALSE) {
 }
 
 # go from memory to HDFS
-#' @export
+#' @S3method convertKvMemory hdfsConn
 convertKvMemory.hdfsConn <- function(to, from, verbose=FALSE) {
    # strip out attributes
    writeDat <- getAttribute(from, "conn")$data

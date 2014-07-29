@@ -1,11 +1,3 @@
-#' datadr.
-#'
-#' @name datadr
-#' @docType package
-#' @import parallel data.table digest hexbin
-
-NULL
-
 #' "Census Income" Dataset
 #' 
 #' @name adult

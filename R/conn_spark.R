@@ -1,17 +1,17 @@
 # for now, SparkR data will just come from R objects
 # HDFS support to come...
 
-#' @export
+#' @S3method loadAttrs sparkDataConn
 loadAttrs.sparkDataConn <- function(obj, type="ddo") {
    NULL
 }
 
-#' @export
+#' @S3method saveAttrs sparkDataConn
 saveAttrs.sparkDataConn <- function(obj, attrs, type="ddo") {
    NULL
 }
 
-#' @export
+#' @S3method print sparkDataConn
 print.sparkDataConn <- function(x, ...) {
    cat("Spark data connection (experimental)")
 }

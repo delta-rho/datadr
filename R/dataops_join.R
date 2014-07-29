@@ -7,7 +7,6 @@
 #' @param postTransFn an optional function to be applied to the each final key-value pair after joining
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
-#' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' 
 #' @return a 'ddo' object stored in the \code{output} connection, where the values are named lists with names according to the names given to the input data objects, and values are the corresponding data
@@ -24,7 +23,14 @@
 #' drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
 #' 
 #' @export
-drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, params = NULL, packages = NULL, control = NULL) {
+drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, params = NULL, control = NULL) {
+   # bySpecies <- divide(iris, by = "Species")
+   # sw <- lapply(bySpecies, function(x) x$Sepal.Width)
+   # sl <- lapply(bySpecies, function(x) x$Sepal.Length)
+   # inputs <- list(Sepal.Width = sw, Sepal.Length = sl)
+   # output <- NULL
+   # control <- NULL
+   # postTransFn <- as.data.frame
    
    inputs <- list(...)
    
@@ -42,27 +48,15 @@ drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, pa
       res[length(res) + seq_along(reduce.values)] <- reduce.values
    }, post = {
       res <- unlist(res, recursive = FALSE)
-      attr(res, "split") <- attr(res[[1]], "split")
       if(!is.null(postTransFn)) {
          res <- postTransFn(res)
       }
       collect(reduce.key, res)
    })
    
-   globalVarList <- drGetGlobals(postTransFn)
+   globalVars <- drFindGlobals(postTransFn)
+   globalVarList <- getGlobalVarList(globalVars, parent.frame())
    parList <- list(postTransFn = postTransFn)
-   
-   if(! "package:datadr" %in% search()) {
-      parList <- c(parList, list(
-         applyTransform = applyTransform,
-         setupTransformEnv = setupTransformEnv, 
-         kvApply = kvApply
-      ))
-   }
-   
-   # if the user supplies output as an unevaluated connection
-   # the verbosity can be misleading
-   suppressMessages(output <- output)
    
    mrExec(inputs,
       map = map,
@@ -70,8 +64,9 @@ drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, pa
       control = control,
       output = output,
       overwrite = overwrite,
-      params = c(parList, globalVarList$vars, params),
-      packages = c(globalVarList$packages, packages)
+      params = c(parList, globalVarList, params)
    )
 }
+
+
 

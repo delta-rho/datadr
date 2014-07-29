@@ -73,7 +73,7 @@ readTextFileByChunk <- function(input, output, overwrite = FALSE, linesPerBlock 
       }
       
       if(!is.null(res))
-         addData(output, list(list(i, res)), overwrite = overwrite)
+         addData(output, list(list(i, res)))
       
       data <- tryCatch({
          data <- c(extra, readLines(con, n = linesPerBlock))
@@ -111,7 +111,7 @@ readHDFStextFile <- function(input, output = NULL, overwrite = FALSE, fn = NULL,
       
    if(is.null(control))
       control <- defaultControl(input)
-   
+      
    if(is.null(control$mapred$rhipe_map_buff_size))
       control$mapred$rhipe_map_buff_size <- linesPerBlock
    if(is.null(control$mapred$mapred.reduce.tasks)) {
@@ -131,10 +131,6 @@ readHDFStextFile <- function(input, output = NULL, overwrite = FALSE, fn = NULL,
       
       collect(keyFn(tmp), fn(tmp))
    })
-   
-   # if the user supplies output as an unevaluated connection
-   # the verbosity can be misleading
-   suppressMessages(output <- output)
    
    mrExec(input,
       setup     = setup,

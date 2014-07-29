@@ -1,6 +1,6 @@
 ## mrExec for kvMemory objects
 
-#' @export
+#' @S3method mrExecInternal kvMemoryList
 mrExecInternal.kvMemoryList <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
    
    # set up empty environment for map and reduce expressions to be evaluated in
@@ -95,7 +95,7 @@ mrExecInternal.kvMemoryList <- function(data, setup=NULL, map=NULL, reduce=NULL,
    list(data=res, counters=counters)
 }
 
-#' @export
+#' @S3method defaultControl kvMemory
 defaultControl.kvMemory <- function(x) {
    NULL
 }

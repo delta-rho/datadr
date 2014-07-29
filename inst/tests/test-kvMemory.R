@@ -1,6 +1,3 @@
-library(digest)
-library(data.table)
-
 # not all test environments have Hadoop installed
 TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
 if(TEST_HDFS == "")
@@ -137,19 +134,8 @@ test_that("conditioning division and bsv", {
    keys <- sort(unlist(getKeys(mdd)))
    expect_true(keys[1] == "Species=setosa")
    
+   # TODO: check print method output more closely
    mdd
-})
-
-test_that("division with addTransform", {
-   a <- 3
-   mdf2 <- addTransform(mdf, function(x) {
-      x$Petal.Width <- x$Petal.Width + a
-      x
-   })
-   rm(a)
-   mdd2 <- divide(mdf2, by = "Species")
-   
-   expect_true(min(mdd2[["Species=virginica"]][[2]]$Petal.Width) == 4.4)
 })
 
 test_that("random replicate division", {
@@ -167,16 +153,8 @@ mpw <- mean(mdd[[1]][[2]]$Petal.Width)
 
 test_that("simple recombination", {
    res <- recombine(mdd, apply = function(v) mean(v$Petal.Width))
-   expect_equal(as.numeric(res[[1]][[2]]), mpw)
-})
-
-test_that("recombine with addTransform", {
-   a <- 3
-   mddMpw <- addTransform(mdd, function(v) mean(v$Petal.Width) + a)
-   rm(a)
-   res <- recombine(mddMpw, combRbind)
    
-   expect_true(res$val[res$Species == "setosa"] == 3.246)
+   expect_equal(res[[1]][[2]], mpw)
 })
 
 test_that("recombination with combRbind", {
@@ -198,11 +176,10 @@ test_that("recombination with drGLM", {
    set.seed(1234)
    mdr <- divide(mdf, by = rrDiv(nrow = 200), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
    
-   # FIX
-   # a <- recombine(mdr, 
-   #    apply = drGLM(vowel ~ Petal.Length, 
-   #       family = binomial()), 
-   #    combine = combMeanCoef())
+   a <- recombine(mdr, 
+      apply = drGLM(vowel ~ Petal.Length, 
+         family = binomial()), 
+      combine = combMeanCoef())
 })
 
 ############################################################################
@@ -212,7 +189,7 @@ context("in-memory conversion checks")
 test_that("to disk", {
    path <- file.path(tempdir(), "mdd_test_convert")
    unlink(path, recursive = TRUE)
-   
+
    mddDisk <- convert(mdd, localDiskConn(path, autoYes = TRUE))
    expect_true(nrow(mddDisk) == 3750)
 })

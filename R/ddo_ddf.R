@@ -2,6 +2,8 @@
 ### ddo and ddf constructors
 ############################################################################
 
+# transFn is a function that turns each value into a data frame (if it isn't one)
+
 #' Instantiate a Distributed Data Frame ('ddf')
 #' Instantiate a distributed data frame ('ddf')
 #' 
@@ -12,7 +14,7 @@
 #' @param control parameters specifying how the backend should handle things if attributes are updated (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
 #' @export
-ddf <- function(conn, transFn = NULL, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE) {
+ddf <- function(conn, transFn = identity, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE) {
    if(inherits(conn, "ddo")) {
       res <- conn
    } else {
@@ -23,31 +25,14 @@ ddf <- function(conn, transFn = NULL, update = FALSE, reset = FALSE, control = N
       stop("ddf() input must be a kvConnection or ddo object")
    class(res) <- c("ddf", class(res))      
    
-   if(!is.null(transFn)) {
-      if(!is.null(transFn)) {
-         message("** note **: transFn is deprecated - please apply this transformation using 'addTransform()' to your input data prior to calling 'divide()'")
-         res <- addTransform(res, transFn)
-      }
-   }
-   
-   # make sure it is a data.frame
-   ex <- kvExample(res)
-   if(!inherits(ex[[2]], "data.frame")) {
-      coerce <- try(as.data.frame(ex[[2]]), silent = TRUE)
-      isCoercible <- ifelse(inherits(coerce, "try-error"), FALSE, TRUE)
-      if(isCoercible) {
-         message("*** data is not strictly a data frame, but coercible using as.data.frame - adding this transformation")
-         res <- addTransform(res, function(x) as.data.frame(x))
-      } else {
-         stop("Data cannot be coerced to be a data frame")
-      }
-   }
+   # make sure res can be a data frame
+   transFn <- checkTransFn(kvExample(res), transFn)
    
    attrs <- loadAttrs(getAttribute(res, "conn"), type="ddf")
    if(is.null(attrs) || reset) {
-      # if(verbose)
-         # message("* Getting basic 'ddf' attributes...")
-      attrs <- getBasicDdfAttrs(res)
+      if(verbose)
+         message("* Getting basic 'ddf' attributes...")
+      attrs <- getBasicDdfAttrs(res, transFn)
       attrs <- initAttrs(res, attrs, type="ddf")
    } else {
       if(verbose)
@@ -78,8 +63,8 @@ ddo <- function(conn, update = FALSE, reset = FALSE, control = NULL, verbose = T
    
    attrs <- loadAttrs(conn, type="ddo")
    if(length(attrs) == 0 || reset) {
-      # if(verbose)
-         # message("* Getting basic 'ddo' attributes...")
+      if(verbose)
+         message("* Getting basic 'ddo' attributes...")
       attrs <- getBasicDdoAttrs(res, conn)
       attrs <- initAttrs(res, attrs, type="ddo")
    } else {
@@ -98,6 +83,28 @@ ddo <- function(conn, update = FALSE, reset = FALSE, control = NULL, verbose = T
 ############################################################################
 ### some helper functions
 ############################################################################
+
+checkTransFn <- function(dat, transFn) {
+   if(is.null(transFn))
+      transFn <- identity
+      
+   isDF <- inherits(kvApply(transFn, dat), "data.frame")
+   if(!isDF) {
+      coerce <- try(as.data.frame(kvApply(transFn, dat)), silent=TRUE)
+      isCoercible <- ifelse(inherits(coerce, "try-error"), FALSE, TRUE)
+      # nested lists are coerced quite nicely:
+      # as.data.frame(list(a=1:10, b=matrix(nrow=2, ncol=2), c=list(asdf=1, q=7, list(a="asdf")))) # this works
+      # as.data.frame(list(var1=1:10, var2=1:3)) # this fails
+      
+      if(isCoercible) {
+         warning("Data is not strictly a data frame, but coercible using as.data.frame")
+         transFn <- as.data.frame
+      } else {
+         stop("Data cannot be coerced to be a data frame")
+      }
+   }
+   transFn
+}
 
 # fill a list with NAs with the desired attributes
 initAttrs <- function(dat, attrList, type) {

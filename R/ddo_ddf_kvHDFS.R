@@ -1,16 +1,16 @@
 ## Methods for object of class "kvHDFS" - key-value pairs as R objects stored on HDFS
 
-#' @export
+#' @S3method ddoInit hdfsConn
 ddoInit.hdfsConn <- function(obj, ...) {
    structure(list(), class="kvHDFS")
 }
 
-#' @export
+#' @S3method ddoInitConn hdfsConn
 ddoInitConn.hdfsConn <- function(obj, ...) {
    obj
 }
 
-#' @export
+#' @S3method requiredObjAttrs kvHDFS
 requiredObjAttrs.kvHDFS <- function(obj) {
    list(
       ddo = c(getDr("requiredDdoAttrs"), "nFile", "sourceData", "sourceJobData"),
@@ -18,7 +18,7 @@ requiredObjAttrs.kvHDFS <- function(obj) {
    )
 }
 
-#' @export
+#' @S3method getBasicDdoAttrs kvHDFS
 getBasicDdoAttrs.kvHDFS <- function(obj, conn) {
    fp <- conn$loc
    tp <- conn$type
@@ -38,14 +38,15 @@ getBasicDdoAttrs.kvHDFS <- function(obj, conn) {
    )
 }
 
-#' @export
-getBasicDdfAttrs.kvHDFS <- function(obj) {
+#' @S3method getBasicDdfAttrs kvHDFS
+getBasicDdfAttrs.kvHDFS <- function(obj, transFn) {
    list(
-      vars = lapply(kvExample(obj)[[2]], class)
+      vars = lapply(kvExample(obj)[[2]], class),
+      transFn = transFn
    )
 }
 
-#' @export
+#' @S3method hasExtractableKV kvHDFS
 hasExtractableKV.kvHDFS <- function(x) {
    # grab one key and see if you can get it with rhmapfile
    conn <- getAttribute(x, "conn")
@@ -112,8 +113,8 @@ makeExtractable <- function(obj) {
 ### extract methods
 ############################################################################
 
-#' @export
-extract.kvHDFS <- function(x, i, ...) {
+#' @S3method [ kvHDFS
+`[.kvHDFS` <- function(x, i, ...) {
    conn <- getAttribute(x, "conn")
    if(is.numeric(i)) {
       if(i == 1 || !hasAttributes(x, "keys")) {
@@ -162,27 +163,33 @@ extract.kvHDFS <- function(x, i, ...) {
    res
 }
 
+#' @S3method [[ kvHDFS
+`[[.kvHDFS` <- function(x, i, ...) {
+   if(length(i) == 1) {
+      x[i][[1]]
+   }
+}
 
 ############################################################################
 ### convert methods
 ############################################################################
 
-#' @export
+#' @S3method convertImplemented kvHDFS
 convertImplemented.kvHDFS <- function(obj)
    c("localDiskConn", "NULL", "hdfsConn")
 
-#' @export
+#' @S3method convert kvHDFS
 convert.kvHDFS <- function(from, to=NULL)
    convertKvHDFS(to, from)
 
 convertKvHDFS <- function(obj, ...)
    UseMethod("convertKvHDFS", obj)
 
-#' @export
+#' @S3method convertKvHDFS hdfsConn
 convertKvHDFS.hdfsConn <- function(to, from, verbose=FALSE)
    from
 
-#' @export
+#' @S3method convertKvHDFS localDiskConn
 convertKvHDFS.localDiskConn <- function(to, from, verbose=FALSE) {
    # convert from kvHDFS to kvLocalDisk (from=kvHDFS, to=localDiskConn)
    
@@ -204,7 +211,7 @@ convertKvHDFS.localDiskConn <- function(to, from, verbose=FALSE) {
    addNeededAttrs(res, from)
 }
 
-#' @export
+#' @S3method convertKvHDFS NULL
 convertKvHDFS.NULL <- function(to, from, verbose=FALSE) {
    size <- getAttribute(from, "totObjectSize")
    if(is.na(size))

@@ -1,24 +1,24 @@
 # need dummy load and save methods
 
-#' @export
+#' @S3method loadAttrs nullConn
 loadAttrs.nullConn <- function(obj, type="ddo") {
    NULL
 }
 
-#' @export
+#' @S3method saveAttrs nullConn
 saveAttrs.nullConn <- function(obj, attrs, type="ddo") {
    NULL
 }
 
-#' @export
+#' @S3method print nullConn
 print.nullConn <- function(x, ...) {
    cat("In-memory data connection")
 }
 
-#' @export
+#' @S3method mrCheckOutputLoc nullConn
 mrCheckOutputLoc.nullConn <- function(x, overwrite = FALSE)
    NULL
 
-#' @export
+#' @S3method mrCheckOutputLoc NULL
 mrCheckOutputLoc.NULL <- function(x, overwrite = FALSE)
    NULL
