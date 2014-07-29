@@ -11,7 +11,7 @@ sw <- drLapply(bySpecies, function(x) x$Sepal.Width)
 sl <- drLapply(bySpecies, function(x) x$Sepal.Length)
 
 test_that("memory join", {
-   a1 <- drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
+   a1 <- drJoin(Sepal.Width = sw, Sepal.Length = sl, postTransFn = as.data.frame)
    
    expect_true(all(names(a1[[1]][[2]]) == c("Sepal.Width", "Sepal.Length")))
    
@@ -28,7 +28,7 @@ test_that("local disk join", {
    sld <- convert(sl, localDiskConn(slPath, autoYes = TRUE))
    
    a2 <- drJoin(Sepal.Width = swd, Sepal.Length = sld, postTransFn = as.data.frame)
-
+   
    expect_true(all(names(a2[[1]][[2]]) == c("Sepal.Width", "Sepal.Length")))
    
    expect_true(all(a2[["Species=setosa"]][[2]]$Sepal.Width == sw[["Species=setosa"]][[2]]))

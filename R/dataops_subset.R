@@ -6,8 +6,10 @@
 #' @param subset logical expression indicating elements or rows to keep: missing values are taken as false
 #' @param select expression, indicating columns to select from a data frame
 #' @param drop passed on to [ indexing operator
-#' @param preTransFn a transformation function (if desired) to applied to each subset prior to division
+#' @param preTransFn a transformation function (if desired) to applied to each subset prior to division - note: this is deprecated - instead use \code{\link{addTransform}} prior to calling divide
+#' @param maxRows the maximum number of rows to return
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
+#' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
 #' 
@@ -22,29 +24,24 @@ drSubset <- function(data,
    preTransFn = NULL,
    maxRows = 500000,
    params = NULL,
+   packages = NULL,
    control = NULL,
    verbose = TRUE
 ) {
-   # data <- divide(iris, by = "Species")
-   # subset <- expression(Sepal.Length > 5)
-   # select <- NULL
-   # drop <- FALSE
-   # preTransFn <- flatten
-   # maxRows <- 500000
-   # params <- NULL; control <- NULL; verbose <- TRUE
-
+   
    if(!inherits(data, "ddf")) {
       if(verbose)
          message("* Input data is not 'ddf' - attempting to cast it as such")
       data <- ddf(data)
    }
    
-   if(is.null(preTransFn))
-      preTransFn <- identity
+   if(!is.null(preTransFn)) {
+      message("** note **: preTransFn is deprecated - please apply this transformation using 'addTransform()' to your input data prior to calling 'drSubset()'")
+      data <- addTransform(data, preTransFn)
+   }
    
    # get an example of what a subset will look like
-   ex <- kvExample(data, transform = TRUE)
-   ex <- kvApply(preTransFn, ex)
+   ex <- kvExample(data)[[2]]
    
    if(verbose)
       message("* Testing 'subset' on a subset")
@@ -68,41 +65,28 @@ drSubset <- function(data,
    test <- ex[r, select, drop = drop]
    
    parList <- list(
-      transFn = getAttribute(data, "transFn"),
-      preTransFn = preTransFn,
       maxRows = maxRows,
       subset = subset,
       select = select,
       drop = drop
    )
    
-   globalVars <- unique(drFindGlobals(preTransFn))
-   globalVarList <- getGlobalVarList(globalVars, parent.frame())
-   if(length(globalVarList) > 0)
-      parList <- c(parList, globalVarList)
+   parList <- c(parList, list(
+      applyTransform = applyTransform,
+      setupTransformEnv = setupTransformEnv, 
+      kvApply = kvApply
+   ))
    
    if(! "package:datadr" %in% search()) {
       if(verbose)
          message("* ---- running dev version - sending datadr functions to mr job")
-      parList <- c(parList, list(
-      ))
-      
-      setup <- expression({
-         suppressWarnings(suppressMessages(library(data.table)))
-      })
+      packages <- c(packages, "data.table")
    } else {
-      setup <- expression({
-         suppressWarnings(suppressMessages(library(datadr)))
-      })
+      packages <- c(packages, "datadr", "data.table")
    }
    
    map <- expression({
-      dfList <- lapply(seq_along(map.keys), function(i) {
-         kvApply(preTransFn,
-            kvApply(transFn, list(map.keys[[i]], map.values[[i]]),   
-               returnKV = TRUE))
-      })
-      df <- data.frame(rbindlist(dfList))
+      df <- data.frame(rbindlist(map.values))
       
       r <- if(is.null(subset)) {
    	   rep_len(TRUE, nrow(df))      
@@ -135,10 +119,10 @@ drSubset <- function(data,
    )
    
    res <- mrExec(data,
-      setup     = setup,
       map       = map, 
       reduce    = reduce, 
       params    = c(params, parList),
+      packages  = packages,
       control   = control
    )
    
