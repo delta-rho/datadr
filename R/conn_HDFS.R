@@ -109,7 +109,7 @@ hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, ver
    conn
 }
 
-#' @export addData hdfsConn
+#' @export
 addData.hdfsConn <- function(conn, data, overwrite = FALSE) {
    # warning("This makes your mapfile go away")
    validateListKV(data)
@@ -137,7 +137,7 @@ removeData.hdfsConn <- function(conn, keys) {
 
 #' @export
 print.hdfsConn <- function(x, ...) {
-   cat(paste("hdfsConn connection\n  loc=", x$loc, "; type=", x$type, sep = ""))
+   cat(paste("hdfsConn connection\n  loc=", x$loc, "; type=", x$type, "\n", sep = ""))
 }
 
 ############################################################################

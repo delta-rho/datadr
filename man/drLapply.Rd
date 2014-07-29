@@ -4,7 +4,7 @@
 \title{Apply a function to all key/value pairs of a ddo/ddf object}
 \usage{
 drLapply(X, FUN, combine = combDdo(), output = NULL, overwrite = FALSE,
-  params = NULL, control = NULL, verbose = TRUE)
+  params = NULL, packages = NULL, control = NULL, verbose = TRUE)
 }
 \arguments{
 \item{X}{an object of class "ddo" of "ddf"}
@@ -18,6 +18,8 @@ drLapply(X, FUN, combine = combDdo(), output = NULL, overwrite = FALSE,
 \item{overwrite}{logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)}
 
 \item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+
+\item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 

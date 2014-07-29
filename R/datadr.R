@@ -2,10 +2,9 @@
 #'
 #' @name datadr
 #' @docType package
-#' @import parallel data.table digest codetools hexbin testthat
+#' @import parallel data.table digest hexbin
 
 NULL
-
 
 #' "Census Income" Dataset
 #' 

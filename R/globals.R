@@ -1,4 +1,17 @@
 
+#' Get Global Variables and Package Dependencies
+#' 
+#' Get global variables and package dependencies for a function
+#' 
+#' @param f function
+#' 
+#' @return a list of variables (named by variable) and a vector of package names
+#' @details This traverses the parent environments of the supplied function and finds all global variables using \code{\link{findGlobals}} and retrieves their values.  All package function calls are also found and a list of required packages is also returned.
+#' @author Ryan Hafen
+#' @examples
+#' a <- 1
+#' f <- function(x) x + a
+#' drGetGlobals(f)
 #' @export
 drGetGlobals <- function(f) {
    if(!is.function(f))
@@ -56,13 +69,14 @@ drGetGlobals <- function(f) {
    }
 }
 
+#' @importFrom codetools findGlobals
 getGlobalPkgVars <- function(f) {
    # first see if function is part of a package
    # if so, we shouldn't need to do anything
    # (except add that package to the packages list, of course)
    
    # get list of names of globals used in functions
-   res <- try(codetools::findGlobals(f), silent = TRUE)
+   res <- try(findGlobals(f), silent = TRUE)
    if(inherits(res, "try-error"))
       res <- NULL
    

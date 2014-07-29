@@ -4,7 +4,7 @@
 \title{Division-Agnostic Aggregation}
 \usage{
 drAggregate(formula, data = data, by = NULL, preTransFn = NULL,
-  maxUnique = NULL, params = NULL, control = NULL)
+  maxUnique = NULL, params = NULL, packages = NULL, control = NULL)
 }
 \arguments{
 \item{formula}{a \code{\link{formula}} object with the cross-classifying variables (separated by +) on the right hand side (or an object which can be coerced to a formula). Interactions are not allowed. On the left hand side, one may optionally give a variable name in the data representing counts; in the latter case, the columns are interpreted as corresponding to the levels of a variable. This is useful if the data have already been tabulated.}
@@ -18,6 +18,8 @@ drAggregate(formula, data = data, by = NULL, preTransFn = NULL,
 \item{maxUnique}{the maximum number of unique combinations of variables to obtaion tabulations for.  This is meant to help against cases where a variable in the formula has a very large number of levels, to the point that it is not meaningful to tabulate and is too computationally burdonsome.  If \code{NULL}, it is ignored.  If a positive number, only the top and bottom \code{maxUnique} tabulations by frequency are kept.}
 
 \item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+
+\item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 }

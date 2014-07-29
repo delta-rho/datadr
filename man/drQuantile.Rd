@@ -5,7 +5,7 @@
 \usage{
 drQuantile(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL,
   varTransFn = identity, nBins = 10000, tails = 100, params = NULL,
-  control = NULL, ...)
+  packages = NULL, control = NULL, ...)
 }
 \arguments{
 \item{x}{a 'ddf' object}
@@ -25,6 +25,8 @@ drQuantile(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL,
 \item{tails}{how many exact values at each tail should be retained?}
 
 \item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+
+\item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 

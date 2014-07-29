@@ -10,7 +10,9 @@ FEATURES / CHANGES
   transformation functions and find all global variables and all package 
   dependencies
 - refine printing of ddo/ddf objects (was getting too verbose)
-- add `packages` argument to compute-inducing functions to allow manual
+- add `packages` argument to MapReduce-inducing functions to allow manual
   specification of package dependencies required by user defined 
   transformations
+- add ability to set `options(defaultLocalDiskControl = ...)`, etc. so that you 
+  do not always need to specify `control=` in all MapReduce-inducing operations
 

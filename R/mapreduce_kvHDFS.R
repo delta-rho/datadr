@@ -84,12 +84,16 @@ mrExecInternal.kvHDFSList <- function(data, setup = NULL, map = NULL, reduce = N
 #' @export
 rhipeControl <- function(mapred = NULL, setup = NULL, combiner = FALSE, cleanup = NULL, orderby = "bytes", shared = NULL, jarfiles = NULL, zips = NULL, jobname = "") {
    res <- list(mapred = mapred, setup = setup, combiner = combiner, cleanup = cleanup, orderby = orderby, shared = shared, jarfiles = jarfiles, zips = zips, jobname = jobname)
-   class(res) <- "rhipeControl"
+   class(res) <- c("rhipeControl", "list")
    res
 }
 
 #' @export
 defaultControl.kvHDFS <- function(x) {
-   rhipeControl()
+   res <- getOption("defaultRhipeControl")
+   if(inherits(res, "rhipeControl")) {
+      return(res)
+   } else {
+      return(rhipeControl())
+   }
 }
-

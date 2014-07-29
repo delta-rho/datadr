@@ -38,6 +38,14 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
    if(!inherits(data, "ddo")) {
       if(!all(sapply(data, function(x) inherits(x, "ddo"))))
          stop("data must be a 'ddo' or 'ddf' object or a list of these")
+      # make sure all have the same storage class
+      storageClasses <- sapply(data, function(x) {
+         tmp <- class(x)
+         tmp[grepl("^kv", tmp)][1]
+      })
+      uStorageClasses <- unique(storageClasses)
+      if(length(uStorageClasses) != 1)
+         stop("all data inputs must be of the same class - the input has data of classes ", paste(uStorageClasses, collapse = ", "))
    } else {
       data <- list(data)
    }
@@ -57,7 +65,6 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
    names(data) <- nms
    
    # TODO: make sure all data sources have same kv storage type
-   
    mrCheckOutput(data[[1]], output)
    output <- mrCheckOutputLoc(output, as.character(overwrite))
    
@@ -87,7 +94,7 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
       })
    
    mapApplyTransform <- expression({
-      curTrans <- params$transFns[[.dataSourceName]]
+      curTrans <- transFns[[.dataSourceName]]
       if(!is.null(curTrans)) {
          setupTransformEnv(curTrans, environment())
          for(i in seq_along(map.keys)) {
@@ -101,8 +108,8 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
    
    setup <- appendExpression(control$setup, setup)
    loadPackagesSetup <- expression({
-      if(!is.null(.mr_packages)) {
-         for(pkg in .mr_packages)
+      if(length(mr___packages) > 0) {
+         for(pkg in mr___packages)
             suppressMessages(require(pkg, character.only = TRUE))
       }
    })
@@ -122,10 +129,10 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
       }))
    })))
    
-   packages <- c(packages, transPackages)
+   packages <- unique(c(packages, transPackages))
    
    # add required packages to the list of parameters
-   params <- c(params, list(.mr_packages = packages))
+   params <- c(params, list(mr___packages = packages))
    
    res <- mrExecInternal(data, setup = setup, map = map, reduce = reduce, output = output, control = control, params = params)
    

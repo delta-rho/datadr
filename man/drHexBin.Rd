@@ -4,7 +4,8 @@
 \title{HexBin Aggregation for Distributed Data Frames}
 \usage{
 drHexBin(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
-  xBins = 30, shape = 1, params = NULL, control = NULL)
+  xBins = 30, shape = 1, params = NULL, packages = NULL,
+  control = NULL)
 }
 \arguments{
 \item{data}{a distributed data frame}
@@ -18,6 +19,8 @@ drHexBin(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
 \item{shape}{the shape = yheight/xwidth of the plotting regions}
 
 \item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+
+\item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 }

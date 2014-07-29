@@ -8,6 +8,7 @@
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
+#' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
 #' 
@@ -22,7 +23,7 @@
 #' @author Ryan Hafen
 #' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}, \code{\link{drLapply}}
 #' @export
-recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwrite = FALSE, params = NULL, control = NULL, verbose = TRUE) {
+recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, verbose = TRUE) {
    # apply <- function(x) {
    #    mean(x$Sepal.Length)
    # }
@@ -77,34 +78,37 @@ recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwri
    
    parList <- list(combine = combine)
    
+   # should only need this when datadr is not loaded
+   # but for some reason, it can't find these functions, so always send them
+   # this does not happen in divide
+   parList <- c(parList, list(
+      applyTransform = applyTransform,
+      setupTransformEnv = setupTransformEnv,
+      kvApply = kvApply
+   ))
+   
    if(! "package:datadr" %in% search()) {
       if(verbose)
          message("* ---- running dev version - sending datadr functions to mr job")
-      parList <- c(parList, list(
-         kvApply = kvApply
-      ))
-      
-      setup <- expression({
-         # suppressWarnings(suppressMessages(library(data.table)))
-      })
    } else {
-      setup <- expression({
-         suppressWarnings(suppressMessages(library(datadr)))
-      })
+      packages <- c(packages, "datadr")
    }
    
    globalVarList <- drGetGlobals(apply)
-   if(length(globalVarList) > 0)
-      parList <- c(parList, globalVarList)
+   if(length(globalVarList$vars) > 0)
+      parList <- c(parList, globalVarList$vars)
    
-   res <- mrExec(
-      data,
-      setup = setup,
+   # if the user supplies output as an unevaluated connection
+   # the verbosity can be misleading
+   suppressMessages(output <- output)
+   
+   res <- mrExec(data,
       map = map,
       reduce = reduce,
       output = output,
       overwrite = overwrite,
       params = c(parList, params),
+      packages = c(globalVarList$packages, packages),
       control = control
    )
    

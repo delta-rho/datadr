@@ -231,10 +231,15 @@ test_that("update ddf - check attrs", {
 ############################################################################
 context("local disk parallel check")
 
+## These should be run manually from time to time
+## Using makeCluster causes R CMD check to hang
+
 # test_that("update in parallel and check", {
 #    require(parallel)
 #    ldf <- ddf(conn, reset = TRUE)
 #    cl <- makeCluster(2)
+#    # options(defaultLocalDiskControl = localDiskControl(cluster = cl))
+#    # ldf <- updateAttributes(ldf)
 #    ldf <- updateAttributes(ldf, control = localDiskControl(cluster = cl))
 #    stopCluster(cl)
 #    
@@ -259,6 +264,21 @@ context("local disk parallel check")
 #    # expect_equal(ldfSumm$Sepal.Length$stats$kurtosis, kurtosis(datadf$Sepal.Length, type = 2))
 #    
 #    ldfSumm
+# })
+# 
+# test_that("divide in parallel with parameters", {
+#    require(parallel)
+#    ldf <- ddf(conn, reset = TRUE)
+#    cl <- makeCluster(2)
+#    a <- 3
+#    ldf2 <- addTransform(ldf, function(x) {
+#       x$Petal.Width <- x$Petal.Width + a
+#       x$dg <- digest(x$Petal.Width)
+#       x
+#    })
+#    rm(a)
+#    ldd2 <- divide(ldf2, by = "Species", control = localDiskControl(cluster = cl))
+#    stopCluster(cl)
 # })
 
 ############################################################################

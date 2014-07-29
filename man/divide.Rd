@@ -5,8 +5,8 @@
 \usage{
 divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
   output = NULL, overwrite = FALSE, preTransFn = NULL,
-  postTransFn = NULL, params = NULL, control = NULL, update = FALSE,
-  verbose = TRUE)
+  postTransFn = NULL, params = NULL, packages = NULL, control = NULL,
+  update = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{data}{an object of class "ddf" or "ddo" - in the latter case, need to specify \code{preTransFn} to coerce each subset into a data frame}
@@ -28,6 +28,8 @@ divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
 \item{postTransFn}{a transformation function (if desired) to apply to each post-division subset}
 
 \item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+
+\item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 
