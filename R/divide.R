@@ -12,6 +12,7 @@
 #' @param preTransFn a transformation function (if desired) to applied to each subset prior to division - note: this is deprecated - instead use \code{\link{addTransform}} prior to calling divide
 #' @param postTransFn a transformation function (if desired) to apply to each post-division subset
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
+#' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param update should a MapReduce job be run to obtain additional attributes for the result data prior to returning?
 #' @param verbose logical - print messages about what is being done
@@ -39,6 +40,7 @@ divide <- function(data,
    preTransFn = NULL,
    postTransFn = NULL,
    params = NULL,
+   packages = NULL,
    control = NULL,
    update = FALSE,
    verbose = TRUE
@@ -110,7 +112,7 @@ divide <- function(data,
    filterGlobals <- drGetGlobals(filterFn)
    
    globalVarList <- c(postGlobals$vars, bsvGlobals$vars, filterGlobals$vars)
-   packages <- c(postGlobals$packages, bsvGlobals$packages, filterGlobals$packages)
+   packages <- unique(c(postGlobals$packages, bsvGlobals$packages, filterGlobals$packages, packages))
    
    if(length(globalVarList) > 0)
       parList <- c(parList, globalVarList$vars)
@@ -122,23 +124,22 @@ divide <- function(data,
          dfSplit = dfSplit,
          bsv = bsv,
          kvApply = kvApply,
+         applyTransform = applyTransform,
+         setupTransformEnv = setupTransformEnv,
          getCuts = getCuts,
          getCuts.condDiv = getCuts.condDiv,
          getCuts.rrDiv = getCuts.rrDiv
       ))
       
-      setup <- as.expression(bquote({
-         suppressWarnings(suppressMessages(library(data.table)))
-      	seed <- .(seed)
-         # datadr:::setupRNGStream(seed)
-      }))
+      packages <- c(packages, "data.table")
    } else {
-      setup <- as.expression(bquote({
-         suppressWarnings(suppressMessages(library(datadr)))
-      	seed <- .(seed)
-         # datadr:::setupRNGStream(seed)
-      }))
+      packages <- c(packages, "datadr", "data.table")
    }
+   
+   setup <- as.expression(bquote({
+   	seed <- .(seed)
+      # datadr:::setupRNGStream(seed)
+   }))
    
    map <- expression({
       for(i in seq_along(map.values)) {
@@ -203,6 +204,10 @@ divide <- function(data,
          }
       }
    )
+   
+   # if the user supplies output as an unevaluated connection
+   # the verbosity can be misleading
+   suppressMessages(output <- output)
    
    res <- mrExec(data,
       setup     = setup,

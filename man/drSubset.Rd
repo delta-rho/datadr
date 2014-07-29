@@ -4,8 +4,8 @@
 \title{Subsetting Distributed Data Frames}
 \usage{
 drSubset(data, subset = NULL, select = NULL, drop = FALSE,
-  preTransFn = NULL, maxRows = 5e+05, params = NULL, control = NULL,
-  verbose = TRUE)
+  preTransFn = NULL, maxRows = 5e+05, params = NULL, packages = NULL,
+  control = NULL, verbose = TRUE)
 }
 \arguments{
 \item{data}{object to be subsetted -- an object of class "ddf" or "ddo" - in the latter case, need to specify \code{preTransFn} to coerce each subset into a data frame}
@@ -21,6 +21,8 @@ drSubset(data, subset = NULL, select = NULL, drop = FALSE,
 \item{maxRows}{the maximum number of rows to return}
 
 \item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+
+\item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 

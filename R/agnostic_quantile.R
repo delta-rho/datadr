@@ -11,6 +11,7 @@
 #' @param nBins how many bins should the range of the variable be split into?
 #' @param tails how many exact values at each tail should be retained?
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
+#' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param \ldots additional arguments
 #' 
@@ -40,7 +41,7 @@
 #' plot(probs, quantile(iris$Sepal.Length, probs = probs, type = 1))
 #' 
 #' @export
-drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL, varTransFn = identity, nBins = 10000, tails = 100, params = NULL, control = NULL, ...) {
+drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL, varTransFn = identity, nBins = 10000, tails = 100, params = NULL, packages = NULL, control = NULL, ...) {
    # nBins <- 10000; tails <- 0; probs <- seq(0, 1, 0.0005); by <- "Species"; var <- "Sepal.Length"; x <- ldd; trans <- identity
    
    # we need to know the range of the variables, which we don't
@@ -135,20 +136,16 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
    )
    
    if(! "package:datadr" %in% search()) {
-      setup <- expression({
-         suppressWarnings(suppressMessages(library(data.table)))
-      })
+      packages <- c(packages, "data.table")
    } else {
-      setup <- expression({
-         suppressWarnings(suppressMessages(library(datadr)))
-      })
+      packages <- c(packages, "datadr", "data.table")
    }
    
    mrRes <- mrExec(x,
       map = map,
       reduce = reduce,
-      setup = setup,
-      params = c(globalVarList, parList, params),
+      params = c(globalVarList$vars, parList, params),
+      packages = c(globalVarList$packages, packages),
       control = control
    )
    

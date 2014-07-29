@@ -107,6 +107,14 @@ loadTransformPkgs <- function(transFns) {
       suppressMessages(require(pkg, character.only = TRUE))
 }
 
+#' Set up transformation environment
+#' 
+#' This is called internally in the map phase of datadr MapReduce jobs.  It is not meant for use outside of there, but is exported for convenience.
+#' Given an environment and collection of transformations, it populates the environment with the global variables in the transformations.
+#' 
+#' @param transFns from the "transforms" attribute of a ddo object
+#' @param env the environment in which to evaluate the transformations
+#' @export
 setupTransformEnv <- function(transFns, env = NULL) {
    if(is.null(env))
       env <- new.env(parent = .GlobalEnv)
@@ -121,12 +129,14 @@ setupTransformEnv <- function(transFns, env = NULL) {
    env
 }
 
-
-# (internal) this applies the transformation function(s) 
-# (to be called in map)
-# @param transFns from the "transforms" attribute of a ddo object
-# @param x a subset of the object
-# @param env the environment in which to evaluate the function (should be instantiated from calling \code{\link{setupTransformEnv}}) - if \code{NULL}, the environment will be set up for you
+#' Applies the transformation function(s) 
+#' 
+#' This is called internally in the map phase of datadr MapReduce jobs.  It is not meant for use outside of there, but is exported for convenience.
+#' 
+#' @param transFns from the "transforms" attribute of a ddo object
+#' @param x a subset of the object
+#' @param env the environment in which to evaluate the function (should be instantiated from calling \code{\link{setupTransformEnv}}) - if \code{NULL}, the environment will be set up for you
+#' @export
 applyTransform <- function(transFns, x, env = NULL) {
    if(is.null(transFns)) {
       return(x)
