@@ -42,7 +42,12 @@ drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, pa
       res[length(res) + seq_along(reduce.values)] <- reduce.values
    }, post = {
       res <- unlist(res, recursive = FALSE)
+      # all should have same split attribute
+      # set it globally and get rid of it individually
       attr(res, "split") <- attr(res[[1]], "split")
+      for(i in seq_along(res)) {
+         attr(res[[i]], "split") <- NULL
+      }
       if(!is.null(postTransFn)) {
          res <- postTransFn(res)
       }

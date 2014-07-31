@@ -1,3 +1,36 @@
+#' Print a key-value pair
+#' 
+#' @param x object to be printed
+#' @param \ldots additional arguments
+#' @export
+#' @method print kvPair
+print.kvPair <- function(x) {
+   class(x[[2]]) <- c("divValue", class(x[[2]]))
+   class(x) <- "list"
+   print(x)
+}
+
+#' Print value of a key-value pair
+#' 
+#' @param x object to be printed
+#' @param \ldots additional arguments
+#' @export
+#' @method print divValue
+print.divValue <- function(x) {
+   attr(x, "split") <- NULL
+   class(x) <- setdiff(class(x), "divValue")
+   if(inherits(x, "data.frame")) {
+      tmp <- head(x, 5)
+      more <- NULL
+      if(nrow(x) > 5)
+         more <- "...\n"
+      cat(paste(c(capture.output(tmp), more), sep = "", collapse = "\n"))
+   } else {
+      print(x)
+   }
+}
+
+
 #' Print a "ddo" or "ddf" Object
 #' 
 #' Print an overview of attributes of distributed data objects (ddo) or distributed data frames (ddf)

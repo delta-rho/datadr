@@ -180,7 +180,7 @@ getAttrNeedList <- function(obj, type) {
 #' @export
 `[.ddo` <- function(x, i, ...) {   
    # call extractor for whatever backend
-   res <- extract(x, i, ...)
+   res <- datadr:::extract(x, i, ...)
    
    # apply transformation functions
    transFns <- attr(x, "transforms")$transFns
@@ -188,7 +188,10 @@ getAttrNeedList <- function(obj, type) {
       if(is.null(kv)) {
          return(NULL)
       } else {
-         applyTransform(transFns, kv)
+         tmp <- applyTransform(transFns, kv)
+         class(tmp) <- c("kvPair", "list")
+         names(tmp) <- c("key", "value")
+         tmp
       }
    })
 }
@@ -208,7 +211,6 @@ getAttrNeedList <- function(obj, type) {
 # backend-specific extraction method
 extract <- function(x, ...)
    UseMethod("extract")
-
 
 ######################################################################
 ### other attribute methods

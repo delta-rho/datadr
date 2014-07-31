@@ -76,7 +76,7 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
    controlMissingNames <- setdiff(names(dc), names(control))
    for(nm in controlMissingNames)
       control[[nm]] <- dc[[nm]]
-      
+   
    # if map is NULL, replace with identity
    if(is.null(map))
       map <- expression({
@@ -99,6 +99,7 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
          setupTransformEnv(curTrans, environment())
          for(i in seq_along(map.keys)) {
             tmp <- applyTransform(curTrans, list(map.keys[[i]], map.values[[i]]), env = environment())
+            names(tmp) <- c("key", "value")
             map.keys[[i]] <- tmp[[1]]
             map.values[[i]] <- tmp[[2]]
          }
