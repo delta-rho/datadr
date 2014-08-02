@@ -30,10 +30,10 @@ getBasicDdoAttrs.kvLocalDisk <- function(obj, conn) {
       load(f)
       obj
    }
-   
+
    list(
       conn = conn,
-      extractableKV = FALSE, 
+      extractableKV = FALSE,
       totStorageSize = sum(sz),
       files = ff,
       sizes = sz,
@@ -77,14 +77,14 @@ datadr_extract.kvLocalDisk <- function(x, i, ...) {
    pr <- conn$loc
    nBins <- conn$nBins
    fileHashFn <- conn$fileHashFn
-   
+
    idx <- NULL
-   
+
    if(is.numeric(i)) {
       idx <- i
    } else {
       # try file names, actual keys, and key hash possibilities
-      
+
       # first try file names
       if(any(i %in% ff)) {
          idx <- unlist(lapply(i, function(x) which(ff == x)))
@@ -93,7 +93,7 @@ datadr_extract.kvLocalDisk <- function(x, i, ...) {
          tmp <- try(fileHashFn(i, conn), silent = TRUE)
          if(!inherits(tmp, "try-error"))
             idx <- unlist(lapply(tmp, function(x) which(ff == x)))
-         
+
          if(length(idx) == 0) {
             # now try i as hash, only if it is likely that i is a hash
             if(all(is.character(i))) {
@@ -159,13 +159,13 @@ convertKvLocalDisk.NULL <- function(to, from, verbose = FALSE) {
       load(x)
       obj
    }))
-   
+
    if(inherits(from, "ddf")) {
       res <- ddf(res, update = FALSE, verbose = verbose)
    } else {
       res <- ddo(res, update = FALSE, verbose = verbose)
    }
-   
+
    addNeededAttrs(res, from)
 }
 
@@ -175,7 +175,7 @@ convertKvLocalDisk.hdfsConn <- function(to, from, verbose = FALSE) {
    conn <- getAttribute(from, "conn")
    pr <- conn$loc
    ff <- getAttribute(from, "files")
-   
+
    # TODO: check to make sure "to" is a fresh location
    writeDat <- list()
    objSize <- 0
@@ -192,13 +192,13 @@ convertKvLocalDisk.hdfsConn <- function(to, from, verbose = FALSE) {
    }
    if(length(writeDat) > 0)
       rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep = ""))
-   
+
    if(inherits(from, "ddf")) {
       res <- ddf(to, update = FALSE, verbose = verbose)
    } else {
       res <- ddo(to, update = FALSE, verbose = verbose)
    }
-   
+
    addNeededAttrs(res, from)
 }
 

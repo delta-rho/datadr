@@ -31,7 +31,7 @@ setAttributes.ddf <- function(obj, attrs) {
    ind <- which(names(attrs) %in% requiredObjAttrs(obj)$ddf)
    if(length(ind) > 0)
       obj <- setObjAttributes(obj, attrs[ind], type = "ddf")
-   
+
    # all ddfs are also ddo's so call ddo directly instead of NextMethod
    setAttributes.ddo(obj, attrs[setdiff(seq_len(length(attrs)), ind)])
 }
@@ -41,13 +41,13 @@ setAttributes.ddf <- function(obj, attrs) {
 setAttributes.ddo <- function(obj, attrs) {
    attrNames <- names(attrs)
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddo)
-   
+
    if(length(ind) < length(attrNames))
-      warning(paste("Unused attributes:", paste(attrNames[setdiff(1:length(attrNames), ind)], collapse = ", ")))      
-   
+      warning(paste("Unused attributes:", paste(attrNames[setdiff(1:length(attrNames), ind)], collapse = ", ")))
+
    if(length(ind) > 0)
       obj <- setObjAttributes(obj, attrs[ind], type = "ddo")
-   
+
    obj
 }
 
@@ -55,16 +55,16 @@ setAttributes.ddo <- function(obj, attrs) {
 # (once it has been determined whether it is a ddo or ddf attribute)
 setObjAttributes <- function(obj, attrs, type) {
    attrNames <- names(attrs)
-   
+
    if(is.null(attr(obj, type)))
       attr(obj, type) <- list()
-   
+
    for(i in seq_along(attrs)) {
       attr(obj, type)[[attrNames[i]]] <- attrs[[i]]
    }
-   
+
    saveAttrs(getAttribute(obj, "conn"), attr(obj, type), type = type)
-   
+
    obj
 }
 
@@ -79,9 +79,9 @@ setObjAttributes <- function(obj, attrs, type) {
 #' @export
 getAttribute <- function(obj, attrName) {
    res <- getAttributes(obj, attrName)
-   
+
    # getAttributes returns a list with "ddo" and "ddf"
-   # the single attribute we want will be in the one of these that is not null   
+   # the single attribute we want will be in the one of these that is not null
    if(length(res$ddf) == 0) {
       if(length(res$ddo) == 0) {
          return(NULL)
@@ -169,7 +169,7 @@ getAttrNeedList <- function(obj, type) {
    if(!is.null(attrs)) {
       sapply(attrs, function(x) {
          ifelse(length(x) == 1 && !is.list(x) && !is.function(x), is.na(x), FALSE)
-      })         
+      })
    }
 }
 
@@ -178,10 +178,10 @@ getAttrNeedList <- function(obj, type) {
 ######################################################################
 
 #' @export
-`[.ddo` <- function(x, i, ...) {   
+`[.ddo` <- function(x, i, ...) {
    # call extractor for whatever backend
-   res <- datadr:::extract(x, i, ...)
-   
+   res <- datadr_extract(x, i, ...)
+
    # apply transformation functions
    transFns <- attr(x, "transforms")$transFns
    lapply(res, function(kv) {
@@ -236,12 +236,12 @@ getBasicDdfAttrs <- function(obj, ...)
 ######################################################################
 
 #' Accessor Functions
-#' 
+#'
 #' Accessor functions for attributes of ddo/ddf objects.  Methods also include \code{nrow} and \code{ncol} for ddf objects.
 #' @param x a 'ddf'/'ddo' object
 #' @param object a 'ddf'/'ddo' object
 #' @param \ldots additional arguments
-#' 
+#'
 #' @export
 #' @rdname ddo-ddf-accessors
 kvExample <- function(x) {
@@ -276,7 +276,7 @@ splitRowDistn <- function(x) {
       message("The distribution of the number of rows in each subset of a transformed divided data frame is not accessible.")
       return(NA)
    }
-   getAttribute(x, "splitRowDistn")   
+   getAttribute(x, "splitRowDistn")
 }
 
 # need to change this in the future for k/v store with way too many keys
@@ -317,34 +317,34 @@ hasExtractableKV <- function(x)
 ######################################################################
 
 #' Add Key-Value Pairs to a Data Connection
-#' 
+#'
 #' Add key-value pairs to a data connection
-#' 
+#'
 #' @param conn a kvConnection object
 #' @param data a list of key-value pairs (list of lists where each sub-list has two elements, the key and the value)
 #' @param overwrite if data with the same key is already present in the data, should it be overwritten? (does not work for HDFS connections)
-#' 
+#'
 #' @author Ryan Hafen
-#' 
+#'
 #' @note This is generally not recommended for HDFS as it writes a new file each time it is called, and can result in more individual files than Hadoop likes to deal with.
 #' @seealso \code{\link{removeData}}, \code{\link{localDiskConn}}, \code{\link{hdfsConn}}
-#' 
+#'
 #' @export
 addData <- function(conn, data, overwrite = FALSE)
    UseMethod("addData")
 
 #' Remove Key-Value Pairs from a Data Connection
-#' 
+#'
 #' Remove key-value pairs from a data connection
-#' 
+#'
 #' @param conn a kvConnection object
 #' @param keys a list of keys indicating which k/v pairs to remove
-#' 
+#'
 #' @author Ryan Hafen
-#' 
+#'
 #' @note This is generally not recommended for HDFS as it writes a new file each time it is called, and can result in more individual files than Hadoop likes to deal with.
 #' @seealso \code{\link{removeData}}, \code{\link{localDiskConn}}, \code{\link{hdfsConn}}
-#' 
+#'
 #' @export
 removeData <- function(conn, keys)
    UseMethod("removeData")
@@ -354,9 +354,9 @@ removeData <- function(conn, keys)
 ######################################################################
 
 #' Convert 'ddo' / 'ddf' Objects
-#' 
+#'
 #' Convert 'ddo' / 'ddf' objects between different storage backends
-#' 
+#'
 #' @param from a 'ddo' or 'ddf' object
 #' @param to a 'kvConnection' object (created with \code{\link{localDiskConn}} or \code{\link{hdfsConn}}) or \code{NULL} if an in-memory 'ddo' / 'ddf' is desired
 #' @export
@@ -375,17 +375,17 @@ addNeededAttrs <- function(res, from) {
    ddoNeed <- names(ddoNeed[ddoNeed])
    ddfNeed <- getAttrNeedList(res, "ddf")
    ddfNeed <- names(ddfNeed[ddfNeed])
-   
+
    fromAttrs <- list(
       ddo = getAttributes(from, getDr("requiredDdoAttrs"))$ddo,
       ddf = getAttributes(from, getDr("requiredDdfAttrs"))$ddf
    )
-   
+
    newAttrs <- c(
       fromAttrs$ddo[names(fromAttrs$ddo) %in% ddoNeed],
       fromAttrs$ddf[names(fromAttrs$ddf) %in% ddfNeed]
    )
-   
+
    setAttributes(res, newAttrs)
 }
 
@@ -475,7 +475,7 @@ length.ddo <- function(x) {
 }
 
 #' Turn 'ddf' Object into Data Frame
-#' 
+#'
 #' Rbind all the rows of a 'ddf' object into a single data frame
 #' @param x a 'ddf' object
 #' @param row.names passed to \code{as.data.frame}
@@ -490,7 +490,7 @@ as.data.frame.ddf <- function(x, row.names = NULL, optional = FALSE, keys = TRUE
    x <- convert(x, NULL)
    tmp <- lapply(getAttribute(x, "conn")$data, function(a) {
       res <- a[[2]]
-      
+
       if(keys) {
          # TODO: what if 'key' already is a variable name?
          if(length(a[[1]] == 1)) {
@@ -499,25 +499,25 @@ as.data.frame.ddf <- function(x, row.names = NULL, optional = FALSE, keys = TRUE
             res$key <- digest(a[[1]])
          }
       }
-      
+
       if(splitVars) {
          if(!is.null(getSplitVars(a)))
             res <- data.frame(res, getSplitVars(a))
       }
-      
+
       if(bsvs) {
          if(!is.null(getBsvs(a)))
-            res <- data.frame(res, getBsvs(a))         
+            res <- data.frame(res, getBsvs(a))
       }
-      
+
       res
    })
-   
+
    as.data.frame(rbindlist(tmp), row.names = row.names, optional = optional, ...)
 }
 
 #' Turn 'ddo' / 'ddf' Object into a list
-#' 
+#'
 #' @param x a 'ddo' / 'ddf' object
 #' @param \ldots additional arguments passed to \code{as.list}
 #' @export

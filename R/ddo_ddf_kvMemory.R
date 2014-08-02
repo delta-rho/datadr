@@ -81,12 +81,12 @@ hasExtractableKV.kvMemory <- function(x) {
 #' @export
 datadr_extract.kvMemory <- function(x, i, ...) {
    idx <- NULL
-   
+
    if(is.numeric(i)) {
       idx <- i
    } else {
       keyHashes <- getAttribute(x, "keyHashes")
-      
+
       # try actual key
       idx <- unlist(lapply(as.character(sapply(i, digest)), function(x) which(keyHashes == x)))
 
@@ -96,7 +96,7 @@ datadr_extract.kvMemory <- function(x, i, ...) {
          }
       }
    }
-   
+
    if(length(idx) == 0)
       return(NULL)
    getAttribute(x, "conn")$data[idx]
@@ -129,7 +129,7 @@ convertKvMemory.localDiskConn <- function(to, from, verbose=FALSE) {
    # make sure "to" is empty
    # TODO: choose nBins based on nDiv, if it exists?
    addData(to, getAttribute(from, "conn")$data)
-   
+
    if(inherits(from, "ddf")) {
       res <- ddf(to, update=FALSE, verbose=verbose)
    } else {

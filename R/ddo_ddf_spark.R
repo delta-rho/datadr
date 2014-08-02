@@ -22,7 +22,7 @@ requiredObjAttrs.kvSparkData <- function(obj) {
 getBasicDdoAttrs.kvSparkData <- function(obj, conn) {
    list(
       conn = conn,
-      extractableKV = FALSE, 
+      extractableKV = FALSE,
       totStorageSize = NA, # TODO...
       nDiv = NA, # TODO,
       example = conn$data[[1]]
@@ -76,13 +76,13 @@ convertkvSparkData.sparkDataConn <- function(to, from, verbose=FALSE) {
 #' @export
 convertkvSparkData.NULL <- function(to, from, verbose=FALSE) {
    res <- getAttribute(from, "conn")$data
-   
+
    if(inherits(from, "ddf")) {
       res <- ddf(res, update=FALSE, verbose=verbose)
    } else {
       res <- ddo(res, update=FALSE, verbose=verbose)
    }
-   
+
    addNeededAttrs(res, from)
 }
 
@@ -92,9 +92,9 @@ convertkvSparkData.NULL <- function(to, from, verbose=FALSE) {
 # convertkvSparkData.sparkDataConn <- function(to, from, verbose=FALSE) {
 #    from
 # }
-# 
+#
 # # from sparkData to HDFS
 # #' @export
 # convertkvSparkData.hdfsConn <- function(to, from, verbose=FALSE) {
 # }
-# 
+#
