@@ -24,14 +24,14 @@ condDiv <- function(vars) {
    res
 }
 
-#' @S3method getCuts condDiv
+#' @export
 getCuts.condDiv <- function(by, curDF) {
    splitVars <- by$vars
    
    apply(curDF[,splitVars,drop=FALSE], 1, function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))      
 }
 
-#' @S3method validateDivSpec condDiv
+#' @export
 validateDivSpec.condDiv <- function(by, data, ex) {
    if(by$type == "condDiv") {
       if(!all(by$vars %in% names(ex[[2]]))) {

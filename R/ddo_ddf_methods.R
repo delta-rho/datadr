@@ -26,27 +26,27 @@ setAttributes <- function(obj, attrs)
 
 #' @rdname ddoddfattr
 #' @param attrs a named list of attributes to set
-#' @S3method setAttributes ddf
+#' @export
 setAttributes.ddf <- function(obj, attrs) {
    ind <- which(names(attrs) %in% requiredObjAttrs(obj)$ddf)
    if(length(ind) > 0)
-      obj <- setObjAttributes(obj, attrs[ind], type="ddf")
+      obj <- setObjAttributes(obj, attrs[ind], type = "ddf")
    
    # all ddfs are also ddo's so call ddo directly instead of NextMethod
    setAttributes.ddo(obj, attrs[setdiff(seq_len(length(attrs)), ind)])
 }
 
 #' @rdname ddoddfattr
-#' @S3method setAttributes ddo
+#' @export
 setAttributes.ddo <- function(obj, attrs) {
    attrNames <- names(attrs)
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddo)
-
+   
    if(length(ind) < length(attrNames))
-      warning(paste("Unused attributes:", paste(attrNames[setdiff(1:length(attrNames), ind)], collapse=", ")))      
-
+      warning(paste("Unused attributes:", paste(attrNames[setdiff(1:length(attrNames), ind)], collapse = ", ")))      
+   
    if(length(ind) > 0)
-      obj <- setObjAttributes(obj, attrs[ind], type="ddo")
+      obj <- setObjAttributes(obj, attrs[ind], type = "ddo")
    
    obj
 }
@@ -62,9 +62,8 @@ setObjAttributes <- function(obj, attrs, type) {
    for(i in seq_along(attrs)) {
       attr(obj, type)[[attrNames[i]]] <- attrs[[i]]
    }
-
-   # save file to disk each time attributes are udpated
-   saveAttrs(getAttribute(obj, "conn"), attr(obj, type), type=type)
+   
+   saveAttrs(getAttribute(obj, "conn"), attr(obj, type), type = type)
    
    obj
 }
@@ -80,7 +79,7 @@ setObjAttributes <- function(obj, attrs, type) {
 #' @export
 getAttribute <- function(obj, attrName) {
    res <- getAttributes(obj, attrName)
-
+   
    # getAttributes returns a list with "ddo" and "ddf"
    # the single attribute we want will be in the one of these that is not null   
    if(length(res$ddf) == 0) {
@@ -102,24 +101,24 @@ getAttributes <- function(obj, attrNames)
 
 #' @rdname ddoddfattr
 #' @param attrNames vector of names of the attributes to get
-#' @S3method getAttributes ddf
+#' @export
 getAttributes.ddf <- function(obj, attrNames) {
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddf)
    res <- list(ddf = NULL)
    if(length(ind) > 0)
-      res$ddf <- getObjAttributes(obj, attrNames[ind], type="ddf")
+      res$ddf <- getObjAttributes(obj, attrNames[ind], type = "ddf")
    res <- c(res, getAttributes.ddo(obj, attrNames))
    res
 }
 
 # obj is the data object, attrs is a named list of attributes
 #' @rdname ddoddfattr
-#' @S3method getAttributes ddo
+#' @export
 getAttributes.ddo <- function(obj, attrNames) {
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddo)
    res <- list(ddo = NULL)
    if(length(ind) > 0)
-      res$ddo <- getObjAttributes(obj, attrNames[ind], type="ddo")
+      res$ddo <- getObjAttributes(obj, attrNames[ind], type = "ddo")
    res
 }
 
@@ -145,7 +144,7 @@ hasAttributes.ddf <- function(obj, attrNames) {
 
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddf)
    if(length(ind) > 0)
-      res[ind] <- hasObjAttributes(obj, attrNames[ind], type="ddf")
+      res[ind] <- hasObjAttributes(obj, attrNames[ind], type = "ddf")
 
    res2 <- hasAttributes.ddo(obj, attrNames)
    res | res2
@@ -156,7 +155,7 @@ hasAttributes.ddo <- function(obj, attrNames) {
 
    ind <- which(attrNames %in% requiredObjAttrs(obj)$ddo)
    if(length(ind) > 0)
-      res[ind] <- hasObjAttributes(obj, attrNames[ind], type="ddo")
+      res[ind] <- hasObjAttributes(obj, attrNames[ind], type = "ddo")
 
    res
 }
@@ -173,6 +172,45 @@ getAttrNeedList <- function(obj, type) {
       })         
    }
 }
+
+######################################################################
+### extractor methods
+######################################################################
+
+#' @export
+`[.ddo` <- function(x, i, ...) {   
+   # call extractor for whatever backend
+   res <- datadr:::extract(x, i, ...)
+   
+   # apply transformation functions
+   transFns <- attr(x, "transforms")$transFns
+   lapply(res, function(kv) {
+      if(is.null(kv)) {
+         return(NULL)
+      } else {
+         tmp <- applyTransform(transFns, kv)
+         class(tmp) <- c("kvPair", "list")
+         names(tmp) <- c("key", "value")
+         tmp
+      }
+   })
+}
+
+#' @export
+`[[.ddo` <- function(x, i, ...) {
+   if(length(i) == 1) {
+      res <- x[i]
+      if(is.null(res)) {
+         return(NULL)
+      } else {
+         return(res[[1]])
+      }
+   }
+}
+
+# backend-specific extraction method
+extract <- function(x, ...)
+   UseMethod("extract")
 
 ######################################################################
 ### other attribute methods
@@ -201,17 +239,14 @@ getBasicDdfAttrs <- function(obj, ...)
 #' 
 #' Accessor functions for attributes of ddo/ddf objects.  Methods also include \code{nrow} and \code{ncol} for ddf objects.
 #' @param x a 'ddf'/'ddo' object
-#' @param transform if the 'ddf' object has a \code{transFn}, should it be applied prior to returning?
 #' @param object a 'ddf'/'ddo' object
 #' @param \ldots additional arguments
 #' 
 #' @export
 #' @rdname ddo-ddf-accessors
-kvExample <- function(x, transform = FALSE) {
+kvExample <- function(x) {
    res <- getAttribute(x, "example")
-   if(inherits(x, "ddf") && transform)
-      return(kvApply(getAttribute(x, "transFn"), res, returnKV = TRUE))
-   res
+   applyTransform(attr(x, "transforms")$transFns, res)
 }
 
 #' @export
@@ -226,13 +261,23 @@ counters <- function(x)
 
 #' @export
 #' @rdname ddo-ddf-accessors
-splitSizeDistn <- function(x)
+splitSizeDistn <- function(x) {
+   if(inherits(x, "transformed")) {
+      message("The distribution of the size of each subset of a transformed divided data object is not accessible.")
+      return(NA)
+   }
    getAttribute(x, "splitSizeDistn")
+}
 
 #' @export
 #' @rdname ddo-ddf-accessors
-splitRowDistn <- function(x)
-   getAttribute(x, "splitRowDistn")
+splitRowDistn <- function(x) {
+   if(inherits(x, "transformed")) {
+      message("The distribution of the number of rows in each subset of a transformed divided data frame is not accessible.")
+      return(NA)
+   }
+   getAttribute(x, "splitRowDistn")   
+}
 
 # need to change this in the future for k/v store with way too many keys
 #' @export
@@ -241,10 +286,26 @@ getKeys <- function(x)
    getAttribute(x, "keys")
 
 #' @rdname ddo-ddf-accessors
+#' @method summary ddo
+#' @export
+summary.ddo <- function(object, ...) {
+   if(inherits(object, "transformed")) {
+      message("Summary statistics of a transformed divided data object are not accessible.")
+      return(NA)
+   }
+   getAttribute(object, "summary")
+}
+
+#' @rdname ddo-ddf-accessors
 #' @method summary ddf
 #' @export
-summary.ddf <- function(object, ...)
+summary.ddf <- function(object, ...) {
+   if(inherits(object, "transformed")) {
+      message("Summary statistics of a transformed divided data frame are not accessible.")
+      return(NA)
+   }
    getAttribute(object, "summary")
+}
 
 #' @rdname ddo-ddf-accessors
 #' @export
@@ -269,7 +330,7 @@ hasExtractableKV <- function(x)
 #' @seealso \code{\link{removeData}}, \code{\link{localDiskConn}}, \code{\link{hdfsConn}}
 #' 
 #' @export
-addData <- function(conn, data, overwrite=FALSE)
+addData <- function(conn, data, overwrite = FALSE)
    UseMethod("addData")
 
 #' Remove Key-Value Pairs from a Data Connection
@@ -399,7 +460,11 @@ setMethod("NCOL", "ddf", function(x) {
 #' @method names ddf
 #' @rdname ddo-ddf-accessors
 names.ddf <- function(x) {
-   names(attributes(x)$ddf$vars)
+   if(inherits(x, "transformed")) {
+      attributes(x)$transforms$varNames
+   } else {
+      names(attributes(x)$ddf$vars)
+   }
 }
 
 #' @export

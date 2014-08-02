@@ -1,3 +1,6 @@
+library(digest)
+library(data.table)
+
 # not all test environments have Hadoop installed
 TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
 if(TEST_HDFS == "")
@@ -19,6 +22,20 @@ for(i in 1:25) {
 }
 dataDigest <- sapply(data, digest)
 datadf <- data.frame(rbindlist(lapply(data, "[[", 2)))
+
+stripKVattrs <- function(x) {
+   if(inherits(x, "kvPair")) {
+      names(x) <- NULL
+      class(x) <- "list"
+      return(x)      
+   } else {
+      lapply(x, function(a) {
+         names(a) <- NULL
+         class(a) <- "list"
+         a
+      })
+   }
+}
 
 ############################################################################
 ############################################################################
@@ -132,17 +149,24 @@ ldo <- ddo(conn, update = TRUE)
 test_that("extraction checks", {
    tmpConn <- getAttribute(ldo, "conn")
    
-   expect_true(digest(ldo[[1]]) %in% dataDigest, label = "single extraction by index")
+   expect_true(digest(stripKVattrs(ldo[[1]])) %in% dataDigest, 
+      label = "single extraction by index")
    key <- data[[1]][[1]]
-   expect_equivalent(ldo[[key]], data[[1]], label = "single extraction by key")
+   expect_equivalent(stripKVattrs(ldo[[key]]), data[[1]], 
+         label = "single extraction by key")
    ffs <- tmpConn$fileHashFn(list(key), tmpConn)
-   expect_equivalent(ldo[[ffs]], data[[1]], label = "single extraction by file")
+   expect_equivalent(stripKVattrs(ldo[[ffs]]), data[[1]], 
+      label = "single extraction by file")
    
-   expect_true(all(sapply(ldo[c(1, 3)], digest) %in% dataDigest), label = "multiple extraction by index")
+   expect_true(all(sapply(stripKVattrs(ldo[c(1, 3)]), digest) %in% dataDigest), 
+      label = "multiple extraction by index")
+   
    keys <- c(data[[1]][[1]], data[[10]][[1]])
-   expect_equivalent(ldo[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
+   expect_equivalent(stripKVattrs(ldo[keys]), list(data[[1]], data[[10]]), 
+      label = "multiple extraction by key")
    ffs <- tmpConn$fileHashFn(keys, tmpConn)
-   expect_equivalent(ldo[ffs], list(data[[1]], data[[10]]), label = "multiple extraction by key")
+   expect_equivalent(stripKVattrs(ldo[ffs]), list(data[[1]], data[[10]]), 
+      label = "multiple extraction by key")
    
    expect_equivalent(ldo[[1]], ldo[[digest(ldo[[1]][[1]])]], label = "extraction by key hash")
    
@@ -152,7 +176,7 @@ test_that("extraction checks", {
    
    for(idx in idxs) {
       idxLab <- paste(idx, collapse = ",")
-      expect_true(all(sapply(ldo[keys[idx]], "[[", 1) == keys[idx]),
+      expect_true(all(sapply(stripKVattrs(ldo[keys[idx]]), "[[", 1) == keys[idx]),
          label = paste("key extraction matching order for", idxLab))
    }
    
@@ -178,13 +202,13 @@ addData(connBins, data)
 ldoBins <- ddo(connBins)
 
 test_that("extraction checks with nbins", {
-   expect_true(digest(ldoBins[[1]]) %in% dataDigest, label = "single extraction by index")
+   expect_true(digest(stripKVattrs(ldoBins[[1]])) %in% dataDigest, label = "single extraction by index")
    key <- data[[1]][[1]]
-   expect_equivalent(ldoBins[[key]], data[[1]], label = "single extraction by key")
+   expect_equivalent(stripKVattrs(ldoBins[[key]]), data[[1]], label = "single extraction by key")
 
-   expect_true(all(sapply(ldoBins[c(1, 3)], digest) %in% dataDigest), label = "multiple extraction by index")
+   expect_true(all(sapply(stripKVattrs(ldoBins[c(1, 3)]), digest) %in% dataDigest), label = "multiple extraction by index")
    keys <- c(data[[1]][[1]], data[[10]][[1]])
-   expect_equivalent(ldoBins[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
+   expect_equivalent(stripKVattrs(ldoBins[keys]), list(data[[1]], data[[10]]), label = "multiple extraction by key")
 })
 
 ############################################################################
@@ -228,10 +252,15 @@ test_that("update ddf - check attrs", {
 ############################################################################
 context("local disk parallel check")
 
+## These should be run manually from time to time
+## Using makeCluster causes R CMD check to hang
+
 # test_that("update in parallel and check", {
 #    require(parallel)
 #    ldf <- ddf(conn, reset = TRUE)
 #    cl <- makeCluster(2)
+#    # options(defaultLocalDiskControl = localDiskControl(cluster = cl))
+#    # ldf <- updateAttributes(ldf)
 #    ldf <- updateAttributes(ldf, control = localDiskControl(cluster = cl))
 #    stopCluster(cl)
 #    
@@ -257,6 +286,21 @@ context("local disk parallel check")
 #    
 #    ldfSumm
 # })
+# 
+# test_that("divide in parallel with parameters", {
+#    require(parallel)
+#    ldf <- ddf(conn, reset = TRUE)
+#    cl <- makeCluster(2)
+#    a <- 3
+#    ldf2 <- addTransform(ldf, function(x) {
+#       x$Petal.Width <- x$Petal.Width + a
+#       x$dg <- digest(x$Petal.Width)
+#       x
+#    })
+#    rm(a)
+#    ldd2 <- divide(ldf2, by = "Species", control = localDiskControl(cluster = cl))
+#    stopCluster(cl)
+# })
 
 ############################################################################
 ############################################################################
@@ -280,6 +324,18 @@ test_that("conditioning division and bsv", {
    ldd
 })
 
+test_that("division with addTransform", {
+   a <- 3
+   ldf2 <- addTransform(ldf, function(x) {
+      x$Petal.Width <- x$Petal.Width + a
+      x
+   })
+   rm(a)
+   ldd2 <- divide(ldf2, by = "Species")
+   
+   expect_true(min(ldd2[["Species=virginica"]][[2]]$Petal.Width) == 4.4)
+})
+
 test_that("random replicate division", {
    path2 <- file.path(tempdir(), "ldd_test_rrdiv")
    unlink(path2, recursive = TRUE)
@@ -292,13 +348,28 @@ test_that("random replicate division", {
 ############################################################################
 context("local disk recombine() checks")
 
-ldd <- ddf(localDiskConn(file.path(tempdir(), "ldd_test_div")))
+path2 <- file.path(tempdir(), "ldd_test_div")
+unlink(path2, recursive = TRUE)
+
+ldd <- divide(ldf, by = "Species", output = localDiskConn(path2, autoYes = TRUE), update = TRUE,
+   bsvFn = function(x)
+      list(meanSL = bsv(mean(x$Sepal.Length))))
+
 mpw <- mean(ldd[[1]][[2]]$Petal.Width)
 
 test_that("simple recombination", {
    res <- recombine(ldd, apply = function(v) mean(v$Petal.Width))
    
-   expect_equal(res[[1]][[2]], mpw)
+   expect_equal(as.numeric(res[[1]][[2]]), mpw)
+})
+
+test_that("recombine with addTransform", {
+   a <- 3
+   lddMpw <- addTransform(ldd, function(v) mean(v$Petal.Width) + a)
+   rm(a)
+   res <- recombine(lddMpw, combRbind)
+   
+   expect_true(res$val[res$Species == "setosa"] == 3.246)
 })
 
 test_that("recombination with combRbind", {
@@ -316,18 +387,18 @@ test_that("recombination with combDdo", {
    expect_true(inherits(res, "ddo"))
 })
 
-test_that("recombination with drGLM", {
-   path2 <- file.path(tempdir(), "ldd_test_drglm")
-   
-   set.seed(1234)
-   ldf <- ddf(conn)
-   ldr <- divide(ldf, by = rrDiv(nrow = 200), output = localDiskConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
-   
-   a <- recombine(ldr, 
-      apply = drGLM(vowel ~ Petal.Length, 
-         family = binomial()), 
-      combine = combMeanCoef())
-})
+# test_that("recombination with drGLM", {
+#    path2 <- file.path(tempdir(), "ldd_test_drglm")
+#    
+#    set.seed(1234)
+#    ldf <- ddf(conn)
+#    ldr <- divide(ldf, by = rrDiv(nrow = 200), output = localDiskConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
+#    
+#    a <- recombine(ldr, 
+#       apply = drGLM(vowel ~ Petal.Length, 
+#          family = binomial()), 
+#       combine = combMeanCoef())
+# })
 
 ############################################################################
 ############################################################################
@@ -421,6 +492,7 @@ test_that("move local disk object", {
 ## clean up
 
 unlink(file.path(tempdir(), "ldd_test"), recursive = TRUE)
+unlink(file.path(tempdir(), "testloc"), recursive = TRUE)
 unlink(file.path(tempdir(), "ldd_test_div"), recursive = TRUE)
 unlink(file.path(tempdir(), "ldd_test_drglm"), recursive = TRUE)
 unlink(file.path(tempdir(), "ldd_test_rrdiv"), recursive = TRUE)

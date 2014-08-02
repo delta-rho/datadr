@@ -14,7 +14,7 @@
 combMeanCoef <- function(...) {
    structure(
    list(
-      reduce=expression(
+      reduce = expression(
          pre = {
             res <- list()
             n <- as.numeric(0)
@@ -24,7 +24,7 @@ combMeanCoef <- function(...) {
             if(is.null(coefNames))
                coefNames <- reduce.values[[1]]$names
             
-            n <- sum(c(n, unlist(lapply(reduce.values, function(x) x$n))), na.rm=TRUE)
+            n <- sum(c(n, unlist(lapply(reduce.values, function(x) x$n))), na.rm = TRUE)
             res <- do.call(rbind, c(res, lapply(reduce.values, function(x) {
                x$coef * x$n
             })))
@@ -36,12 +36,12 @@ combMeanCoef <- function(...) {
             collect("final", res)
          }
       ),
-      final=function(x, ...) x[[1]][[2]],
-      validateOutput=c("nullConn"),
-      group=TRUE,
+      final = function(x, ...) x[[1]][[2]],
+      validateOutput = c("nullConn"),
+      group = TRUE,
       ...
    ),
-   class="combMeanCoef")
+   class = "combMeanCoef")
 }
 
 #' Mean Recombination
@@ -60,7 +60,7 @@ combMeanCoef <- function(...) {
 combMean <- function(...) {
    structure(
    list(
-      reduce=expression(
+      reduce = expression(
          pre = {
             suppressWarnings(suppressMessages(require(data.table)))
             res <- list()
@@ -78,18 +78,18 @@ combMean <- function(...) {
             collect("final", res)
          }
       ),
-      final=function(x, ...) {
+      final = function(x, ...) {
          if(length(x) == 1) {
             return(x[[1]][[2]])
          } else {
             return(getAttribute(x, "conn")$data)
          }
       } ,
-      validateOutput=c("nullConn"),
-      group=TRUE,
+      validateOutput = c("nullConn"),
+      group = TRUE,
       ...
    ),
-   class="combMean")
+   class = "combMean")
 }
 
 #' "DDO" Recombination
@@ -108,19 +108,15 @@ combMean <- function(...) {
 combDdo <- function(...) {
    structure(
    list(
-      reduce=expression(reduce = {
+      reduce = expression(reduce = {
          lapply(reduce.values, function(r) collect(reduce.key, r))
       }),
-      mapHook=function(key, value, attrs) { # add split attribute to value
-         attr(value, "split") <- attrs$split
-         value
-      },
-      final=identity,
-      validateOutput=c("localDiskConn", "hdfsConn", "nullConn"),
-      group=FALSE,
+      final = identity,
+      validateOutput = c("localDiskConn", "hdfsConn", "nullConn"),
+      group = FALSE,
       ...
    ),
-   class="combCollect")
+   class = "combCollect")
 }
 
 #' "Collect" Recombination
@@ -139,15 +135,20 @@ combDdo <- function(...) {
 combCollect <- function(...) {
    structure(
    list(
-      reduce=expression(reduce = {
+      reduce = expression(reduce = {
          lapply(reduce.values, function(r) collect(reduce.key, r))
       }),
-      final=function(x, ...) getAttribute(x, "conn")$data,
-      validateOutput=c("nullConn"),
-      group=FALSE,
+      final = function(x, ...) 
+         lapply(getAttribute(x, "conn")$data, function(y) {
+            class(y) <- "kvPair"
+            names(y) <- c("key", "value")
+            y
+         }),
+      validateOutput = c("nullConn"),
+      group = FALSE,
       ...
    ),
-   class="combCollect")
+   class = "combCollect")
 }
 
 #' "rbind" Recombination
@@ -172,7 +173,7 @@ combRbind <- function(...) {
          adata[[length(adata) + 1]] <- reduce.values
       }, 
       post = {
-         adata <- do.call(rbind, unlist(adata, recursive=FALSE))
+         adata <- do.call(rbind, unlist(adata, recursive = FALSE))
          collect(reduce.key, adata)
       }
    )
@@ -180,29 +181,28 @@ combRbind <- function(...) {
    
    structure(
    list(
-      reduce=red,
-      final=function(x, ...) {
+      reduce = red,
+      final = function(x, ...) {
          if(length(x) == 1) {
             return(x[[1]][[2]])
          } else {
             return(getAttribute(x, "conn")$data)
          }
       },
-      mapHook=function(key, value, attrs) {
-         # if(length(key) == 1) {
-         #    data.frame(key=as.character(key), value, stringsAsFactors=FALSE)            
+      mapHook = function(key, value) {
+         attrs <- attributes(value)
          if(!is.null(attrs$split)) {
             if(!is.data.frame(value)) {
-               value <- list(val=value)
+               value <- list(val = value)
             }
-            value <- data.frame(c(attrs$split, as.list(value)), stringsAsFactors=FALSE)
+            value <- data.frame(c(attrs$split, as.list(value)), stringsAsFactors = FALSE)
          }
          value
       },
-      validateOutput=c("nullConn"),
-      group=TRUE,
+      validateOutput = c("nullConn"),
+      group = TRUE,
       ...
       # TODO: should make sure the result won't be too big (approximate by size of output from test run times number of divisions)
    ),
-   class="combRbind")
+   class = "combRbind")
 }
