@@ -1,3 +1,7 @@
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("obj"))
+}
+
 ## Methods for object of class "kvLocalDisk" - key-value pairs as R objects stored on disk
 
 #' @export

@@ -1,3 +1,8 @@
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("fval"))
+}
+
+
 #' Sample Quantiles for 'ddf' Objects
 #' 
 #' Compute sample quantiles for 'ddf' objects

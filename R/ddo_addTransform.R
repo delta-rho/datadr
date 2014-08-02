@@ -1,3 +1,8 @@
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c("x"))
+}
+
+
 #' Add a Transformation Function to a Distributed Data Object
 #' 
 #' Add a transformation function to be applied to each subset of a distributed data object
