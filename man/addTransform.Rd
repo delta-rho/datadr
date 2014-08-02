@@ -24,6 +24,6 @@ When you add a transformation to a distributed data object, the transformation i
 
 When \code{addTransform} is called, it is tested on a subset of the data to make sure we have all of the necessary global variables and packages loaded necessary to portably perform the transformation.
 
-It is possible to add multiple transformations to a distributed data object, in which case they are applied in the order supplied, but only one transform should be necessary.  When a computation is launched, the transformations will be applied in the order given.
+It is possible to add multiple transformations to a distributed data object, in which case they are applied in the order supplied, but only one transform should be necessary.
 }
 

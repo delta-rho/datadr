@@ -63,6 +63,7 @@ getBasicDdoAttrs.kvMemory <- function(obj, conn) {
 #' @export
 getBasicDdfAttrs.kvMemory <- function(obj) {
    list(
+      nRow = sum(sapply(attr(obj, "ddo")$conn$data, function(x) nrow(x[[2]]))),
       vars = lapply(kvExample(obj)[[2]], class)
    )
 }

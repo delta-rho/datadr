@@ -23,6 +23,20 @@ for(i in 1:25) {
 dataDigest <- sapply(data, digest)
 datadf <- data.frame(rbindlist(lapply(data, "[[", 2)))
 
+stripKVattrs <- function(x) {
+   if(inherits(x, "kvPair")) {
+      names(x) <- NULL
+      class(x) <- "list"
+      return(x)      
+   } else {
+      lapply(x, function(a) {
+         names(a) <- NULL
+         class(a) <- "list"
+         a
+      })
+   }
+}
+
 ############################################################################
 ############################################################################
 context("in-memory ddo checks")
@@ -54,15 +68,20 @@ test_that("update ddo - check attrs", {
 mdo <- ddo(data)
 
 test_that("extraction checks", {
-   expect_true(digest(mdo[[1]]) %in% dataDigest, label = "single extraction by index")
+   expect_true(digest(stripKVattrs(mdo[[1]])) %in% dataDigest, 
+      label = "single extraction by index")
    key <- data[[1]][[1]]
-   expect_equivalent(mdo[[key]], data[[1]], label = "single extraction by key")
+   expect_equivalent(stripKVattrs(mdo[[key]]), data[[1]], 
+      label = "single extraction by key")
    
-   expect_true(all(sapply(mdo[c(1, 3)], digest) %in% dataDigest), label = "multiple extraction by index")
+   expect_true(all(sapply(stripKVattrs(mdo[c(1, 3)]), digest) %in% dataDigest), 
+      label = "multiple extraction by index")
    keys <- c(data[[1]][[1]], data[[10]][[1]])
-   expect_equivalent(mdo[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
+   expect_equivalent(stripKVattrs(mdo[keys]), list(data[[1]], data[[10]]), 
+      label = "multiple extraction by key")
    
-   expect_equivalent(mdo[[1]], mdo[[digest(mdo[[1]][[1]])]], label = "extraction by key hash")
+   expect_equivalent(mdo[[1]], mdo[[digest(mdo[[1]][[1]])]], 
+      label = "extraction by key hash")
    
    # check extraction order
    keys <- c(data[[1]][[1]], data[[8]][[1]], data[[27]][[1]])   
@@ -84,7 +103,7 @@ test_that("extraction checks", {
    # make sure this still works after updating
    mdo <- updateAttributes(mdo)
    key <- data[[1]][[1]]
-   expect_equivalent(mdo[[key]], data[[1]], label = "single extraction by key after update")
+   expect_equivalent(stripKVattrs(mdo[[key]]), data[[1]], label = "single extraction by key after update")
 })
 
 ############################################################################

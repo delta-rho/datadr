@@ -353,7 +353,6 @@ addSplitAttrs <- function(curSplit, bsvFn, by, postTransFn = NULL) {
    
    attr(curSplit, "bsv") <- bsvs
    attr(curSplit, "split") <- splitAttr
-   class(curSplit) <- c("divValue", class(curSplit))
    
    curSplit
 }
