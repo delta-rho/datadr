@@ -1,9 +1,9 @@
 # lapply-like operations can be completely accomplished with recombine
 # but it's still nice to have an lapply method for when that is the intent
 
-#' Apply a function to all key/value pairs of a ddo/ddf object
+#' Apply a function to all key-value pairs of a ddo/ddf object
 #' 
-#' Apply a function to all key/value pairs of a ddo/ddf object and get a new ddo object back, unless a different \code{combine} strategy is specified.
+#' Apply a function to all key-value pairs of a ddo/ddf object and get a new ddo object back, unless a different \code{combine} strategy is specified.
 #' 
 #' @param X an object of class "ddo" of "ddf"
 #' @param FUN a function to be applied to each subset

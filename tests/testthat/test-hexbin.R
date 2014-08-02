@@ -7,7 +7,7 @@ tmpDat <- data.frame(
 data <- divide(tmpDat, by = "by", update = TRUE)
 
 test_that("memory join", {
-   res <- drHexBin(data, xVar = "xx", yVar = "yy")
+   res <- drHexbin(data, xVar = "xx", yVar = "yy")
    compare <- hexbin(tmpDat$xx, tmpDat$yy)
    
    expect_true(all(res@cell == compare@cell))

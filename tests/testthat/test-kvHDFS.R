@@ -28,6 +28,20 @@ for(i in 1:25) {
 dataDigest <- sapply(data, digest)
 datadf <- data.frame(rbindlist(lapply(data, "[[", 2)))
 
+stripKVattrs <- function(x) {
+   if(inherits(x, "kvPair")) {
+      names(x) <- NULL
+      class(x) <- "list"
+      return(x)      
+   } else {
+      lapply(x, function(a) {
+         names(a) <- NULL
+         class(a) <- "list"
+         a
+      })
+   }
+}
+
 ############################################################################
 ############################################################################
 context("hdfs connection checks")
@@ -105,15 +119,21 @@ test_that("makeExtractable", {
 hdo <- ddo(conn)
 
 test_that("extraction checks", {
-   expect_true(digest(hdo[[1]]) %in% dataDigest, label = "single extraction by index")
+   expect_true(digest(stripKVattrs(hdo[[1]])) %in% dataDigest, 
+      label = "single extraction by index")
    key <- data[[1]][[1]]
-   expect_equivalent(hdo[[key]], data[[1]], label = "single extraction by key")
+   expect_equivalent(stripKVattrs(hdo[[key]]), data[[1]], 
+      label = "single extraction by key")
    
-   expect_true(all(sapply(hdo[c(1, 3)], digest) %in% dataDigest), label = "multiple extraction by index")
+   expect_true(all(sapply(stripKVattrs(hdo[c(1, 3)]), digest) %in% dataDigest), 
+      label = "multiple extraction by index")
    keys <- c(data[[1]][[1]], data[[10]][[1]])
-   expect_equivalent(hdo[keys], list(data[[1]], data[[10]]), label = "multiple extraction by key")
+   expect_equivalent(stripKVattrs(hdo[keys]), list(data[[1]], data[[10]]), 
+      label = "multiple extraction by key")
    
    expect_equivalent(hdo[[1]], hdo[[digest(hdo[[1]][[1]])]], label = "extraction by key hash")
+   
+   # TODO: add extraction order checks
 })
 
 ############################################################################

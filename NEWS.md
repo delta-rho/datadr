@@ -18,4 +18,7 @@ FEATURES / CHANGES
 - add print method for key-value pairs to show things nicely, particularly
   when the object is a ddf, only show top rows of value
 - add labels "key" and "value" to key-value pairs
-
+- update `drGLM()` and `drBLB()` methods to work with new transformation 
+  approach
+- add `kvPair()` and classes for making dealing with key-value pairs a bit more 
+  aesthetic

@@ -138,7 +138,12 @@ combCollect <- function(...) {
       reduce = expression(reduce = {
          lapply(reduce.values, function(r) collect(reduce.key, r))
       }),
-      final = function(x, ...) getAttribute(x, "conn")$data,
+      final = function(x, ...) 
+         lapply(getAttribute(x, "conn")$data, function(y) {
+            class(y) <- "kvPair"
+            names(y) <- c("key", "value")
+            y
+         }),
       validateOutput = c("nullConn"),
       group = FALSE,
       ...
