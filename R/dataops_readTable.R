@@ -13,7 +13,7 @@
 #' @param file input text file - can either be character string pointing to a file on local disk, or an \code{\link{hdfsConn}} object pointing to a text file on HDFS (see \code{output} argument below)
 #' @param header this and parameters other parameters below are passed to \code{\link{read.table}} for each chunk being processed - see \code{\link{read.table}} for more info.  Most all have defaults or appropriate defaults are set through other format-specific functions such as \code{drRead.csv} and \code{drRead.delim}.
 #' @param sep see \code{\link{read.table}} for more info
-#' @param quote see \code{\link{read.table}} for more info
+#' @param quote see \code{\link{read.table}} for more info.  Defaults to "\"'"
 #' @param dec see \code{\link{read.table}} for more info
 #' @param skip see \code{\link{read.table}} for more info
 #' @param fill see \code{\link{read.table}} for more info
@@ -49,11 +49,11 @@
 #' }
 #' @rdname drreadtable
 #' @export
-drRead.table <- function(file, 
-   header = FALSE, 
-   sep = "", 
-   quote = "\"'", 
-   dec = ".", 
+drRead.table <- function(file,
+   header = FALSE,
+   sep = "",
+   quote,
+   dec = ".",
    skip = 0,
    fill = !blank.lines.skip, 
    blank.lines.skip = TRUE, 

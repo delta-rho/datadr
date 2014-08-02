@@ -7,8 +7,12 @@
 \alias{drRead.table}
 \title{Data Input}
 \usage{
-drRead.table(file, header = FALSE, sep = "",
-  quote = "\\"'", dec = ".", skip = 0, fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#", allowEscapes = FALSE, encoding = "unknown", autoColClasses = TRUE, rowsPerBlock = 50000, postTransFn = identity, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, ...)
+drRead.table(file, header = FALSE, sep = "", quote, dec = ".", skip = 0,
+  fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#",
+  allowEscapes = FALSE, encoding = "unknown", autoColClasses = TRUE,
+  rowsPerBlock = 50000, postTransFn = identity, output = NULL,
+  overwrite = FALSE, params = NULL, packages = NULL, control = NULL,
+  ...)
 
 drRead.csv(file, header = TRUE, sep = ",",
   quote = "\\"", dec = ".", fill = TRUE, comment.char = "", ...)
@@ -29,7 +33,7 @@ drRead.delim2(file, header = TRUE, sep = "\\t",
 
 \item{sep}{see \code{\link{read.table}} for more info}
 
-\item{quote}{see \code{\link{read.table}} for more info}
+\item{quote}{see \code{\link{read.table}} for more info.  Defaults to "\"'"}
 
 \item{dec}{see \code{\link{read.table}} for more info}
 
