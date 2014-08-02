@@ -120,10 +120,10 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
          assign("map.values", lapply(curDat, "[[", 2), mapEnv)
          eval(expression({
             .tmp <- environment()
-            attach(.tmp, warn.conflicts = FALSE)
+            attach(.tmp, warn.conflicts = FALSE, name = "custom .tmp with detach two lines later")
          }), envir = mapEnv)
          eval(map, envir = mapEnv)
-         eval(expression({detach(".tmp")}), envir = mapEnv)
+         eval(expression({detach("custom .tmp with detach two lines later")}), envir = mapEnv)
 
          # count number of k/v processed
          evalq(counter("map", "kvProcessed", length(map.values)), mapEnv)
