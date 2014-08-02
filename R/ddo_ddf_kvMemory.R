@@ -79,7 +79,7 @@ hasExtractableKV.kvMemory <- function(x) {
 ############################################################################
 
 #' @export
-extract.kvMemory <- function(x, i, ...) {
+datadr_extract.kvMemory <- function(x, i, ...) {
    idx <- NULL
    
    if(is.numeric(i)) {

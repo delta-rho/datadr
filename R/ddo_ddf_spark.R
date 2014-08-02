@@ -45,7 +45,7 @@ hasExtractableKV.kvSparkData <- function(x) {
 ######################################################################
 
 #' @export
-extract.kvSparkData <- function(x, i, ...) {
+datadr_extract.kvSparkData <- function(x, i, ...) {
    stop("can't extract spark data by key yet...")
 }
 

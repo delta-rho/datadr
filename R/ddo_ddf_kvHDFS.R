@@ -113,7 +113,7 @@ makeExtractable <- function(obj) {
 ############################################################################
 
 #' @export
-extract.kvHDFS <- function(x, i, ...) {
+datadr_extract.kvHDFS <- function(x, i, ...) {
    conn <- getAttribute(x, "conn")
    if(is.numeric(i)) {
       if(i == 1 || !hasAttributes(x, "keys")) {

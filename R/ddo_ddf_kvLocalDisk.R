@@ -64,7 +64,7 @@ hasExtractableKV.kvLocalDisk <- function(x) {
 ######################################################################
 
 #' @export
-extract.kvLocalDisk <- function(x, i, ...) {
+datadr_extract.kvLocalDisk <- function(x, i, ...) {
    # argument i can either be:
    # - a numeric index, in which case the data ff[i] will be obtained
    # - a list of actual keys, in which case the hash function is applied

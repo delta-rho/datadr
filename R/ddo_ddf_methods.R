@@ -209,8 +209,8 @@ getAttrNeedList <- function(obj, type) {
 }
 
 # backend-specific extraction method
-extract <- function(x, ...)
-   UseMethod("extract")
+datadr_extract <- function(x, ...)
+   UseMethod("datadr_extract")
 
 ######################################################################
 ### other attribute methods
