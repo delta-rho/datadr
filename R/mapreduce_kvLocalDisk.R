@@ -1,8 +1,8 @@
 if(getRversion() >= "2.15.1") {
   utils::globalVariables(
       c("taskDir", "task_id", "taskCounter", "taskRes",
-         "writeKVseparately", "countersDir", "reduce.key",
-         "obj"
+         "writeKVseparately", "counter", "countersDir", "reduce.key",
+         "obj", "map.values", "flushKV", "k", "v"
       )
    )
 }
