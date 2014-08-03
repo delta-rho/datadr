@@ -23,5 +23,7 @@ Imports:
     codetools,
     hexbin
 Suggests:
+    Rhipe (>= 0.73.1-4),
+    SparkR (>= 0.1),
     testthat (>= 0.8.1),
     roxygen2 (>= 4.0.0)
