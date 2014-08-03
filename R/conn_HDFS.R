@@ -193,7 +193,7 @@ mrCheckOutputLoc.hdfsConn <- function(x, overwrite = FALSE) {
             bakFile <- paste(x$loc, "_bak", sep = "")
             message(paste("backing up to ", bakFile, "...", sep = ""))
             if(file.exists(bakFile))
-               rhdel(bakFile, recursive = TRUE)
+               rhdel(bakFile)
             rhmv(x$loc, bakFile)
          } else {
       	   stop("backing out...", call. = FALSE)
