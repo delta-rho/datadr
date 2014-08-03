@@ -1,21 +1,21 @@
 #' Connect to Data Source on HDFS
-#' 
+#'
 #' Connect to a data source on HDFS
-#' 
+#'
 #' @param loc location on HDFS for the data source
 #' @param type the type of data ("map", "sequence", "text")
 #' @param autoYes automatically answer "yes" to questions about creating a path on HDFS
 #' @param reset should existing metadata for this object be overwritten?
 #' @param verbose logical - print messages about what is being done
-#' 
+#'
 #' @return a "kvConnection" object of class "hdfsConn"
-#' 
+#'
 #' @details This simply creates a "connection" to a directory on HDFS (which need not have data in it).  To actually do things with this data, see \code{\link{ddo}}, etc.
-#' 
+#'
 #' @author Ryan Hafen
-#' 
+#'
 #' @seealso \code{addData}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{localDiskConn}}
-#' 
+#'
 #' @examples
 #' \dontrun{
 #'    # connect to empty HDFS directory
@@ -28,23 +28,24 @@
 #'    hdd <- ddf(conn)
 #' }
 #' @export
+# ' @import Rhipe
 hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, verbose = TRUE) {
    require(Rhipe)
-   
+
    if(is.null(rhoptions()$server)) {
       message("* RHIPE is not initialized... initializing")
       rhinit()
    }
-   
+
    if(length(loc) > 1)
       stop("A HDFS connection must be one directory")
-   
+
    if(!grepl("^\\/", loc)) {
       if(verbose)
          message("* 'loc' is not an absolute path - prepending HDFS working directory")
       loc <- rhabsolute.hdfs.path(loc)
    }
-   
+
    if(!existsOnHDFS(loc)) {
       if(autoYes) {
          ans <- "y"
@@ -53,7 +54,7 @@ hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, ver
       }
    	if(!tolower(substr(ans, 1, 1)) == "y")
    	   stop("Backing out...")
-      
+
       if(verbose)
          message("* Attempting to create directory... ", appendLF = FALSE)
       if(!rhmkdir(loc)) {
@@ -65,14 +66,14 @@ hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, ver
    } else {
       # TODO: make sure it has the right type
    }
-   
+
    conn <- list(
       type = type
    )
-   
+
    metaDir <- paste(loc, "/_rh_meta", sep = "")
    connPath <- paste(metaDir, "/conn.Rdata", sep = "")
-   
+
    if(!existsOnHDFS(metaDir)) {
       if(verbose)
          message("* Saving connection attributes")
@@ -90,7 +91,7 @@ hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, ver
       rhsave(conn, file = connPath)
       rhchmod(connPath, "777")
    }
-   
+
    # TODO: better way to check if empty
    if(length(rhls(loc)) <= 1) {
       if(verbose)
@@ -99,12 +100,12 @@ hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, ver
       if(verbose)
          message("* To initialize the data in this directory as a distributed data object or data frame, call ddo() or ddf()")
    }
-   
+
    ## don't store location with connection - user must always specify
    ## location so just use it - this makes it easier for the user
    ## to move data around without a hard-coded path saved in the metadata
    conn$loc <- loc
-   
+
    class(conn) <- c("hdfsConn", "kvConnection")
    conn
 }
@@ -113,19 +114,19 @@ hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, ver
 addData.hdfsConn <- function(conn, data, overwrite = FALSE) {
    # warning("This makes your mapfile go away")
    validateListKV(data)
-   
+
    # if(conn$charKeys)
    #    if(!all(sapply(data, function(x) is.character(x[[1]]))))
    #       stop("This connection expects keys to be characters only")
-   
+
    # for now, just save the data with the name being the current system time
    # plus the hash for the data object - this should avoid any collisions
    # if it already exists, append stuff to it
-   
+
    op <- options(digits.secs = 6)
    filename <- paste(conn$loc, "/", digest(data), "_", as.character(unclass(Sys.time())), sep = "")
    options(op)
-   
+
    rhwrite(data, filename)
 }
 
@@ -147,7 +148,7 @@ print.hdfsConn <- function(x, ...) {
 #' @export
 loadAttrs.hdfsConn <- function(obj, type = "ddo") {
    attrFile <- paste(obj$loc, "/_rh_meta/", type, ".Rdata", sep = "")
-   
+
    if(existsOnHDFS(attrFile)) {
       rhload(attrFile)
       if(type == "ddo")
@@ -173,7 +174,7 @@ existsOnHDFS <- function(...) {
    path <- rhabsolute.hdfs.path(paste(params, collapse = "/"))
    res <- try(rhls(path), silent = TRUE)
    if(inherits(res, "try-error")) {
-      return(FALSE)      
+      return(FALSE)
    } else {
       return(TRUE)
    }
@@ -198,7 +199,7 @@ mrCheckOutputLoc.hdfsConn <- function(x, overwrite = FALSE) {
          } else {
       	   stop("backing out...", call. = FALSE)
          }
-         
+
          x <- hdfsConn(x$loc, type = x$type, autoYes = TRUE, verbose = FALSE)
       }
    }
