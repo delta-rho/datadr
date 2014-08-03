@@ -1,19 +1,28 @@
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(
+      c("taskDir", "task_id", "taskCounter", "taskRes",
+         "writeKVseparately", "counter", "countersDir", "reduce.key",
+         "obj", "map.values", "flushKV", "k", "v"
+      )
+   )
+}
+
 ## mrExec for kvLocalDisk objects
 
 #' @export
 mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {
-   setup <- appendExpression(setup, 
+   setup <- appendExpression(setup,
       expression({
          suppressWarnings(suppressMessages(require(digest)))
       })
    )
    if(is.null(reduce))
       reduce <- expression(pre = {}, reduce = {collect(reduce.key, reduce.values)}, post = {})
-   
+
    nSlots <- 1
    if(!is.null(control$cluster))
       nSlots <- length(control$cluster)
-   
+
    # intermediate map and reduce results will go in a temporary directory
    if(is.null(control$mapred_temp_dir)) {
       tempDir <- tempdir()
@@ -39,10 +48,10 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
    stopifnot(dir.create(reduceDir))
    stopifnot(dir.create(countersDir))
    stopifnot(dir.create(logDir))
-   
+
    ### map task setup
    # get file names and use file size to determine how to allocate
-   
+
    # split ff into nSlots chunks with roughly equal size
    nms <- names(data)
    mFileList <- lapply(seq_along(data), function(i) {
@@ -50,7 +59,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       fp <- conn$loc
       ff <- getAttribute(data[[i]], "files")
       sz <- getAttribute(data[[i]], "sizes")
-      
+
       nFile <- length(ff)
       idx <- makeBlockIndices(sz, sum(sz) / nSlots, nSlots)
 
@@ -59,19 +68,19 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       })
    })
    mFileList <- unlist(mFileList, recursive = FALSE)
-   
+
    # give a map task id to each block
    for(i in seq_along(mFileList)) {
       mFileList[[i]]$map_task_id <- i
    }
    # sum(sapply(mFileList, function(x) length(x$ff)))
    # sapply(mFileList, function(x) sum(x$sz))
-   
+
    mapFn <- function(fl) {
       mapEnv <- new.env() # parent = baseenv())
       assign("mr___packages", params$mr___packages, mapEnv)
       eval(setup, envir = mapEnv)
-      
+
       # add a collect, counter functions to the environment
       environment(LDcollect) <- mapEnv
       environment(LDcounter) <- mapEnv
@@ -80,7 +89,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       assign("counter", LDcounter, mapEnv)
       assign("flushKV", LDflushKV, mapEnv)
       assign("REDUCE", FALSE, mapEnv)
-      
+
       ### do the map
       assign("task_id", fl$map_task_id, mapEnv)
       assign("taskDir", mapDir, mapEnv)
@@ -88,12 +97,12 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       assign("taskCounter", list(), mapEnv)
       assign("writeKVseparately", TRUE, mapEnv) # more efficient
       assign(".dataSourceName", fl$dataSourceName, mapEnv)
-      
+
       for(i in seq_along(params)) {
          if(is.function(params[[i]]))
             environment(params[[i]]) <- mapEnv
       }
-      
+
       # iterate through map blocks and apply map to each
       mapBlocks <- makeBlockIndices(fl$sz, control$map_buff_size_bytes, nSlots)
       for(idx in mapBlocks) {
@@ -102,39 +111,34 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
          pnames <- names(params)
          for(i in seq_along(params))
             assign(pnames[i], params[[i]], envir = mapEnv)
-         
+
          curDat <- lapply(fl$ff[idx], function(x) {
             load(file.path(fl$fp, x))
             obj[[1]]
          })
          assign("map.keys", lapply(curDat, "[[", 1), mapEnv)
          assign("map.values", lapply(curDat, "[[", 2), mapEnv)
-         eval(expression({
-            .tmp <- environment()
-            attach(.tmp, warn.conflicts = FALSE)
-         }), envir = mapEnv)
          eval(map, envir = mapEnv)
-         eval(expression({detach(".tmp")}), envir = mapEnv)
-         
+
          # count number of k/v processed
          evalq(counter("map", "kvProcessed", length(map.values)), mapEnv)
-         
+
          # cat(evalq(object.size(taskRes), mapEnv), "\n")
          if(evalq(object.size(taskRes), mapEnv) > control$map_temp_buff_size_bytes)
             evalq(flushKV(), envir = mapEnv)
       }
       evalq(flushKV(), envir = mapEnv)
    }
-   
+
    ### run map tasks
    if(!is.null(control$cluster)) {
       clusterExport(control$cluster, c("map", "reduce", "setup", "params", "mapDir", "reduceDir", "countersDir", "makeBlockIndices", "nSlots", "control", "LDflushKV", "LDcounter", "LDcollect", "params"), envir = environment())
-      
+
       parLapply(control$cluster, mFileList, mapFn)
    } else {
       lapply(mFileList, mapFn)
    }
-   
+
    ### reduce task setup
    # figure out how to divvy up reduce tasks
    # (ideally should use in-memory size, not file size)
@@ -147,10 +151,10 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
          fp = file.path(mapDir, x)
       )
    })
-   
+
    sz <- sapply(rf, function(x) sum(x$sz))
    idx <- makeBlockIndices(sz, sum(sz) / nSlots, nSlots)
-   
+
    # each element of rFileList is a list of reduce keys and associated data
    rFileList <- lapply(seq_along(idx), function(i) {
       list(
@@ -158,7 +162,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
          reduce_task_id = i
       )
    })
-   
+
    reduceFn <- function(reduceTaskFiles) {
       reduceEnv <- new.env() # parent = baseenv())
       if(!is.null(params)) {
@@ -170,7 +174,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
          }
       }
       eval(setup, envir = reduceEnv)
-      
+
       # add collect, counter functions to the environment
       environment(LDcollect) <- reduceEnv
       environment(LDcounter) <- reduceEnv
@@ -179,23 +183,23 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       assign("counter", LDcounter, reduceEnv)
       assign("flushKV", LDflushKV, reduceEnv)
       assign("REDUCE", TRUE, reduceEnv)
-      
+
       ### do the reduce
       assign("task_id", reduceTaskFiles$reduce_task_id, reduceEnv)
       assign("taskDir", reduceDir, reduceEnv)
       assign("writeKVseparately", FALSE, reduceEnv) # more efficient
-      
+
       for(curReduceFiles in reduceTaskFiles$rf) {
          assign("taskRes", list(), reduceEnv)
          assign("taskCounter", list(), reduceEnv)
-         
+
          load(list.files(curReduceFiles$fp, recursive = TRUE, pattern = "key\\.Rdata", full.names = TRUE)[1])
          assign("reduce.key", k, reduceEnv)
-         
+
          # nSlots is 1 because we are already in parLapply
          reduceBlocks <- makeBlockIndices(curReduceFiles$sz, control$reduce_buff_size_bytes, nSlots = 1)
          eval(reduce$pre, envir = reduceEnv)
-         
+
          for(idx in reduceBlocks) {
             curDat <- do.call(c, lapply(curReduceFiles$ff[idx], function(x) {
                load(file.path(curReduceFiles$fp, x))
@@ -210,17 +214,17 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
          evalq(flushKV(), envir = reduceEnv)
       }
    }
-   
+
    ### run reduce tasks
    if(!is.null(control$cluster)) {
       parLapply(control$cluster, rFileList, reduceFn)
    } else {
       lapply(rFileList, reduceFn)
    }
-   
+
    ### take care of results
    outputKeyHash <- list.files(reduceDir)
-   
+
    # if output is a character string, construct a localDiskConn connection from it
    if(!inherits(output, "localDiskConn")) {
       if(is.character(output)) {
@@ -229,7 +233,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
          output <- localDiskConn(tempfile(paste("job", jobNum, "_", sep = "")), nBins = floor(length(outputKeyHash) / 1000), autoYes = TRUE, verbose = FALSE)
       }
    }
-   
+
    # move it to the output directory
    # if there is only one .Rdata file in each of these
    # we can simply move them to the destination
@@ -250,13 +254,13 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
          addData(output, tmp)
       # }
    }
-   
-   # read counters 
+
+   # read counters
    groupf <- list.files(countersDir, full.names = TRUE)
    counters <- lapply(groupf, function(f) {
       fieldf <- list.files(f, full.names = TRUE)
       fieldNames <- basename(fieldf)
-      
+
       tmp <- lapply(fieldf, function(a) {
          sum(as.integer(basename(list.files(a, recursive = TRUE))))
       })
@@ -264,14 +268,14 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       tmp
    })
    names(counters) <- basename(groupf)
-   
+
    # TODO: add input, map, reduce, etc. to _meta
-   
+
    # clean up (leave counters and log)
    unlink(mapDir, recursive = TRUE)
    unlink(reduceDir, recursive = TRUE)
    file.create(file.path(jobDir, "SUCCESS"))
-   
+
    list(data = output, counters = counters)
 }
 
@@ -296,14 +300,14 @@ makeBlockIndices <- function(sz, sizePerBlock, nSlots = 1) {
 }
 
 #' Specify Control Parameters for MapReduce on a Local Disk Connection
-#' 
+#'
 #' Specify control parameters for a MapReduce on a local disk connection.  Currently the parameters include:
 #' @param cluster a "cluster" object obtained from \code{\link{makeCluster}} to allow for parallel processing
 #' @param map_buff_size_bytes determines how much data should be sent to each map task
 #' @param reduce_buff_size_bytes determines how much data should be sent to each reduce task
 #' @param map_temp_buff_size_bytes determines the size of chunks written to disk in between the map and reduce
 #' @note If you have data on a shared drive that multiple nodes can access or a high performance shared file system like Lustre, you can run a local disk MapReduce job on multiple nodes by creating a multi-node cluster with \code{\link{makeCluster}}.
-#' 
+#'
 #' If you are using multiple cores and the input data is very small, \code{map_buff_size_bytes} needs to be small so that the key-value pairs will be split across cores.
 #' @export
 localDiskControl <- function(
@@ -339,7 +343,7 @@ LDcollect <- function(k, v) {
    kPath <- file.path(taskDir, dk, task_id)
    if(!file.exists(kPath))
       dir.create(kPath, recursive = TRUE)
-   
+
    # if this is the first, store key in a file key.Rdata
    # then build up a list of map results until it's too big (then flush to disk)
    if(is.null(taskCounter[[dk]])) {
@@ -378,7 +382,7 @@ LDflushKV <- function() {
       }
       if(writeKVseparately) {
          v <- taskRes[[fKeys[i]]]
-         save(v, file = file.path(kPath, paste("value", fileIdx, ".Rdata", sep = "")))               
+         save(v, file = file.path(kPath, paste("value", fileIdx, ".Rdata", sep = "")))
       } else {
          # if there is more than one value element
          # each needs to be part of a k/v pair
@@ -387,7 +391,7 @@ LDflushKV <- function() {
          })
          save(obj, file = file.path(kPath, paste("value", fileIdx, ".Rdata", sep = "")))
       }
-      
+
       # now reset results for this key
       taskRes[[fKeys[i]]] <<- NULL
       taskCounter[[fKeys[i]]] <<- NULL

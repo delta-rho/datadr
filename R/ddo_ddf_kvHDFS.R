@@ -31,7 +31,7 @@ getBasicDdoAttrs.kvHDFS <- function(obj, conn) {
 
    list(
       conn = conn,
-      extractableKV = FALSE, 
+      extractableKV = FALSE,
       totStorageSize = sum(sz),
       nFile = length(ff$file),
       example = tmp
@@ -64,7 +64,7 @@ hasExtractableKV.kvHDFS <- function(x) {
 }
 
 ############################################################################
-### 
+###
 ############################################################################
 
 #' Take a ddo/ddf HDFS data object and turn it into a mapfile
@@ -73,38 +73,38 @@ hasExtractableKV.kvHDFS <- function(x) {
 makeExtractable <- function(obj) {
    if(!inherits(obj, "kvHDFS"))
       stop("object must have an HDFS connection")
-   
+
    # identity mr job
    res <- mrExec(
       obj,
       output = hdfsConn(Rhipe:::mkdHDFSTempFolder(file="tmp_output"), type="map", autoYes=TRUE, verbose=FALSE)
    )
-   
+
    # now move temporary over to original
    resConn <- attr(res, "ddo")$conn
    objConn <- attr(obj, "ddo")$conn
-   
+
    # delete all but meta
    ff <- rhls(objConn$loc)$file
    ff <- ff[!grepl("_rh_meta$", ff)]
    for(f in ff)
       rhdel(f)
-   
+
    # now move over all but meta
    ff <- rhls(resConn$loc)$file
    ff <- ff[!grepl("_rh_meta$", ff)]
    for(f in ff)
       rhmv(f, objConn$loc)
-   
+
    if(inherits(obj, "ddf")) {
       res <- ddf(objConn, update=FALSE, verbose=FALSE)
    } else {
       res <- ddo(objConn, update=FALSE, verbose=FALSE)
    }
-   
+
    objConn$type <- "map"
    res <- setAttributes(res, list(conn=objConn, extractableKV=TRUE))
-   
+
    res
 }
 
@@ -113,7 +113,7 @@ makeExtractable <- function(obj) {
 ############################################################################
 
 #' @export
-extract.kvHDFS <- function(x, i, ...) {
+datadr_extract.kvHDFS <- function(x, i, ...) {
    conn <- getAttribute(x, "conn")
    if(is.numeric(i)) {
       if(i == 1 || !hasAttributes(x, "keys")) {
@@ -132,10 +132,10 @@ extract.kvHDFS <- function(x, i, ...) {
       if(!hasExtractableKV(x))
          stop("This data must not be a valid mapfile -- cannot extract subsets by key.  Call makeExtractable() on this data.")
       a <- rhmapfile(getAttribute(x, "conn")$loc)
-      # if the object does not have keys attribute, 
-      # the best we can do is try to try to use "i" as-is, 
+      # if the object does not have keys attribute,
+      # the best we can do is try to try to use "i" as-is,
       # as we can't try to do a lookup
-      
+
       if(!hasAttributes(x, "keys")) {
          res <- a[i]
          keys <- i
@@ -185,22 +185,22 @@ convertKvHDFS.hdfsConn <- function(to, from, verbose=FALSE)
 #' @export
 convertKvHDFS.localDiskConn <- function(to, from, verbose=FALSE) {
    # convert from kvHDFS to kvLocalDisk (from=kvHDFS, to=localDiskConn)
-   
+
    conn <- getAttribute(from, "conn")
    a <- rhIterator(rhls(conn$loc, recurse=TRUE)$file, type = conn$type, chunksize = 50*1024^2, chunk = "bytes")
-   
+
    if(verbose)
       message("* Moving HDFS k/v pairs to local disk")
    while(length(b <- a()) > 0) {
       addData(to, b)
    }
-   
+
    if(inherits(from, "ddf")) {
       res <- ddf(to, update=FALSE, verbose=verbose)
    } else {
       res <- ddo(to, update=FALSE, verbose=verbose)
    }
-   
+
    addNeededAttrs(res, from)
 }
 
@@ -211,16 +211,16 @@ convertKvHDFS.NULL <- function(to, from, verbose=FALSE) {
       size <- getAttribute(from, "totStorageSize")
    if(size / 1024^2 > 100)
       warning("Reading over 100MB of data into memory - probably not a good idea...")
-   
+
    fromConn <- attr(from, "ddo")$conn
    res <- rhread(rhls(fromConn$loc, recurse=TRUE)$file, type=fromConn$type)
-   
+
    if(inherits(from, "ddf")) {
       res <- ddf(res, update=FALSE, verbose=verbose)
    } else {
       res <- ddo(res, update=FALSE, verbose=verbose)
    }
-   
+
    addNeededAttrs(res, from)
 }
 

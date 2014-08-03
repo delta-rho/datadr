@@ -19,7 +19,7 @@ branches:
   only:
     - master
     - dev
-    
+
 notifications:
   email:
     recipients:
