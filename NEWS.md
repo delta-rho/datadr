@@ -22,3 +22,7 @@ FEATURES / CHANGES
   approach
 - add `kvPair()` and classes for making dealing with key-value pairs a bit more 
   aesthetic
+  
+BIG FIXES
+
+- fix bug in finding file endings in drRead.table for reading local files

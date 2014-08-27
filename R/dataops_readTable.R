@@ -204,7 +204,12 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
       
       repeat {
          cat("   Processing chunk ", i, "\n")
-         if(is.null(data)) {
+         if(is.data.frame(data)) {
+            if(nrow(data) == 0) {
+               cat("   * End of file - no data for chunk ", i, "\n")
+               break
+            }
+         } else if(is.null(data)) {
             cat("   * End of file - no data for chunk ", i, "\n")
             break
          }
