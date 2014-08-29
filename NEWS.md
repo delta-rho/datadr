@@ -1,3 +1,11 @@
+Version 0.7.3.1
+-------------------------------------------------------------------------------
+
+BUG FIXES
+
+- fix bug in finding file endings in `drRead.table()` for reading local files
+- fix passing of `overwrite` parameter when using local `drRead.table()`
+
 Version 0.7.3
 -------------------------------------------------------------------------------
 
@@ -22,7 +30,3 @@ FEATURES / CHANGES
   approach
 - add `kvPair()` and classes for making dealing with key-value pairs a bit more 
   aesthetic
-  
-BIG FIXES
-
-- fix bug in finding file endings in drRead.table for reading local files

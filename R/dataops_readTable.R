@@ -217,7 +217,7 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
          if(is.null(readTabParams$col.names))
             names(data) <- hd
          
-         addData(output, list(list(i, postTransFn(data))))
+         addData(output, list(list(i, postTransFn(data))), overwrite = overwrite)
          
          data <- tryCatch({
             do.call(read.table, readTabParams)
