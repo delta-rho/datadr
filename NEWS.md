@@ -1,3 +1,11 @@
+Version 0.7.3.1
+-------------------------------------------------------------------------------
+
+BUG FIXES
+
+- fix bug in finding file endings in `drRead.table()` for reading local files
+- fix passing of `overwrite` parameter when using local `drRead.table()`
+
 Version 0.7.3
 -------------------------------------------------------------------------------
 
