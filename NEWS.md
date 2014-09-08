@@ -5,6 +5,8 @@ BUG FIXES
 
 - fix bug in finding file endings in `drRead.table()` for reading local files
 - fix passing of `overwrite` parameter when using local `drRead.table()`
+- fix bug in passing scientific numbers for rhipe_map_buff_size in drRead.table
+  with RHIPE / Hadoop backend
 
 Version 0.7.3
 -------------------------------------------------------------------------------
