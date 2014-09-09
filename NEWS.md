@@ -1,5 +1,9 @@
-Version 0.7.3.1
+Version 0.7.3.2
 -------------------------------------------------------------------------------
+
+FEATURES / CHANGES
+
+- allow `by` argument in `drQuantile()` and `drAggregate()` to be a vector of column names
 
 BUG FIXES
 
@@ -7,6 +11,8 @@ BUG FIXES
 - fix passing of `overwrite` parameter when using local `drRead.table()`
 - fix bug in passing scientific numbers for rhipe_map_buff_size in drRead.table
   with RHIPE / Hadoop backend
+- fix bug when conditioning on more than one variable the key can get extra 
+  spaces from numeric conditioning variables
 
 Version 0.7.3
 -------------------------------------------------------------------------------

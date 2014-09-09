@@ -4,7 +4,7 @@
 #' 
 #' @param x a 'ddf' object
 #' @param var the name of the variable to compute quantiles for
-#' @param by the (optional) variable by which to group quantile computations
+#' @param by an optional variable name or vector of variable names by which to group quantile computations
 #' @param probs numeric vector of probabilities with values in [0-1]
 #' @param preTransFn a transformation function (if desired) to applied to each subset prior to computing quantiles (here it may be useful for adding a "by" variable that is not present) - note: this transformation should not modify \code{var} (use \code{varTransFn} for that) - also note: this is deprecated - instead use \code{\link{addTransform}} prior to calling divide
 #' @param varTransFn transformation to apply to variable prior to computing quantiles
@@ -73,18 +73,21 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
       dat <- data.frame(rbindlist(lapply(seq_along(map.values), function(i) {
          res <- data.frame(
             v = varTransFn(map.values[[i]][, var]),
-            by = "1",
+            map.values[[i]][, by, drop = FALSE],
             stringsAsFactors = FALSE
          )
-         if(!is.null(by)) {
-            res$by <- as.character(map.values[[i]][, by])
-         }
          res
       })))
       
-      ind <- split(seq_along(dat$by), dat$by)
-      for(ii in ind) {
-         vv <- dat$v[ii]
+      if(is.null(by)) {
+         inds <- list("1" = seq_len(nrow(dat)))
+      } else {
+         splits <- getCondCuts(dat[, by, drop = FALSE], by)
+         inds <- split(seq_along(splits), splits)
+      }
+      indsNms <- names(inds)
+      for(ii in seq_along(inds)) {
+         vv <- dat$v[inds[[ii]]]
          vv <- vv[!is.na(vv)]
          if(length(vv) > 0) {
             ord <- order(vv)
@@ -93,11 +96,10 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
             cutTab$Var1 <- as.integer(cutTab$Var1)
             
             for(i in 1:nrow(cutTab)) {
-               collect(list(dat$by[ii[1]], cutTab$Var1[i]), cutTab$Freq[i])
+               collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), cutTab$Var1[i]), cutTab$Freq[i])
             }
-            
-            collect(list(dat$by[ii[1]], "bot"), vv[head(ord, tails)])
-            collect(list(dat$by[ii[1]], "top"), vv[tail(ord, tails)])            
+            collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "bot"), vv[head(ord, tails)])
+            collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "top"), vv[tail(ord, tails)])            
          }
       }
    })
@@ -151,23 +153,25 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
    
    # put things together...
    mrRes <- getAttribute(mrRes, "conn")$data
-   groups <- sapply(mrRes, function(x) x[[1]][[1]])
    
-   ind <- split(seq_along(groups), groups)
-   
-   if(length(ind) == 1) {
+   if(is.null(by)) {
       res <- constructQuants(mrRes, probs, tails, mids)
    } else {
+      groups <- sapply(mrRes, function(x) {
+         do.call(paste, c(as.list(x[[1]][[1]]), sep = "|"))
+      })
+      ind <- split(seq_along(groups), groups)
+
       res <- lapply(seq_along(ind), function(i) {
          data.frame(
             constructQuants(mrRes[ind[[i]]], probs, tails, mids),
-            group = groups[ind[[i]][1]],
+            mrRes[[ind[[i]][1]]][[1]][[1]],
             stringsAsFactors = FALSE
          )
       })
-      res <- do.call(rbind, res)
+      res <- data.frame(rbindlist(res))
    }
-
+   
    res
 }
 

@@ -108,24 +108,16 @@ test_that("preTransFn", {
    # xyplot(q ~ fval | Species, data = tmp2)
 })
 
-
-test_that("preTransFn", {
-   sq <- drQuantile(ldd, var = "Sepal.Length", by = "Species2", tails = 0, varTransFn = function(x) log(x), preTransFn = function(x) { x$Species2 <- paste(x$Species, "2"); x })
+test_that("multiple conditioning", {
+   tmp2 <- tmp
+   tmp2$let <- c("a", "b", "c")
+   ldd2 <- divide(tmp2, by = rrDiv(500), update = TRUE)
+   res <- drQuantile(ldd2, var = "Sepal.Length", by = c("Species", "let"))
    
-   tmpd <- divide(tmp, by="Species")
-   tmp2 <- recombine(tmpd, 
-      apply = function(x) 
-         data.frame(fval = seq(0, 1, by = 0.005),
-            q = quantile(log(x$Sepal.Length), 
-               probs = seq(0, 1, by = 0.005), type = 3)),
-      combine = combRbind())
-   
-   expect_true(mean(abs(sq$q - tmp2$q)) < 0.0001)
-   # xyplot(q ~ fval | group, data = sq)
-   # xyplot(q ~ fval | Species, data = tmp2)
+   # xyplot(q ~ fval | Species * let, data = res)
+   res <- subset(res, Species == "setosa" & let == "a")
+   qres <- quantile(subset(tmp2, let == "a" & Species == "setosa")$Sepal.Length, probs = res$fval, type = 3)
+   expect_true(mean(abs(res$q - qres)) < 0.002)
 })
 
-sq2 <- drQuantile(ldd, var = "Sepal.Length", by = "Species", tails = 0)
-
-# TODO: test varTransFn
 

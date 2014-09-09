@@ -85,5 +85,7 @@ test_that("drAggregate results match", {
    
    # using "by"
    drAggregate(ct ~ let, by = "byvar", data = bbddf)
+   
+   drAggregate(ct ~ let + byvar, by = c("let", "byvar"), data = bbddf)
 })
 
