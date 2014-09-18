@@ -12,7 +12,7 @@ drQuantile(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL,
 
 \item{var}{the name of the variable to compute quantiles for}
 
-\item{by}{the (optional) variable by which to group quantile computations}
+\item{by}{an optional variable name or vector of variable names by which to group quantile computations}
 
 \item{probs}{numeric vector of probabilities with values in [0-1]}
 

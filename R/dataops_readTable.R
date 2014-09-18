@@ -245,7 +245,7 @@ readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, rea
       id <- Sys.getenv("mapred.task.id")
       collect(id, postTransFn(res))
    })
-   control$mapred$rhipe_map_buff_size <- rowsPerBlock
+   control$mapred$rhipe_map_buff_size <- format(rowsPerBlock, scientific = FALSE)   
    
    parList <- list(
       skip = skip,
@@ -256,7 +256,7 @@ readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, rea
       postTransFn = postTransFn
    )
    
-   ddf(mrExec(ddo(file), map = map, control = control, output = output, overwrite = overwrite, params = c(params, parList), packages = packages))
+   ddf(mrExec(ddo(file), map = map, reduce = 0, control = control, output = output, overwrite = overwrite, params = c(params, parList), packages = packages))
 }
 
 #############################################################################

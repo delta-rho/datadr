@@ -11,7 +11,7 @@ drAggregate(formula, data = data, by = NULL, preTransFn = NULL,
 
 \item{data}{a "ddf" containing the variables in the formula \code{formula}}
 
-\item{by}{an optional variable by which to split up tabulations (i.e. tabulate independently inside of each unique "by" variable value).  The only difference between specifying "by" and placing the variable in the right hand side of the formula is how the computation is done and how the result is returned.}
+\item{by}{an optional variable name or vector of variable names by which to split up tabulations (i.e. tabulate independently inside of each unique "by" variable value).  The only difference between specifying "by" and placing the variable(s) in the right hand side of the formula is how the computation is done and how the result is returned.}
 
 \item{preTransFn}{an optional function to apply to each subset prior to performing tabulation.  The output from this function should be a data frame containing variables with names that match that of the formula provided.  Note: this is deprecated - instead use \code{\link{addTransform}} prior to calling divide.}
 
