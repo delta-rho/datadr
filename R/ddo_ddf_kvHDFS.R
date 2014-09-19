@@ -22,13 +22,13 @@ requiredObjAttrs.kvHDFS <- function(obj) {
 getBasicDdoAttrs.kvHDFS <- function(obj, conn) {
    fp <- conn$loc
    tp <- conn$type
-   ff <- rhls(fp, recurse=TRUE)
+   ff <- rhls(fp, recurse = TRUE)
    ff <- ff[!grepl("\\/_rh_meta", ff$file),]
    sz <- ff$size
-   tmp <- rhread(ff$file, type=tp, max=1)[[1]]
+   tmp <- rhread(ff$file, type = tp, max = 1)[[1]]
    if(tp == "text")
       tmp <- list("", tmp)
-
+   
    list(
       conn = conn,
       extractableKV = FALSE, 
