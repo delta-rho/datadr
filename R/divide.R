@@ -220,6 +220,9 @@ divide <- function(data,
       packages  = packages
    )
    
+   if(update)
+      res <- updateAttributes(res)
+   
    # add an attribute specifying how it was divided
    res <- setAttributes(res, list(div = list(divBy = by)))
    
