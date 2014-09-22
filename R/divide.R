@@ -1,5 +1,5 @@
 #' Divide a Distributed Data Object
-#'
+#' 
 #' Divide a ddo/ddf object into subsets based on different criteria
 #' 
 #' @param data an object of class "ddf" or "ddo" - in the latter case, need to specify \code{preTransFn} to coerce each subset into a data frame
@@ -137,7 +137,7 @@ divide <- function(data,
    }
    
    setup <- as.expression(bquote({
-   	seed <- .(seed)
+      seed <- .(seed)
       # datadr:::setupRNGStream(seed)
    }))
    
@@ -219,14 +219,6 @@ divide <- function(data,
       params    = c(params, parList),
       packages  = packages
    )
-   
-   # return ddo or ddf object
-   tmp <- try(ddf(res, update = update, verbose = FALSE), silent = TRUE)
-   if(inherits(tmp, "try-error")) {
-      res <- ddo(getAttribute(res, "conn"), update = update, verbose = FALSE)
-   } else {
-      res <- tmp
-   }
    
    # add an attribute specifying how it was divided
    res <- setAttributes(res, list(div = list(divBy = by)))
