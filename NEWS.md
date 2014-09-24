@@ -16,6 +16,7 @@ BUG FIXES
 - fix bug when conditioning on more than one variable the key can get extra 
   spaces from numeric conditioning variables
 - fix proper reduce setting for `drRead.table()` for HDFS
+- fix indexing in divide map
 
 Version 0.7.3
 -------------------------------------------------------------------------------

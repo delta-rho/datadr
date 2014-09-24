@@ -147,8 +147,8 @@ divide <- function(data,
             cutDat <- dfSplit(map.values[[i]], by, seed)
             cdn <- names(cutDat)
             
-            for(i in seq_along(cutDat)) {
-               collect(cdn[i], cutDat[[i]])
+            for(j in seq_along(cutDat)) {
+               collect(cdn[j], cutDat[[j]])
             }
          }
          
