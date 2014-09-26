@@ -139,6 +139,9 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
    
    obj <- ddo(res$data, update = FALSE, verbose = FALSE) # if update==TRUE, can get recursive
    
+   if(inherits(obj[[1]]$value, "data.frame"))
+      obj <- ddf(obj, update = FALSE, verbose = FALSE)
+   
    # extractableKV can change after any mr job
    obj <- setAttributes(obj, list(extractableKV = hasExtractableKV(obj), counters = res$counters))
    convert(obj, output)

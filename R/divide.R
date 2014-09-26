@@ -1,5 +1,5 @@
 #' Divide a Distributed Data Object
-#'
+#' 
 #' Divide a ddo/ddf object into subsets based on different criteria
 #' 
 #' @param data an object of class "ddf" or "ddo" - in the latter case, need to specify \code{preTransFn} to coerce each subset into a data frame
@@ -137,7 +137,7 @@ divide <- function(data,
    }
    
    setup <- as.expression(bquote({
-   	seed <- .(seed)
+      seed <- .(seed)
       # datadr:::setupRNGStream(seed)
    }))
    
@@ -147,8 +147,8 @@ divide <- function(data,
             cutDat <- dfSplit(map.values[[i]], by, seed)
             cdn <- names(cutDat)
             
-            for(i in seq_along(cutDat)) {
-               collect(cdn[i], cutDat[[i]])
+            for(j in seq_along(cutDat)) {
+               collect(cdn[j], cutDat[[j]])
             }
          }
          
@@ -178,10 +178,9 @@ divide <- function(data,
                spillCount <- spillCount + 1
                df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
                # do what is needed and collect
-               if(kvApply(filterFn, list(reduce.key, df))) {
-                  # put in div-specific attr stuff
-                  res <- addSplitAttrs(df[1:MAX_ROWS,], bsvFn, by, postTransFn)
-
+               # put in div-specific attr stuff
+               res <- addSplitAttrs(df[1:MAX_ROWS,], bsvFn, by, postTransFn)
+               if(kvApply(filterFn, list(reduce.key, res))) {
                   # counter("datadr", "spilled", 1)
                   collect(paste(reduce.key, spillCount, sep = "_"), res)               
                }
@@ -197,9 +196,10 @@ divide <- function(data,
          if(spillCount > 0)
             reduce.key <- paste(reduce.key, spillCount + 1, sep = "_")
          
-         if(kvApply(filterFn, list(reduce.key, df))) {
-            # put in div-specific attr stuff
-            res <- addSplitAttrs(df, bsvFn, by, postTransFn)
+         # put in div-specific attr stuff
+         res <- addSplitAttrs(df, bsvFn, by, postTransFn)
+         
+         if(kvApply(filterFn, list(reduce.key, res))) {
             collect(reduce.key, res)               
          }
       }
@@ -220,13 +220,8 @@ divide <- function(data,
       packages  = packages
    )
    
-   # return ddo or ddf object
-   tmp <- try(ddf(res, update = update, verbose = FALSE), silent = TRUE)
-   if(inherits(tmp, "try-error")) {
-      res <- ddo(getAttribute(res, "conn"), update = update, verbose = FALSE)
-   } else {
-      res <- tmp
-   }
+   if(update)
+      res <- updateAttributes(res)
    
    # add an attribute specifying how it was divided
    res <- setAttributes(res, list(div = list(divBy = by)))

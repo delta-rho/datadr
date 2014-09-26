@@ -21,7 +21,6 @@ test_that("date/time summaries", {
    expect_equal(as$date$range[2], as.Date(st) + 149)
 })
 
-
 context("test update with cat NAs")
 
 test_that("update with all NA subset", {

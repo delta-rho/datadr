@@ -1,18 +1,22 @@
-Version 0.7.3.2
+Version 0.7.3.3
 -------------------------------------------------------------------------------
 
 FEATURES / CHANGES
 
 - allow `by` argument in `drQuantile()` and `drAggregate()` to be a vector of column names
+- add `output` ability to `drAggregate` for returning a ddf when `by` is specified
+- change MapReduce logic to return ddf when the value is a data frame
 
 BUG FIXES
 
 - fix bug in finding file endings in `drRead.table()` for reading local files
 - fix passing of `overwrite` parameter when using local `drRead.table()`
-- fix bug in passing scientific numbers for rhipe_map_buff_size in drRead.table
+- fix bug in passing scientific numbers for rhipe_map_buff_size in `drRead.table()`
   with RHIPE / Hadoop backend
 - fix bug when conditioning on more than one variable the key can get extra 
   spaces from numeric conditioning variables
+- fix proper reduce setting for `drRead.table()` for HDFS
+- fix indexing in divide map
 
 Version 0.7.3
 -------------------------------------------------------------------------------
