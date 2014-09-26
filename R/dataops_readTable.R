@@ -204,7 +204,12 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
       
       repeat {
          cat("   Processing chunk ", i, "\n")
-         if(is.null(data)) {
+         if(is.data.frame(data)) {
+            if(nrow(data) == 0) {
+               cat("   * End of file - no data for chunk ", i, "\n")
+               break
+            }
+         } else if(is.null(data)) {
             cat("   * End of file - no data for chunk ", i, "\n")
             break
          }
@@ -212,7 +217,7 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
          if(is.null(readTabParams$col.names))
             names(data) <- hd
          
-         addData(output, list(list(i, postTransFn(data))))
+         addData(output, list(list(i, postTransFn(data))), overwrite = overwrite)
          
          data <- tryCatch({
             do.call(read.table, readTabParams)
@@ -240,7 +245,7 @@ readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, rea
       id <- Sys.getenv("mapred.task.id")
       collect(id, postTransFn(res))
    })
-   control$mapred$rhipe_map_buff_size <- rowsPerBlock
+   control$mapred$rhipe_map_buff_size <- format(rowsPerBlock, scientific = FALSE)   
    
    parList <- list(
       skip = skip,

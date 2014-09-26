@@ -26,9 +26,15 @@ condDiv <- function(vars) {
 
 #' @export
 getCuts.condDiv <- function(by, curDF) {
-   splitVars <- by$vars
+   getCondCuts(curDF, by$vars)
    
-   apply(curDF[,splitVars,drop=FALSE], 1, function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))      
+}
+
+#' @export
+getCondCuts <- function(curDF, splitVars) {
+   apply(do.call(cbind, lapply(curDF[,splitVars,drop=FALSE],
+      function(x) format(x, scientific = FALSE, trim = TRUE, justify = "none"))), 1, 
+         function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))
 }
 
 #' @export
@@ -38,6 +44,6 @@ validateDivSpec.condDiv <- function(by, data, ex) {
          stop("'by' variables for conditioning division are not matched in data after applying preTransFn.  Try kvApply(preTransFn, kvExample(data, transform=TRUE)) to see what is expected.")
       }
    }
-
+   
    NULL
 }
