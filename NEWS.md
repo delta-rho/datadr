@@ -1,4 +1,4 @@
-Version 0.7.3.3
+Version 0.7.4
 -------------------------------------------------------------------------------
 
 FEATURES / CHANGES
@@ -6,6 +6,7 @@ FEATURES / CHANGES
 - allow `by` argument in `drQuantile()` and `drAggregate()` to be a vector of column names
 - add `output` ability to `drAggregate` for returning a ddf when `by` is specified
 - change MapReduce logic to return ddf when the value is a data frame
+- add faster data frame specific divide method for conditioning division
 
 BUG FIXES
 
