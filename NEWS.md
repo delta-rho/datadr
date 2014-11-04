@@ -1,3 +1,9 @@
+Version 0.7.4.1
+----------------------------------------------------------------------
+
+- remove strict dependency on parallel package
+- several small changes to help R CMD check
+
 Version 0.7.4
 -------------------------------------------------------------------------------
 

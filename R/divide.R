@@ -145,7 +145,7 @@ divide <- function(data,
    
    setup <- as.expression(bquote({
       seed <- .(seed)
-      # datadr:::setupRNGStream(seed)
+      # setupRNGStream(seed)
    }))
    
    map <- expression({

@@ -1,4 +1,10 @@
-## mrExec for kvLocalDisk objects
+utils::globalVariables(
+  c("taskDir", "task_id", "taskCounter", "taskRes",
+    "writeKVseparately", "countersDir", "reduce.key",
+    "obj")
+)
+
+### mrExec for kvLocalDisk objects
 
 #' @export
 mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {

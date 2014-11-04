@@ -30,9 +30,14 @@ getCuts.condDiv <- function(by, curDF) {
    
 }
 
+#' Get names of the conditioning variable cuts
+#' 
+#' Used internally for exported for certain reasons.  Do not use explicitly.
+#' @param df a data frame
+#' @param splitVars a vector of variable names to split by
 #' @export
-getCondCuts <- function(curDF, splitVars) {
-   apply(do.call(cbind, lapply(curDF[,splitVars,drop=FALSE],
+getCondCuts <- function(df, splitVars) {
+   apply(do.call(cbind, lapply(df[,splitVars,drop=FALSE],
       function(x) format(x, scientific = FALSE, trim = TRUE, justify = "none"))), 1, 
          function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))
 }

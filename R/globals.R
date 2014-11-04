@@ -17,14 +17,6 @@ drGetGlobals <- function(f) {
    if(!is.function(f))
       return(NULL)
    
-   ## this is meant to deal with variables in formulae
-   ## but it's too dangerous
-   # on.exit({
-   #    try(assign("~", tildeHandler, envir = codetools:::collectUsageHandlers), silent = TRUE)
-   # })
-   # tildeHandler <- codetools:::collectUsageHandlers[["~"]]
-   # try(remove("~", envir = codetools:::collectUsageHandlers), silent = TRUE)
-   
    fEnvName <- environmentName(environment(f))
    if(fEnvName %in% loadedNamespaces()) {
       # put fEnvName in list of packages
