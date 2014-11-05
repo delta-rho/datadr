@@ -145,6 +145,14 @@ test_that("update ddf - check attrs", {
 ############################################################################
 context("in-memory divide() checks")
 
+test_that("data frame divide", {
+   mdf <- divide(mdf, by = "Species")
+   mdf2 <- divide(datadf, by = "Species")
+   attributes(mdf) <- NULL
+   attributes(mdf2) <- NULL
+   expect_true(digest(mdf) == digest(mdf2))
+})
+
 test_that("conditioning division and bsv", {
    mdd <- divide(mdf, by = "Species", update = TRUE,
       bsvFn = function(x)

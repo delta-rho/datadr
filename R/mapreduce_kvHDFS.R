@@ -1,3 +1,9 @@
+utils::globalVariables(
+  c("rhwrite", "rhread", "rhls", "rhIterator", "rhabsolute.hdfs.path",
+    "rhmapfile", "rhoptions", "rhinit", "rhmkdir", "rhchmod", "rhload",
+    "rhload", "rhdel", "rhmv", "rhfmt", "rhwatch", "rhsave", "rhchmod")
+)
+
 ### mrExec for kvHDFS objects
 
 #' @export

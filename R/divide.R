@@ -47,6 +47,17 @@ divide <- function(data,
 ) {
    # data <- ddf(localDiskConn("~/Desktop/asdf")); by <- "Species"; bsvFn <- NULL; preTransFn <- NULL; postTransFn <- NULL; output <- localDiskConn("~/Desktop/asdf3"); control <- NULL; update <- FALSE
    
+   if(!is.list(by)) { # by should be a list
+      by <- condDiv(by)
+   }
+   
+   if(by$type ==  "condDiv" && is.data.frame(data)) {
+      # preTransFn is ignored
+      res <- getDivideDF(data, by = by, postTransFn = postTransFn, 
+         bsvFn = bsvFn, update = update)
+      return(res)
+   }
+   
    if(!inherits(data, "ddf")) {
       if(verbose)
          message("* Input data is not 'ddf' - attempting to cast it as such")
@@ -55,10 +66,6 @@ divide <- function(data,
    
    if(verbose)
       message("* Verifying parameters...")
-   
-   if(!is.list(by)) { # by should be a list
-      by <- condDiv(by)
-   }
    
    seed <- NULL
    if(by$type == "rrDiv")
@@ -138,7 +145,7 @@ divide <- function(data,
    
    setup <- as.expression(bquote({
       seed <- .(seed)
-      # datadr:::setupRNGStream(seed)
+      # setupRNGStream(seed)
    }))
    
    map <- expression({

@@ -180,7 +180,7 @@ getAttrNeedList <- function(obj, type) {
 #' @export
 `[.ddo` <- function(x, i, ...) {   
    # call extractor for whatever backend
-   res <- datadr:::extract(x, i, ...)
+   res <- extract(x, i, ...)
    
    # apply transformation functions
    transFns <- attr(x, "transforms")$transFns
