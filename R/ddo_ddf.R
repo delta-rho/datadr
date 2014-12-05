@@ -3,6 +3,7 @@
 ############################################################################
 
 #' Instantiate a Distributed Data Frame ('ddf')
+#' 
 #' Instantiate a distributed data frame ('ddf')
 #' 
 #' @param conn an object pointing to where data is or will be stored for the 'ddf' object - can be a 'kvConnection' object created from \code{\link{localDiskConn}} or \code{\link{hdfsConn}}, or a data frame or list of key-value pairs
@@ -63,6 +64,7 @@ ddf <- function(conn, transFn = NULL, update = FALSE, reset = FALSE, control = N
 }
 
 #' Instantiate a Distributed Data Object ('ddo')
+#' 
 #' Instantiate a distributed data object ('ddo')
 #' @param conn an object pointing to where data is or will be stored for the 'ddf' object - can be a 'kvConnection' object created from \code{\link{localDiskConn}} or \code{\link{hdfsConn}}, or a data frame or list of key-value pairs
 #' @param update should the attributes of this object be updated?  See \code{\link{updateAttributes}} for more details.
