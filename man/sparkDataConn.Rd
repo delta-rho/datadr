@@ -3,19 +3,49 @@
 \alias{sparkDataConn}
 \title{Connect to Spark Data Source}
 \usage{
-sparkDataConn(data = NULL, init = list(), verbose = TRUE)
+sparkDataConn(loc, type = "object", hdfs = FALSE, init = list(),
+  autoYes = FALSE, reset = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{data}{a data frame or list of key-value pairs}
+\item{loc}{location on the file system (typically HDFS) for the data source}
 
-\item{init}{a named list of arguments to be passed to \code{sparkR.init}}
+\item{type}{is it a "text" file or "object" (default) file?}
+
+\item{hdfs}{is the file on HDFS?}
+
+\item{init}{if a SparkContext has not been initialized with \code{sparkR.init}, a named list of arguments to be passed to \code{sparkR.init} to initialize a SparkContext}
+
+\item{autoYes}{automatically answer "yes" to questions about creating a path if missing}
+
+\item{reset}{should existing metadata for this object be overwritten?}
 
 \item{verbose}{logical - print messages about what is being done}
 }
-\description{
-Connect to Spark data source (experimental).
+\value{
+a "kvConnection" object of class "sparkDataConn"
 }
-\note{
-This is currently a proof-of-concept.  It only allows in-memory data to be initialized as a Spark RDD, which is quite pointless for big data.  In the future, this will allow connections to link to data on HDFS.
+\description{
+Connect to a Spark data source, potentially on HDFS
+}
+\details{
+This simply creates a "connection" to a directory (which need not have data in it).  To actually do things with this data, see \code{\link{ddo}}, etc.
+}
+\examples{
+\dontrun{
+ # connect to empty HDFS directory
+ conn <- sparkDataConn("/test/irisSplit")
+ # add some data
+ addData(conn, list(list("1", iris[1:10,])))
+ addData(conn, list(list("2", iris[11:110,])))
+ addData(conn, list(list("3", iris[111:150,])))
+ # represent it as a distributed data frame
+ hdd <- ddf(conn)
+}
+}
+\author{
+Ryan Hafen
+}
+\seealso{
+\code{addData}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{sparkDataConn}}
 }
 

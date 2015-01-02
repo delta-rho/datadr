@@ -2,9 +2,9 @@
 # but it's still nice to have an lapply method for when that is the intent
 
 #' Apply a function to all key-value pairs of a ddo/ddf object
-#' 
+#'
 #' Apply a function to all key-value pairs of a ddo/ddf object and get a new ddo object back, unless a different \code{combine} strategy is specified.
-#' 
+#'
 #' @param X an object of class "ddo" of "ddf"
 #' @param FUN a function to be applied to each subset
 #' @param combine optional method to combine the results
@@ -22,9 +22,9 @@
 #' bySpecies <- divide(iris, by="Species")
 #' drLapply(bySpecies, function(x) x$Sepal.Width)
 drLapply <- function(X, FUN, combine = combDdo(), output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, verbose = TRUE) {
-   if(!is.function(FUN))
-      stop("FUN must be a function")
-   tmp <- addTransform(X, FUN)      
-   
-   recombine(data = tmp, combine, output = output, overwrite = overwrite, params = params, packages = packages, control = control, verbose = verbose)
+  if(!is.function(FUN))
+    stop("FUN must be a function")
+  tmp <- addTransform(X, FUN)
+
+  recombine(data = tmp, combine, output = output, overwrite = overwrite, params = params, packages = packages, control = control, verbose = verbose)
 }

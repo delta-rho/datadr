@@ -1,7 +1,7 @@
 #' Divide a Distributed Data Object
-#' 
+#'
 #' Divide a ddo/ddf object into subsets based on different criteria
-#' 
+#'
 #' @param data an object of class "ddf" or "ddo" - in the latter case, need to specify \code{preTransFn} to coerce each subset into a data frame
 #' @param by specification of how to divide the data - conditional (factor-level or shingles), random replicate, or near-exact replicate (to come) -- see details
 #' @param bsvFn a function to be applied to each subset that returns a list of between subset variables (BSVs)
@@ -16,296 +16,296 @@
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param update should a MapReduce job be run to obtain additional attributes for the result data prior to returning?
 #' @param verbose logical - print messages about what is being done
-#' 
+#'
 #' @return an object of class "ddf" if the resulting subsets are data frames.  Otherwise, an object of class "ddo".
-#' 
-#' @details The division methods this function will support include conditioning variable division for factors (implemented -- see \code{\link{condDiv}}), conditioning variable division for numerical variables through shingles, random replicate (implemented -- see \code{\link{rrDiv}}), and near-exact replicate.  If \code{by} is a vector of variable names, the data will be divided by these variables.  Alternatively, this can be specified by e.g.  \code{condDiv(c("var1", "var2"))}.  
-#' 
+#'
+#' @details The division methods this function will support include conditioning variable division for factors (implemented -- see \code{\link{condDiv}}), conditioning variable division for numerical variables through shingles, random replicate (implemented -- see \code{\link{rrDiv}}), and near-exact replicate.  If \code{by} is a vector of variable names, the data will be divided by these variables.  Alternatively, this can be specified by e.g.  \code{condDiv(c("var1", "var2"))}.
+#'
 #' @references
 #' \itemize{
-#'   \item \url{http://www.datadr.org}
-#'   \item \href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha, S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., & Cleveland, W. S. (2012). Large complex data: divide and recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.}
+#'  \item \url{http://www.datadr.org}
+#'  \item \href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha, S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., & Cleveland, W. S. (2012). Large complex data: divide and recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.}
 #' }
-#' 
+#'
 #' @author Ryan Hafen
 #' @seealso \code{\link{recombine}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{condDiv}}, \code{\link{rrDiv}}
 #' @export
 divide <- function(data,
-   by = NULL,
-   spill = 1000000,
-   filterFn = NULL,
-   bsvFn = NULL,
-   output = NULL, 
-   overwrite = FALSE,
-   preTransFn = NULL,
-   postTransFn = NULL,
-   params = NULL,
-   packages = NULL,
-   control = NULL,
-   update = FALSE,
-   verbose = TRUE
+  by = NULL,
+  spill = 1000000,
+  filterFn = NULL,
+  bsvFn = NULL,
+  output = NULL,
+  overwrite = FALSE,
+  preTransFn = NULL,
+  postTransFn = NULL,
+  params = NULL,
+  packages = NULL,
+  control = NULL,
+  update = FALSE,
+  verbose = TRUE
 ) {
-   # data <- ddf(localDiskConn("~/Desktop/asdf")); by <- "Species"; bsvFn <- NULL; preTransFn <- NULL; postTransFn <- NULL; output <- localDiskConn("~/Desktop/asdf3"); control <- NULL; update <- FALSE
-   
-   if(!is.list(by)) { # by should be a list
-      by <- condDiv(by)
-   }
-   
-   if(by$type ==  "condDiv" && is.data.frame(data)) {
-      # preTransFn is ignored
-      res <- getDivideDF(data, by = by, postTransFn = postTransFn, 
-         bsvFn = bsvFn, update = update)
-      return(res)
-   }
-   
-   if(!inherits(data, "ddf")) {
-      if(verbose)
-         message("* Input data is not 'ddf' - attempting to cast it as such")
-      data <- ddf(data)
-   }
-   
-   if(verbose)
-      message("* Verifying parameters...")
-   
-   seed <- NULL
-   if(by$type == "rrDiv")
-      seed <- by$seed
-   
-   if(is.null(seed))
-      seed <- as.integer(runif(1)*1000000)
-   
-   if(!is.null(preTransFn)) {
-      message("** note **: preTransFn is deprecated - please apply this transformation using 'addTransform()' to your input data prior to calling 'divide()'")
-      data <- addTransform(data, preTransFn)
-   }
-   
-   if(is.null(filterFn)) {
-      filterFn <- function(x) TRUE
-      environment(filterFn) <- .GlobalEnv
-   }
-   
-   # get an example of what a subset will look like when it is to be divided
-   ex <- kvExample(data)
-   
-   # make sure the division specification is good
-   # and get any parameters that need to be sent to dfSplit
-   by$specVars <- validateDivSpec(by, data, ex)
-   
-   if(!is.null(bsvFn)) {
-      # Even though bsvFn is called on subsets *after* division
-      # it is good to validate here since an error after would
-      # be a waste of a lot of computation only to abort.
-      # Since bsvFn is applied *before* postTransFn() is called
-      # it should work on an input subset after preTransFn().
-      
-      validateBsvFn(ex, bsvFn, verbose = TRUE)
-   }
-   if(verbose)
-      message("* Applying division...")
-   
-   parList <- list(
-      by = by,
-      transFn = getAttribute(data, "transFn"),
-      postTransFn = postTransFn,
-      seed = seed,
-      bsvFn = bsvFn,
-      MAX_ROWS = spill,
-      filterFn = filterFn
-   )
-   
-   # find globals in postTransFn, bsvFn, and filterFn
-   postGlobals <- drGetGlobals(postTransFn)
-   bsvGlobals <- drGetGlobals(bsvFn)
-   filterGlobals <- drGetGlobals(filterFn)
-   
-   globalVarList <- c(postGlobals$vars, bsvGlobals$vars, filterGlobals$vars)
-   packages <- unique(c(postGlobals$packages, bsvGlobals$packages, filterGlobals$packages, packages))
-   
-   if(length(globalVarList) > 0)
-      parList <- c(parList, globalVarList$vars)
-   
-   if(! "package:datadr" %in% search()) {
-      if(verbose)
-         message("* ---- running dev version - sending datadr functions to mr job")
-      parList <- c(parList, list(
-         dfSplit = dfSplit,
-         bsv = bsv,
-         kvApply = kvApply,
-         applyTransform = applyTransform,
-         setupTransformEnv = setupTransformEnv,
-         getCuts = getCuts,
-         getCuts.condDiv = getCuts.condDiv,
-         getCuts.rrDiv = getCuts.rrDiv
-      ))
-      
-      packages <- c(packages, "data.table")
-   } else {
-      packages <- c(packages, "datadr", "data.table")
-   }
-   
-   setup <- as.expression(bquote({
-      seed <- .(seed)
-      # setupRNGStream(seed)
-   }))
-   
-   map <- expression({
-      for(i in seq_along(map.values)) {
-         if(length(map.values[[i]]) > 0) {
-            cutDat <- dfSplit(map.values[[i]], by, seed)
-            cdn <- names(cutDat)
-            
-            for(j in seq_along(cutDat)) {
-               collect(cdn[j], cutDat[[j]])
-            }
-         }
-         
-         # counter("datadr", "Divide map k/v processed", 1)
-         # counter("datadr", "Divide map k/v emitted", length(cutDat))
-         # counter("datadr", "Divide map pre-division bytes", as.integer(object.size(r)))
-         # counter("datadr", "Divide map post-division bytes", sum(sapply(cutDat, function(x) as.integer(object.size(x)))))
+  # data <- ddf(localDiskConn("~/Desktop/asdf")); by <- "Species"; bsvFn <- NULL; preTransFn <- NULL; postTransFn <- NULL; output <- localDiskConn("~/Desktop/asdf3"); control <- NULL; update <- FALSE
+
+  if(!is.list(by)) { # by should be a list
+    by <- condDiv(by)
+  }
+
+  if(by$type ==  "condDiv" && is.data.frame(data)) {
+    # preTransFn is ignored
+    res <- getDivideDF(data, by = by, postTransFn = postTransFn,
+      bsvFn = bsvFn, update = update)
+    return(res)
+  }
+
+  if(!inherits(data, "ddf")) {
+    if(verbose)
+      message("* Input data is not 'ddf' - attempting to cast it as such")
+    data <- ddf(data)
+  }
+
+  if(verbose)
+    message("* Verifying parameters...")
+
+  seed <- NULL
+  if(by$type == "rrDiv")
+    seed <- by$seed
+
+  if(is.null(seed))
+    seed <- as.integer(runif(1)*1000000)
+
+  if(!is.null(preTransFn)) {
+    message("** note **: preTransFn is deprecated - please apply this transformation using 'addTransform()' to your input data prior to calling 'divide()'")
+    data <- addTransform(data, preTransFn)
+  }
+
+  if(is.null(filterFn)) {
+    filterFn <- function(x) TRUE
+    environment(filterFn) <- .GlobalEnv
+  }
+
+  # get an example of what a subset will look like when it is to be divided
+  ex <- kvExample(data)
+
+  # make sure the division specification is good
+  # and get any parameters that need to be sent to dfSplit
+  by$specVars <- validateDivSpec(by, data, ex)
+
+  if(!is.null(bsvFn)) {
+    # Even though bsvFn is called on subsets *after* division
+    # it is good to validate here since an error after would
+    # be a waste of a lot of computation only to abort.
+    # Since bsvFn is applied *before* postTransFn() is called
+    # it should work on an input subset after preTransFn().
+
+    validateBsvFn(ex, bsvFn, verbose = TRUE)
+  }
+  if(verbose)
+    message("* Applying division...")
+
+  parList <- list(
+    by = by,
+    transFn = getAttribute(data, "transFn"),
+    postTransFn = postTransFn,
+    seed = seed,
+    bsvFn = bsvFn,
+    MAX_ROWS = spill,
+    filterFn = filterFn
+  )
+
+  # find globals in postTransFn, bsvFn, and filterFn
+  postGlobals <- drGetGlobals(postTransFn)
+  bsvGlobals <- drGetGlobals(bsvFn)
+  filterGlobals <- drGetGlobals(filterFn)
+
+  globalVarList <- c(postGlobals$vars, bsvGlobals$vars, filterGlobals$vars)
+  packages <- unique(c(postGlobals$packages, bsvGlobals$packages, filterGlobals$packages, packages))
+
+  if(length(globalVarList) > 0)
+    parList <- c(parList, globalVarList$vars)
+
+  if(! "package:datadr" %in% search()) {
+    if(verbose)
+      message("* ---- running dev version - sending datadr functions to mr job")
+    parList <- c(parList, list(
+      dfSplit = dfSplit,
+      bsv = bsv,
+      kvApply = kvApply,
+      applyTransform = applyTransform,
+      setupTransformEnv = setupTransformEnv,
+      getCuts = getCuts,
+      getCuts.condDiv = getCuts.condDiv,
+      getCuts.rrDiv = getCuts.rrDiv
+    ))
+
+    packages <- c(packages, "data.table")
+  } else {
+    packages <- c(packages, "datadr", "data.table")
+  }
+
+  setup <- as.expression(bquote({
+    seed <- .(seed)
+    # setupRNGStream(seed)
+  }))
+
+  map <- expression({
+    for(i in seq_along(map.values)) {
+      if(length(map.values[[i]]) > 0) {
+        cutDat <- dfSplit(map.values[[i]], by, seed)
+        cdn <- names(cutDat)
+
+        for(j in seq_along(cutDat)) {
+          collect(cdn[j], cutDat[[j]])
+        }
       }
-   })
-   
-   reduce <- expression(
-      pre = {
-         # df, nr, and count used for "spill"
-         df <- list()
-         nr <- 0
-         spillCount <- 0
-         
-         # counter("datadr", "Divide reduce k/v processed", 1)
-      },
-      reduce = {
-         df[[length(df) + 1]] <- reduce.values
-         nr <- nr + sum(sapply(reduce.values, nrow))
-         if(nr > MAX_ROWS) {
-            # this df is ready to go
-            
-            for(ii in seq_len(floor(nr / MAX_ROWS))) {
-               spillCount <- spillCount + 1
-               df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
-               # do what is needed and collect
-               # put in div-specific attr stuff
-               res <- addSplitAttrs(df[1:MAX_ROWS,], bsvFn, by, postTransFn)
-               if(kvApply(filterFn, list(reduce.key, res))) {
-                  # counter("datadr", "spilled", 1)
-                  collect(paste(reduce.key, spillCount, sep = "_"), res)               
-               }
-               # now continue to work on what is left over
-               df <- list(list(df[c((MAX_ROWS + 1):nr),]))
-               nr <- nr - MAX_ROWS
-            }
-         }
-      },
-      post = {
-         df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
-         # if we never reached MAX_ROWS, don't append count to key
-         if(spillCount > 0)
-            reduce.key <- paste(reduce.key, spillCount + 1, sep = "_")
-         
-         # put in div-specific attr stuff
-         res <- addSplitAttrs(df, bsvFn, by, postTransFn)
-         
-         if(kvApply(filterFn, list(reduce.key, res))) {
-            collect(reduce.key, res)               
-         }
+
+      # counter("datadr", "Divide map k/v processed", 1)
+      # counter("datadr", "Divide map k/v emitted", length(cutDat))
+      # counter("datadr", "Divide map pre-division bytes", as.integer(object.size(r)))
+      # counter("datadr", "Divide map post-division bytes", sum(sapply(cutDat, function(x) as.integer(object.size(x)))))
+    }
+  })
+
+  reduce <- expression(
+    pre = {
+      # df, nr, and count used for "spill"
+      df <- list()
+      nr <- 0
+      spillCount <- 0
+
+      # counter("datadr", "Divide reduce k/v processed", 1)
+    },
+    reduce = {
+      df[[length(df) + 1]] <- reduce.values
+      nr <- nr + sum(sapply(reduce.values, nrow))
+      if(nr > MAX_ROWS) {
+        # this df is ready to go
+
+        for(ii in seq_len(floor(nr / MAX_ROWS))) {
+          spillCount <- spillCount + 1
+          df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
+          # do what is needed and collect
+          # put in div-specific attr stuff
+          res <- addSplitAttrs(df[1:MAX_ROWS,], bsvFn, by, postTransFn)
+          if(kvApply(filterFn, list(reduce.key, res))) {
+            # counter("datadr", "spilled", 1)
+            collect(paste(reduce.key, spillCount, sep = "_"), res)
+          }
+          # now continue to work on what is left over
+          df <- list(list(df[c((MAX_ROWS + 1):nr),]))
+          nr <- nr - MAX_ROWS
+        }
       }
-   )
-   
-   # if the user supplies output as an unevaluated connection
-   # the verbosity can be misleading
-   suppressMessages(output <- output)
-   
-   res <- mrExec(data,
-      setup     = setup,
-      map       = map, 
-      reduce    = reduce, 
-      output    = output,
-      overwrite = overwrite,
-      control   = control,
-      params    = c(params, parList),
-      packages  = packages
-   )
-   
-   if(update)
-      res <- updateAttributes(res)
-   
-   # add an attribute specifying how it was divided
-   res <- setAttributes(res, list(div = list(divBy = by)))
-   
-   # add bsv attributes
-   if(!is.null(bsvFn)) {
-      desc <- getBsvDesc(kvExample(data)[[2]], bsvFn)
-      tmp <- list(bsvFn = bsvFn, bsvDesc = desc)
-      class(tmp) <- c("bsvInfo", "list")
-      res <- setAttributes(res, list(bsvInfo = tmp))
-   }
-   
-   res
+    },
+    post = {
+      df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
+      # if we never reached MAX_ROWS, don't append count to key
+      if(spillCount > 0)
+        reduce.key <- paste(reduce.key, spillCount + 1, sep = "_")
+
+      # put in div-specific attr stuff
+      res <- addSplitAttrs(df, bsvFn, by, postTransFn)
+
+      if(kvApply(filterFn, list(reduce.key, res))) {
+        collect(reduce.key, res)
+      }
+    }
+  )
+
+  # if the user supplies output as an unevaluated connection
+  # the verbosity can be misleading
+  suppressMessages(output <- output)
+
+  res <- mrExec(data,
+    setup    = setup,
+    map     = map,
+    reduce   = reduce,
+    output   = output,
+    overwrite = overwrite,
+    control  = control,
+    params   = c(params, parList),
+    packages  = packages
+  )
+
+  if(update)
+    res <- updateAttributes(res)
+
+  # add an attribute specifying how it was divided
+  res <- setAttributes(res, list(div = list(divBy = by)))
+
+  # add bsv attributes
+  if(!is.null(bsvFn)) {
+    desc <- getBsvDesc(kvExample(data)[[2]], bsvFn)
+    tmp <- list(bsvFn = bsvFn, bsvDesc = desc)
+    class(tmp) <- c("bsvInfo", "list")
+    res <- setAttributes(res, list(bsvInfo = tmp))
+  }
+
+  res
 }
 
 #' Get Between Subset Variable
-#' 
+#'
 #' For a given key-value pair, get a BSV variable value by name (if present)
 #' @param x a key-value pair or a value
 #' @param name the name of the BSV to get
 #' @export
 getBsv <- function(x, name) {
-   res <- attr(x, "bsv")[[name]]
-   if(is.null(res))
-      res <- attr(x[[2]], "bsv")[[name]]      
-   res
+  res <- attr(x, "bsv")[[name]]
+  if(is.null(res))
+    res <- attr(x[[2]], "bsv")[[name]]
+  res
 }
 
 #' Get Between Subset Variables
-#' 
+#'
 #' For a given key-value pair, exract all BSVs
 #' @param x a key-value pair or a value
 #' @export
 getBsvs <- function(x) {
-   res <- attr(x, "bsv")
-   if(is.null(res))
-      res <- attr(x[[2]], "bsv")
-   res
+  res <- attr(x, "bsv")
+  if(is.null(res))
+    res <- attr(x[[2]], "bsv")
+  res
 }
 
 #' Extract "Split" Variable
-#' 
+#'
 #' For a given key-value pair or value, get a split variable value by name, if present (split variables are variables that define how the data was divided).
 #' @param x a key-value pair or a value
 #' @param name the name of the split variable to get
 #' @export
 getSplitVar <- function(x, name) {
-   res <- attr(x, "split")[[name]]
-   if(is.null(res))
-      res <- attr(x[[2]], "split")[[name]]      
-   res
+  res <- attr(x, "split")[[name]]
+  if(is.null(res))
+    res <- attr(x[[2]], "split")[[name]]
+  res
 }
 
 #' Extract "Split" Variables
-#' 
+#'
 #' For a given k/v pair or value, exract all split variables (split variables are variables that define how the data was divided).
 #' @param x a key-value pair or a value
 #' @export
 getSplitVars <- function(x) {
-   res <- as.list(attr(x, "split"))
-   if(length(res) == 0)
-      res <- as.list(attr(x[[2]], "split"))      
-   if(length(res) == 0)
-      res <- NULL
-   res
+  res <- as.list(attr(x, "split"))
+  if(length(res) == 0)
+    res <- as.list(attr(x[[2]], "split"))
+  if(length(res) == 0)
+    res <- NULL
+  res
 }
 
 #' "Flatten" a ddf Subset
-#' 
+#'
 #' Add split variables and BSVs (if any) as columns to a subset of a ddf.
 #' @param x a value of a key-value pair
 #' @seealso \code{\link{getSplitVars}}, \code{\link{getBsvs}}
 #' @export
 flatten <- function(x) {
-   svs <- getSplitVars(x)
-   bsvs <- getBsvs(x)
-   data.frame(c(x, svs, bsvs))
+  svs <- getSplitVars(x)
+  bsvs <- getBsvs(x)
+  data.frame(c(x, svs, bsvs))
 }
 
 # take a data frame (or one that becomes a data frame with preTransFn)
@@ -316,46 +316,46 @@ flatten <- function(x) {
 #' @rdname divideInternals
 #' @param curDF,seed arguments
 #' @export
-dfSplit <- function(curDF, by, seed) {   
-   # remove factor levels, if any
-   # TODO: keep track of factor levels
-   factorInd <- which(sapply(curDF, is.factor))
-   for(i in seq_along(factorInd)) {
-      curDF[[factorInd[i]]] <- as.character(curDF[[factorInd[i]]])
-   }
-   
-   split(curDF, getCuts(by, curDF))
+dfSplit <- function(curDF, by, seed) {
+  # remove factor levels, if any
+  # TODO: keep track of factor levels
+  factorInd <- which(sapply(curDF, is.factor))
+  for(i in seq_along(factorInd)) {
+    curDF[[factorInd[i]]] <- as.character(curDF[[factorInd[i]]])
+  }
+
+  split(curDF, getCuts(by, curDF))
 }
 
 #' @rdname divideInternals
 #' @param curSplit,bsvFn,by,postTransFn arguments
 #' @export
 addSplitAttrs <- function(curSplit, bsvFn, by, postTransFn = NULL) {
-   bsvs <- NULL
-   
-   # BSVs are applied before postTrans
-   if(!is.null(bsvFn)) {
-      bsvs <- stripBsvAttr(bsvFn(curSplit))
-   }
-   
-   splitAttr <- NULL
-   if(by$type == "condDiv") {
-      splitVars <- by$vars
-      splitAttr <- curSplit[1, splitVars, drop = FALSE]
-   }
-   
-   if(!is.null(postTransFn)) {
-      curSplit <- postTransFn(curSplit)
-   } else {
-      if(by$type == "condDiv") {
-         # remove columns for split variables
-         curSplit <- curSplit[,setdiff(names(curSplit), by$vars), drop = FALSE]
-      }
-   }
-   
-   attr(curSplit, "bsv") <- bsvs
-   attr(curSplit, "split") <- splitAttr
-   
-   curSplit
+  bsvs <- NULL
+
+  # BSVs are applied before postTrans
+  if(!is.null(bsvFn)) {
+    bsvs <- stripBsvAttr(bsvFn(curSplit))
+  }
+
+  splitAttr <- NULL
+  if(by$type == "condDiv") {
+    splitVars <- by$vars
+    splitAttr <- curSplit[1, splitVars, drop = FALSE]
+  }
+
+  if(!is.null(postTransFn)) {
+    curSplit <- postTransFn(curSplit)
+  } else {
+    if(by$type == "condDiv") {
+      # remove columns for split variables
+      curSplit <- curSplit[,setdiff(names(curSplit), by$vars), drop = FALSE]
+    }
+  }
+
+  attr(curSplit, "bsv") <- bsvs
+  attr(curSplit, "split") <- splitAttr
+
+  curSplit
 }
 

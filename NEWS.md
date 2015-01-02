@@ -1,3 +1,10 @@
+Version 0.7.5
+
+- reintroduce SparkR support, leveraging several updates to SparkR that allow
+  for loading / persisting RDDs on disk, lookup by key, etc.
+- general code formatting changes
+- change `_rh_meta` to `_meta`
+
 Version 0.7.4.1
 ----------------------------------------------------------------------
 
@@ -5,7 +12,7 @@ Version 0.7.4.1
 - several small changes to help R CMD check
 
 Version 0.7.4
--------------------------------------------------------------------------------
+----------------------------------------------------------------------
 
 FEATURES / CHANGES
 
