@@ -44,7 +44,7 @@ This division-agnostic quantile calculation algorithm takes the range of the var
 \examples{
 # break the iris data into k/v pairs
 irisSplit <- list(
-   list("1", iris[1:10,]), list("2", iris[11:110,]), list("3", iris[111:150,])
+  list("1", iris[1:10,]), list("2", iris[11:110,]), list("3", iris[111:150,])
 )
 # represent it as ddf
 irisSplit <- ddf(irisSplit, update = TRUE)

@@ -20,10 +20,10 @@ Should be called inside the \code{bsvFn} argument to \code{divide} used for cons
 irisDdf <- ddf(iris)
 
 bsvFn <- function(dat) {
-   list(
-      meanSL = bsv(mean(dat$Sepal.Length), desc="mean sepal length"),
-      meanPL = bsv(mean(dat$Petal.Length), desc="mean petal length")
-   )
+  list(
+    meanSL = bsv(mean(dat$Sepal.Length), desc="mean sepal length"),
+    meanPL = bsv(mean(dat$Petal.Length), desc="mean petal length")
+  )
 }
 
 # divide the data by species

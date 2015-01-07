@@ -11,33 +11,33 @@
 #' set.seed(234)
 #' sampleRes <- drSample(bySpecies, fraction = 0.25)
 drSample <- function(x, fraction, output = NULL, overwrite = FALSE, control = NULL) {
-   # TODO: warn if output storage is not commensurate with input?
-   map <- expression({
-      for(i in seq_along(map.keys)) {
-         if(runif(1) < fraction)
-            collect(map.keys[[i]], map.values[[i]])
-      }
-   })
-   
-   parList <- list(fraction = fraction)
-   
-   if(! "package:datadr" %in% search()) {
-      parList <- c(parList, list(
-         applyTransform = applyTransform,
-         setupTransformEnv = setupTransformEnv, 
-         kvApply = kvApply
-      ))
-   }
-   
-   # if the user supplies output as an unevaluated connection
-   # the verbosity can be misleading
-   suppressMessages(output <- output)
-   
-   mrExec(x,
-      map = map,
-      control = control,
-      output = output,
-      overwrite = overwrite,
-      params = parList
-   )
+  # TODO: warn if output storage is not commensurate with input?
+  map <- expression({
+    for(i in seq_along(map.keys)) {
+      if(runif(1) < fraction)
+        collect(map.keys[[i]], map.values[[i]])
+    }
+  })
+
+  parList <- list(fraction = fraction)
+
+  if(! "package:datadr" %in% search()) {
+    parList <- c(parList, list(
+      applyTransform = applyTransform,
+      setupTransformEnv = setupTransformEnv,
+      kvApply = kvApply
+    ))
+  }
+
+  # if the user supplies output as an unevaluated connection
+  # the verbosity can be misleading
+  suppressMessages(output <- output)
+
+  mrExec(x,
+    map = map,
+    control = control,
+    output = output,
+    overwrite = overwrite,
+    params = parList
+  )
 }

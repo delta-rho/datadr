@@ -77,10 +77,10 @@ Note that if \code{skip} is positive and/or if \code{header} is \code{TRUE}, it 
 Also note that if you supply \code{"Factor"} column classes, they will be converted to character.
 }
 \examples{
-\dontrun{   csvFile <- file.path(tempdir(), "iris.csv")
-   write.csv(iris, file = csvFile, row.names = FALSE, quote = FALSE)
-   irisTextConn <- localDiskConn(file.path(tempdir(), "irisText2"), autoYes = TRUE)
-   a <- drRead.csv(csvFile, output = irisTextConn, rowsPerBlock = 10)
+\dontrun{  csvFile <- file.path(tempdir(), "iris.csv")
+  write.csv(iris, file = csvFile, row.names = FALSE, quote = FALSE)
+  irisTextConn <- localDiskConn(file.path(tempdir(), "irisText2"), autoYes = TRUE)
+  a <- drRead.csv(csvFile, output = irisTextConn, rowsPerBlock = 10)
 }
 }
 \author{

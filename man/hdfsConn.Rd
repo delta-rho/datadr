@@ -28,14 +28,14 @@ This simply creates a "connection" to a directory on HDFS (which need not have d
 }
 \examples{
 \dontrun{
-   # connect to empty HDFS directory
-   conn <- hdfsConn("/test/irisSplit")
-   # add some data
-   addData(conn, list(list("1", iris[1:10,])))
-   addData(conn, list(list("2", iris[11:110,])))
-   addData(conn, list(list("3", iris[111:150,])))
-   # represent it as a distributed data frame
-   hdd <- ddf(conn)
+  # connect to empty HDFS directory
+  conn <- hdfsConn("/test/irisSplit")
+  # add some data
+  addData(conn, list(list("1", iris[1:10,])))
+  addData(conn, list(list("2", iris[11:110,])))
+  addData(conn, list(list("3", iris[111:150,])))
+  # represent it as a distributed data frame
+  hdd <- ddf(conn)
 }
 }
 \author{

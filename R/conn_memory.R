@@ -2,23 +2,23 @@
 
 #' @export
 loadAttrs.nullConn <- function(obj, type="ddo") {
-   NULL
+  NULL
 }
 
 #' @export
 saveAttrs.nullConn <- function(obj, attrs, type="ddo") {
-   NULL
+  NULL
 }
 
 #' @export
 print.nullConn <- function(x, ...) {
-   cat("In-memory data connection")
+  cat("In-memory data connection")
 }
 
 #' @export
 mrCheckOutputLoc.nullConn <- function(x, overwrite = FALSE)
-   NULL
+  NULL
 
 #' @export
 mrCheckOutputLoc.NULL <- function(x, overwrite = FALSE)
-   NULL
+  NULL

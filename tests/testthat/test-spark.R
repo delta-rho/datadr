@@ -18,7 +18,8 @@ test_that("spark MR job", {
       list(x, iris[splits[[x]],])
    })
    
-   scn <- sparkDataConn(irisSplit, init = list(master = "spark://WE25070:7077"))
+   scn <- sparkDataConn(irisSplit)
+      # , init = list(master = "spark://localhost:7077"))
    irisDdo <- ddo(scn)
    
    mapExp <- expression({
