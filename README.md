@@ -1,6 +1,6 @@
 # datadr: Divide and Recombine in R
 
-[![Build Status](https://travis-ci.org/tesseradata/datadr.png?branch=master)](https://travis-ci.org/tesseradata/datadr)
+[![Build Status](https://travis-ci.org/tesseradata/datadr.svg?branch=master)](https://travis-ci.org/tesseradata/datadr)
 
 datadr is an R package that leverages [RHIPE](https://github.com/tesseradata/RHIPE) to provide a simple interface to division and recombination (D&R) methods for large complex data.
 
