@@ -8,6 +8,7 @@
 #' @param probs numeric vector of probabilities with values in [0-1]
 #' @param preTransFn a transformation function (if desired) to applied to each subset prior to computing quantiles (here it may be useful for adding a "by" variable that is not present) - note: this transformation should not modify \code{var} (use \code{varTransFn} for that) - also note: this is deprecated - instead use \code{\link{addTransform}} prior to calling divide
 #' @param varTransFn transformation to apply to variable prior to computing quantiles
+#' @param varRange range of x (can be left blank if summaries have been computed)
 #' @param nBins how many bins should the range of the variable be split into?
 #' @param tails how many exact values at each tail should be retained?
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
@@ -41,13 +42,13 @@
 #' plot(probs, quantile(iris$Sepal.Length, probs = probs, type = 1))
 #'
 #' @export
-drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL, varTransFn = identity, nBins = 10000, tails = 100, params = NULL, packages = NULL, control = NULL, ...) {
+drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL, varTransFn = identity, varRange = NULL, nBins = 10000, tails = 100, params = NULL, packages = NULL, control = NULL, ...) {
   # nBins <- 10000; tails <- 0; probs <- seq(0, 1, 0.0005); by <- "Species"; var <- "Sepal.Length"; x <- ldd; trans <- identity
 
   # we need to know the range of the variables, which we don't
   # when we have a transformed object - and can't update attributes
   # (transformed objects are meant to be intermediate objects anyway)
-  if(inherits(x, "transformed")) {
+  if(inherits(x, "transformed") && is.null(varRange)) {
     stop("Cannot run drQuantile() on a transformed divided data object.", call. = FALSE)
   }
 
@@ -64,10 +65,14 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
   }
   ex <- kvExample(x)
 
-  rng <- varTransFn(attr(x, "ddf")$summary[[var]]$range)
+  if(is.null(varRange)) {
+    rng <- varTransFn(attr(x, "ddf")$summary[[var]]$range)
+  } else {
+    rng <- varRange
+  }
   delta <- diff(rng) / (nBins - 1)
-  cuts <- seq(rng[1] - delta / 2, rng[2] + delta/2, by=delta)
-  mids <- seq(rng[1], rng[2], by=delta)
+  cuts <- seq(rng[1] - delta / 2, rng[2] + delta / 2, by = delta)
+  mids <- seq(rng[1], rng[2], by = delta)
 
   map <- expression({
     dat <- data.frame(rbindlist(lapply(seq_along(map.values), function(i) {
@@ -92,14 +97,18 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
       if(length(vv) > 0) {
         ord <- order(vv)
 
-        cutTab <- as.data.frame(table(cut(vv, cuts, labels=FALSE)), responseName = "Freq", stringsAsFactors = FALSE)
+        cutTab <- as.data.frame(table(cut(vv, cuts, labels = FALSE)), responseName = "Freq", stringsAsFactors = FALSE)
         cutTab$Var1 <- as.integer(cutTab$Var1)
 
-        for(i in 1:nrow(cutTab)) {
-          collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), cutTab$Var1[i]), cutTab$Freq[i])
+        if(nrow(cutTab) == 0) {
+          warning("data outside specified range was found in quantile calculation - please make sure the correct range limits are being used")
+        } else {
+          for(i in 1:nrow(cutTab)) {
+            collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), cutTab$Var1[i]), cutTab$Freq[i])
+          }
+          collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "bot"), vv[head(ord, tails)])
+          collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "top"), vv[tail(ord, tails)])
         }
-        collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "bot"), vv[head(ord, tails)])
-        collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "top"), vv[tail(ord, tails)])
       }
     }
   })
@@ -110,6 +119,8 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
       top <- NULL
       sum <- 0
     }, reduce = {
+      # if(length(reduce.key[[2]]) == 0)
+      #   browser()
       if(reduce.key[[2]] == "bot") {
         bot <- head(sort(c(bot, do.call(c, reduce.values))), tails)
       } else if(reduce.key[[2]] == "top") {
@@ -118,6 +129,8 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
         sum <- sum + sum(unlist(reduce.values))
       }
     }, post = {
+      if(length(reduce.key[[2]]) == 0)
+        browser()
       if(reduce.key[[2]] == "bot") {
         collect(reduce.key, bot)
       } else if(reduce.key[[2]] == "top") {

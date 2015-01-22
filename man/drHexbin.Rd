@@ -4,8 +4,8 @@
 \title{HexBin Aggregation for Distributed Data Frames}
 \usage{
 drHexbin(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
-  xbins = 30, shape = 1, params = NULL, packages = NULL,
-  control = NULL)
+  xRange = NULL, yRange = NULL, xbins = 30, shape = 1, params = NULL,
+  packages = NULL, control = NULL)
 }
 \arguments{
 \item{data}{a distributed data frame}
@@ -13,6 +13,8 @@ drHexbin(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
 \item{xVar,yVar}{names of the variables to use}
 
 \item{xTransFn,yTransFn}{a transformation function to apply to the x and y variables prior to binning}
+
+\item{xRange,yRange}{range of x and y variables (can be left blank if summaries have been computed)}
 
 \item{xbins}{the number of bins partitioning the range of xbnds}
 
