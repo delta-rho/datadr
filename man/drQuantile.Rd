@@ -4,8 +4,8 @@
 \title{Sample Quantiles for 'ddf' Objects}
 \usage{
 drQuantile(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL,
-  varTransFn = identity, nBins = 10000, tails = 100, params = NULL,
-  packages = NULL, control = NULL, ...)
+  varTransFn = identity, varRange = NULL, nBins = 10000, tails = 100,
+  params = NULL, packages = NULL, control = NULL, ...)
 }
 \arguments{
 \item{x}{a 'ddf' object}
@@ -19,6 +19,8 @@ drQuantile(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn = NULL,
 \item{preTransFn}{a transformation function (if desired) to applied to each subset prior to computing quantiles (here it may be useful for adding a "by" variable that is not present) - note: this transformation should not modify \code{var} (use \code{varTransFn} for that) - also note: this is deprecated - instead use \code{\link{addTransform}} prior to calling divide}
 
 \item{varTransFn}{transformation to apply to variable prior to computing quantiles}
+
+\item{varRange}{range of x (can be left blank if summaries have been computed)}
 
 \item{nBins}{how many bins should the range of the variable be split into?}
 

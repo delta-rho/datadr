@@ -5,6 +5,7 @@
 #' @param data a distributed data frame
 #' @param xVar,yVar names of the variables to use
 #' @param xTransFn,yTransFn a transformation function to apply to the x and y variables prior to binning
+#' @param xRange,yRange range of x and y variables (can be left blank if summaries have been computed)
 #' @param xbins the number of bins partitioning the range of xbnds
 #' @param shape the shape = yheight/xwidth of the plotting regions
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
@@ -19,13 +20,15 @@
 #'
 #' @seealso \code{\link{drQuantile}}
 #' @export
-drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity, xbins = 30, shape = 1, params = NULL, packages = NULL, control = NULL) {
+drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity, xRange = NULL, yRange = NULL, xbins = 30, shape = 1, params = NULL, packages = NULL, control = NULL) {
 
-  if(class(summary(data))[1] == "logical")
-    stop("Need to know the range of the variable to compute quantiles - please run updateAttributes on this data.")
+  if(is.null(xRange) || is.null(yRange)) {
+    if(class(summary(data))[1] == "logical")
+      stop("Need to know the range of the variable to compute hexbins - please run updateAttributes on this data.")
 
-  xRange <- summary(data)[[xVar]]$range
-  yRange <- summary(data)[[yVar]]$range
+    xRange <- summary(data)[[xVar]]$range
+    yRange <- summary(data)[[yVar]]$range
+  }
 
   xbnds <- xTransFn(xRange)
   ybnds <- yTransFn(yRange)
