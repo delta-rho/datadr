@@ -16,6 +16,8 @@ kvApply(fn, kvPair, returnKV = FALSE)
 Apply a function to a single key-value pair - not a traditional R "apply" function.
 }
 \details{
-Determines how a function should be applied to a key-value pair and then applies it: if the function has two formals, it applies the function giving it the key and the value as the arguments; if the function has one formal, it applies the function giving it just the value.  This provides flexibility and simplicity for when a function is only meant to be applied to the value, but still allows keys to be used if desired.
+Determines how a function should be applied to a key-value pair and then applies it: if the function has two formals, it applies the function giving it the key and the value as the arguments, and then expects the function to return a key and a value; if the function has one formal, it applies the function giving it just the value, and expects the function to return a value.
+
+This provides flexibility and simplicity for when a function is only meant to be applied to the value, but still allows keys to be used if desired.
 }
 
