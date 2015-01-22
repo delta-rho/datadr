@@ -155,6 +155,9 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
   })
 
   sz <- sapply(rf, function(x) sum(x$sz))
+  if(length(sz) == 0)
+    stop("There was no map output - nothing to reduce")
+
   idx <- makeBlockIndices(sz, sum(sz) / nSlots, nSlots)
 
   # each element of rFileList is a list of reduce keys and associated data

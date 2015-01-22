@@ -4,6 +4,7 @@ Version 0.7.5.1
 - improve error messages for kvApply with keys and values as inputs
 - fix some bugs in `drQuantile()`
 - allow explicit specificaiton of ranges for `drQuantile()` and `drHexbin()`
+- improve error message in local disk MapReduce when there is no data after map
 
 Version 0.7.5
 ----------------------------------------------------------------------
