@@ -1,25 +1,26 @@
-How to contribute to rbokeh
-===========================
+How to contribute to Tessera / datadr
+=====================================
 
-Thank you for sharing your code with the rbokeh. We appreciate your contribution!
+Thank you for sharing your code with the Tessera project. We appreciate your contribution!
 
-## Join the mailing list
+## Join the developer mailing list
 
-If you're not already on the Bokeh mailing list, take a minute to [join](https://groups.google.com/a/continuum.io/d/forum/bokeh).
+If you're not already on the Tessera developers list, take a minute to join.  This is as easy as sending an email to tessera-dev+subscribe@googlegroups.com.
+It would be great if you'd introduce yourself to the group but it's not required. You can just let your code do the talking for you if you like.
 
 ## Check the issue tracker
 
-Before you write too much code, check the [open issues in the rbokeh issue tracker](https://github.com/bokeh/rbokeh/issues?state=open)
-to see if someone else has already filed an issue related to your work or is already working on it. If not, go ahead and
-[open a new issue](https://github.com/bokeh/rbokeh/issues/new).
+Before you write too much code, check the [open issues in the datadr issue tracker](https://github.com/tesseradata/datadr/issues?state=open)
+to see if someone else has already filed an issue related to your work or is already working on it. If not, go ahead and 
+[open a new issue](https://github.com/tesseradata/datadr/issues/new).
 
 ## Announce your work on the mailing list
 
 Shoot us a quick email on the mailing list letting us know what you're working on. There
-will likely be people on the list who can give you tips about where to find relevant
+will likely be people on the list who can give you tips about where to find relevant 
 source or alert you to other planned changes that might effect your work.
 
-If the work you're proposing makes substantive changes to rbokeh, you may be asked to attach a design document
+If the work you're proposing makes substantive changes to datadr, you may be asked to attach a design document
 to your issue in the issue tracker. This document should provide a high-level explanation of your design, clearly define the goal
 of the new design, etc. This document is meant to save you time
 as it allows the team a chance to provide feedback on the proposes changes. The document also allows the team to prepare for large changes to the code
@@ -31,8 +32,8 @@ Github provides a nice [overview on how to create a pull request](https://help.g
 
 Some general rules to follow:
 
-* Do your work in [a fork](https://help.github.com/articles/fork-a-repo) of the rbokeh repo.
-* Create a branch for each feature/bug in rbokeh that you're working on. These branches are often called "feature"
+* Do your work in [a fork](https://help.github.com/articles/fork-a-repo) of the datadr repo.
+* Create a branch for each feature/bug in datadr that you're working on. These branches are often called "feature"
 or "topic" branches.
 * Use your feature branch in the pull request. Any changes that you push to your feature branch will automatically
 be shown in the pull request.  If your feature branch is not based off the latest master, you will be asked to rebase
