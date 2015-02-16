@@ -184,12 +184,13 @@ divide <- function(data,
         for(ii in seq_len(floor(nr / MAX_ROWS))) {
           spillCount <- spillCount + 1
           df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
+
           # do what is needed and collect
-          # put in div-specific attr stuff
-          res <- addSplitAttrs(df[1:MAX_ROWS,], bsvFn, by, postTransFn)
-          if(kvApply(filterFn, list(reduce.key, res))) {
+          if(kvApply(filterFn, list(reduce.key, df[1:MAX_ROWS,]))) {
             # counter("datadr", "spilled", 1)
-            collect(paste(reduce.key, spillCount, sep = "_"), res)
+            # put in div-specific attr stuff
+            collect(paste(reduce.key, spillCount, sep = "_"),
+              addSplitAttrs(df[1:MAX_ROWS,], bsvFn, by, postTransFn))
           }
           # now continue to work on what is left over
           df <- list(list(df[c((MAX_ROWS + 1):nr),]))
@@ -203,11 +204,9 @@ divide <- function(data,
       if(spillCount > 0)
         reduce.key <- paste(reduce.key, spillCount + 1, sep = "_")
 
-      # put in div-specific attr stuff
-      res <- addSplitAttrs(df, bsvFn, by, postTransFn)
-
-      if(kvApply(filterFn, list(reduce.key, res))) {
-        collect(reduce.key, res)
+      if(kvApply(filterFn, list(reduce.key, df))) {
+        # put in div-specific attr stuff
+        collect(reduce.key, addSplitAttrs(df, bsvFn, by, postTransFn))
       }
     }
   )
