@@ -129,8 +129,8 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
         sum <- sum + sum(unlist(reduce.values))
       }
     }, post = {
-      if(length(reduce.key[[2]]) == 0)
-        browser()
+      # if(length(reduce.key[[2]]) == 0)
+      #   browser()
       if(reduce.key[[2]] == "bot") {
         collect(reduce.key, bot)
       } else if(reduce.key[[2]] == "top") {
