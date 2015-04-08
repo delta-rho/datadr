@@ -138,8 +138,22 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
   res <- mrExecInternal(data, setup = setup, map = map, reduce = reduce, output = output, control = control, params = params)
 
   obj <- ddo(res$data, update = FALSE, verbose = FALSE) # if update==TRUE, can get recursive
-  if(inherits(obj[[1]]$value, "data.frame"))
-    obj <- ddf(obj, update = FALSE, verbose = FALSE)
+
+  # if two consecutive values are data frames with same names, chances are it's a ddf
+  tmp <- try(suppressMessages(obj[1:2]), silent = TRUE)
+  if(inherits(tmp, "try-error")) {
+    tmp <- try(suppressMessages(obj[[1]]), silent = TRUE)
+    if(!inherits(tmp, "try-error")) {
+      if(is.data.frame(obj[[1]][[2]]))
+        obj <- ddf(obj, update = FALSE, verbose = FALSE)
+    }
+  } else {
+    if(all(sapply(tmp, function(x) inherits(x[[2]], "data.frame")))) {
+      nms <- lapply(tmp, function(x) names(x[[2]]))
+      if(identical(nms[[1]], nms[[2]]))
+        obj <- ddf(obj, update = FALSE, verbose = FALSE)
+    }
+  }
 
   # extractableKV can change after any mr job
   obj <- setAttributes(obj, list(extractableKV = hasExtractableKV(obj), counters = res$counters))

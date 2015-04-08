@@ -1,4 +1,4 @@
-Version 0.7.5.2
+Version 0.7.5.3
 ----------------------------------------------------------------------
 
 - improve error messages for kvApply with keys and values as inputs
@@ -6,6 +6,7 @@ Version 0.7.5.2
 - allow explicit specificaiton of ranges for `drQuantile()` and `drHexbin()`
 - improve error message in local disk MapReduce when there is no data after map
 - fix bug in `divide()` filtering on conditioning variables
+- fix bug where a ddo could be mistaken for a ddf after running a MR job
 
 Version 0.7.5
 ----------------------------------------------------------------------

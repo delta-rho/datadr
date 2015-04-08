@@ -10,7 +10,7 @@ drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL,
 \arguments{
 \item{x}{an object of class 'ddo' or 'ddf'}
 
-\item{filterFn}{function that takes the keys and/or values and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result}
+\item{filterFn}{function that takes a key or key/value pair and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result. If \code{filterFun} takes two parameters (key and value) then it should return a list with the key and \code{TRUE} or \code{FALSE}. See examples for details.}
 
 \item{output}{a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.}
 
@@ -18,7 +18,7 @@ drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL,
 
 \item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
 
-\item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
+\item{packages}{a vector of R package names that contain functions used in \code{filterFn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 }
@@ -31,6 +31,7 @@ Filter a 'ddo' or 'ddf' object
 \examples{
 bySpecies <- divide(iris, by = "Species")
 drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
+drFilter(bySpecies, function(k,v) list(k, k != "Species=virginica" & mean(v$Sepal.Width) < 3))
 }
 \author{
 Ryan Hafen
