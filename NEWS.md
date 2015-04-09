@@ -1,6 +1,7 @@
-Version 0.7.5.3
+Version 0.7.5.4
 ----------------------------------------------------------------------
 
+- add `to_ddf()` for converting dplyr grouped tbls to ddfs
 - improve error messages for kvApply with keys and values as inputs
 - fix some bugs in `drQuantile()`
 - allow explicit specificaiton of ranges for `drQuantile()` and `drHexbin()`
