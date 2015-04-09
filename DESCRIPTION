@@ -22,9 +22,11 @@ Imports:
     codetools,
     hexbin,
     parallel,
+    magrittr,
     methods
 Suggests:
     testthat (>= 0.8.1),
     roxygen2 (>= 4.0.0),
+    dplyr,
     Rhipe,
     SparkR
