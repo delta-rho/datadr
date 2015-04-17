@@ -98,21 +98,24 @@ getGlobalVars <- function(globalVars, startEnv) {
   # keep the one that is closest to function environment
   curEnv <- startEnv
   repeat {
-    tmp <- intersect(globalVars, ls(envir = curEnv))
-    for(i in seq_along(tmp)) {
-      if(is.null(globalVarList[[tmp[i]]])) {
-        val <- get(tmp[i], curEnv)
-        if(is.null(val)) {
-          # deal with NULL removing from list
-          globalVarList[tmp[i]] <- list(NULL)
-        } else {
-          globalVarList[[tmp[i]]] <- val
+    curEnvName <- environmentName(curEnv)
+    # ignore "imports" environments
+    if(!grepl("^imports:", curEnvName)) {
+      tmp <- intersect(globalVars, ls(envir = curEnv))
+      for(i in seq_along(tmp)) {
+        if(is.null(globalVarList[[tmp[i]]])) {
+          val <- get(tmp[i], curEnv)
+          if(is.null(val)) {
+            # deal with NULL removing from list
+            globalVarList[tmp[i]] <- list(NULL)
+          } else {
+            globalVarList[[tmp[i]]] <- val
+          }
         }
       }
     }
 
-    curEnvName <- environmentName(curEnv)
-    if(curEnvName == "R_GlobalEnv" || curEnvName == "R_EmptyEnv")
+    if(curEnvName %in% c("R_GlobalEnv", "R_EmptyEnv"))
       break
     curEnv <- parent.env(curEnv)
   }

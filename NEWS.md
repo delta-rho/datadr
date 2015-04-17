@@ -1,6 +1,7 @@
-Version 0.7.5.4
+Version 0.7.5.5
 ----------------------------------------------------------------------
 
+- fix globals to not search in "imports" environments
 - add `to_ddf()` for converting dplyr grouped tbls to ddfs
 - improve error messages for kvApply with keys and values as inputs
 - fix some bugs in `drQuantile()`
