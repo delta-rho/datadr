@@ -39,6 +39,7 @@ kvApply <- function(fn, kvPair, returnKV = FALSE) {
 #'   to_ddf()
 #' }
 #' @export
+#' @importFrom dplyr do
 to_ddf <- function(x) {
   if(!inherits(x, "grouped_df"))
     stop("to_ddf currently only operates on grouped dplyr tbls")
