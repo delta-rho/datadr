@@ -1,5 +1,15 @@
 language: r
 
+r_binary_packages:
+ - data.table
+ - digest
+ - hexbin
+ - magrittr
+ - dplyr
+ - testthat
+ - roxygen2
+ - testthat
+
 env:
   global:
     - _R_CHECK_FORCE_SUGGESTS_=FALSE
