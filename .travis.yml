@@ -10,18 +10,16 @@ r_binary_packages:
  - roxygen2
  - testthat
 
-env:
-  global:
-    - _R_CHECK_FORCE_SUGGESTS_=FALSE
+env: _R_CHECK_FORCE_SUGGESTS_=FALSE
 
 branches:
-  only:
-    - master
-    - dev
+ only:
+  - master
+  - dev
 
 notifications:
-  email:
-    recipients:
-    - rhafen@gmail.com
-    on_success: change
-    on_failure: change
+ email:
+  recipients:
+   - rhafen@gmail.com
+   on_success: change
+   on_failure: change
