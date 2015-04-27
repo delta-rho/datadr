@@ -13,8 +13,12 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       suppressWarnings(suppressMessages(require(digest)))
     })
   )
-  if(is.null(reduce))
-    reduce <- expression(pre = {}, reduce = {collect(reduce.key, reduce.values)}, post = {})
+  if(is.null(reduce)) {
+    # if reduce is null, we will have only one reduce value per key
+    # so reduce.values should not be a list as it is when we are concatenating
+    # reduce.values
+    reduce <- expression(pre = {}, reduce = {collect(reduce.key, reduce.values[[1]])}, post = {})
+  }
 
   nSlots <- 1
   if(!is.null(control$cluster))

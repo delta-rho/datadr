@@ -2,7 +2,7 @@
 TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
 if(TEST_HDFS == "")
    TEST_HDFS <- FALSE
-   
+
 context("data operations checks (memory)")
 
 bySpecies <- divide(iris, by = "Species")
@@ -19,6 +19,7 @@ test_that("filter", {
    filterRes <- drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
    expect_true(length(filterRes) == 2)
    expect_true(all(unlist(getKeys(filterRes)) == c("Species=versicolor", "Species=virginica")))
+   expect_true(is.data.frame(filterRes[[1]]$value))
 })
 
 test_that("sample", {
@@ -32,10 +33,10 @@ test_that("subset", {
    a <- divide(iris, by = "Species")
    tmp <- drSubset(a, Sepal.Length > 6, preTransFn = flatten)
    tmp <- tmp[order(tmp$Sepal.Length),]
-   
+
    comp <- subset(iris, Sepal.Length > 6)
    comp <- comp[order(comp$Sepal.Length),]
-   
+
    expect_true(all(comp$Sepal.Length == tmp$Sepal.Length))
 })
 
@@ -55,7 +56,7 @@ unlink(sample_path, recursive = TRUE)
 bySpecies <- divide(iris, by = "Species", output = localDiskConn(path, autoYes = TRUE))
 
 test_that("lapply", {
-   lapplyRes <- drLapply(bySpecies, function(x) mean(x$Sepal.Width), 
+   lapplyRes <- drLapply(bySpecies, function(x) mean(x$Sepal.Width),
       output = localDiskConn(lapply_path, autoYes = TRUE))
    expect_true(inherits(lapplyRes, "ddo"))
    resList <- as.list(lapplyRes)
@@ -69,6 +70,7 @@ test_that("filter", {
    filterRes <- updateAttributes(filterRes)
    expect_true(length(filterRes) == 2)
    expect_true(all(unlist(getKeys(filterRes)) == c("Species=versicolor", "Species=virginica")))
+   expect_true(is.data.frame(filterRes[[1]]$value))
 })
 
 test_that("sample", {
@@ -83,10 +85,10 @@ test_that("subset", {
    bySpecies2 <- addTransform(bySpecies, flatten)
    tmp <- drSubset(bySpecies2, Sepal.Length > 6)
    tmp <- tmp[order(tmp$Sepal.Length),]
-   
+
    comp <- subset(iris, Sepal.Length > 6)
    comp <- comp[order(comp$Sepal.Length),]
-   
+
    expect_true(all(comp$Sepal.Length == tmp$Sepal.Length))
 })
 
@@ -109,7 +111,7 @@ try(rhdel(sample_path), silent = TRUE)
 bySpecies <- divide(iris, by = "Species", output = hdfsConn(path, autoYes = TRUE))
 
 test_that("lapply", {
-   lapplyRes <- drLapply(bySpecies, function(x) mean(x$Sepal.Width), 
+   lapplyRes <- drLapply(bySpecies, function(x) mean(x$Sepal.Width),
       output = hdfsConn(lapply_path, autoYes = TRUE))
    expect_true(inherits(lapplyRes, "ddo"))
    resList <- as.list(lapplyRes)
@@ -123,6 +125,7 @@ test_that("filter", {
    filterRes <- updateAttributes(filterRes)
    expect_true(length(filterRes) == 2)
    expect_true(all(sort(unlist(getKeys(filterRes))) == c("Species=versicolor", "Species=virginica")))
+   expect_true(is.data.frame(filterRes[[1]]$value))
 })
 
 ## Need to work on random seed in hdfsConn
@@ -138,10 +141,10 @@ test_that("subset", {
    bySpecies2 <- addTransform(bySpecies, flatten)
    tmp <- drSubset(bySpecies2, Sepal.Length > 6)
    tmp <- tmp[order(tmp$Sepal.Length),]
-   
+
    comp <- subset(iris, Sepal.Length > 6)
    comp <- comp[order(comp$Sepal.Length),]
-   
+
    expect_true(all(comp$Sepal.Length == tmp$Sepal.Length))
 })
 
