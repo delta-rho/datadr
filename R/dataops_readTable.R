@@ -31,6 +31,27 @@
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #'
+#' @aliases
+#' drRead.csv
+#' drRead.csv2
+#' drRead.delim
+#' drRead.delim2
+#'
+#' @usage
+#' \method{drRead}{table}(file, header = FALSE, sep = "", quote = "\\"'", dec = ".",
+#'   skip = 0, fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#",
+#'   allowEscapes = FALSE, encoding = "unknown", autoColClasses = TRUE,
+#'   rowsPerBlock = 50000, postTransFn = identity, output = NULL, overwrite = FALSE,
+#'   params = NULL, packages = NULL, control = NULL, ...)
+#' \method{drRead}{csv}(file, header = TRUE, sep = ",",
+#'   quote = "\\"", dec = ".", fill = TRUE, comment.char = "", ...)
+#' \method{drRead}{csv2}(file, header = TRUE, sep = ";",
+#'   quote = "\\"", dec = ",", fill = TRUE, comment.char = "", ...)
+#' \method{drRead}{delim}(file, header = TRUE, sep = "\\t",
+#'   quote = "\\"", dec = ".", fill = TRUE, comment.char = "", ...)
+#' \method{drRead}{delim2}(file, header = TRUE, sep = "\\t",
+#'   quote = "\\"", dec = ",", fill = TRUE, comment.char = "", ...)
+#'
 #' @note For local disk, the file is actually read in sequentially instead of in parallel.  This is because of possible performance issues when trying to read from the same disk in parallel.
 #'
 #' Note that if \code{skip} is positive and/or if \code{header} is \code{TRUE}, it will first read these in as they only occur once in the data, and we then check for these lines in each block and remove those lines if they appear.
@@ -47,7 +68,6 @@
 #'   irisTextConn <- localDiskConn(file.path(tempdir(), "irisText2"), autoYes = TRUE)
 #'   a <- drRead.csv(csvFile, output = irisTextConn, rowsPerBlock = 10)
 #' }
-#' @rdname drreadtable
 #' @export
 drRead.table <- function(file,
   header = FALSE,
@@ -221,7 +241,7 @@ readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, re
 
       data <- tryCatch({
         do.call(read.table, readTabParams)
-      }, error=function(err) {
+      }, error = function(err) {
         if (identical(conditionMessage(err), "no lines available in input"))
           NULL
         else stop(err)
@@ -261,29 +281,25 @@ readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, rea
 
 # readTable.sparkDataConn <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, packages, control) {
 
-#   
+#
 # }
 
 #############################################################################
 ### provide read.csv, read.delim, etc.
 ############################################################################
 
-#' @rdname drreadtable
 #' @export
 drRead.csv <- function(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", ...)
   drRead.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)
 
-#' @rdname drreadtable
 #' @export
 drRead.csv2 <- function(file, header = TRUE, sep = ";", quote = "\"", dec = ",", fill = TRUE, comment.char = "", ...)
   drRead.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)
 
-#' @rdname drreadtable
 #' @export
 drRead.delim <- function(file, header = TRUE, sep = "\t", quote = "\"", dec = ".", fill = TRUE, comment.char = "", ...)
   drRead.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)
 
-#' @rdname drreadtable
 #' @export
 drRead.delim2 <- function(file, header = TRUE, sep = "\t", quote = "\"", dec = ",", fill = TRUE, comment.char = "", ...)
   drRead.table(file = file, header = header, sep = sep, quote = quote, dec = dec, fill = fill, comment.char = comment.char, ...)

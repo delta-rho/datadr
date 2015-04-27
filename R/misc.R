@@ -117,7 +117,7 @@ appendExpression <- function(expr1, expr2) {
     }
   }
 
-  eval(parse(text=paste("expression({", paste(c(getLines(expr1), getLines(expr2)), collapse="\n"), "})", sep="")))
+  eval(parse(text = paste("expression({", paste(c(getLines(expr1), getLines(expr2)), collapse = "\n"), "})", sep = "")))
 }
 
 isAbsolutePath <- function(path) {

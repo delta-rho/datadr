@@ -18,7 +18,7 @@ ddf <- function(conn, transFn = NULL, update = FALSE, reset = FALSE, control = N
     res <- conn
   } else {
     # call ddo "constructor"
-    res <- ddo(conn, update=FALSE, reset=reset, control=control, verbose=verbose)
+    res <- ddo(conn, update = FALSE, reset = reset, control = control, verbose = verbose)
   }
   if(!inherits(res, "ddo"))
     stop("ddf() input must be a kvConnection or ddo object")
@@ -44,12 +44,12 @@ ddf <- function(conn, transFn = NULL, update = FALSE, reset = FALSE, control = N
     }
   }
 
-  attrs <- loadAttrs(getAttribute(res, "conn"), type="ddf")
+  attrs <- loadAttrs(getAttribute(res, "conn"), type = "ddf")
   if(is.null(attrs) || reset) {
     # if(verbose)
       # message("* Getting basic 'ddf' attributes...")
     attrs <- getBasicDdfAttrs(res)
-    attrs <- initAttrs(res, attrs, type="ddf")
+    attrs <- initAttrs(res, attrs, type = "ddf")
   } else {
     if(verbose)
       message("* Reading in existing 'ddf' attributes")
@@ -78,12 +78,12 @@ ddo <- function(conn, update = FALSE, reset = FALSE, control = NULL, verbose = T
   class(res) <- c("ddo", class(res))
   conn <- ddoInitConn(conn)
 
-  attrs <- loadAttrs(conn, type="ddo")
+  attrs <- loadAttrs(conn, type = "ddo")
   if(length(attrs) == 0 || reset) {
     # if(verbose)
     #   message("* Getting basic 'ddo' attributes...")
     attrs <- getBasicDdoAttrs(res, conn)
-    attrs <- initAttrs(res, attrs, type="ddo")
+    attrs <- initAttrs(res, attrs, type = "ddo")
   } else {
     if(verbose)
       message("* Reading in existing 'ddo' attributes")

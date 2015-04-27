@@ -21,7 +21,7 @@
 #' # get independent lists of just SW and SL
 #' sw <- drLapply(bySpecies, function(x) x$Sepal.Width)
 #' sl <- drLapply(bySpecies, function(x) x$Sepal.Length)
-#' drJoin(Sepal.Width=sw, Sepal.Length=sl, postTransFn = as.data.frame)
+#' drJoin(Sepal.Width = sw, Sepal.Length = sl, postTransFn = as.data.frame)
 #'
 #' @export
 drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, params = NULL, packages = NULL, control = NULL) {

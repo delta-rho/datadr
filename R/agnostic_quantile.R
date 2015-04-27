@@ -204,7 +204,7 @@ constructQuants <- function(obj, probs, tails, mids) {
   quants$cpct <- cumsum(quants$pct)
   quants$q <- mids[quants$idx]
 
-  fn <- approxfun(quants$cpct, quants$q, method="constant", f=1, rule=2)
+  fn <- approxfun(quants$cpct, quants$q, method = "constant", f = 1, rule = 2)
   res <- data.frame(
     fval = probs,
     q = fn(probs)

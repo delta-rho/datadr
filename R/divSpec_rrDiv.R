@@ -18,8 +18,8 @@
 #' @author Ryan Hafen
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{condDiv}}
 #' @export
-rrDiv <- function(nrows=NULL, seed=NULL) {
-  res <- list(type="rrDiv", nrows=nrows, seed=seed)
+rrDiv <- function(nrows = NULL, seed = NULL) {
+  res <- list(type = "rrDiv", nrows = nrows, seed = seed)
   class(res) <- c("rrDiv", "divSpecList")
   res
 }
@@ -32,7 +32,7 @@ getCuts.rrDiv <- function(by, curDF) {
   n <- nrow(curDF)
 
   if(!is.null(by$seed)) set.seed(by$seed)
-  # cuts <- paste("rr_", sample(1:ndiv, n, replace=TRUE), sep="")
+  # cuts <- paste("rr_", sample(1:ndiv, n, replace = TRUE), sep = "")
   paste("rr_", cut(runif(n), seq(0, 1, length = ndiv + 1), labels = FALSE), sep = "")
 }
 
@@ -44,5 +44,5 @@ validateDivSpec.rrDiv <- function(by, data, ex) {
   if((is.null(n) || is.na(n)) && by$type == "rrDiv")
     stop("To do random replicate division, must know the total number of rows.  Call updateAttributes() on your data.")
 
-  list(ndiv=ndiv, nrow=n)
+  list(ndiv = ndiv, nrow = n)
 }

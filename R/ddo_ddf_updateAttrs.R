@@ -162,7 +162,7 @@ updateAttributes <- function(obj, control = NULL) {
         }
 
         if(grepl("^summary_categ", reduce.key)) {
-          resCateg$nna     <- sum(c(resCateg$nna, sapply(reduce.values, function(x) x$nna)), na.rm=TRUE)
+          resCateg$nna     <- sum(c(resCateg$nna, sapply(reduce.values, function(x) x$nna)), na.rm = TRUE)
           resCateg$freqTable <- tabulateReduce(resCateg$freqTable, lapply(reduce.values, function(x) x$freqTable), maxUnique = 10000)
         }
 
@@ -213,32 +213,12 @@ updateAttributes <- function(obj, control = NULL) {
       libPaths = .libPaths()
     )
 
-    if(! "package:datadr" %in% search()) {
-      message("* ---- running dev version - sending datadr functions to mr job")
-      parList <- c(parList, list(
-        calculateMoments     = calculateMoments,
-        tabulateMap        = tabulateMap,
-        combineMultipleMoments = combineMultipleMoments,
-        combineMoments      = combineMoments,
-        tabulateReduce      = tabulateReduce,
-        kvApply           = kvApply
-      ))
-
-      setup <- expression({
-        suppressWarnings(suppressMessages(require(data.table)))
-      })
-    } else {
-      setup <- expression({
-        suppressWarnings(suppressMessages(require(datadr)))
-      })
-    }
-
     tmp <- mrExec(
       obj,
-      setup = setup,
       map = map,
       reduce = reduce,
       params = parList,
+      packages = "datadr",
       verbose = FALSE,
       control = control
     )

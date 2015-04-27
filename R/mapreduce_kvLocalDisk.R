@@ -8,11 +8,13 @@ utils::globalVariables(
 
 #' @export
 mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {
-  setup <- appendExpression(setup,
-    expression({
-      suppressWarnings(suppressMessages(require(digest)))
-    })
-  )
+
+  if(is.null(params$mr___packages)) {
+    params$mr___packages <- "digest"
+  } else {
+    params$mr___packages <- unique(c(params$mr___packages, "digest"))
+  }
+
   if(is.null(reduce)) {
     # if reduce is null, we will have only one reduce value per key
     # so reduce.values should not be a list as it is when we are concatenating

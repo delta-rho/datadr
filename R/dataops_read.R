@@ -77,7 +77,7 @@ readTextFileByChunk <- function(input, output, overwrite = FALSE, linesPerBlock 
 
     data <- tryCatch({
       data <- c(extra, readLines(con, n = linesPerBlock))
-    }, error=function(err) {
+    }, error = function(err) {
       if (identical(conditionMessage(err), "no lines available in input"))
         extra
       else stop(err)
@@ -120,12 +120,8 @@ readHDFStextFile <- function(input, output = NULL, overwrite = FALSE, fn = NULL,
     reduce <- control$mapred$mapred.reduce.tasks
   }
 
-  setup <- expression({
-    suppressWarnings(suppressMessages(require(digest)))
-  })
-
   map <- expression({
-    tmp <- paste(unlist(map.values), collapse="\n")
+    tmp <- paste(unlist(map.values), collapse = "\n")
     if(is.null(keyFn))
       keyFn <- digest
 
@@ -143,6 +139,7 @@ readHDFStextFile <- function(input, output = NULL, overwrite = FALSE, fn = NULL,
     output   = output,
     overwrite = overwrite,
     control  = control,
-    params   = list(fn = fn, keyFn = keyFn)
+    params   = list(fn = fn, keyFn = keyFn),
+    packages = "digest"
   )
 }

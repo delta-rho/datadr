@@ -33,7 +33,7 @@ depends on \code{combine}
 Apply a function to all key-value pairs of a ddo/ddf object and get a new ddo object back, unless a different \code{combine} strategy is specified.
 }
 \examples{
-bySpecies <- divide(iris, by="Species")
+bySpecies <- divide(iris, by = "Species")
 drLapply(bySpecies, function(x) x$Sepal.Width)
 }
 \author{
