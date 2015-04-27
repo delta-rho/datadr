@@ -359,8 +359,9 @@ removeData <- function(conn, keys)
 #'
 #' @param from a 'ddo' or 'ddf' object
 #' @param to a 'kvConnection' object (created with \code{\link{localDiskConn}} or \code{\link{hdfsConn}}) or \code{NULL} if an in-memory 'ddo' / 'ddf' is desired
+#' @param overwrite should the data in the location pointed to in \code{to} be overwritten?
 #' @export
-convert <- function(from, to)
+convert <- function(from, to, overwrite = FALSE)
   UseMethod("convert")
 
 # returns a list of classes it has been implemented for

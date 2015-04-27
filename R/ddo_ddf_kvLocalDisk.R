@@ -131,7 +131,9 @@ convertImplemented.kvLocalDisk <- function(obj) {
 }
 
 #' @export
-convert.kvLocalDisk <- function(from, to = NULL) {
+convert.kvLocalDisk <- function(from, to = NULL, overwrite = FALSE) {
+  if(!inherits(to, "localDiskConn"))
+    mrCheckOutputLoc(to, overwrite = overwrite)
   convertKvLocalDisk(to, from)
 }
 

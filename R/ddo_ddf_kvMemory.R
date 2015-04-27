@@ -14,18 +14,18 @@ ddoInitConn.data.frame <- function(obj, ...) {
 
 #' @export
 ddoInit.list <- function(obj, ...) {
-  structure(list(), class="kvMemory")
+  structure(list(), class = "kvMemory")
 }
 
 #' @export
 ddoInitConn.list <- function(obj, ...) {
   validateListKV(obj)
-  structure(list(data=obj), class=c("nullConn", "kvConnection"))
+  structure(list(data = obj), class = c("nullConn", "kvConnection"))
 }
 
 #' @export
 ddoInit.nullConn <- function(obj, ...) {
-  structure(list(), class="kvMemory")
+  structure(list(), class = "kvMemory")
 }
 
 #' @export
@@ -112,7 +112,8 @@ convertImplemented.kvMemory <- function(obj) {
 }
 
 #' @export
-convert.kvMemory <- function(from, to=NULL) {
+convert.kvMemory <- function(from, to = NULL, overwrite = FALSE) {
+  mrCheckOutputLoc(to, overwrite = overwrite)
   convertKvMemory(to, from)
 }
 
@@ -120,38 +121,37 @@ convertKvMemory <- function(obj, ...)
   UseMethod("convertKvMemory", obj)
 
 #' @export
-convertKvMemory.NULL <- function(to, from, verbose=FALSE) {
+convertKvMemory.NULL <- function(to, from, verbose = FALSE) {
   from
 }
 
 #' @export
-convertKvMemory.localDiskConn <- function(to, from, verbose=FALSE) {
-  # make sure "to" is empty
+convertKvMemory.localDiskConn <- function(to, from, verbose = FALSE) {
   # TODO: choose nBins based on nDiv, if it exists?
   addData(to, getAttribute(from, "conn")$data)
 
   if(inherits(from, "ddf")) {
-    res <- ddf(to, update=FALSE, verbose=verbose)
+    res <- ddf(to, update = FALSE, verbose = verbose)
   } else {
-    res <- ddo(to, update=FALSE, verbose=verbose)
+    res <- ddo(to, update = FALSE, verbose = verbose)
   }
   addNeededAttrs(res, from)
 }
 
 # go from memory to HDFS
 #' @export
-convertKvMemory.hdfsConn <- function(to, from, verbose=FALSE) {
+convertKvMemory.hdfsConn <- function(to, from, verbose = FALSE) {
   # strip out attributes
   writeDat <- getAttribute(from, "conn")$data
   attr(writeDat, "ddo") <- NULL
   attr(writeDat, "ddf") <- NULL
   class(writeDat) <- "list"
-  rhwrite(writeDat, file=paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep=""))
+  rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep = ""))
 
   if(inherits(from, "ddf")) {
-    res <- ddf(to, update=FALSE, verbose=verbose)
+    res <- ddf(to, update = FALSE, verbose = verbose)
   } else {
-    res <- ddo(to, update=FALSE, verbose=verbose)
+    res <- ddo(to, update = FALSE, verbose = verbose)
   }
   addNeededAttrs(res, from)
 }

@@ -2,7 +2,7 @@
 
 #' @export
 ddoInit.hdfsConn <- function(obj, ...) {
-  structure(list(), class="kvHDFS")
+  structure(list(), class = "kvHDFS")
 }
 
 #' @export
@@ -50,11 +50,11 @@ hasExtractableKV.kvHDFS <- function(x) {
   # grab one key and see if you can get it with rhmapfile
   conn <- getAttribute(x, "conn")
   k <- kvExample(x)[1]
-  err <- try(a <- rhmapfile(conn$loc), silent=TRUE)
+  err <- try(a <- rhmapfile(conn$loc), silent = TRUE)
   if(inherits(err, "try-error")) {
     return(FALSE)
   } else {
-    err <- try(tmp <- a[k], silent=TRUE)
+    err <- try(tmp <- a[k], silent = TRUE)
     if(inherits(err, "try-error")) {
       return(FALSE)
     } else {
@@ -77,7 +77,7 @@ makeExtractable <- function(obj) {
   # identity mr job
   res <- mrExec(
     obj,
-    output = hdfsConn(Rhipe:::mkdHDFSTempFolder(file="tmp_output"), type="map", autoYes=TRUE, verbose=FALSE)
+    output = hdfsConn(Rhipe:::mkdHDFSTempFolder(file = "tmp_output"), type = "map", autoYes = TRUE, verbose = FALSE)
   )
 
   # now move temporary over to original
@@ -98,13 +98,13 @@ makeExtractable <- function(obj) {
     rhmv(f, objConn$loc)
 
   if(inherits(obj, "ddf")) {
-    res <- ddf(objConn, update=FALSE, verbose=FALSE)
+    res <- ddf(objConn, update = FALSE, verbose = FALSE)
   } else {
-    res <- ddo(objConn, update=FALSE, verbose=FALSE)
+    res <- ddo(objConn, update = FALSE, verbose = FALSE)
   }
 
   objConn$type <- "map"
-  res <- setAttributes(res, list(conn=objConn, extractableKV=TRUE))
+  res <- setAttributes(res, list(conn = objConn, extractableKV = TRUE))
 
   res
 }
@@ -120,7 +120,7 @@ extract.kvHDFS <- function(x, i, ...) {
     if(i == 1 || !hasAttributes(x, "keys")) {
       if(length(i) > 1)
       message("Keys are not known - just retrieving the first ", length(i), " key-value pair(s).")
-      res <- rhread(rhls(conn$loc, recurse=TRUE)$file, type=conn$type, max=length(i))
+      res <- rhread(rhls(conn$loc, recurse = TRUE)$file, type = conn$type, max = length(i))
     } else {
       if(!hasExtractableKV(x))
         stop("This data must not be a valid mapfile -- cannot extract subsets by key.  Call makeExtractable() on this data.")
@@ -173,22 +173,25 @@ convertImplemented.kvHDFS <- function(obj)
   c("localDiskConn", "NULL", "hdfsConn")
 
 #' @export
-convert.kvHDFS <- function(from, to=NULL)
-  convertKvHDFS(to, from)
+convert.kvHDFS <- function(from, to = NULL, overwrite = FALSE) {
+  if(!inherits(to, "hdfsConn"))
+    mrCheckOutputLoc(to, overwrite = overwrite)
+  convertKvHDFS(to, from, overwrite)
+}
 
 convertKvHDFS <- function(obj, ...)
   UseMethod("convertKvHDFS", obj)
 
 #' @export
-convertKvHDFS.hdfsConn <- function(to, from, verbose=FALSE)
+convertKvHDFS.hdfsConn <- function(to, from, verbose = FALSE)
   from
 
 #' @export
-convertKvHDFS.localDiskConn <- function(to, from, verbose=FALSE) {
-  # convert from kvHDFS to kvLocalDisk (from=kvHDFS, to=localDiskConn)
+convertKvHDFS.localDiskConn <- function(to, from, verbose = FALSE) {
+  # convert from kvHDFS to kvLocalDisk (from = kvHDFS, to = localDiskConn)
 
   conn <- getAttribute(from, "conn")
-  a <- rhIterator(rhls(conn$loc, recurse=TRUE)$file, type = conn$type, chunksize = 50*1024^2, chunk = "bytes")
+  a <- rhIterator(rhls(conn$loc, recurse = TRUE)$file, type = conn$type, chunksize = 50*1024^2, chunk = "bytes")
 
   if(verbose)
     message("* Moving HDFS k/v pairs to local disk")
@@ -197,16 +200,16 @@ convertKvHDFS.localDiskConn <- function(to, from, verbose=FALSE) {
   }
 
   if(inherits(from, "ddf")) {
-    res <- ddf(to, update=FALSE, verbose=verbose)
+    res <- ddf(to, update = FALSE, verbose = verbose)
   } else {
-    res <- ddo(to, update=FALSE, verbose=verbose)
+    res <- ddo(to, update = FALSE, verbose = verbose)
   }
 
   addNeededAttrs(res, from)
 }
 
 #' @export
-convertKvHDFS.NULL <- function(to, from, verbose=FALSE) {
+convertKvHDFS.NULL <- function(to, from, verbose = FALSE) {
   size <- getAttribute(from, "totObjectSize")
   if(is.na(size))
     size <- getAttribute(from, "totStorageSize")
@@ -214,12 +217,12 @@ convertKvHDFS.NULL <- function(to, from, verbose=FALSE) {
     warning("Reading over 100MB of data into memory - probably not a good idea...")
 
   fromConn <- attr(from, "ddo")$conn
-  res <- rhread(rhls(fromConn$loc, recurse=TRUE)$file, type=fromConn$type)
+  res <- rhread(rhls(fromConn$loc, recurse = TRUE)$file, type = fromConn$type)
 
   if(inherits(from, "ddf")) {
-    res <- ddf(res, update=FALSE, verbose=verbose)
+    res <- ddf(res, update = FALSE, verbose = verbose)
   } else {
-    res <- ddo(res, update=FALSE, verbose=verbose)
+    res <- ddo(res, update = FALSE, verbose = verbose)
   }
 
   addNeededAttrs(res, from)

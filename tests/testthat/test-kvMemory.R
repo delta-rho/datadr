@@ -242,6 +242,10 @@ test_that("to disk", {
 
   mddDisk <- convert(mdd, localDiskConn(path, autoYes = TRUE))
   expect_true(nrow(mddDisk) == 3750)
+  # doing it again should result in an overwrite error
+  expect_error(convert(mdd, localDiskConn(path, autoYes = TRUE)), "backing out")
+  # but should work with overwrite
+  mddDisk <- convert(mdd, localDiskConn(path, autoYes = TRUE), overwrite = TRUE)
 })
 
 if(TEST_HDFS) {
