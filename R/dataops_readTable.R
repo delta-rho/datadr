@@ -201,6 +201,9 @@ readTable <- function(file, ...)
 #' @export
 readTable.character <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, packages, control) {
 
+  # since we don't run a MapReduce job on this case, need to check output
+  mrCheckOutputLoc(output, overwrite = overwrite)
+
   i <- 1
   for(ff in file) {
     cat("-- In file ", ff, "\n")
