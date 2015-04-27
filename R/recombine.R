@@ -52,6 +52,11 @@ recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwri
   if(verbose)
     message("* Verifying suitability of 'output' for specified 'combine'...")
 
+  if(is.character(output)) {
+    class(output) <- c("character", paste0(tail(class(data), 1), "Char"))
+    output <- charToOutput(output)
+  }
+
   outClass <- ifelse(is.null(output), "nullConn", class(output)[1])
   if(!is.null(combine$validateOutput))
     if(!outClass %in% combine$validateOutput)

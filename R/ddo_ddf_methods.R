@@ -349,6 +349,12 @@ addData <- function(conn, data, overwrite = FALSE)
 removeData <- function(conn, keys)
   UseMethod("removeData")
 
+## default output methods (convert character to output)
+##---------------------------------------------------------
+
+charToOutput <- function(x)
+  UseMethod("charToOutput")
+
 ######################################################################
 ### object conversion
 ######################################################################

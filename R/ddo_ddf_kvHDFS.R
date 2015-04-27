@@ -163,6 +163,12 @@ extract.kvHDFS <- function(x, i, ...) {
   res
 }
 
+## default output methods (convert character to output)
+##---------------------------------------------------------
+
+charToOutput.kvHDFSChar <- function(x) {
+  hdfsConn(x)
+}
 
 ############################################################################
 ### convert methods

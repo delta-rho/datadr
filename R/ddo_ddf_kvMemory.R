@@ -102,6 +102,13 @@ extract.kvMemory <- function(x, i, ...) {
   getAttribute(x, "conn")$data[idx]
 }
 
+## default output methods (convert character to output)
+##---------------------------------------------------------
+
+charToOutput.kvMemoryChar <- function(x) {
+  NULL
+}
+
 ############################################################################
 ### convert methods
 ############################################################################

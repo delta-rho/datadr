@@ -120,6 +120,12 @@ extract.kvLocalDisk <- function(x, i, ...) {
   })
 }
 
+## default output methods (convert character to output)
+##---------------------------------------------------------
+
+charToOutput.kvLocalDiskChar <- function(x) {
+  localDiskConn(x)
+}
 
 ######################################################################
 ### convert methods

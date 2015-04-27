@@ -17,7 +17,7 @@ mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
 
 \item{reduce}{a vector of R expressions with names pre, reduce, and post that is evaluated during the reduce stage. For example \code{reduce = expression(pre = {...}, reduce = {...}, post = {...})}. reduce is optional, and if not specified the map output key-value pairs will be the result. If it is not specified, then a default identity reduce is performed. Setting it to 0 will skip the reduce altogether.}
 
-\item{output}{a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.}
+\item{output}{a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.  If a character string, it will be treated as a path to be passed to the same type of connection as \code{data} - relative paths will be relative to the working directory of that back end.}
 
 \item{overwrite}{logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)}
 
