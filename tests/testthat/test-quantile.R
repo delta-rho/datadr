@@ -1,3 +1,7 @@
+TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
+if(TEST_HDFS == "")
+  TEST_HDFS <- FALSE
+
 # set up data
 path <- file.path(tempdir(), "ldd_test")
 unlink(path, recursive=TRUE)
@@ -120,4 +124,25 @@ test_that("multiple conditioning", {
   expect_true(mean(abs(res$q - qres)) < 0.002)
 })
 
+if(TEST_HDFS) {
 
+library(Rhipe)
+rhinit()
+
+path <- "/tmp/rhipeTest/quant1"
+try(rhdel(path), silent = TRUE)
+
+hdd <- convert(ldd, hdfsConn(path, autoYes = TRUE))
+
+sq2 <- drQuantile(hdd, var = "Sepal.Length", by = "Species", tails = 0)
+# true quantiles
+tmpd <- divide(tmp, by="Species")
+tmpd2 <- addTransform(tmpd, function(x)
+  data.frame(fval = seq(0, 1, by = 0.005),
+    q = quantile(x$Sepal.Length,
+      probs = seq(0, 1, by = 0.005), type = 3)))
+tmp2 <- recombine(tmpd2, combRbind)
+
+expect_true(mean(abs(sq2$q - tmp2$q)) < 0.001)
+
+}

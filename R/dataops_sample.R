@@ -21,14 +21,6 @@ drSample <- function(x, fraction, output = NULL, overwrite = FALSE, control = NU
 
   parList <- list(fraction = fraction)
 
-  if(! "package:datadr" %in% search()) {
-    parList <- c(parList, list(
-      applyTransform = applyTransform,
-      setupTransformEnv = setupTransformEnv,
-      kvApply = kvApply
-    ))
-  }
-
   # if the user supplies output as an unevaluated connection
   # the verbosity can be misleading
   suppressMessages(output <- output)
@@ -38,6 +30,7 @@ drSample <- function(x, fraction, output = NULL, overwrite = FALSE, control = NU
     control = control,
     output = output,
     overwrite = overwrite,
-    params = parList
+    params = parList,
+    packages = "datadr"
   )
 }

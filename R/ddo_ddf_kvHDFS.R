@@ -24,6 +24,8 @@ getBasicDdoAttrs.kvHDFS <- function(obj, conn) {
   tp <- conn$type
   ff <- rhls(fp, recurse = TRUE)
   ff <- ff[!grepl("\\/_meta", ff$file),]
+  if(nrow(ff) == 0)
+    stop("No data", call. = FALSE)
   sz <- ff$size
   tmp <- rhread(ff$file, type = tp, max = 1)[[1]]
   if(tp == "text")

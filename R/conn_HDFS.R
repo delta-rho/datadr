@@ -90,7 +90,7 @@ hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, ver
   }
 
   # TODO: better way to check if empty
-  if(length(rhls(loc)) <= 1) {
+  if(nrow(rhls(loc)) <= 1) {
     if(verbose)
       message("* Directory is empty... move some data in here")
   } else if(!existsOnHDFS(paste(metaDir, "/ddo.Rdata", sep = ""))) {

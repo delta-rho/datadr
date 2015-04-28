@@ -1,3 +1,7 @@
+# not all test environments have Hadoop installed
+TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
+if(TEST_HDFS == "")
+  TEST_HDFS <- FALSE
 
 tmpDat <- data.frame(
   xx = rnorm(1000),
@@ -6,7 +10,7 @@ tmpDat <- data.frame(
 
 data <- divide(tmpDat, by = "by", update = TRUE)
 
-test_that("memory join", {
+test_that("hexbin memory", {
   res <- drHexbin(data, xVar = "xx", yVar = "yy")
   compare <- hexbin(tmpDat$xx, tmpDat$yy)
 
@@ -19,3 +23,40 @@ test_that("memory join", {
   # plot(compare)
 })
 
+path <- file.path(tempdir(), "hexbin_test")
+unlink(path, recursive = TRUE)
+
+datald <- convert(data, localDiskConn(path, autoYes = TRUE))
+
+test_that("hexbin local disk", {
+  res <- drHexbin(datald, xVar = "xx", yVar = "yy")
+  compare <- hexbin(tmpDat$xx, tmpDat$yy)
+
+  expect_true(all(res@cell == compare@cell))
+  expect_true(all(res@count == compare@count))
+  expect_true(sqrt(mean((res@xcm - compare@xcm)^2)) < 1e-15)
+  expect_true(sqrt(mean((res@ycm - compare@ycm)^2)) < 1e-15)
+})
+
+
+if(TEST_HDFS) {
+
+library(Rhipe)
+rhinit()
+
+path <- "/tmp/hexbin_test"
+try(rhdel(path), silent = TRUE)
+
+datahd <- convert(data, hdfsConn(path, autoYes = TRUE))
+
+test_that("hexbin HDFS", {
+  res <- drHexbin(datahd, xVar = "xx", yVar = "yy")
+  compare <- hexbin(tmpDat$xx, tmpDat$yy)
+
+  expect_true(all(res@cell == compare@cell))
+  expect_true(all(res@count == compare@count))
+  expect_true(sqrt(mean((res@xcm - compare@xcm)^2)) < 1e-15)
+  expect_true(sqrt(mean((res@ycm - compare@ycm)^2)) < 1e-15)
+})
+
+}

@@ -91,16 +91,21 @@ getGlobalVars <- function(globalVars, startEnv) {
   if(!is.environment(startEnv))
     startEnv <- .GlobalEnv
 
+  lnsp <- loadedNamespaces()
   globalVarList <- list()
 
   # step through call stack until we get to global environment
   # if there are multiple variables of same name
   # keep the one that is closest to function environment
   curEnv <- startEnv
+
   repeat {
     curEnvName <- environmentName(curEnv)
-    # ignore "imports" environments
-    if(!grepl("^imports:", curEnvName)) {
+    curEnvName <- gsub("^imports:", "", curEnvName)
+    # cat("env: ", curEnvName, "\n")
+
+    # only add globals if they are not part of a package
+    if(!(isNamespace(curEnv) && curEnvName %in% lnsp)) {
       tmp <- intersect(globalVars, ls(envir = curEnv))
       for(i in seq_along(tmp)) {
         if(is.null(globalVarList[[tmp[i]]])) {
@@ -110,6 +115,7 @@ getGlobalVars <- function(globalVars, startEnv) {
             globalVarList[tmp[i]] <- list(NULL)
           } else {
             globalVarList[[tmp[i]]] <- val
+            # cat(" ", tmp[[i]], "\n")
           }
         }
       }
@@ -122,7 +128,14 @@ getGlobalVars <- function(globalVars, startEnv) {
   globalVarList
 }
 
+# http://blog.obeautifulcode.com/R/How-R-Searches-And-Finds-Stuff/
+
 getPackages <- function(globalVars) {
+  # input globalVars will be everything that was not found
+  # in a non-attached namespace
+  # so now we want to find which packages we need to load
+  # to get these variables
+
   pkgs <- search()
   pkgs <- pkgs[grepl("^package:", pkgs)]
 

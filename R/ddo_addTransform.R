@@ -18,40 +18,61 @@ addTransform <- function(obj, fn, name = NULL, params = NULL, packages = NULL) {
   if(!inherits(obj, "ddo"))
     stop("object must be a distributed data object")
 
+  fnName <- as.character(substitute(fn))
+
   if(!is.function(fn))
     stop("argument 'fn' must be a function")
 
-  # stip fn attributes
+  # strip fn attributes
   attributes(fn) <- NULL
 
-  # attach any global variables if they are needed by the function
-  message("*** finding global variables used in 'fn'...", appendLF = FALSE)
-  globalVarList <- drGetGlobals(fn)
-
-  if(length(globalVarList$vars) > 0) {
-    message("\n  found: ",
-      paste(names(globalVarList$vars), collapse = ", "))
-  } else {
-    message(" [none]")
+  # if the function belongs to a package, we don't want to pass the function
+  # this can cause namespace issues
+  # instead make an outer function that calls it
+  # packageName() is too broad
+  fnPackage <- NULL
+  fnInPackage <- FALSE
+  if(isNamespace(environment(fn))) {
+    fnPackage <- getNamespaceName(environment(fn))
+    fnInPackage <- exists(fnName, where = environment(fn), inherits = FALSE)
   }
 
-  globalVarList$packages <- setdiff(globalVarList$packages, "base")
-  if(length(globalVarList$packages) > 0)
-    message("  package dependencies: ",
-      paste(globalVarList$packages, collapse = ", "))
+  if(!is.null(fnPackage) && fnInPackage) {
+    fn <- function(x) {
+      do.call(fnName, list(x = x))
+    }
+    params <- list(fnName = fnName)
+    packages <- fnPackage
+  } else {
+    # attach any global variables if they are needed by the function
+    message("*** finding global variables used in 'fn'...", appendLF = FALSE)
+    globalVarList <- drGetGlobals(fn)
 
-  # if user supplies param with same name, the first will be honored
-  # so if globalVarList found the parameter, that will be used
-  params <- c(globalVarList$vars, params)
-  packages <- unique(c(globalVarList$packages, packages))
+    if(length(globalVarList$vars) > 0) {
+      message("\n  found: ",
+        paste(names(globalVarList$vars), collapse = ", "))
+    } else {
+      message(" [none]")
+    }
+
+    globalVarList$packages <- setdiff(globalVarList$packages, "base")
+    if(length(globalVarList$packages) > 0)
+      message("  package dependencies: ",
+        paste(globalVarList$packages, collapse = ", "))
+
+    # if user supplies param with same name, the first will be honored
+    # so if globalVarList found the parameter, that will be used
+    params <- c(globalVarList$vars, params)
+    packages <- unique(c(globalVarList$packages, packages))
+  }
+
+  environment(fn) <- new.env(parent = .GlobalEnv)
 
   # get any existing transformation functions
   # and add the new one to the list
   transFns <- attr(obj, "transforms")$transFns
   if(is.null(transFns))
     transFns <- list()
-
-  # set function's environment to empty?
 
   # add function and necessary globals / packages
   idx <- length(transFns) + 1

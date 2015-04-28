@@ -32,15 +32,10 @@ drFilter <- function(x, filterFn, output = NULL, overwrite = FALSE, params = NUL
     }
   })
 
-  globalVarList <- drGetGlobals(filterFn)
-  parList <- list(filterFn = filterFn, kvApply = kvApply)
+  environment(filterFn) <- baseenv()
 
-  if(! "package:datadr" %in% search()) {
-    parList <- c(parList, list(
-      applyTransform = applyTransform,
-      setupTransformEnv = setupTransformEnv
-    ))
-  }
+  globalVarList <- drGetGlobals(filterFn)
+  parList <- list(filterFn = filterFn)
 
   # if the user supplies output as an unevaluated connection
   # the verbosity can be misleading
@@ -52,7 +47,7 @@ drFilter <- function(x, filterFn, output = NULL, overwrite = FALSE, params = NUL
     output = output,
     overwrite = overwrite,
     params = c(parList, globalVarList$vars, params),
-    packages = c(globalVarList$packages, packages)
+    packages = unique(c(globalVarList$packages, packages, "datadr"))
   )
 }
 

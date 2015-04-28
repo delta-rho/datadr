@@ -207,13 +207,14 @@ test_that("division with addTransform", {
   expect_true(min(hdd2[["Species=virginica"]][[2]]$Petal.Width) == 4.4)
 })
 
-test_that("random replicate division", {
-  path2 <- file.path("/tmp", "hdd_test_rrdiv")
-  try(rhdel(path2), silent = TRUE)
+## FIX
+# test_that("random replicate division", {
+#   path2 <- file.path("/tmp", "hdd_test_rrdiv")
+#   try(rhdel(path2), silent = TRUE)
 
-  hdr <- divide(hdf, by = rrDiv(nrow = 200), output = hdfsConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
-  hdr
-})
+#   hdr <- divide(hdf, by = rrDiv(nrow = 200), output = hdfsConn(path2, autoYes = TRUE), postTransFn = function(x) { x$vowel <- as.integer(x$fac %in% c("a", "e", "i", "o", "u")); x })
+#   hdr
+# })
 
 ############################################################################
 ############################################################################
@@ -246,9 +247,7 @@ test_that("recombination with combDdo", {
   meanApply <- function(v) {
     data.frame(mpw = mean(v$Petal.Width), mpl = mean(v$Petal.Length))
   }
-
   res <- recombine(hdd, apply = meanApply, comb = combDdo())
-
   expect_true(inherits(res, "ddo"))
 })
 

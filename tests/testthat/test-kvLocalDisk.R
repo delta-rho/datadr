@@ -466,7 +466,7 @@ test_that("overwrite arguments", {
   # use an existing location that contains data as output
   loc <- getAttribute(ldo, "conn")$loc
 
-  expect_error(divide(iris, output = localDiskConn(loc)))
+  expect_error(divide(iris, "Species", output = localDiskConn(loc)))
 
   ldo2 <- divide(iris, by = "Species", output = localDiskConn(loc), overwrite = TRUE)
   ldo3 <- divide(iris, by = "Species", output = localDiskConn(loc), overwrite = "backup")

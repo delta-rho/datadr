@@ -145,7 +145,7 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
   obj <- ddo(res$data, update = FALSE, verbose = FALSE) # if update==TRUE, can get recursive
 
   # if two consecutive values are data frames with same names, chances are it's a ddf
-  tmp <- try(suppressMessages(obj[1:2]), silent = TRUE)
+  tmp <- try(suppressWarnings(suppressMessages(obj[1:2])), silent = TRUE)
   if(inherits(tmp, "try-error") || length(tmp) == 1) {
     tmp <- try(suppressMessages(obj[[1]]), silent = TRUE)
     if(!inherits(tmp, "try-error")) {

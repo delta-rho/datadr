@@ -150,11 +150,7 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
     tails = tails
   )
 
-  if(! "package:datadr" %in% search()) {
-    packages <- c(packages, "data.table")
-  } else {
-    packages <- c(packages, "datadr", "data.table")
-  }
+  packages <- c(packages, "datadr", "data.table")
 
   mrRes <- mrExec(x,
     map = map,

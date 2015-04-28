@@ -1,3 +1,8 @@
+# not all test environments have Hadoop installed
+TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
+if(TEST_HDFS == "")
+  TEST_HDFS <- FALSE
+
 context("read from text file checks")
 
 csvFile <- file.path(tempdir(), "iris.csv")
@@ -33,5 +38,34 @@ unlink(csvFile)
 unlink(file.path(tempdir(), "irisText"), recursive = TRUE)
 unlink(file.path(tempdir(), "irisText2"), recursive = TRUE)
 
+if(TEST_HDFS) {
 
+library(Rhipe)
+rhinit()
+
+path1 <- "/tmp/read_test_in"
+path2 <- "/tmp/read_test_out"
+try(rhdel(path1), silent = TRUE)
+try(rhdel(path2), silent = TRUE)
+
+rhmkdir(path1)
+rhput(csvFile, path1)
+
+test_that("read hdfs text with drRead.csv", {
+
+  irisTextConn <- hdfsConn(path2, autoYes = TRUE)
+  csvInput <- hdfsConn(path1, type = "text")
+
+  a <- drRead.csv(csvInput, output = irisTextConn, rowsPerBlock = 10)
+  a <- updateAttributes(a)
+
+  tmp <- do.call(rbind, lapply(a[seq_len(length(a))], "[[", 2))
+  tmp <- tmp[order(tmp$Species, tmp$Sepal.Length, tmp$Sepal.Width, tmp$Petal.Length, tmp$Petal.Width),]
+  iris2 <- iris[order(iris$Species, iris$Sepal.Length, iris$Sepal.Width, iris$Petal.Length, iris$Petal.Width),]
+  iris2$Species <- as.character(iris2$Species)
+  expect_equivalent(iris2, tmp)
+
+})
+
+}
 
