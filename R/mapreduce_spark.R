@@ -1,3 +1,10 @@
+utils::globalVariables(
+  c("parallelize", "saveAsObjectFile", "objectFile", "take",
+   "lookup", "broadcast", "lapplyPartition", "groupByKey", "persist",
+   "saveAsObjectFile", "collect", "value", "sparkR.init")
+)
+
+
 ### mrExec for sparkData objects
 
 #' @export

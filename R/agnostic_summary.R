@@ -17,7 +17,7 @@ tabulateMap <- function(formula, data) {
     tmp <- xtabs(formula, data = data)
     if(length(tmp) > 0) {
       tmp <- as.data.frame(tmp, stringsAsFactors = FALSE)
-      return(subset(tmp, Freq > 0))
+      return(tmp[tmp$Freq > 0,])
     }
   }
   return(NULL)
@@ -27,13 +27,12 @@ tabulateMap <- function(formula, data) {
 #' @export
 #' @rdname mrSummaryStats
 tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
-  suppressWarnings(suppressMessages(require(data.table)))
   tmp <- data.frame(rbindlist(reduce.values))
   tmp <- rbind(result, tmp)
   tmp <- xtabs(Freq ~ ., data = tmp)
   if(length(tmp) > 0) {
     tmp <- as.data.frame(tmp, stringsAsFactors = FALSE)
-    tmp <- subset(tmp, Freq > 0)
+    tmp <- tmp[tmp$Freq > 0,]
     # only tabulate top and bottom maxUnique values
     idx <- order(tmp$Freq, decreasing = TRUE)
     if(is.null(maxUnique)) {

@@ -19,7 +19,7 @@
 #' @seealso \code{\link{recombine}}, \code{\link{drFilter}}, \code{\link{drJoin}}, \code{\link{combDdo}}, \code{\link{combRbind}}
 #' @export
 #' @examples
-#' bySpecies <- divide(iris, by="Species")
+#' bySpecies <- divide(iris, by = "Species")
 #' drLapply(bySpecies, function(x) x$Sepal.Width)
 drLapply <- function(X, FUN, combine = combDdo(), output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, verbose = TRUE) {
   if(!is.function(FUN))

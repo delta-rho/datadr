@@ -19,7 +19,7 @@
 #' @export
 condDiv <- function(vars) {
   # TODO: shingles, etc.
-  res <- list(type="condDiv", vars=vars)
+  res <- list(type = "condDiv", vars = vars)
   class(res) <- c("condDiv", "divSpecList")
   res
 }
@@ -36,16 +36,16 @@ getCuts.condDiv <- function(by, curDF) {
 #' @param splitVars a vector of variable names to split by
 #' @export
 getCondCuts <- function(df, splitVars) {
-  apply(do.call(cbind, lapply(df[,splitVars,drop=FALSE],
+  apply(do.call(cbind, lapply(df[,splitVars,drop = FALSE],
     function(x) format(x, scientific = FALSE, trim = TRUE, justify = "none"))), 1,
-      function(x) paste(paste(splitVars, "=", x, sep=""), collapse="|"))
+      function(x) paste(paste(splitVars, "=", x, sep = ""), collapse = "|"))
 }
 
 #' @export
 validateDivSpec.condDiv <- function(by, data, ex) {
   if(by$type == "condDiv") {
     if(!all(by$vars %in% names(ex[[2]]))) {
-      stop("'by' variables for conditioning division are not matched in data after applying preTransFn.  Try kvApply(preTransFn, kvExample(data, transform=TRUE)) to see what is expected.")
+      stop("'by' variables for conditioning division are not matched in data after applying preTransFn.  Try kvApply(preTransFn, kvExample(data, transform = TRUE)) to see what is expected.")
     }
   }
 

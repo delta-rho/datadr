@@ -8,11 +8,11 @@ print.ddfSummary <- function(x, ...) {
     nnc <- nchar(sNames[i])
     pad <- floor(abs((nnc - vnc) / 2))
     if(nnc > vnc) {
-      pv[[i]] <- paste(paste(rep(" ", pad), collapse=""), pv[[i]], sep="")
+      pv[[i]] <- paste(paste(rep(" ", pad), collapse = ""), pv[[i]], sep = "")
     } else {
-      sNames[i] <- paste(paste(rep(" ", pad), collapse=""), sNames[i], sep="")
+      sNames[i] <- paste(paste(rep(" ", pad), collapse = ""), sNames[i], sep = "")
     }
-    dashes <- paste(c(rep("-", max(c(vnc, nnc))), " "), collapse="")
+    dashes <- paste(c(rep("-", max(c(vnc, nnc))), " "), collapse = "")
     pv[[i]] <- c(dashes, pv[[i]], dashes)
   }
 
@@ -26,7 +26,7 @@ getPrintVals <- function(x)
   UseMethod("getPrintVals", x)
 
 getPrintVals.ddfSummNumeric <- function(x) {
-  x <- c(nna=x$nna, min=x$range[1], max=x$range[2], x$stats)
+  x <- c(nna = x$nna, min = x$range[1], max = x$range[2], x$stats)
   x$var <- sqrt(x$var)
   names(x)[names(x) == "nna"] <- "missing"
   names(x)[names(x) == "var"] <- "std dev"
@@ -36,9 +36,9 @@ getPrintVals.ddfSummNumeric <- function(x) {
   nn <- max(nchar(names))
   vn <- max(nchar(vals))
 
-  np <- sprintf(paste("%", nn, "s : ", sep=""), names)
-  vp <- sprintf(paste("%", vn, "s", sep=""), vals)
-  paste(np, vp, sep="")
+  np <- sprintf(paste("%", nn, "s : ", sep = ""), names)
+  vp <- sprintf(paste("%", vn, "s", sep = ""), vals)
+  paste(np, vp, sep = "")
 }
 
 getPrintVals.ddfSummDatetime <- function(x) {
@@ -48,7 +48,7 @@ getPrintVals.ddfSummDatetime <- function(x) {
     x$range <- format(x$range, "%y-%m-%d")
   }
 
-  x <- c(nna=x$nna, min=x$range[1], max=x$range[2])
+  x <- c(nna = x$nna, min = x$range[1], max = x$range[2])
   names(x)[names(x) == "nna"] <- "missing"
   names <- names(x)
   vals <- sapply(x, format)
@@ -56,9 +56,9 @@ getPrintVals.ddfSummDatetime <- function(x) {
   nn <- max(nchar(names))
   vn <- max(nchar(vals))
 
-  np <- sprintf(paste("%", nn, "s : ", sep=""), names)
-  vp <- sprintf(paste("%", vn, "s", sep=""), vals)
-  res <- paste(np, vp, sep="")
+  np <- sprintf(paste("%", nn, "s : ", sep = ""), names)
+  vp <- sprintf(paste("%", vn, "s", sep = ""), vals)
+  res <- paste(np, vp, sep = "")
   c(res, rep(" ", 7 - length(res)))
 }
 
@@ -84,20 +84,20 @@ getPrintVals.ddfSummFactor <- function(x) {
 
   if(nn > maxNchar) {
     ind <- which(nchar(names) > maxNchar)
-    names[ind] <- paste(substr(names[ind], 1, maxNchar - 3), "...", sep="")
+    names[ind] <- paste(substr(names[ind], 1, maxNchar - 3), "...", sep = "")
     nn <- maxNchar
   }
 
-  np <- sprintf(paste("%", nn, "s : ", sep=""), names)
-  vp <- sprintf(paste("%", vn, "s", sep=""), vals)
+  np <- sprintf(paste("%", nn, "s : ", sep = ""), names)
+  vp <- sprintf(paste("%", vn, "s", sep = ""), vals)
 
-  res <- c(res, paste(np, vp, sep=""))
+  res <- c(res, paste(np, vp, sep = ""))
 
   # center the "freqTable head" label
   mm <- max(nchar(res))
   df <- floor((mm - nchar(res[3])) / 2)
   if(df > 0)
-    res[3] <- paste(paste(rep(" ", df), collapse=""), res[3], sep="")
+    res[3] <- paste(paste(rep(" ", df), collapse = ""), res[3], sep = "")
 
   if(length(names) < nShow)
     res <- c(res, rep(" ", nShow - length(names)))

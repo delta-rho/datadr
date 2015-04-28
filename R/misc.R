@@ -45,6 +45,8 @@ to_ddf <- function(x) {
     stop("to_ddf currently only operates on grouped dplyr tbls")
 
   tmp <- do(x, kv = list("key", data.frame(.)))
+  # tmp <- do_(x, kv = ~.)
+
   n <- length(tmp)
   keys <- data.frame(lapply(tmp[1:(n-1)], as.character), stringsAsFactors = FALSE)
   keynms <- matrix(apply(keys, 1, function(x) paste(colnames(keys), x, sep = "=")), nrow = n - 1)
@@ -117,7 +119,7 @@ appendExpression <- function(expr1, expr2) {
     }
   }
 
-  eval(parse(text=paste("expression({", paste(c(getLines(expr1), getLines(expr2)), collapse="\n"), "})", sep="")))
+  eval(parse(text = paste("expression({", paste(c(getLines(expr1), getLines(expr2)), collapse = "\n"), "})", sep = "")))
 }
 
 isAbsolutePath <- function(path) {

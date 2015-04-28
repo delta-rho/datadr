@@ -11,3 +11,4 @@ protobuf-2\.4\.1\.tar\.gz
 protobuf_install/
 ^_ignore$
 \.sublime\-
+rhipe-java.log

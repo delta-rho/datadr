@@ -204,7 +204,7 @@ constructQuants <- function(obj, probs, tails, mids) {
   quants$cpct <- cumsum(quants$pct)
   quants$q <- mids[quants$idx]
 
-  fn <- approxfun(quants$cpct, quants$q, method="constant", f=1, rule=2)
+  fn <- approxfun(quants$cpct, quants$q, method = "constant", f = 1, rule = 2)
   res <- data.frame(
     fval = probs,
     q = fn(probs)
@@ -228,7 +228,7 @@ constructQuants <- function(obj, probs, tails, mids) {
       q = top
     )
 
-    res <- subset(res, fval > max(botDf$fval) & fval < min(topDf$fval))
+    res <- res[res$fval > max(botDf$fval) & res$fval < min(topDf$fval),]
     res <- rbind(botDf, res, topDf)
   }
   res

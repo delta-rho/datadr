@@ -7,7 +7,7 @@
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @export
 #' @examples
-#' bySpecies <- divide(iris, by="Species")
+#' bySpecies <- divide(iris, by = "Species")
 #' set.seed(234)
 #' sampleRes <- drSample(bySpecies, fraction = 0.25)
 drSample <- function(x, fraction, output = NULL, overwrite = FALSE, control = NULL) {

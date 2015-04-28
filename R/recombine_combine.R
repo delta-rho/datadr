@@ -62,7 +62,6 @@ combMean <- function(...) {
   list(
     reduce = expression(
       pre = {
-        suppressWarnings(suppressMessages(require(data.table)))
         res <- list()
         n <- as.numeric(0)
       },

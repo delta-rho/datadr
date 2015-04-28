@@ -1,12 +1,12 @@
 # need dummy load and save methods
 
 #' @export
-loadAttrs.nullConn <- function(obj, type="ddo") {
+loadAttrs.nullConn <- function(obj, type = "ddo") {
   NULL
 }
 
 #' @export
-saveAttrs.nullConn <- function(obj, attrs, type="ddo") {
+saveAttrs.nullConn <- function(obj, attrs, type = "ddo") {
   NULL
 }
 

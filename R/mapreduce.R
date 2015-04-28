@@ -20,7 +20,7 @@
 #' @param setup an expression of R code (created using the R command \code{expression}) to be run before map and reduce
 #' @param map an R expression that is evaluated during the map stage. For each task, this expression is executed multiple times (see details).
 #' @param reduce a vector of R expressions with names pre, reduce, and post that is evaluated during the reduce stage. For example \code{reduce = expression(pre = {...}, reduce = {...}, post = {...})}. reduce is optional, and if not specified the map output key-value pairs will be the result. If it is not specified, then a default identity reduce is performed. Setting it to 0 will skip the reduce altogether.
-#' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
+#' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.  If a character string, it will be treated as a path to be passed to the same type of connection as \code{data} - relative paths will be relative to the working directory of that back end.
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param params a named list of parameters external to the input data that are needed in the map or reduce phases
@@ -63,6 +63,11 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
   if(any(duplicated(nms)))
     stop("data sources must all have unique names")
   names(data) <- nms
+
+  if(is.character(output)) {
+    class(output) <- c("character", paste0(tail(class(data[[1]]), 1), "Char"))
+    output <- charToOutput(output)
+  }
 
   # TODO: make sure all data sources have same kv storage type
   mrCheckOutput(data[[1]], output)

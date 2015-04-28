@@ -2,7 +2,7 @@
 
 #' @export
 ddoInit.sparkDataConn <- function(obj, ...) {
-  structure(list(), class="kvSparkData")
+  structure(list(), class = "kvSparkData")
 }
 
 #' @export
@@ -38,7 +38,7 @@ getBasicDdoAttrs.kvSparkData <- function(obj, conn) {
   } else {
     ff <- list.files(conn$loc, recursive = TRUE)
     ff <- ff[!grepl("_meta\\/", ff)]
-    sz <- sum(file.info(file.path(fp, ff))$size)
+    sz <- sum(file.info(file.path(conn$loc, ff))$size)
   }
 
   ex <- take(conn$data, 1)[[1]]
@@ -112,7 +112,7 @@ convertImplemented.kvSparkData <- function(obj) {
 }
 
 #' @export
-convert.kvSparkData <- function(from, to=NULL) {
+convert.kvSparkData <- function(from, to = NULL, overwrite = FALSE) {
   convertkvSparkData(to, from)
 }
 
@@ -121,19 +121,19 @@ convertkvSparkData <- function(obj, ...)
 
 # from sparkData to sparkData
 #' @export
-convertkvSparkData.sparkDataConn <- function(to, from, verbose=FALSE) {
+convertkvSparkData.sparkDataConn <- function(to, from, verbose = FALSE) {
   from
 }
 
 # from sparkData to memory
 #' @export
-convertkvSparkData.NULL <- function(to, from, verbose=FALSE) {
+convertkvSparkData.NULL <- function(to, from, verbose = FALSE) {
   res <- collect(getAttribute(from, "conn")$data)
 
   if(inherits(from, "ddf")) {
-    res <- ddf(res, update=FALSE, verbose=verbose)
+    res <- ddf(res, update = FALSE, verbose = verbose)
   } else {
-    res <- ddo(res, update=FALSE, verbose=verbose)
+    res <- ddo(res, update = FALSE, verbose = verbose)
   }
 
   addNeededAttrs(res, from)
@@ -142,12 +142,12 @@ convertkvSparkData.NULL <- function(to, from, verbose=FALSE) {
 
 # # from sparkData to local disk
 # #' @export
-# convertkvSparkData.sparkDataConn <- function(to, from, verbose=FALSE) {
+# convertkvSparkData.sparkDataConn <- function(to, from, verbose = FALSE) {
 #   from
 # }
 #
 # # from sparkData to HDFS
 # #' @export
-# convertkvSparkData.hdfsConn <- function(to, from, verbose=FALSE) {
+# convertkvSparkData.hdfsConn <- function(to, from, verbose = FALSE) {
 # }
 #

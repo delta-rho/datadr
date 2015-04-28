@@ -17,20 +17,20 @@
 #'
 #' bsvFn <- function(dat) {
 #'   list(
-#'     meanSL = bsv(mean(dat$Sepal.Length), desc="mean sepal length"),
-#'     meanPL = bsv(mean(dat$Petal.Length), desc="mean petal length")
+#'     meanSL = bsv(mean(dat$Sepal.Length), desc = "mean sepal length"),
+#'     meanPL = bsv(mean(dat$Petal.Length), desc = "mean petal length")
 #'   )
 #' }
 #'
 #' # divide the data by species
-#' bySpecies <- divide(irisDdf, by="Species", bsvFn=bsvFn)
+#' bySpecies <- divide(irisDdf, by = "Species", bsvFn = bsvFn)
 #' # see BSV info attached to the result
 #' bsvInfo(bySpecies)
 #' # get BSVs for a specified subset of the division
 #' getBsvs(bySpecies[[1]])
 #'
 #' @export
-bsv <- function(val=NULL, desc="") {
+bsv <- function(val = NULL, desc = "") {
   if(is.factor(val))
     val <- as.character(val)
 
@@ -44,7 +44,7 @@ bsv <- function(val=NULL, desc="") {
 bsv2df <- function(x) {
   # remove elements that have length greater than 1
   x <- x[sapply(x, length) == 1]
-  data.frame(stripBsvAttr(x), stringsAsFactors=FALSE)
+  data.frame(stripBsvAttr(x), stringsAsFactors = FALSE)
 }
 
 getBsvDesc <- function(x, bsvFn) {
@@ -54,7 +54,7 @@ getBsvDesc <- function(x, bsvFn) {
   do.call(rbind, lapply(seq_along(ex), function(i) {
     desc <- attr(ex[[i]], "desc")
     if(is.null(desc)) desc <- ""
-    data.frame(name = exnm[i], desc = desc, stringsAsFactors=FALSE)
+    data.frame(name = exnm[i], desc = desc, stringsAsFactors = FALSE)
   }))
 }
 
@@ -65,9 +65,9 @@ stripBsvAttr <- function(obj) {
   obj
 }
 
-validateBsvFn <- function(data, bsvFn, verbose=FALSE) {
+validateBsvFn <- function(data, bsvFn, verbose = FALSE) {
   if(verbose)
-    message("* Testing bsv function on a subset ... ", appendLF=FALSE)
+    message("* Testing bsv function on a subset ... ", appendLF = FALSE)
 
   ex <- kvApply(bsvFn, data)
 
@@ -92,7 +92,7 @@ validateBsvFn <- function(data, bsvFn, verbose=FALSE) {
 # it is reasonable - then store in _meta directory
 # the other option is MongoDB
 # NOTE: maybe this should be an attribute, and should be done in updateAttributes
-# bsvTable <- function(obj, conn="data.frame") {
+# bsvTable <- function(obj, conn = "data.frame") {
 #   # mapreduce job to extract bsvs and splitvars in case of condDiv
 # }
 

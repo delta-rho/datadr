@@ -120,6 +120,12 @@ extract.kvLocalDisk <- function(x, i, ...) {
   })
 }
 
+## default output methods (convert character to output)
+##---------------------------------------------------------
+
+charToOutput.kvLocalDiskChar <- function(x) {
+  localDiskConn(x)
+}
 
 ######################################################################
 ### convert methods
@@ -131,7 +137,9 @@ convertImplemented.kvLocalDisk <- function(obj) {
 }
 
 #' @export
-convert.kvLocalDisk <- function(from, to = NULL) {
+convert.kvLocalDisk <- function(from, to = NULL, overwrite = FALSE) {
+  if(!inherits(to, "localDiskConn"))
+    mrCheckOutputLoc(to, overwrite = overwrite)
   convertKvLocalDisk(to, from)
 }
 

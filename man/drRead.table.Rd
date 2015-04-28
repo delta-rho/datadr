@@ -8,19 +8,18 @@
 \alias{drRead.table}
 \title{Data Input}
 \usage{
-drRead.table(file, header = FALSE, sep = "",
-  quote = "\\"'", dec = ".", skip = 0, fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#", allowEscapes = FALSE, encoding = "unknown", autoColClasses = TRUE, rowsPerBlock = 50000, postTransFn = identity, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, ...)
-
-drRead.csv(file, header = TRUE, sep = ",",
+\method{drRead}{table}(file, header = FALSE, sep = "", quote = "\\"'", dec = ".",
+  skip = 0, fill = !blank.lines.skip, blank.lines.skip = TRUE, comment.char = "#",
+  allowEscapes = FALSE, encoding = "unknown", autoColClasses = TRUE,
+  rowsPerBlock = 50000, postTransFn = identity, output = NULL, overwrite = FALSE,
+  params = NULL, packages = NULL, control = NULL, ...)
+\method{drRead}{csv}(file, header = TRUE, sep = ",",
   quote = "\\"", dec = ".", fill = TRUE, comment.char = "", ...)
-
-drRead.csv2(file, header = TRUE, sep = ";",
+\method{drRead}{csv2}(file, header = TRUE, sep = ";",
   quote = "\\"", dec = ",", fill = TRUE, comment.char = "", ...)
-
-drRead.delim(file, header = TRUE, sep = "\\t",
+\method{drRead}{delim}(file, header = TRUE, sep = "\\t",
   quote = "\\"", dec = ".", fill = TRUE, comment.char = "", ...)
-
-drRead.delim2(file, header = TRUE, sep = "\\t",
+\method{drRead}{delim2}(file, header = TRUE, sep = "\\t",
   quote = "\\"", dec = ",", fill = TRUE, comment.char = "", ...)
 }
 \arguments{

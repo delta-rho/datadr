@@ -4,12 +4,14 @@
 \alias{convert}
 \title{Convert 'ddo' / 'ddf' Objects}
 \usage{
-convert(from, to)
+convert(from, to, overwrite = FALSE)
 }
 \arguments{
 \item{from}{a 'ddo' or 'ddf' object}
 
 \item{to}{a 'kvConnection' object (created with \code{\link{localDiskConn}} or \code{\link{hdfsConn}}) or \code{NULL} if an in-memory 'ddo' / 'ddf' is desired}
+
+\item{overwrite}{should the data in the location pointed to in \code{to} be overwritten?}
 }
 \description{
 Convert 'ddo' / 'ddf' objects between different storage backends

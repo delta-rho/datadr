@@ -1,6 +1,12 @@
 Version 0.7.5.5
 ----------------------------------------------------------------------
 
+- add `drPersist()` method to make transformations persistent
+- clean up several files and fix some check NOTEs
+- add overwrite parameter to convert methods
+- fix localDisk MapReduce to properly handle NULL reduce
+- fix bug in `drRead.table()` not overwriting output for local disk case
+- add handling of character outputs to default to input connection for convenience in swapping out back ends
 - fix globals to not search in "imports" environments
 - add `to_ddf()` for converting dplyr grouped tbls to ddfs
 - improve error messages for kvApply with keys and values as inputs

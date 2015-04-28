@@ -8,13 +8,86 @@ utils::globalVariables(
 
 #' @export
 mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {
-  setup <- appendExpression(setup,
-    expression({
-      suppressWarnings(suppressMessages(require(digest)))
-    })
-  )
-  if(is.null(reduce))
-    reduce <- expression(pre = {}, reduce = {collect(reduce.key, reduce.values)}, post = {})
+
+  # this will be used for both map and reduce
+  LDcollect <- function(k, v) {
+    # curEnv <- parent.frame()
+    # each unique key emitted from map has its data stored in its own directory
+    # (name determined by digest)
+    dk <- digest(k)
+    # also create a subdirectory named task_id to avoid conflicts
+    kPath <- file.path(taskDir, dk, task_id)
+    if(!file.exists(kPath))
+      dir.create(kPath, recursive = TRUE)
+
+    # if this is the first, store key in a file key.Rdata
+    # then build up a list of map results until it's too big (then flush to disk)
+    if(is.null(taskCounter[[dk]])) {
+      curEnv$taskCounter[[dk]] <- 1
+      curEnv$taskRes[[dk]] <- list()
+      if(writeKVseparately)
+        save(k, file = file.path(kPath, "key.Rdata"))
+    } else {
+      curEnv$taskCounter[[dk]] <- curEnv$taskCounter[[dk]] + 1
+    }
+    curEnv$taskRes[[dk]][[length(curEnv$taskRes[[dk]]) + 1]] <- v
+  }
+
+  # counter works by incrementing a filename
+  LDcounter <- function(group, field, ct) {
+    countersPath <- file.path(countersDir, group, field, curEnv$task_id)
+    if(!file.exists(countersPath)) {
+      dir.create(countersPath, recursive = TRUE)
+      file.create(file.path(countersPath, "0"))
+    }
+    curCt <- as.numeric(list.files(countersPath))
+    newCt <- curCt + ct
+    file.rename(file.path(countersPath, curCt), file.path(countersPath, newCt))
+  }
+
+  LDflushKV <- function() {
+    # curEnv <- parent.frame()
+
+    fKeys <- names(taskRes)
+    for(i in seq_along(fKeys)) {
+      kPath <- file.path(taskDir, fKeys[i], task_id)
+      fmf <- list.files(kPath, pattern = "^value")
+      fmf <- as.integer(gsub("value(.*)\\.Rdata", "\\1", fmf))
+      if(length(fmf) == 0) {
+        fileIdx <- 1
+      } else {
+        fileIdx <- max(fmf) + 1
+      }
+      if(writeKVseparately) {
+        v <- taskRes[[fKeys[i]]]
+        save(v, file = file.path(kPath, paste("value", fileIdx, ".Rdata", sep = "")))
+      } else {
+        # if there is more than one value element
+        # each needs to be part of a k/v pair
+        obj <- lapply(taskRes[[fKeys[i]]], function(x) {
+          list(reduce.key, x)
+        })
+        save(obj, file = file.path(kPath, paste("value", fileIdx, ".Rdata", sep = "")))
+      }
+
+      # now reset results for this key
+      curEnv$taskRes[[fKeys[i]]] <- NULL
+      curEnv$taskCounter[[fKeys[i]]] <- NULL
+    }
+  }
+
+  if(is.null(params$mr___packages)) {
+    params$mr___packages <- "digest"
+  } else {
+    params$mr___packages <- unique(c(params$mr___packages, "digest"))
+  }
+
+  if(is.null(reduce)) {
+    # if reduce is null, we will have only one reduce value per key
+    # so reduce.values should not be a list as it is when we are concatenating
+    # reduce.values
+    reduce <- expression(pre = {}, reduce = {collect(reduce.key, reduce.values[[1]])}, post = {})
+  }
 
   nSlots <- 1
   if(!is.null(control$cluster))
@@ -75,6 +148,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
 
   mapFn <- function(fl) {
     mapEnv <- new.env() # parent = baseenv())
+    curEnv <- mapEnv
     assign("mr___packages", params$mr___packages, mapEnv)
     eval(setup, envir = mapEnv)
 
@@ -113,8 +187,8 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
         load(file.path(fl$fp, x))
         obj[[1]]
       })
-      assign("map.keys", lapply(curDat, "[[", 1), mapEnv)
-      assign("map.values", lapply(curDat, "[[", 2), mapEnv)
+      mapEnv$map.keys <- lapply(curDat, "[[", 1)
+      mapEnv$map.values <- lapply(curDat, "[[", 2)
       # eval(expression({
       #   .tmp <- environment()
       #   attach(.tmp, warn.conflicts = FALSE)
@@ -123,13 +197,13 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       # eval(expression({detach(".tmp")}), envir = mapEnv)
 
       # count number of k/v processed
-      evalq(counter("map", "kvProcessed", length(map.values)), mapEnv)
+      mapEnv$counter("map", "kvProcessed", length(mapEnv$map.values))
 
-      # cat(evalq(object.size(taskRes), mapEnv), "\n")
-      if(evalq(object.size(taskRes), mapEnv) > control$map_temp_buff_size_bytes)
-        evalq(flushKV(), envir = mapEnv)
+      # cat(object.size(mapEnv$taskRes), "\n")
+      if(object.size(mapEnv$taskRes) > control$map_temp_buff_size_bytes)
+        mapEnv$flushKV()
     }
-    evalq(flushKV(), envir = mapEnv)
+    mapEnv$flushKV()
   }
 
   ### run map tasks
@@ -170,6 +244,7 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
 
   reduceFn <- function(reduceTaskFiles) {
     reduceEnv <- new.env() # parent = baseenv())
+    curEnv <- reduceEnv
     if(!is.null(params)) {
       pnames <- names(params)
       for(i in seq_along(params)) {
@@ -215,8 +290,8 @@ mrExecInternal.kvLocalDiskList <- function(data, setup = NULL, map = NULL, reduc
       }
       eval(reduce$post, envir = reduceEnv)
       # count number of k/v processed
-      evalq(counter("reduce", "kvProcessed", 1), reduceEnv)
-      evalq(flushKV(), envir = reduceEnv)
+      reduceEnv$counter("reduce", "kvProcessed", 1)
+      reduceEnv$flushKV()
     }
   }
 
@@ -339,68 +414,5 @@ defaultControl.kvLocalDisk <- function(x) {
   }
 }
 
-# this will be used for both map and reduce
-LDcollect <- function(k, v) {
-  # each unique key emitted from map has its data stored in its own directory
-  # (name determined by digest)
-  dk <- digest(k)
-  # also create a subdirectory named task_id to avoid conflicts
-  kPath <- file.path(taskDir, dk, task_id)
-  if(!file.exists(kPath))
-    dir.create(kPath, recursive = TRUE)
-
-  # if this is the first, store key in a file key.Rdata
-  # then build up a list of map results until it's too big (then flush to disk)
-  if(is.null(taskCounter[[dk]])) {
-    taskCounter[[dk]] <<- 1
-    taskRes[[dk]] <<- list()
-    if(writeKVseparately)
-      save(k, file = file.path(kPath, "key.Rdata"))
-  } else {
-    taskCounter[[dk]] <<- taskCounter[[dk]] + 1
-  }
-  taskRes[[dk]][[length(taskRes[[dk]]) + 1]] <<- v
-}
-
-# counter works by incrementing a filename
-LDcounter <- function(group, field, ct) {
-  countersPath <- file.path(countersDir, group, field, task_id)
-  if(!file.exists(countersPath)) {
-    dir.create(countersPath, recursive = TRUE)
-    file.create(file.path(countersPath, "0"))
-  }
-  curCt <- as.numeric(list.files(countersPath))
-  newCt <- curCt + ct
-  file.rename(file.path(countersPath, curCt), file.path(countersPath, newCt))
-}
-
-LDflushKV <- function() {
-  fKeys <- names(taskRes)
-  for(i in seq_along(fKeys)) {
-    kPath <- file.path(taskDir, fKeys[i], task_id)
-    fmf <- list.files(kPath, pattern = "^value")
-    fmf <- as.integer(gsub("value(.*)\\.Rdata", "\\1", fmf))
-    if(length(fmf) == 0) {
-      fileIdx <- 1
-    } else {
-      fileIdx <- max(fmf) + 1
-    }
-    if(writeKVseparately) {
-      v <- taskRes[[fKeys[i]]]
-      save(v, file = file.path(kPath, paste("value", fileIdx, ".Rdata", sep = "")))
-    } else {
-      # if there is more than one value element
-      # each needs to be part of a k/v pair
-      obj <- lapply(taskRes[[fKeys[i]]], function(x) {
-        list(reduce.key, x)
-      })
-      save(obj, file = file.path(kPath, paste("value", fileIdx, ".Rdata", sep = "")))
-    }
-
-    # now reset results for this key
-    taskRes[[fKeys[i]]] <<- NULL
-    taskCounter[[fKeys[i]]] <<- NULL
-  }
-}
 
 

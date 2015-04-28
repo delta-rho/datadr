@@ -1,7 +1,7 @@
 ## mrExec for kvMemory objects
 
 #' @export
-mrExecInternal.kvMemoryList <- function(data, setup=NULL, map=NULL, reduce=NULL, output=NULL, control=NULL, params=NULL) {
+mrExecInternal.kvMemoryList <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL, control = NULL, params = NULL) {
 
   # set up empty environment for map and reduce expressions to be evaluated in
   mapEnv <- new.env() # parent = baseenv())
@@ -13,13 +13,13 @@ mrExecInternal.kvMemoryList <- function(data, setup=NULL, map=NULL, reduce=NULL,
     for(i in seq_along(params)) {
       if(is.function(params[[i]]))
         environment(params[[i]]) <- mapEnv
-      assign(pnames[i], params[[i]], envir=mapEnv)
-      assign(pnames[i], params[[i]], envir=reduceEnv)
+      assign(pnames[i], params[[i]], envir = mapEnv)
+      assign(pnames[i], params[[i]], envir = reduceEnv)
     }
   }
 
-  eval(setup, envir=mapEnv)
-  eval(setup, envir=reduceEnv)
+  eval(setup, envir = mapEnv)
+  eval(setup, envir = reduceEnv)
 
   ### do the map
   assign("counterRes", list(), mapEnv)
@@ -36,7 +36,7 @@ mrExecInternal.kvMemoryList <- function(data, setup=NULL, map=NULL, reduce=NULL,
         counterRes[[group]][[field]] <<- 0
       counterRes[[group]][[field]] <<- counterRes[[group]][[field]] + ct
     }
-  }), envir=mapEnv)
+  }), envir = mapEnv)
 
   # loop through inputs
   nms <- names(data)
@@ -45,7 +45,7 @@ mrExecInternal.kvMemoryList <- function(data, setup=NULL, map=NULL, reduce=NULL,
     assign("map.keys", lapply(kvData, "[[", 1), mapEnv)
     assign("map.values", lapply(kvData, "[[", 2), mapEnv)
     assign(".dataSourceName", nms[i], mapEnv)
-    eval(map, envir=mapEnv)
+    eval(map, envir = mapEnv)
   }
 
   if(!is.null(reduce)) {
@@ -72,27 +72,27 @@ mrExecInternal.kvMemoryList <- function(data, setup=NULL, map=NULL, reduce=NULL,
           counterRes[[group]][[field]] <<- 0
         counterRes[[group]][[field]] <<- counterRes[[group]][[field]] + ct
       }
-    }), envir=reduceEnv)
+    }), envir = reduceEnv)
 
     for(i in seq_along(reduce.uKeys)) {
       assign("reduce.key", reduce.uKeys[[i]], reduceEnv)
       assign("curValIdx", which(reduce.digKeys==reduce.uDigKeys[i]), reduceEnv)
       eval(expression({
         reduce.values <- reduce.allValues[curValIdx]
-      }), envir=reduceEnv)
+      }), envir = reduceEnv)
 
-      eval(reduce$pre, envir=reduceEnv)
-      eval(reduce$reduce, envir=reduceEnv)
-      eval(reduce$post, envir=reduceEnv)
+      eval(reduce$pre, envir = reduceEnv)
+      eval(reduce$reduce, envir = reduceEnv)
+      eval(reduce$post, envir = reduceEnv)
     }
-    res <- get("reduceRes", envir=reduceEnv)
-    counters <- get("counterRes", envir=reduceEnv)
+    res <- get("reduceRes", envir = reduceEnv)
+    counters <- get("counterRes", envir = reduceEnv)
   } else {
-    res <- get("mapRes", envir=mapEnv)
-    counters <- get("counterRes", envir=mapEnv)
+    res <- get("mapRes", envir = mapEnv)
+    counters <- get("counterRes", envir = mapEnv)
   }
 
-  list(data=res, counters=counters)
+  list(data = res, counters = counters)
 }
 
 #' @export
