@@ -228,7 +228,7 @@ constructQuants <- function(obj, probs, tails, mids) {
       q = top
     )
 
-    res <- subset(res, fval > max(botDf$fval) & fval < min(topDf$fval))
+    res <- res[res$fval > max(botDf$fval) & res$fval < min(topDf$fval),]
     res <- rbind(botDf, res, topDf)
   }
   res

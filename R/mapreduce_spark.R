@@ -1,7 +1,7 @@
 utils::globalVariables(
   c("parallelize", "saveAsObjectFile", "objectFile", "take",
    "lookup", "broadcast", "lapplyPartition", "groupByKey", "persist",
-   "saveAsObjectFile")
+   "saveAsObjectFile", "collect", "value", "sparkR.init")
 )
 
 

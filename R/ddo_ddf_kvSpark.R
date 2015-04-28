@@ -38,7 +38,7 @@ getBasicDdoAttrs.kvSparkData <- function(obj, conn) {
   } else {
     ff <- list.files(conn$loc, recursive = TRUE)
     ff <- ff[!grepl("_meta\\/", ff)]
-    sz <- sum(file.info(file.path(fp, ff))$size)
+    sz <- sum(file.info(file.path(conn$loc, ff))$size)
   }
 
   ex <- take(conn$data, 1)[[1]]
