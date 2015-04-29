@@ -73,10 +73,10 @@ bbddf <- ddf(list(list(1, bb[1:25,]), list(1, bb[26:75,]), list(1, bb[76:100,]))
 
 test_that("drAggregate results match", {
 
-  drRes1 <- drAggregate(~ let, data = bbddf)
-  drRes2 <- drAggregate(ct ~ let, data = bbddf)
-  drRes3 <- drAggregate(~ let + byvar, data = bbddf)
-  drRes4 <- drAggregate(ct ~ let + byvar, data = bbddf)
+  drRes1 <- drAggregate(bbddf, ~ let)
+  drRes2 <- drAggregate(bbddf, ct ~ let)
+  drRes3 <- drAggregate(bbddf, ~ let + byvar)
+  drRes4 <- drAggregate(bbddf, ct ~ let + byvar)
 
   drRes1 <- drRes1[order(drRes1$Freq, drRes1$let, decreasing = TRUE),]
   drRes2 <- drRes2[order(drRes2$Freq, drRes2$let, decreasing = TRUE),]
@@ -106,7 +106,7 @@ try(rhdel(path), silent = TRUE)
 bbddfhd <- convert(bbddf, hdfsConn(path, autoYes = TRUE))
 
 test_that("drAggregate hdfs results match", {
-  drRes4 <- drAggregate(ct ~ let + byvar, data = bbddfhd)
+  drRes4 <- drAggregate(bbddfhd, ct ~ let + byvar)
   drRes4 <- drRes4[order(drRes4$Freq, drRes4$let, drRes4$byvar, decreasing = TRUE),]
   expect_identical(drRes4, res4)
 })
