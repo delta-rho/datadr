@@ -2,29 +2,30 @@
 #'
 #' Apply a function to a single key-value pair - not a traditional R "apply" function.
 #'
+#' @param kvPair a key-value pair (a list with 2 elements or object created with \code{\link{kvPair}})
 #' @param fn a function
-#' @param kvPair a key-value pair (a list with 2 elements)
-#' @param returnKV should the key and value be returned?
 #'
-#' @details Determines how a function should be applied to a key-value pair and then applies it: if the function has two formals, it applies the function giving it the key and the value as the arguments, and then expects the function to return a key and a value; if the function has one formal, it applies the function giving it just the value, and expects the function to return a value.
+#' @details Determines how a function should be applied to a key-value pair and then applies it: if the function has two formals, it applies the function giving it the key and the value as the arguments; if the function has one formal, it applies the function giving it just the value.  The function is assumed to return a value unless the result is a \code{\link{kvPair}} object.  When the function returns a value the original key will be returned in the resulting key-value pair.
 #'
-#' This provides flexibility and simplicity for when a function is only meant to be applied to the value, but still allows keys to be used if desired.
+#' This provides flexibility and simplicity for when a function is only meant to be applied to the value (the most common case), but still allows keys to be used if desired.
 #'
+#' @examples
+#' kv <- kvPair(1, 2)
+#' kv
+#' kvApply(kv, function(x) x^2)
+#' kvApply(kv, function(k, v) v^2)
+#' kvApply(kv, function(k, v) k + v)
+#' kvApply(kv, function(x) kvPair("new_key", x))
 #' @export
-kvApply <- function(fn, kvPair, returnKV = FALSE) {
+kvApply <- function(kvPair, fn) {
   # TODO?: also do other stuff like add splitVars back on to df, etc. prior to applying
   if(length(formals(fn)) == 2) {
     res <- fn(kvPair[[1]], kvPair[[2]])
-    if(!(is.list(res) && length(res) == 2))
-      stop("A transformation function that takes a key and a value should return a key/value pair - see ?kvApply for more details.", call. = FALSE)
-    if(!returnKV) {
-      res <- res[[2]]
-    }
   } else {
     res <- fn(kvPair[[2]])
-    if(returnKV)
-      res <- list(kvPair[[1]], res)
   }
+  if(!inherits(res, "kvPair"))
+    res <- kvPair(kvPair[[1]], res)
   return(res)
 }
 

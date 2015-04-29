@@ -94,9 +94,9 @@ addTransform <- function(obj, fn, name = NULL, params = NULL, packages = NULL) {
   assign("x", obj[[1]], envir = env)
   assign("kvApply", kvApply, envir = env)
 
-  res <- try(evalq(kvApply(fn, x), envir = env))
+  res <- try(evalq(kvApply(x, fn), envir = env))
   if(inherits(res, "try-error")) {
-    stop("'fn' ran with errors on a subset:\n\n  ", geterrmessage(), "\nTo fix your transformation function, interactively test it out on a subset.  If that works, some global parameters may not have been detected.  You can specify explictly any global parameters or functions your transformation depends on through the 'params' argument.", call.=FALSE, sep = "")
+    stop("'fn' ran with errors on a subset:\n\n  ", geterrmessage(), "\nTo fix your transformation function, interactively test it out on a subset.  If that works, some global parameters may not have been detected.  You can specify explictly any global parameters or functions your transformation depends on through the 'params' argument.", call. = FALSE, sep = "")
   }
   message(" ok")
 
@@ -179,11 +179,11 @@ applyTransform <- function(transFns, x, env = NULL) {
       }
       assign("fn", curFn, envir = env)
       # message(paste("*** applying transformation", nms[i]))
-      res <- try(eval(expression({kvApply(fn, x, returnKV = TRUE)}), envir = env))
+      res <- try(eval(expression({kvApply(x, fn)}), envir = env))
       if(inherits(res, "try-error"))
         stop("attempt to apply transformation failed with error: ", geterrmessage(), call. = FALSE)
         # TODO: add information about key to error message
-      # res <- kvApply(curFn, res, returnKV = TRUE)
+      # res <- kvApply(res, curFn)
     }
     attr(res[[2]], "split") <- attr(x[[2]], "split")
     res
@@ -192,27 +192,3 @@ applyTransform <- function(transFns, x, env = NULL) {
 
 # addFilter?
 # addSample?
-
-
-
-# # evaluate each function in an environment with required variables
-# for(i in seq_along(transFns)) {
-#   env <- new.env(parent = .GlobalEnv)
-#   fEnvName <- environmentName(environment(transFns[[i]]$fn))
-#   if(!fEnvName %in% loadedNamespaces()) {
-#     attributes(transFns[[i]]$fn) <- NULL
-#     environment(transFns[[i]]$fn) <- env
-#   }
-#   assign("fn", transFns[[i]]$fn, envir = env)
-#   nms <- names(transFns[[i]]$params)
-#   for(j in seq_along(transFns[[i]]$params)) {
-#     if(is.function(transFns[[i]]$params[[j]]))
-#       environment(transFns[[i]]$params[[j]]) <- env
-#     assign(nms[j], transFns[[i]]$params[[j]], envir = env)
-#   }
-#   assign("x", x, envir = env)
-#   assign("kvApply", kvApply, envir = env)
-#   res <- try(eval(expression({kvApply(fn, x, returnKV = TRUE)}), envir = env))
-#   if(inherits(res, "try-error"))
-#     stop("attempt to apply transformation failed with error: ", geterrmessage(), call. = FALSE)
-# }

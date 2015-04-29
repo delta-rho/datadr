@@ -171,7 +171,7 @@ divide <- function(data,
           df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
 
           # do what is needed and collect
-          if(kvApply(filterFn, list(reduce.key, df[1:MAX_ROWS,]))) {
+          if(kvApply(list(reduce.key, df[1:MAX_ROWS,]), filterFn)$value) {
             # counter("datadr", "spilled", 1)
             # put in div-specific attr stuff
             collect(paste(reduce.key, spillCount, sep = "_"),
@@ -189,7 +189,7 @@ divide <- function(data,
       if(spillCount > 0)
         reduce.key <- paste(reduce.key, spillCount + 1, sep = "_")
 
-      if(kvApply(filterFn, list(reduce.key, df))) {
+      if(kvApply(list(reduce.key, df), filterFn)$value) {
         # put in div-specific attr stuff
         collect(reduce.key, addSplitAttrs(df, bsvFn, by, postTransFn))
       }

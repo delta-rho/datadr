@@ -57,14 +57,6 @@ drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, pa
   globalVarList <- drGetGlobals(postTransFn)
   parList <- list(postTransFn = postTransFn)
 
-  if(! "package:datadr" %in% search()) {
-    parList <- c(parList, list(
-      applyTransform = applyTransform,
-      setupTransformEnv = setupTransformEnv,
-      kvApply = kvApply
-    ))
-  }
-
   # if the user supplies output as an unevaluated connection
   # the verbosity can be misleading
   suppressMessages(output <- output)

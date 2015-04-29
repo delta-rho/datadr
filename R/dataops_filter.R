@@ -3,7 +3,7 @@
 #' Filter a 'ddo' or 'ddf' object
 #'
 #' @param x an object of class 'ddo' or 'ddf'
-#' @param filterFn function that takes a key or key/value pair and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result. If \code{filterFun} takes two parameters (key and value) then it should return a list with the key and \code{TRUE} or \code{FALSE}. See examples for details.
+#' @param filterFn function that takes a key or key-value pair and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result. See examples for details.
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
@@ -19,7 +19,7 @@
 #' @examples
 #' bySpecies <- divide(iris, by = "Species")
 #' drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
-#' drFilter(bySpecies, function(k,v) list(k, k != "Species=virginica" & mean(v$Sepal.Width) < 3))
+#' drFilter(bySpecies, function(k,v) k != "Species=virginica" & mean(v$Sepal.Width) < 3)
 #' @export
 drFilter <- function(x, filterFn, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL) {
   # TODO: warn if output storage is not commensurate with input?
@@ -27,7 +27,7 @@ drFilter <- function(x, filterFn, output = NULL, overwrite = FALSE, params = NUL
   # TODO: check filterFn on a subset and make sure it returns a logical
   map <- expression({
     for(i in seq_along(map.keys)) {
-      if(kvApply(filterFn, list(map.keys[[i]], map.values[[i]])))
+      if(kvApply(list(map.keys[[i]], map.values[[i]]), filterFn)$value)
         collect(map.keys[[i]], map.values[[i]])
     }
   })
