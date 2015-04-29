@@ -2,7 +2,7 @@
 % Please edit documentation in R/kvPairs.R
 \name{kvPairs}
 \alias{kvPairs}
-\title{Manually Specify Key-Value Pairs}
+\title{Specify a Collection of Key-Value Pairs}
 \usage{
 kvPairs(...)
 }
@@ -13,9 +13,12 @@ kvPairs(...)
 a list of objects of class "kvPair"
 }
 \description{
-Manually specify key-value pairs
+Specify a collection of key-value pairs
 }
-\author{
-Ryan Hafen
+\examples{
+kvPairs(kvPair(1, letters), kvPair(2, rnorm(10)))
+}
+\seealso{
+\code{\link{kvPair}}
 }
 

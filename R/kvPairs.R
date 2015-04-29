@@ -1,23 +1,44 @@
-#' Manually Specify Key-Value Pairs
+#' Specify a Collection of Key-Value Pairs
 #'
-#' Manually specify key-value pairs
+#' Specify a collection of key-value pairs
 #'
 #' @param \ldots key-value pairs (lists with two elements)
 #'
 #' @return a list of objects of class "kvPair"
 #'
-#' @author Ryan Hafen
+#' @seealso \code{\link{kvPair}}
+#' @examples
+#' kvPairs(kvPair(1, letters), kvPair(2, rnorm(10)))
 #' @export
 kvPairs <- function(...) {
   res <- list(...)
   for(i in seq_along(res)) {
-    if(length(res[[i]]) != 2)
-      stop("Each key-value pair must be a list with two elements", call. = FALSE)
-    names(res[[i]]) <- c("key", "value")
-    class(res[[i]]) <- c("kvPair", "list")
+    if(!inherits(res, "kvPair")) {
+      if(length(res[[i]]) != 2)
+        stop("Each key-value pair must be a list with two elements", call. = FALSE)
+      names(res[[i]]) <- c("key", "value")
+      class(res[[i]]) <- c("kvPair", "list")
+    }
   }
   res
 }
+
+
+#' Specify a Key-Value Pair
+#'
+#' Specify a key-value pair
+#'
+#' @param k key - any R object
+#' @param v value - any R object
+#'
+#' @return a list of objects of class "kvPair"
+#'
+#' @seealso \code{\link{kvPairs}}
+#' @examples
+#' kvPair("name", "bob")
+#' @export
+kvPair <- function(k, v)
+  structure(list(key = k, value = v), class = c("kvPair", "list"))
 
 #' Print a key-value pair
 #'
