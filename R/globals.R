@@ -101,11 +101,14 @@ getGlobalVars <- function(globalVars, startEnv) {
 
   repeat {
     curEnvName <- environmentName(curEnv)
-    curEnvName <- gsub("^imports:", "", curEnvName)
     # cat("env: ", curEnvName, "\n")
 
+    # isImports is redundant since ^imports: shouldn't show up in
+    # loadedNamespaces, but it's a good code reminder to ignore imports
+    isImports <- grepl("^imports:", curEnvName)
+
     # only add globals if they are not part of a package
-    if(!(isNamespace(curEnv) && curEnvName %in% lnsp)) {
+    if(!isImports && !isNamespace(curEnv) && !curEnvName %in% lnsp) {
       tmp <- intersect(globalVars, ls(envir = curEnv))
       for(i in seq_along(tmp)) {
         if(is.null(globalVarList[[tmp[i]]])) {
