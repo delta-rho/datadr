@@ -24,7 +24,7 @@ getBasicDdoAttrs.kvLocalDisk <- function(obj, conn) {
   ff <- list.files(fp, recursive = TRUE)
   ff <- ff[!grepl("_meta\\/", ff)]
   if(length(ff) == 0)
-    stop("No data")
+    stop("No data", call. = FALSE)
   sz <- file.info(file.path(fp, ff))$size
   getDat <- function(f) {
     load(f)

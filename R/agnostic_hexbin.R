@@ -57,26 +57,31 @@ drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
         cell = a$cell[1])
     })))
   }, post = {
-    d <- tmpBin
-    d@cell <- res$cell
-    d@count <- res$count
-    d@xcm <- res$xcm
-    d@ycm <- res$ycm
-    d@n <- sum(res$count)
-    d@ncells <- nrow(res)
-    collect(reduce.key, d)
+    collect(reduce.key, res)
   })
 
   parList <- list(
     xVar = xVar, yVar = yVar,
     xTransFn = xTransFn, yTransFn = yTransFn,
     xbnds = xbnds, ybnds = ybnds,
-    xbins = xbins, shape = shape,
-    tmpBin = tmpBin
+    xbins = xbins, shape = shape
   )
 
-  res <- mrExec(data, map = map, reduce = reduce, params = parList, packages = packages, verbose = FALSE)
-  res[[1]][[2]]
+  res <- mrExec(data, map = map, reduce = reduce,
+    params = c(params, parList),
+    packages = unique(c(packages, "datadr", "data.table", "hexbin")),
+    verbose = FALSE)
+  res <- res[[1]][[2]]
+
+  d <- tmpBin
+  d@cell <- res$cell
+  d@count <- res$count
+  d@xcm <- res$xcm
+  d@ycm <- res$ycm
+  d@n <- sum(res$count)
+  d@ncells <- nrow(res)
+
+  d
 }
 
 # map.values <- lapply(data[1:2], "[[", 2)

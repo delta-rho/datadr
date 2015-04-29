@@ -42,11 +42,7 @@ drAggregate <- function(formula, data = data, by = NULL, output = NULL, preTrans
     }
   }
 
-  if(! "package:datadr" %in% search()) {
-    packages <- c(packages, "data.table")
-  } else {
-    packages <- c(packages, "data.table", "datadr")
-  }
+  packages <- c(packages, "datadr")
 
   map <- expression({
     # tabulate all, group, and then collect for each unique "by"

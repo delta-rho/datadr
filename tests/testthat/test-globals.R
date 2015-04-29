@@ -39,7 +39,7 @@ test_that("objects preserved after removed", {
   expect_equal(as.numeric(kvExample(slFf)[[2]]), 21.006)
 
   # should error out because b not found
-  expect_error(slFf2 <- addTransform(bySpecies, ff))
+  expect_error(slFf2 <- addTransform(bySpecies, ff), "not found")
 
   # do extractors work?
   expect_equal(as.numeric(kvExample(slFf)[[2]]), 21.006)

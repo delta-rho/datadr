@@ -55,7 +55,9 @@ divide <- function(data,
     # preTransFn is ignored
     res <- getDivideDF(data, by = by, postTransFn = postTransFn,
       bsvFn = bsvFn, update = update)
-    return(res)
+
+    suppressMessages(output <- output)
+    return(convert(res, output, overwrite = overwrite))
   }
 
   if(!inherits(data, "ddf")) {
@@ -124,24 +126,7 @@ divide <- function(data,
   if(length(globalVarList) > 0)
     parList <- c(parList, globalVarList$vars)
 
-  if(! "package:datadr" %in% search()) {
-    if(verbose)
-      message("* ---- running dev version - sending datadr functions to mr job")
-    parList <- c(parList, list(
-      dfSplit = dfSplit,
-      bsv = bsv,
-      kvApply = kvApply,
-      applyTransform = applyTransform,
-      setupTransformEnv = setupTransformEnv,
-      getCuts = getCuts,
-      getCuts.condDiv = getCuts.condDiv,
-      getCuts.rrDiv = getCuts.rrDiv
-    ))
-
-    packages <- c(packages, "data.table")
-  } else {
-    packages <- c(packages, "datadr", "data.table")
-  }
+  packages <- c(packages, "datadr")
 
   setup <- as.expression(bquote({
     seed <- .(seed)

@@ -1,3 +1,8 @@
+# not all test environments have Hadoop installed
+TEST_HDFS <- Sys.getenv("DATADR_TEST_HDFS")
+if(TEST_HDFS == "")
+  TEST_HDFS <- FALSE
+
 # much of updateAttributes is already tested in kvMemory, kvLocalDisk, etc.
 # but there are some special cases to test that aren't covered there
 
@@ -64,8 +69,9 @@ res4$let <- as.character(res4$let)
 res4$byvar <- as.character(res4$byvar)
 res4 <- subset(res4, Freq > 0)
 
+bbddf <- ddf(list(list(1, bb[1:25,]), list(1, bb[26:75,]), list(1, bb[76:100,])))
+
 test_that("drAggregate results match", {
-  bbddf <- ddf(list(list(1, bb[1:25,]), list(1, bb[26:75,]), list(1, bb[76:100,])))
 
   drRes1 <- drAggregate(~ let, data = bbddf)
   drRes2 <- drAggregate(ct ~ let, data = bbddf)
@@ -77,10 +83,10 @@ test_that("drAggregate results match", {
   drRes3 <- drRes3[order(drRes3$Freq, drRes3$let, drRes3$byvar, decreasing = TRUE),]
   drRes4 <- drRes4[order(drRes4$Freq, drRes4$let, drRes4$byvar, decreasing = TRUE),]
 
-  expect_equal(drRes1, res1)
-  expect_equal(drRes2, res2)
-  expect_equal(drRes3, res3)
-  expect_equal(drRes4, res4)
+  expect_identical(drRes1, res1)
+  expect_identical(drRes2, res2)
+  expect_identical(drRes3, res3)
+  expect_identical(drRes4, res4)
 
   # using "by"
   drAggregate(ct ~ let, by = "byvar", data = bbddf)
@@ -88,3 +94,21 @@ test_that("drAggregate results match", {
   drAggregate(ct ~ let + byvar, by = c("let", "byvar"), data = bbddf)
 })
 
+
+if(TEST_HDFS) {
+
+library(Rhipe)
+rhinit()
+
+path <- "/tmp/aggregate_test"
+try(rhdel(path), silent = TRUE)
+
+bbddfhd <- convert(bbddf, hdfsConn(path, autoYes = TRUE))
+
+test_that("drAggregate hdfs results match", {
+  drRes4 <- drAggregate(ct ~ let + byvar, data = bbddfhd)
+  drRes4 <- drRes4[order(drRes4$Freq, drRes4$let, drRes4$byvar, decreasing = TRUE),]
+  expect_identical(drRes4, res4)
+})
+
+}

@@ -71,19 +71,7 @@ drSubset <- function(data,
     drop = drop
   )
 
-  parList <- c(parList, list(
-    applyTransform = applyTransform,
-    setupTransformEnv = setupTransformEnv,
-    kvApply = kvApply
-  ))
-
-  if(! "package:datadr" %in% search()) {
-    if(verbose)
-      message("* ---- running dev version - sending datadr functions to mr job")
-    packages <- c(packages, "data.table")
-  } else {
-    packages <- c(packages, "datadr", "data.table")
-  }
+  packages <- unique(c(packages, "datadr", "data.table"))
 
   map <- expression({
     df <- data.frame(rbindlist(map.values))

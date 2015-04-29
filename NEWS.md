@@ -1,6 +1,12 @@
-Version 0.7.5.5
+Version 0.7.5.6
 ----------------------------------------------------------------------
 
+- fixes in how global variables are found in transformations
+- improve environment handling in local disk back end
+- more friendly error messages when HDFS connection is empty
+- many improvements and fixes to HDFS back end
+- fix drHexbin to work without needing to pass s4 object to MapReduce
+- many more HDFS unit tests
 - add `drPersist()` method to make transformations persistent
 - clean up several files and fix some check NOTEs
 - add overwrite parameter to convert methods

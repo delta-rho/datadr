@@ -75,7 +75,7 @@ test_that("filter", {
 
 test_that("sample", {
   set.seed(234)
-  sampleRes <- drSample(bySpecies, fraction = 0.25,
+  sampleRes <- drSample(bySpecies, fraction = 0.5,
     output = localDiskConn(sample_path, autoYes = TRUE))
   expect_true(length(sampleRes) == 1)
   expect_true(sampleRes[[1]][[1]] == "Species=virginica")
@@ -97,15 +97,18 @@ test_that("subset", {
 
 if(TEST_HDFS) {
 
+library(Rhipe)
+rhinit()
+
 context("data operations checks (HDFS)")
 
-path <- file.path("/tmp", "dataops_byspecies")
+path <- "/tmp/dataops_byspecies"
 try(rhdel(path), silent = TRUE)
-lapply_path <- file.path("/tmp", "dataops_byspecies_lapply")
+lapply_path <- "/tmp/dataops_byspecies_lapply"
 try(rhdel(lapply_path), silent = TRUE)
-filter_path <- file.path("/tmp", "dataops_byspecies_filter")
+filter_path <- "/tmp/dataops_byspecies_filter"
 try(rhdel(filter_path), silent = TRUE)
-sample_path <- file.path("/tmp", "dataops_byspecies_sample")
+sample_path <- "/tmp/dataops_byspecies_sample"
 try(rhdel(sample_path), silent = TRUE)
 
 bySpecies <- divide(iris, by = "Species", output = hdfsConn(path, autoYes = TRUE))

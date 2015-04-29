@@ -82,22 +82,16 @@ recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwri
   reduce <- combine$reduce
 
   parList <- list(combine = combine)
+  # final is only used at the end
+  # and its namespace conflicts in RHIPE
+  parList$combine$final <- NULL
 
-  # should only need this when datadr is not loaded
-  # but for some reason, it can't find these functions, so always send them
-  # this does not happen in divide
-  parList <- c(parList, list(
-    applyTransform = applyTransform,
-    setupTransformEnv = setupTransformEnv,
-    kvApply = kvApply
-  ))
-
-  if(! "package:datadr" %in% search()) {
-    if(verbose)
-      message("* ---- running dev version - sending datadr functions to mr job")
-  } else {
-    packages <- c(packages, "datadr")
+  for(ii in seq_along(parList$combine)) {
+    if(is.function(parList$combine[[ii]]))
+      environment(parList$combine[[ii]]) <- baseenv()
   }
+
+  packages <- c(packages, "datadr")
 
   globalVarList <- drGetGlobals(apply)
   if(length(globalVarList$vars) > 0)

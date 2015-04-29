@@ -36,13 +36,15 @@ test_that("local disk join", {
 
 if(TEST_HDFS) {
   test_that("hdfs join", {
-    rhdel("/tmp/rhipeTest/sw")
-    rhdel("/tmp/rhipeTest/sl")
+    try(rhdel("/tmp/rhipeTest/sw"), silent = TRUE)
+    try(rhdel("/tmp/rhipeTest/sl"), silent = TRUE)
+    try(rhdel("/tmp/rhipeTest/join"), silent = TRUE)
 
     swh <- convert(sw, hdfsConn("/tmp/rhipeTest/sw", autoYes = TRUE))
     slh <- convert(sl, hdfsConn("/tmp/rhipeTest/sl", autoYes = TRUE))
 
-    a3 <- drJoin(Sepal.Width = swh, Sepal.Length = slh, postTransFn = as.data.frame)
+    a3 <- drJoin(Sepal.Width = swh, Sepal.Length = slh, postTransFn = as.data.frame,
+      output = hdfsConn("/tmp/rhipeTest/join", autoYes = TRUE))
 
     expect_true(all(names(a3[[1]][[2]]) == c("Sepal.Width", "Sepal.Length")))
 
