@@ -2,8 +2,8 @@
 #'
 #' Aggregates data by cross-classifying factors, with a formula interface similar to \code{xtabs}
 #'
-#' @param formula a \code{\link{formula}} object with the cross-classifying variables (separated by +) on the right hand side (or an object which can be coerced to a formula). Interactions are not allowed. On the left hand side, one may optionally give a variable name in the data representing counts; in the latter case, the columns are interpreted as corresponding to the levels of a variable. This is useful if the data have already been tabulated.
 #' @param data a "ddf" containing the variables in the formula \code{formula}
+#' @param formula a \code{\link{formula}} object with the cross-classifying variables (separated by +) on the right hand side (or an object which can be coerced to a formula). Interactions are not allowed. On the left hand side, one may optionally give a variable name in the data representing counts; in the latter case, the columns are interpreted as corresponding to the levels of a variable. This is useful if the data have already been tabulated.
 #' @param by an optional variable name or vector of variable names by which to split up tabulations (i.e. tabulate independently inside of each unique "by" variable value).  The only difference between specifying "by" and placing the variable(s) in the right hand side of the formula is how the computation is done and how the result is returned.
 #' @param output "kvConnection" object indicating where the output data should reside in the case of \code{by} being specified (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param preTransFn an optional function to apply to each subset prior to performing tabulation.  The output from this function should be a data frame containing variables with names that match that of the formula provided.  Note: this is deprecated - instead use \code{\link{addTransform}} prior to calling divide.
@@ -23,7 +23,7 @@
 #' @examples
 #' drAggregate(Sepal.Length ~ Species, data = ddf(iris))
 #' @export
-drAggregate <- function(formula, data = data, by = NULL, output = NULL, preTransFn = NULL, maxUnique = NULL, params = NULL, packages = NULL, control = NULL) {
+drAggregate <- function(data, formula, by = NULL, output = NULL, preTransFn = NULL, maxUnique = NULL, params = NULL, packages = NULL, control = NULL) {
 
   # TODO: check formula on a subset
   # if the number of levels of each factor is too insanely large
