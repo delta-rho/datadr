@@ -4,14 +4,13 @@
 \alias{drAggregate}
 \title{Division-Agnostic Aggregation}
 \usage{
-drAggregate(formula, data = data, by = NULL, output = NULL,
-  preTransFn = NULL, maxUnique = NULL, params = NULL, packages = NULL,
-  control = NULL)
+drAggregate(data, formula, by = NULL, output = NULL, preTransFn = NULL,
+  maxUnique = NULL, params = NULL, packages = NULL, control = NULL)
 }
 \arguments{
-\item{formula}{a \code{\link{formula}} object with the cross-classifying variables (separated by +) on the right hand side (or an object which can be coerced to a formula). Interactions are not allowed. On the left hand side, one may optionally give a variable name in the data representing counts; in the latter case, the columns are interpreted as corresponding to the levels of a variable. This is useful if the data have already been tabulated.}
-
 \item{data}{a "ddf" containing the variables in the formula \code{formula}}
+
+\item{formula}{a \code{\link{formula}} object with the cross-classifying variables (separated by +) on the right hand side (or an object which can be coerced to a formula). Interactions are not allowed. On the left hand side, one may optionally give a variable name in the data representing counts; in the latter case, the columns are interpreted as corresponding to the levels of a variable. This is useful if the data have already been tabulated.}
 
 \item{by}{an optional variable name or vector of variable names by which to split up tabulations (i.e. tabulate independently inside of each unique "by" variable value).  The only difference between specifying "by" and placing the variable(s) in the right hand side of the formula is how the computation is done and how the result is returned.}
 

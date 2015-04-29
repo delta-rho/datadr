@@ -1,6 +1,8 @@
 Version 0.7.5.6
 ----------------------------------------------------------------------
 
+- update `drAggregate()` so first argument is data to be consistent
+- add `kvPair()` method for specifying a key-value pair
 - fixes in how global variables are found in transformations
 - improve environment handling in local disk back end
 - more friendly error messages when HDFS connection is empty

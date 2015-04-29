@@ -67,6 +67,3 @@ test_that("Other methods with addTransform", {
 
   expect_error(drQuantile(bySpeciesLogSL, var = "logSL"), "Cannot run")
 })
-
-
-
