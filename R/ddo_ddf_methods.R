@@ -19,12 +19,14 @@ requiredObjAttrs <- function(obj, ...)
 ### setAttributes
 ######################################################################
 
-#' @rdname ddoddfattr
+#' @name ddo-ddf-attributes
+#' @rdname ddo-ddf-attributes
 #' @export
 setAttributes <- function(obj, attrs)
   UseMethod("setAttributes")
 
-#' @rdname ddoddfattr
+#' @name ddo-ddf-attributes
+#' @rdname ddo-ddf-attributes
 #' @param attrs a named list of attributes to set
 #' @export
 setAttributes.ddf <- function(obj, attrs) {
@@ -36,7 +38,8 @@ setAttributes.ddf <- function(obj, attrs) {
   setAttributes.ddo(obj, attrs[setdiff(seq_len(length(attrs)), ind)])
 }
 
-#' @rdname ddoddfattr
+#' @name ddo-ddf-attributes
+#' @rdname ddo-ddf-attributes
 #' @export
 setAttributes.ddo <- function(obj, attrs) {
   attrNames <- names(attrs)
@@ -75,7 +78,8 @@ setObjAttributes <- function(obj, attrs, type) {
 #' Managing attributes of 'ddo' or 'ddf' objects
 #' @param obj 'ddo' or 'ddf' object
 #' @param attrName name of the attribute to get
-#' @rdname ddoddfattr
+#' @name ddo-ddf-attributes
+#' @rdname ddo-ddf-attributes
 #' @export
 getAttribute <- function(obj, attrName) {
   res <- getAttributes(obj, attrName)
@@ -93,13 +97,15 @@ getAttribute <- function(obj, attrName) {
   }
 }
 
-#' @rdname ddoddfattr
+#' @name ddo-ddf-attributes
+#' @rdname ddo-ddf-attributes
 #' @param \ldots additional arguments
 #' @export
 getAttributes <- function(obj, attrNames)
   UseMethod("getAttributes")
 
-#' @rdname ddoddfattr
+#' @name ddo-ddf-attributes
+#' @rdname ddo-ddf-attributes
 #' @param attrNames vector of names of the attributes to get
 #' @export
 getAttributes.ddf <- function(obj, attrNames) {
@@ -112,7 +118,8 @@ getAttributes.ddf <- function(obj, attrNames) {
 }
 
 # obj is the data object, attrs is a named list of attributes
-#' @rdname ddoddfattr
+#' @name ddo-ddf-attributes
+#' @rdname ddo-ddf-attributes
 #' @export
 getAttributes.ddo <- function(obj, attrNames) {
   ind <- which(attrNames %in% requiredObjAttrs(obj)$ddo)
@@ -133,12 +140,14 @@ getObjAttributes <- function(obj, attrNames, type)
 
 ## returns a boolean vector the same length of the input vector of attribute names
 
-#' @rdname ddoddfattr
+#' @name ddo-ddf-attributes
+#' @rdname ddo-ddf-attributes
 #' @export
 hasAttributes <- function(obj, ...)
   UseMethod("hasAttributes")
 
-#' @rdname ddoddfattr
+#' @name ddo-ddf-attributes
+#' @rdname ddo-ddf-attributes
 hasAttributes.ddf <- function(obj, attrNames) {
   res <- rep(FALSE, length(attrNames))
 
@@ -238,28 +247,30 @@ getBasicDdfAttrs <- function(obj, ...)
 #' Accessor Functions
 #'
 #' Accessor functions for attributes of ddo/ddf objects.  Methods also include \code{nrow} and \code{ncol} for ddf objects.
+#' @name ddo-ddf-accessors
+#' @rdname ddo-ddf-accessors
 #' @param x a 'ddf'/'ddo' object
-#' @param object a 'ddf'/'ddo' object
-#' @param \ldots additional arguments
 #'
 #' @export
-#' @rdname ddo-ddf-accessors
 kvExample <- function(x) {
   res <- getAttribute(x, "example")
   applyTransform(attr(x, "transforms")$transFns, res)
 }
 
 #' @export
+#' @name ddo-ddf-accessors
 #' @rdname ddo-ddf-accessors
 bsvInfo <- function(x)
   getAttribute(x, "bsvInfo")
 
 #' @export
+#' @name ddo-ddf-accessors
 #' @rdname ddo-ddf-accessors
 counters <- function(x)
   getAttribute(x, "counters")
 
 #' @export
+#' @name ddo-ddf-accessors
 #' @rdname ddo-ddf-accessors
 splitSizeDistn <- function(x) {
   if(inherits(x, "transformed")) {
@@ -269,8 +280,9 @@ splitSizeDistn <- function(x) {
   getAttribute(x, "splitSizeDistn")
 }
 
+#' @name ddf-accessors
+#' @rdname ddf-accessors
 #' @export
-#' @rdname ddo-ddf-accessors
 splitRowDistn <- function(x) {
   if(inherits(x, "transformed")) {
     message("The distribution of the number of rows in each subset of a transformed divided data frame is not accessible.")
@@ -281,12 +293,16 @@ splitRowDistn <- function(x) {
 
 # need to change this in the future for k/v store with way too many keys
 #' @export
+#' @name ddo-ddf-accessors
 #' @rdname ddo-ddf-accessors
 getKeys <- function(x)
   getAttribute(x, "keys")
 
-#' @rdname ddo-ddf-accessors
+#' @name ddf-accessors
+#' @rdname ddf-accessors
 #' @method summary ddo
+#' @param object a 'ddf'/'ddo' object
+#' @param \ldots additional arguments
 #' @export
 summary.ddo <- function(object, ...) {
   if(inherits(object, "transformed")) {
@@ -296,7 +312,8 @@ summary.ddo <- function(object, ...) {
   getAttribute(object, "summary")
 }
 
-#' @rdname ddo-ddf-accessors
+#' @name ddf-accessors
+#' @rdname ddf-accessors
 #' @method summary ddf
 #' @export
 summary.ddf <- function(object, ...) {
@@ -307,6 +324,7 @@ summary.ddf <- function(object, ...) {
   getAttribute(object, "summary")
 }
 
+#' @name ddo-ddf-accessors
 #' @rdname ddo-ddf-accessors
 #' @export
 hasExtractableKV <- function(x)
@@ -403,29 +421,23 @@ addNeededAttrs <- function(res, from) {
 setOldClass("ddf")
 setOldClass("ddo")
 
-#' 'ddf' accessors
-#' @name ddf-class
-#' @rdname ddf-class
+#' @rdname ddf-accessors
 #' @exportMethod nrow
 setGeneric("nrow")
-#' 'ddf' accessors
-#' @name ddf-class
-#' @rdname ddf-class
+
+#' @rdname ddf-accessors
 #' @exportMethod NROW
 setGeneric("NROW")
-#' 'ddf' accessors
-#' @name ddf-class
-#' @rdname ddf-class
+
+#' @rdname ddf-accessors
 #' @exportMethod ncol
 setGeneric("ncol")
-#' 'ddf' accessors
-#' @name ddf-class
-#' @rdname ddf-class
+
+#' @rdname ddf-accessors
 #' @exportMethod NCOL
 setGeneric("NCOL")
 
-#' The Number of Rows/Columns of a 'ddf' object
-#' @rdname ddf-class
+#' @rdname ddf-accessors
 #' @param x a 'ddf' object
 #' @export
 #' @aliases nrow
@@ -436,7 +448,7 @@ setMethod("nrow", "ddf", function(x) {
   res
 })
 
-#' @rdname ddf-class
+#' @rdname ddf-accessors
 #' @export
 #' @aliases NROW
 setMethod("NROW", "ddf",  function(x) {
@@ -446,14 +458,14 @@ setMethod("NROW", "ddf",  function(x) {
   res
 })
 
-#' @rdname ddf-class
+#' @rdname ddf-accessors
 #' @export
 #' @aliases ncol
 setMethod("ncol", "ddf", function(x) {
   length(attributes(x)$ddf$vars)
 })
 
-#' @rdname ddf-class
+#' @rdname ddf-accessors
 #' @export
 #' @aliases NCOL
 setMethod("NCOL", "ddf", function(x) {
@@ -465,7 +477,8 @@ setMethod("NCOL", "ddf", function(x) {
 #' Accessor methods for 'ddo' and 'ddf' objects
 #' @export
 #' @method names ddf
-#' @rdname ddo-ddf-accessors
+#' @name ddf-accessors
+#' @rdname ddf-accessors
 names.ddf <- function(x) {
   if(inherits(x, "transformed")) {
     attributes(x)$transforms$varNames
@@ -476,6 +489,7 @@ names.ddf <- function(x) {
 
 #' @export
 #' @method length ddo
+#' @name ddo-ddf-accessors
 #' @rdname ddo-ddf-accessors
 length.ddo <- function(x) {
   getAttribute(x, "nDiv")

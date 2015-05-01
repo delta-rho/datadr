@@ -69,7 +69,7 @@ validateBsvFn <- function(data, bsvFn, verbose = FALSE) {
   if(verbose)
     message("* Testing bsv function on a subset ... ", appendLF = FALSE)
 
-  ex <- kvApply(bsvFn, data)
+  ex <- kvApply(data, bsvFn)$value
 
   if(!is.list(ex))
     stop("bsv function must return a list")

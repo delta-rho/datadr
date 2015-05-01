@@ -10,7 +10,7 @@ drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL,
 \arguments{
 \item{x}{an object of class 'ddo' or 'ddf'}
 
-\item{filterFn}{function that takes a key or key/value pair and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result. If \code{filterFun} takes two parameters (key and value) then it should return a list with the key and \code{TRUE} or \code{FALSE}. See examples for details.}
+\item{filterFn}{function that takes a key or key-value pair and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result. See examples for details.}
 
 \item{output}{a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.}
 
@@ -31,7 +31,7 @@ Filter a 'ddo' or 'ddf' object
 \examples{
 bySpecies <- divide(iris, by = "Species")
 drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
-drFilter(bySpecies, function(k,v) list(k, k != "Species=virginica" & mean(v$Sepal.Width) < 3))
+drFilter(bySpecies, function(k,v) k != "Species=virginica" & mean(v$Sepal.Width) < 3)
 }
 \author{
 Ryan Hafen

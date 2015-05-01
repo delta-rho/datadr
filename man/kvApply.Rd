@@ -4,21 +4,27 @@
 \alias{kvApply}
 \title{Apply Function to Key-Value Pair}
 \usage{
-kvApply(fn, kvPair, returnKV = FALSE)
+kvApply(kvPair, fn)
 }
 \arguments{
+\item{kvPair}{a key-value pair (a list with 2 elements or object created with \code{\link{kvPair}})}
+
 \item{fn}{a function}
-
-\item{kvPair}{a key-value pair (a list with 2 elements)}
-
-\item{returnKV}{should the key and value be returned?}
 }
 \description{
 Apply a function to a single key-value pair - not a traditional R "apply" function.
 }
 \details{
-Determines how a function should be applied to a key-value pair and then applies it: if the function has two formals, it applies the function giving it the key and the value as the arguments, and then expects the function to return a key and a value; if the function has one formal, it applies the function giving it just the value, and expects the function to return a value.
+Determines how a function should be applied to a key-value pair and then applies it: if the function has two formals, it applies the function giving it the key and the value as the arguments; if the function has one formal, it applies the function giving it just the value.  The function is assumed to return a value unless the result is a \code{\link{kvPair}} object.  When the function returns a value the original key will be returned in the resulting key-value pair.
 
-This provides flexibility and simplicity for when a function is only meant to be applied to the value, but still allows keys to be used if desired.
+This provides flexibility and simplicity for when a function is only meant to be applied to the value (the most common case), but still allows keys to be used if desired.
+}
+\examples{
+kv <- kvPair(1, 2)
+kv
+kvApply(kv, function(x) x^2)
+kvApply(kv, function(k, v) v^2)
+kvApply(kv, function(k, v) k + v)
+kvApply(kv, function(x) kvPair("new_key", x))
 }
 

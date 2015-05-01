@@ -44,6 +44,6 @@ irisDdf
 Ryan Hafen
 }
 \seealso{
-\code{addData}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{localDiskConn}}
+\code{\link{addData}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{localDiskConn}}
 }
 

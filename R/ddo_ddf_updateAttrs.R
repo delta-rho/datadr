@@ -56,8 +56,7 @@ updateAttributes <- function(obj, control = NULL) {
         ### ddf
         # only apply transFn *after* ddo attrs have been computed
         if(!is.null(transFn)) {
-          r <- kvApply(transFn, list(k, r))
-
+          r <- kvApply(list(k, r), transFn)$value
         }
         if(!is.na(needs["nRow"])) {
           if(needs["nRow"])

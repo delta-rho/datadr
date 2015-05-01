@@ -47,6 +47,6 @@ This simply creates a "connection" to a directory (which need not have data in i
 Ryan Hafen
 }
 \seealso{
-\code{addData}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{sparkDataConn}}
+\code{\link{addData}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{sparkDataConn}}
 }
 

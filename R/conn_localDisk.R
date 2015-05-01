@@ -15,7 +15,7 @@
 #'
 #' @author Ryan Hafen
 #'
-#' @seealso \code{addData}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{localDiskConn}}
+#' @seealso \code{\link{addData}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{localDiskConn}}
 #'
 #' @examples
 #' # connect to empty localDisk directory
@@ -123,7 +123,7 @@ localDiskConn <- function(loc, nBins = 0, fileHashFn = NULL, autoYes = FALSE, re
 #'
 #' @author Ryan Hafen
 #'
-#' @seealso \code{localDiskConn}, \code{\link{digestFileHash}}
+#' @seealso \code{\link{localDiskConn}}, \code{\link{digestFileHash}}
 #'
 #' @examples
 #' # connect to empty localDisk directory
@@ -159,7 +159,7 @@ charFileHash <- function(keys, conn) {
 #'
 #' @author Ryan Hafen
 #'
-#' @seealso \code{localDiskConn}, \code{\link{charFileHash}}
+#' @seealso \code{\link{localDiskConn}}, \code{\link{charFileHash}}
 #'
 #' @examples
 #' # connect to empty localDisk directory

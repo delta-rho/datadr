@@ -1,25 +1,32 @@
-Version 0.7.5.6
+Version 0.7.5.7
 ----------------------------------------------------------------------
 
+FEATURES / CHANGES
+
+- update logic of how `kvApply()` handles output
 - update `drAggregate()` so first argument is data to be consistent
+- several documentation cleanup updates
 - add `kvPair()` method for specifying a key-value pair
-- fixes in how global variables are found in transformations
 - improve environment handling in local disk back end
 - more friendly error messages when HDFS connection is empty
-- many improvements and fixes to HDFS back end
-- fix drHexbin to work without needing to pass s4 object to MapReduce
 - many more HDFS unit tests
 - add `drPersist()` method to make transformations persistent
-- clean up several files and fix some check NOTEs
 - add overwrite parameter to convert methods
+- add handling of character outputs to default to input connection for convenience in swapping out back ends
+- add `to_ddf()` for converting dplyr grouped tbls to ddfs
+- allow explicit specificaiton of ranges for `drQuantile()` and `drHexbin()`
+
+FIXES
+
+- fixes in how global variables are found in transformations
+- fix drHexbin to work without needing to pass s4 object to MapReduce
+- many improvements and fixes to HDFS back end
+- clean up several files and fix some check NOTEs
 - fix localDisk MapReduce to properly handle NULL reduce
 - fix bug in `drRead.table()` not overwriting output for local disk case
-- add handling of character outputs to default to input connection for convenience in swapping out back ends
 - fix globals to not search in "imports" environments
-- add `to_ddf()` for converting dplyr grouped tbls to ddfs
-- improve error messages for kvApply with keys and values as inputs
 - fix some bugs in `drQuantile()`
-- allow explicit specificaiton of ranges for `drQuantile()` and `drHexbin()`
+- improve error messages for kvApply with keys and values as inputs
 - improve error message in local disk MapReduce when there is no data after map
 - fix bug in `divide()` filtering on conditioning variables
 - fix bug where a ddo could be mistaken for a ddf after running a MR job

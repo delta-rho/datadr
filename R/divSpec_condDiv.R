@@ -45,7 +45,7 @@ getCondCuts <- function(df, splitVars) {
 validateDivSpec.condDiv <- function(by, data, ex) {
   if(by$type == "condDiv") {
     if(!all(by$vars %in% names(ex[[2]]))) {
-      stop("'by' variables for conditioning division are not matched in data after applying preTransFn.  Try kvApply(preTransFn, kvExample(data, transform = TRUE)) to see what is expected.")
+      stop("'by' variables for conditioning division are not matched in data.  Look at a subset of the data, e.g. 'data[[1]]' to see what to expect.")
     }
   }
 

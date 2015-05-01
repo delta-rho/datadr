@@ -18,7 +18,7 @@
 #'
 #' @author Ryan Hafen
 #'
-#' @seealso \code{addData}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{sparkDataConn}}
+#' @seealso \code{\link{addData}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{sparkDataConn}}
 #'
 #' @examples
 #' \dontrun{
@@ -114,7 +114,7 @@ addData.sparkDataConn <- function(conn, data, overwrite = FALSE) {
     ff <- rhls(conn$loc)$file
     ff <- ff[grepl("^data[0-9]+$", ff)]
   } else {
-    ff <- list.files(conn$loc, pattern = "^data[0-9]+$")    
+    ff <- list.files(conn$loc, pattern = "^data[0-9]+$")
   }
 
   saveAsObjectFile(pdat, paste(conn$hdfsURI, conn$loc, "/data", length(ff), sep = ""))
