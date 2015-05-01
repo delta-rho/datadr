@@ -14,7 +14,7 @@
 #'
 #' @author Ryan Hafen
 #'
-#' @seealso \code{addData}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{localDiskConn}}
+#' @seealso \code{\link{addData}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{localDiskConn}}
 #'
 #' @examples
 #' \dontrun{

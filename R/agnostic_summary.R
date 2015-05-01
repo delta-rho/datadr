@@ -5,13 +5,14 @@
 #' Functions to Compute Summary Statistics in MapReduce
 #'
 #' Functions that are used to tabulate categorical variables and compute moments for numeric variables inside through the MapReduce framework.  Used in \code{\link{updateAttributes}}.
-
+#'
+#' @name mr-summary-stats
 #' @param formula a formula to be used in \code{\link{xtabs}}
 #' @param data a subset of a 'ddf' object
 #' @param maxUnique the maximum number of unique combinations of variables to obtaion tabulations for.  This is meant to help against cases where a variable in the formula has a very large number of levels, to the point that it is not meaningful to tabulate and is too computationally burdonsome.  If \code{NULL}, it is ignored.  If a positive number, only the top and bottom \code{maxUnique} tabulations by frequency are kept.
 #'
 #' @export
-#' @rdname mrSummaryStats
+#' @rdname mr-summary-stats
 tabulateMap <- function(formula, data) {
   if(length(data) > 0) {
     tmp <- xtabs(formula, data = data)
@@ -25,7 +26,7 @@ tabulateMap <- function(formula, data) {
 
 #' @param result,reduce.values inconsequential \code{tabulateReduce} parameters
 #' @export
-#' @rdname mrSummaryStats
+#' @rdname mr-summary-stats
 tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
   tmp <- data.frame(rbindlist(reduce.values))
   tmp <- rbind(result, tmp)
@@ -51,7 +52,7 @@ tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
 
 #' @param y,order,na.rm inconsequential \code{calculateMoments} parameters
 #' @export
-#' @rdname mrSummaryStats
+#' @rdname mr-summary-stats
 calculateMoments <- function(y, order = 1, na.rm = TRUE) {
   if(na.rm)
     y <- y[!is.na(y)]
@@ -74,7 +75,7 @@ calculateMoments <- function(y, order = 1, na.rm = TRUE) {
 
 #' @param m1,m2 inconsequential \code{combineMoments} parameters
 #' @export
-#' @rdname mrSummaryStats
+#' @rdname mr-summary-stats
 combineMoments <- function(m1, m2) {
   if(length(m1) != length(m2))
     stop("objects not of the same length")
@@ -101,7 +102,7 @@ combineMoments <- function(m1, m2) {
 
 #' @param \ldots inconsequential parameters
 #' @export
-#' @rdname mrSummaryStats
+#' @rdname mr-summary-stats
 combineMultipleMoments <- function(...) {
   args <- list(...)
 
@@ -128,7 +129,7 @@ combineMultipleMoments <- function(...) {
 
 #' @param m inconsequential \code{moments2statistics} parameters
 #' @export
-#' @rdname mrSummaryStats
+#' @rdname mr-summary-stats
 moments2statistics <- function(m) {
   order <- length(m) - 1
   n <- m$n

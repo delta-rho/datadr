@@ -297,9 +297,11 @@ flatten <- function(x) {
 # (this is meant to be called in parallel)
 
 #' Functions used in divide()
-#' @rdname divideInternals
+#' @name divide-internals
+#' @rdname divide-internals
 #' @param curDF,seed arguments
 #' @export
+#' @note These functions can be ignored.  They are only exported to make their use in a distributed setting more convenient.
 dfSplit <- function(curDF, by, seed) {
   # remove factor levels, if any
   # TODO: keep track of factor levels
@@ -311,7 +313,7 @@ dfSplit <- function(curDF, by, seed) {
   split(curDF, getCuts(by, curDF))
 }
 
-#' @rdname divideInternals
+#' @rdname divide-internals
 #' @param curSplit,bsvFn,by,postTransFn arguments
 #' @export
 addSplitAttrs <- function(curSplit, bsvFn, by, postTransFn = NULL) {

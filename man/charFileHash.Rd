@@ -33,6 +33,6 @@ list.files(path)
 Ryan Hafen
 }
 \seealso{
-\code{localDiskConn}, \code{\link{digestFileHash}}
+\code{\link{localDiskConn}}, \code{\link{digestFileHash}}
 }
 

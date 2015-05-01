@@ -39,4 +39,11 @@ Ryan Hafen
 \seealso{
 \code{\link{drJoin}}, \code{\link{drLapply}}
 }
+\concept{
+Data Operations
+
+Stuff
+
+Items
+}
 

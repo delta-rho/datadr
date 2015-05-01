@@ -43,6 +43,6 @@ This simply creates a "connection" to a directory on HDFS (which need not have d
 Ryan Hafen
 }
 \seealso{
-\code{addData}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{localDiskConn}}
+\code{\link{addData}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{localDiskConn}}
 }
 

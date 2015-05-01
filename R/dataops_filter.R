@@ -14,6 +14,9 @@
 #'
 #' @author Ryan Hafen
 #'
+#' @concept Data Operations
+#' @concept Stuff
+#' @concept Items
 #' @seealso \code{\link{drJoin}}, \code{\link{drLapply}}
 #'
 #' @examples
