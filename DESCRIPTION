@@ -12,6 +12,7 @@ Description: Methods for dividing data into subsets, applying analytical
     Integrated Programming Environment (RHIPE).  Also includes experimental
     support for key-value pairs stored as Spark RDDs using the SparkR package.
 License: BSD_3_clause + file LICENSE
+URL: http://tessera.io/docs-datadr
 LazyLoad: yes
 LazyData: yes
 Imports:
