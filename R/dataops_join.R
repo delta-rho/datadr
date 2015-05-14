@@ -1,8 +1,8 @@
 #' Join Two Data Sources by Key
 #'
-#' Join two distributed data object (DDO) sources by key
-#'
-#' @param \ldots one or more named DDO objects that will be joined, separated by commas (see Examples for syntax) - assumed that all are of same type (all HDFS, all localDisk, all in-memory). Specifically, each object should inherit from the 'ddo' class.
+#' Outer join of two or more distributed data object (DDO) sources by key
+#' 
+#' @param \ldots Input data sources: two or more named DDO objects that will be joined, separated by commas (see Examples for syntax).  Specifically, each input object should inherit from the 'ddo' class.  It is assumed that all input sources are of same type (all HDFS, all localDisk, all in-memory). 
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param postTransFn an optional function to be applied to the each final key-value pair after joining
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
@@ -10,7 +10,7 @@
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #'
-#' @return a 'ddo' object stored in the \code{output} connection, where the values are named lists with names according to the names given to the input data objects, and values are the corresponding data
+#' @return a 'ddo' object stored in the \code{output} connection, where the values are named lists with names according to the names given to the input data objects, and values are the corresponding data. The 'ddo' object contains the union of all the keys contained in the input ddo objects.
 #'
 #' @author Ryan Hafen
 #'
