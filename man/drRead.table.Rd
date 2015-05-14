@@ -55,7 +55,7 @@
 
 \item{overwrite}{logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)}
 
-\item{params}{a named list of parameters external to the input data that are needed in \code{postTransFn}}
+\item{params}{a named list of objects external to the input data that are needed in \code{postTransFn}}
 
 \item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 

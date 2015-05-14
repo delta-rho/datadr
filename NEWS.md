@@ -1,3 +1,14 @@
+Version 0.7.5.8
+----------------------------------------------------------------------
+
+FEATURES / CHANGES
+
+- clarify and improve documentation for numerous functions
+
+FIXES
+
+- improve error handling in `drJoin()`
+
 Version 0.7.5.7
 ----------------------------------------------------------------------
 

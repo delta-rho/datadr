@@ -10,13 +10,13 @@ drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL,
 \arguments{
 \item{x}{an object of class 'ddo' or 'ddf'}
 
-\item{filterFn}{function that takes a key or key-value pair and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result. See examples for details.}
+\item{filterFn}{function that takes either a key-value pair (as two arguments) or just a value (as a single argument) and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result. See examples for details.}
 
 \item{output}{a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.}
 
 \item{overwrite}{logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)}
 
-\item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+\item{params}{a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{packages}{a vector of R package names that contain functions used in \code{filterFn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
@@ -26,11 +26,16 @@ drFilter(x, filterFn, output = NULL, overwrite = FALSE, params = NULL,
 a 'ddo' or 'ddf' object
 }
 \description{
-Filter a 'ddo' or 'ddf' object
+Filter a 'ddo' or 'ddf' object by selecting key-value pairs that satisfy a logical condition
 }
 \examples{
+# Create a ddf using the iris data
 bySpecies <- divide(iris, by = "Species")
+
+# Filter using only the value
 drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
+
+# Filter using both key and value
 drFilter(bySpecies, function(k,v) k != "Species=virginica" & mean(v$Sepal.Width) < 3)
 }
 \author{
