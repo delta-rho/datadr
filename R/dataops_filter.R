@@ -1,9 +1,9 @@
 #' Filter a 'ddo' or 'ddf' Object
 #'
-#' Filter a 'ddo' or 'ddf' object
+#' Filter a 'ddo' or 'ddf' object by selecting key-value pairs that satisfy a logical condition
 #'
 #' @param x an object of class 'ddo' or 'ddf'
-#' @param filterFn function that takes a key or key-value pair and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result. See examples for details.
+#' @param filterFn function that takes either a key-value pair (as two arguments) or just a value (as a single argument) and returns either \code{TRUE} or \code{FALSE} - if \code{TRUE}, that key-value pair will be present in the result. See examples for details.
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param params a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
@@ -17,8 +17,13 @@
 #' @seealso \code{\link{drJoin}}, \code{\link{drLapply}}
 #'
 #' @examples
+#' # Create a ddf using the iris data
 #' bySpecies <- divide(iris, by = "Species")
+#' 
+#' # Filter using only the value
 #' drFilter(bySpecies, function(v) mean(v$Sepal.Width) < 3)
+#'
+#' # Filter using both key and value
 #' drFilter(bySpecies, function(k,v) k != "Species=virginica" & mean(v$Sepal.Width) < 3)
 #' @export
 drFilter <- function(x, filterFn, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL) {
