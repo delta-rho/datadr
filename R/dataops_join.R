@@ -1,4 +1,4 @@
-#' Join Two Data Sources by Key
+#' Join Data Sources by Key
 #'
 #' Outer join of two or more distributed data object (DDO) sources by key
 #' 
@@ -10,7 +10,7 @@
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #'
-#' @return a 'ddo' object stored in the \code{output} connection, where the values are named lists with names according to the names given to the input data objects, and values are the corresponding data. The 'ddo' object contains the union of all the keys contained in the input ddo objects.
+#' @return a 'ddo' object stored in the \code{output} connection, where the values are named lists with names according to the names given to the input data objects, and values are the corresponding data. The 'ddo' object contains the union of all the keys contained in the input 'ddo' objects specified in \code{\ldots}.
 #'
 #' @author Ryan Hafen
 #'
