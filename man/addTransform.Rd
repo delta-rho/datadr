@@ -13,7 +13,7 @@ addTransform(obj, fn, name = NULL, params = NULL, packages = NULL)
 
 \item{name}{optional name of the transformation}
 
-\item{params}{a named list of parameters external to \code{obj} that are needed in the transformation function (most should be taken care of automatically such that this is rarely necessary to specify)}
+\item{params}{a named list of objects external to \code{obj} that are needed in the transformation function (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 }

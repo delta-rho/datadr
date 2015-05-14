@@ -23,7 +23,7 @@
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.  If a character string, it will be treated as a path to be passed to the same type of connection as \code{data} - relative paths will be relative to the working directory of that back end.
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
-#' @param params a named list of parameters external to the input data that are needed in the map or reduce phases
+#' @param params a named list of objects external to the input data that are needed in the map or reduce phases
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param verbose logical - print messages about what is being done
 #'

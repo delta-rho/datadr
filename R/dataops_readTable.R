@@ -27,7 +27,7 @@
 #' @param postTransFn a function to be applied after a block is read in to provide any additional processingn before the block is stored
 #' @param output a "kvConnection" object indicating where the output data should reside.  Must be a \code{\link{localDiskConn}} object if input is a text file on local disk, or a \code{\link{hdfsConn}} object if input is a text file on HDFS.
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
-#' @param params a named list of parameters external to the input data that are needed in \code{postTransFn}
+#' @param params a named list of objects external to the input data that are needed in \code{postTransFn}
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #'
