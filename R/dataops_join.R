@@ -1,12 +1,12 @@
 #' Join Two Data Sources by Key
 #'
-#' Join two data sources by key
+#' Join two distributed data object (DDO) sources by key
 #'
-#' @param \ldots named lists of input objects - assumed that all are of same type (all HDFS, all localDisk, all in-memory)
+#' @param \ldots one or more named DDO objects that will be joined, separated by commas (see Examples for syntax) - assumed that all are of same type (all HDFS, all localDisk, all in-memory). Specifically, each object should inherit from the 'ddo' class.
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param postTransFn an optional function to be applied to the each final key-value pair after joining
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
-#' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
+#' @param params a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #'
@@ -27,6 +27,13 @@
 drJoin <- function(..., output = NULL, overwrite = FALSE, postTransFn = NULL, params = NULL, packages = NULL, control = NULL) {
 
   inputs <- list(...)
+
+  # Check the structure of 'inputs'.  At this point, it should be a list of objects that inherit
+  # from ddo
+  if(!all(sapply(inputs, inherits, what = "ddo"))) {
+    stop("'...' must be one or more objects that inherit from the 'ddo' class")
+  }
+  
 
   map <- expression({
     for(i in seq_along(map.keys)) {
