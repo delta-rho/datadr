@@ -74,7 +74,7 @@ drSubset <- function(data,
   packages <- unique(c(packages, "datadr", "data.table"))
 
   map <- expression({
-    df <- data.frame(rbindlist(map.values))
+    df <- data.frame(data.table::rbindlist(map.values))
 
     r <- if(is.null(subset)) {
   	  rep_len(TRUE, nrow(df))
@@ -100,7 +100,7 @@ drSubset <- function(data,
         df[[length(df) + 1]] <- reduce.values
     },
     post = {
-      df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
+      df <- data.frame(data.table::rbindlist(unlist(df, recursive = FALSE)))
       df <- df[1:min(nrow(df), maxRows),]
       collect(reduce.key, df)
     }

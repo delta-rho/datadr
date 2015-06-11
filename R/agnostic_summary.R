@@ -28,7 +28,7 @@ tabulateMap <- function(formula, data) {
 #' @export
 #' @rdname mr-summary-stats
 tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
-  tmp <- data.frame(rbindlist(reduce.values))
+  tmp <- data.frame(data.table::rbindlist(reduce.values))
   tmp <- rbind(result, tmp)
   tmp <- xtabs(Freq ~ ., data = tmp)
   if(length(tmp) > 0) {

@@ -75,7 +75,7 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
   mids <- seq(rng[1], rng[2], by = delta)
 
   map <- expression({
-    dat <- data.frame(rbindlist(lapply(seq_along(map.values), function(i) {
+    dat <- data.frame(data.table::rbindlist(lapply(seq_along(map.values), function(i) {
       res <- data.frame(
         v = varTransFn(map.values[[i]][, var]),
         map.values[[i]][, by, drop = FALSE],
@@ -178,7 +178,7 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
         stringsAsFactors = FALSE
       )
     })
-    res <- data.frame(rbindlist(res))
+    res <- data.frame(data.table::rbindlist(res))
   }
 
   res

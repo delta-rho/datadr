@@ -37,7 +37,7 @@ drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
   tmpBin <- hexbin(xTransFn(tmpSub[[xVar]]), yTransFn(tmpSub[[yVar]]), xbnds = xbnds, ybnds = ybnds, xbins = xbins, shape = shape)
 
   map <- expression({
-    dat <- data.frame(rbindlist(map.values))
+    dat <- data.frame(data.table::rbindlist(map.values))
 
     tmp <- hexbin(xTransFn(dat[[xVar]]), yTransFn(dat[[yVar]]), xbnds = xbnds, ybnds = ybnds, xbins = xbins, shape = shape)
 
@@ -48,8 +48,8 @@ drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
   reduce <- expression(pre = {
     res <- NULL
   }, reduce = {
-    res <- data.frame(rbindlist(c(list(res), reduce.values)))
-    res <- data.frame(rbindlist(by(res, res$cell, function(a) {
+    res <- data.frame(data.table::rbindlist(c(list(res), reduce.values)))
+    res <- data.frame(data.table::rbindlist(by(res, res$cell, function(a) {
       tot <- sum(a$count)
       data.frame(count = tot,
         xcm = sum(a$xcm * a$count) / tot,
