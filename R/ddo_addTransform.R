@@ -103,11 +103,11 @@ addTransform <- function(obj, fn, name = NULL, params = NULL, packages = NULL) {
   message(" ok")
 
   classes <- class(obj)
-  if(!is.data.frame(res)) {
+  if(!is.data.frame(res$value)) {
     classes <- setdiff(classes, "ddf")
     varNames <- NULL
   } else {
-    varNames <- lapply(res, class)
+    varNames <- lapply(res$value, class)
     # if original wasn't a ddf, make this one
     ind <- which(classes == "ddo")
     classes <- c(classes[1:ind], "ddf", classes[(ind + 1):length(classes)])
