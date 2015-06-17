@@ -23,6 +23,13 @@
 drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity, xRange = NULL, yRange = NULL, xbins = 30, shape = 1, params = NULL, packages = NULL, control = NULL) {
 
   if(is.null(xRange) || is.null(yRange)) {
+    # we need to know the range of the variables, which we don't
+    # when we have a transformed object - and can't update attributes
+    # (transformed objects are meant to be intermediate objects anyway)
+    if(inherits(data, "transformed")) {
+      stop("Cannot run drQuantile() on a transformed divided data object without xRange or yRange being explicitly specified.  Please specify these or first call drPersist() on this data to make transformation persistent.", call. = FALSE)
+    }
+
     if(class(summary(data))[1] == "logical")
       stop("Need to know the range of the variable to compute hexbins - please run updateAttributes on this data.")
 

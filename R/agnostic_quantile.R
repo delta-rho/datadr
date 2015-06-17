@@ -49,7 +49,7 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
   # when we have a transformed object - and can't update attributes
   # (transformed objects are meant to be intermediate objects anyway)
   if(inherits(x, "transformed") && is.null(varRange)) {
-    stop("Cannot run drQuantile() on a transformed divided data object.", call. = FALSE)
+    stop("Cannot run drQuantile() on a transformed divided data object without varRange being specified explicitly.  Please specify varRange or first call drPersist() on this data to make transformation persistent.", call. = FALSE)
   }
 
   if(!inherits(x, "ddf")) {
