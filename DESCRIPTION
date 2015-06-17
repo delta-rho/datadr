@@ -1,9 +1,9 @@
 Package: datadr
 Type: Package
 Title: Divide and Recombine for Large, Complex Data
-Version: 0.7.5.7
-Date: 2015-05-01
-Author: Ryan Hafen
+Version: 0.7.5.8
+Date: 2015-06-16
+Authors@R: person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre"))
 Maintainer: Ryan Hafen <rhafen@gmail.com>
 Description: Methods for dividing data into subsets, applying analytical
     methods to the subsets, and recombining the results.  Comes with a generic
@@ -12,10 +12,9 @@ Description: Methods for dividing data into subsets, applying analytical
     Integrated Programming Environment (RHIPE).  Also includes experimental
     support for key-value pairs stored as Spark RDDs using the SparkR package.
 License: BSD_3_clause + file LICENSE
+URL: http://tessera.io/docs-datadr
 LazyLoad: yes
 LazyData: yes
-Depends:
-    R (>= 2.15.1)
 Imports:
     data.table,
     digest,

@@ -1,4 +1,4 @@
-Version 0.7.5.7
+Version 0.7.5.8
 ----------------------------------------------------------------------
 
 FEATURES / CHANGES
@@ -18,6 +18,9 @@ FEATURES / CHANGES
 
 FIXES
 
+- more meaningful error messages for drHexbin and drQuantile when dealing with transforms
+- fix bug in addTransform dealing with new kvApply behavior
+- fix to namespace rbindlist in MapReduce code
 - fixes in how global variables are found in transformations
 - fix drHexbin to work without needing to pass s4 object to MapReduce
 - many improvements and fixes to HDFS back end

@@ -168,7 +168,7 @@ divide <- function(data,
 
         for(ii in seq_len(floor(nr / MAX_ROWS))) {
           spillCount <- spillCount + 1
-          df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
+          df <- data.frame(data.table::rbindlist(unlist(df, recursive = FALSE)))
 
           # do what is needed and collect
           if(kvApply(list(reduce.key, df[1:MAX_ROWS,]), filterFn)$value) {
@@ -184,7 +184,7 @@ divide <- function(data,
       }
     },
     post = {
-      df <- data.frame(rbindlist(unlist(df, recursive = FALSE)))
+      df <- data.frame(data.table::rbindlist(unlist(df, recursive = FALSE)))
       # if we never reached MAX_ROWS, don't append count to key
       if(spillCount > 0)
         reduce.key <- paste(reduce.key, spillCount + 1, sep = "_")
