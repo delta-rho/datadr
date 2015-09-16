@@ -4,6 +4,7 @@
 #'
 #' @param data a distributed data frame
 #' @param xVar,yVar names of the variables to use
+#' @param by an optional variable name or vector of variable names by which to group hexbin computations
 #' @param xTransFn,yTransFn a transformation function to apply to the x and y variables prior to binning
 #' @param xRange,yRange range of x and y variables (can be left blank if summaries have been computed)
 #' @param xbins the number of bins partitioning the range of xbnds
@@ -20,7 +21,7 @@
 #'
 #' @seealso \code{\link{drQuantile}}
 #' @export
-drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity, xRange = NULL, yRange = NULL, xbins = 30, shape = 1, params = NULL, packages = NULL, control = NULL) {
+drHexbin <- function(data, xVar, yVar, by = NULL, xTransFn = identity, yTransFn = identity, xRange = NULL, yRange = NULL, xbins = 30, shape = 1, params = NULL, packages = NULL, control = NULL) {
 
   if(is.null(xRange) || is.null(yRange)) {
     # we need to know the range of the variables, which we don't
@@ -46,10 +47,19 @@ drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
   map <- expression({
     dat <- data.frame(data.table::rbindlist(map.values))
 
-    tmp <- hexbin(xTransFn(dat[[xVar]]), yTransFn(dat[[yVar]]), xbnds = xbnds, ybnds = ybnds, xbins = xbins, shape = shape)
+    if(is.null(by)) {
+      inds <- list("1" = seq_len(nrow(dat)))
+    } else {
+      splits <- getCondCuts(dat[, by, drop = FALSE], by)
+      inds <- split(seq_along(splits), splits)
+    }
+    indsNms <- names(inds)
+    for(ii in seq_along(inds)) {
+      tmp <- hexbin(xTransFn(dat[[xVar]][inds[[ii]]]), yTransFn(dat[[yVar]][inds[[ii]]]), xbnds = xbnds, ybnds = ybnds, xbins = xbins, shape = shape)
 
-    collect("1",
-      data.frame(count = tmp@count, xcm = tmp@xcm, ycm = tmp@ycm, cell = tmp@cell))
+      collect(indsNms[ii],
+        data.frame(count = tmp@count, xcm = tmp@xcm, ycm = tmp@ycm, cell = tmp@cell))
+    }
   })
 
   reduce <- expression(pre = {
@@ -68,7 +78,7 @@ drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
   })
 
   parList <- list(
-    xVar = xVar, yVar = yVar,
+    xVar = xVar, yVar = yVar, by = by,
     xTransFn = xTransFn, yTransFn = yTransFn,
     xbnds = xbnds, ybnds = ybnds,
     xbins = xbins, shape = shape
@@ -78,17 +88,33 @@ drHexbin <- function(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
     params = c(params, parList),
     packages = unique(c(packages, "datadr", "data.table", "hexbin")),
     verbose = FALSE)
-  res <- res[[1]][[2]]
 
-  d <- tmpBin
-  d@cell <- res$cell
-  d@count <- res$count
-  d@xcm <- res$xcm
-  d@ycm <- res$ycm
-  d@n <- sum(res$count)
-  d@ncells <- nrow(res)
+  if(is.null(by)) {
+    res <- res[[1]][[2]]
+    d <- tmpBin
+    d@cell <- res$cell
+    d@count <- res$count
+    d@xcm <- res$xcm
+    d@ycm <- res$ycm
+    d@n <- sum(res$count)
+    d@ncells <- nrow(res)
+    res <- d
+  } else {
+    resKeys <- sapply(res, "[[", 1)
+    res <- lapply(res, function(x) {
+      d <- tmpBin
+      d@cell <- x[[2]]$cell
+      d@count <- x[[2]]$count
+      d@xcm <- x[[2]]$xcm
+      d@ycm <- x[[2]]$ycm
+      d@n <- sum(x[[2]]$count)
+      d@ncells <- nrow(x[[2]])
+      d
+    })
+    names(res) <- resKeys
+  }
 
-  d
+  res
 }
 
 # map.values <- lapply(data[1:2], "[[", 2)
