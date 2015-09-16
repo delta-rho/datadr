@@ -4,7 +4,7 @@
 \alias{divide}
 \title{Divide a Distributed Data Object}
 \usage{
-divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
+divide(data, by = NULL, spill = 1000000, filterFn = NULL, bsvFn = NULL,
   output = NULL, overwrite = FALSE, preTransFn = NULL,
   postTransFn = NULL, params = NULL, packages = NULL, control = NULL,
   update = FALSE, verbose = TRUE)
