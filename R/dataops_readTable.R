@@ -265,7 +265,8 @@ readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, rea
     res <- do.call(read.table, readTabParams)
     if(is.null(readTabParams$col.names))
       names(res) <- hd
-    id <- Sys.getenv("mapred.task.id")
+    # id <- Sys.getenv("mapred.task.id")
+    id <- as.integer(Sys.time()) + runif(1) * 10000000
     collect(id, postTransFn(res))
   })
   control$mapred$rhipe_map_buff_size <- format(rowsPerBlock, scientific = FALSE)

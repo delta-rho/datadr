@@ -166,7 +166,7 @@ saveAttrs.hdfsConn <- function(obj, attrs, type = "ddo") {
 }
 
 loadRhipe <- function() {
-  if(!requireNamespace("Rhipe", quietly = TRUE)) {
+  if(!require("Rhipe", quietly = TRUE)) {
     stop("Package 'Rhipe' is needed for this function to work. Please install it.",
     call. = FALSE)
   }
@@ -174,13 +174,13 @@ loadRhipe <- function() {
   if(is.null(rhoptions()$server)) {
     message("* RHIPE is not initialized... initializing")
     rhinit()
+  }
 
-    # make sure _meta files are ignored
-    rgx <- rhoptions()$file.types.remove.regex
-    if(!grepl("/_meta", rgx)) {
-      rgx <- gsub("\\(", "(_meta|", rgx)
-      rhoptions(file.types.remove.regex = rgx)
-    }
+  # make sure _meta files are ignored
+  rgx <- rhoptions()$file.types.remove.regex
+  if(!grepl("/_meta", rgx)) {
+    rgx <- gsub("^\\(", "(_meta|", rgx)
+    rhoptions(file.types.remove.regex = rgx)
   }
 }
 

@@ -4,14 +4,16 @@
 \alias{drHexbin}
 \title{HexBin Aggregation for Distributed Data Frames}
 \usage{
-drHexbin(data, xVar, yVar, xTransFn = identity, yTransFn = identity,
-  xRange = NULL, yRange = NULL, xbins = 30, shape = 1, params = NULL,
-  packages = NULL, control = NULL)
+drHexbin(data, xVar, yVar, by = NULL, xTransFn = identity,
+  yTransFn = identity, xRange = NULL, yRange = NULL, xbins = 30,
+  shape = 1, params = NULL, packages = NULL, control = NULL)
 }
 \arguments{
 \item{data}{a distributed data frame}
 
 \item{xVar,yVar}{names of the variables to use}
+
+\item{by}{an optional variable name or vector of variable names by which to group hexbin computations}
 
 \item{xTransFn,yTransFn}{a transformation function to apply to the x and y variables prior to binning}
 
