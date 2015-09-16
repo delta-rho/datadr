@@ -91,12 +91,15 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
 
   # if reduce is NULL, don't do reduce
   # but if it's a number, n, do an identity reduce with n reduce tasks
-  if(is.numeric(reduce))
-    reduce <- expression({
-      reduce = {
-        collect(reduce.key, reduce.values)
-      }
-    })
+  if(is.numeric(reduce)) {
+    if(reduce > 0) {
+      reduce <- expression({
+        reduce = {
+          collect(reduce.key, reduce.values)
+        }
+      })
+    }
+  }
 
   mapApplyTransform <- expression({
     curTrans <- transFns[[.dataSourceName]]
