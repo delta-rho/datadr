@@ -1,8 +1,9 @@
-Version 0.7.5.8
+Version 0.7.5.9
 ----------------------------------------------------------------------
 
 FEATURES / CHANGES
 
+- add 'by' argument to drHexbin
 - update logic of how `kvApply()` handles output
 - update `drAggregate()` so first argument is data to be consistent
 - several documentation cleanup updates
@@ -18,6 +19,8 @@ FEATURES / CHANGES
 
 FIXES
 
+- fix loading of RHIPE and modifying RHIPE regex
+- make keys in drRead.table more unique
 - more meaningful error messages for drHexbin and drQuantile when dealing with transforms
 - fix bug in addTransform dealing with new kvApply behavior
 - fix to namespace rbindlist in MapReduce code
