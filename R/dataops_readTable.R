@@ -280,7 +280,7 @@ readTable.hdfsConn <- function(file, rowsPerBlock, skip, header, hd, hdText, rea
     postTransFn = postTransFn
   )
 
-  ddf(mrExec(ddo(file), map = map, control = control, output = output, overwrite = overwrite, params = c(params, parList), packages = packages))
+  ddf(mrExec(ddo(file), map = map, reduce = 0, control = control, output = output, overwrite = overwrite, params = c(params, parList), packages = packages))
 }
 
 # readTable.sparkDataConn <- function(file, rowsPerBlock, skip, header, hd, hdText, readTabParams, postTransFn, output, overwrite, params, packages, control) {
