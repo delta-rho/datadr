@@ -11,7 +11,7 @@
 #' @param varRange range of x (can be left blank if summaries have been computed)
 #' @param nBins how many bins should the range of the variable be split into?
 #' @param tails how many exact values at each tail should be retained?
-#' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
+#' @param params a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param \ldots additional arguments
