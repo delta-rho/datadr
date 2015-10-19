@@ -5,7 +5,7 @@
 \title{Subsetting Distributed Data Frames}
 \usage{
 drSubset(data, subset = NULL, select = NULL, drop = FALSE,
-  preTransFn = NULL, maxRows = 500000, params = NULL, packages = NULL,
+  preTransFn = NULL, maxRows = 5e+05, params = NULL, packages = NULL,
   control = NULL, verbose = TRUE)
 }
 \arguments{
@@ -21,7 +21,7 @@ drSubset(data, subset = NULL, select = NULL, drop = FALSE,
 
 \item{maxRows}{the maximum number of rows to return}
 
-\item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+\item{params}{a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 

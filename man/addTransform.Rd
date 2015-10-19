@@ -13,7 +13,7 @@ addTransform(obj, fn, name = NULL, params = NULL, packages = NULL)
 
 \item{name}{optional name of the transformation}
 
-\item{params}{a named list of parameters external to \code{obj} that are needed in the transformation function (most should be taken care of automatically such that this is rarely necessary to specify)}
+\item{params}{a named list of objects external to \code{obj} that are needed in the transformation function (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 }
@@ -21,12 +21,16 @@ addTransform(obj, fn, name = NULL, params = NULL, packages = NULL)
 Add a transformation function to be applied to each subset of a distributed data object
 }
 \details{
-When you add a transformation to a distributed data object, the transformation is not applied immediately, but is deferred until a function that kicks off a computation is done.  These include \code{\link{divide}}, \code{\link{recombine}}, \code{\link{drJoin}}, \code{\link{drLapply}}, \code{\link{drFilter}}, \code{\link{drSample}}, \code{drSubset}.  When any of these are invoked on an object with a transformation attached to it, the transformation will be applied in the map phase of the MapReduce computation prior to any other computation.  The transformation will also be applied any time a subset of the data is requested.  Thus although the data has not been physically transformed after a call of \code{addTransform}, we can think of it conceptually as already being transformed.
+When you add a transformation to a distributed data object, the transformation is not applied immediately, but is deferred until a function that kicks off a computation is done.  These include \code{\link{divide}}, \code{\link{recombine}}, \code{\link{drJoin}}, \code{\link{drLapply}}, \code{\link{drFilter}}, \code{\link{drSample}}, \code{drSubset}.  When any of these are invoked on an object with a transformation attached to it, the transformation will be applied in the map phase of the MapReduce computation prior to any other computation.  The transformation will also be applied any time a subset of the data is requested.  Although the data has not been physically transformed after a call of \code{addTransform}, we can think of it conceptually as already being transformed.
+
+To force the transformation to be immediately calculated on all subsets use: \code{recombine(dat, combDdo, output = ...)}.
 
 The function provided by \code{fn} can either accept one or two parameters.  If it accepts one parameter, the value of a key-value pair is passed in.  It if accepts two parameters, it is passed the key as the first parameter and the value as the second parameter.  The return value of \code{fn} is treated as a value of a key-value pair unless the return type comes from \code{\link{kvPair}}.
 
 When \code{addTransform} is called, it is tested on a subset of the data to make sure we have all of the necessary global variables and packages loaded necessary to portably perform the transformation.
 
 It is possible to add multiple transformations to a distributed data object, in which case they are applied in the order supplied, but only one transform should be necessary.
+
+The transformation function must not return NULL on any data subset, although it can return an empty object of the correct shape to match othersubsets (e.g. a data.frame with the correct columns but zero rows).
 }
 

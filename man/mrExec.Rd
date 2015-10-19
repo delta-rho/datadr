@@ -23,7 +23,7 @@ mrExec(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
 
 \item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 
-\item{params}{a named list of parameters external to the input data that are needed in the map or reduce phases}
+\item{params}{a named list of objects external to the input data that are needed in the map or reduce phases}
 
 \item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
