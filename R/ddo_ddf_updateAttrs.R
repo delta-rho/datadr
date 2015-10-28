@@ -274,7 +274,7 @@ updateAttributes <- function(obj, control = NULL) {
     # add keyHashes (used for extraction)
     # if(needList["keyHashes"])
     if(!is.null(attrs$keys))
-      attrs$keyHashes <- as.character(sapply(attrs$keys, digest))
+      attrs$keyHashes <- as.character(sapply(attrs$keys, digest, algo = "sha1"))
 
     obj <- setAttributes(obj, attrs)
 
