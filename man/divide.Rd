@@ -4,7 +4,7 @@
 \alias{divide}
 \title{Divide a Distributed Data Object}
 \usage{
-divide(data, by = NULL, spill = 1000000, filterFn = NULL, bsvFn = NULL,
+divide(data, by = NULL, spill = 1e+06, filterFn = NULL, bsvFn = NULL,
   output = NULL, overwrite = FALSE, preTransFn = NULL,
   postTransFn = NULL, params = NULL, packages = NULL, control = NULL,
   update = FALSE, verbose = TRUE)
@@ -28,7 +28,7 @@ divide(data, by = NULL, spill = 1000000, filterFn = NULL, bsvFn = NULL,
 
 \item{postTransFn}{a transformation function (if desired) to apply to each post-division subset}
 
-\item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+\item{params}{a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 

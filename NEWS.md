@@ -1,3 +1,14 @@
+Version 0.7.6.0
+----------------------------------------------------------------------
+
+FEATURES / CHANGES
+
+- clarify and improve documentation for numerous functions
+
+FIXES
+
+- improve error handling in `drJoin()` to validate that input data sources are ddo's
+
 Version 0.7.5.9
 ----------------------------------------------------------------------
 

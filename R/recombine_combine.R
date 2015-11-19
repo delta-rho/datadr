@@ -194,7 +194,8 @@ combCollect <- function(...) {
 #'
 #' @param \ldots ...
 #'
-#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' @details To combine divisions by row binding, this function (\code{combRbind}) can be passed as
+#' the \code{combine} argument of the \code{\link{recombine}} function.
 #'
 #' @author Ryan Hafen
 #'
