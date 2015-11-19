@@ -187,7 +187,8 @@ applyTransform <- function(transFns, x, env = NULL) {
         # TODO: add information about key to error message
       # res <- kvApply(res, curFn)
     }
-    attr(res[[2]], "split") <- attr(x[[2]], "split")
+    if(is.null(attr(res[[2]], "split")))
+      attributes(res[[2]])$split <- attr(x[[2]], "split")
     res
   }
 }

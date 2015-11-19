@@ -24,15 +24,6 @@
 #' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}, \code{\link{drLapply}}
 #' @export
 recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, verbose = TRUE) {
-  # apply <- function(x) {
-  #   mean(x$Sepal.Length)
-  # }
-  # apply <- function(k, v) {
-  #   list(mean(v$Sepal.Length)
-  # }
-  # apply <- drBLB(statistic = function(x, w) mean(x$Sepal.Length), metric = function(x) mean(x), R = 100, n = 300)
-  # apply <- drGLM(Sepal.Length ~ Petal.Length)
-  # combine <- combCollect()
 
   if(is.null(combine)) {
     if(is.null(output)) {
@@ -73,7 +64,12 @@ recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwri
         key <- map.keys[[i]]
       }
       if(is.function(combine$mapHook)) {
-        map.values[[i]] <- combine$mapHook(map.keys[[i]], map.values[[i]])
+        tmp <- combine$mapHook(map.keys[[i]], map.values[[i]])
+        if(is.null(tmp)) {
+          map.values[i] <- list(NULL)
+        } else {
+          map.values[[i]] <- tmp
+        }
       }
       collect(key, map.values[[i]])
     }

@@ -118,6 +118,44 @@ combDdo <- function(...) {
   class = "combCollect")
 }
 
+
+#' "DDF" Recombination
+#'
+#' "DDF" recombination - simply results into a "ddf" object, rbinding if necessary
+#'
+#' @param \ldots ...
+#'
+#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#'
+#' @author Ryan Hafen
+#'
+#' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{combCollect}}, \code{\link{combMeanCoef}}, \code{\link{combRbind}}, \code{\link{combDdo}}
+#'
+#' @export
+combDdf <- function(...) {
+  structure(
+  list(
+    reduce = expression(
+      pre = {
+        adata <- list()
+      },
+      reduce = {
+        adata[[length(adata) + 1]] <- reduce.values
+      },
+      post = {
+        adata <- do.call(rbind, unlist(adata, recursive = FALSE))
+        collect(reduce.key, adata)
+      }
+    ),
+    final = identity,
+    validateOutput = c("localDiskConn", "hdfsConn", "nullConn"),
+    group = FALSE,
+    ...
+  ),
+  class = "combCollect")
+}
+
+
 #' "Collect" Recombination
 #'
 #' "Collect" recombination - simply collect the results into a local list of key-value pairs
@@ -189,6 +227,8 @@ combRbind <- function(...) {
       }
     },
     mapHook = function(key, value) {
+      if(length(value) == 0)
+        return(NULL)
       attrs <- attributes(value)
       if(!is.null(attrs$split)) {
         if(!is.data.frame(value)) {
