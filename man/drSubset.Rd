@@ -5,7 +5,7 @@
 \title{Subsetting Distributed Data Frames}
 \usage{
 drSubset(data, subset = NULL, select = NULL, drop = FALSE,
-  preTransFn = NULL, maxRows = 5e+05, params = NULL, packages = NULL,
+  preTransFn = NULL, maxRows = 500000, params = NULL, packages = NULL,
   control = NULL, verbose = TRUE)
 }
 \arguments{

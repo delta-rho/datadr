@@ -1,7 +1,8 @@
 utils::globalVariables(
   c("rhwrite", "rhread", "rhls", "rhIterator", "rhabsolute.hdfs.path",
    "rhmapfile", "rhoptions", "rhinit", "rhmkdir", "rhchmod", "rhload",
-   "rhload", "rhdel", "rhmv", "rhfmt", "rhwatch", "rhsave", "rhchmod")
+   "rhload", "rhdel", "rhmv", "rhfmt", "rhwatch", "rhsave", "rhchmod",
+   "x", "curEnv", "k", "v", "setup", ".jnew", ".jcall", ".")
 )
 
 ### mrExec for kvHDFS objects

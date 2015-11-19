@@ -4,10 +4,12 @@ Version 0.7.6.0
 FEATURES / CHANGES
 
 - clarify and improve documentation for numerous functions
+- add `combDdf()` recombination method
 
 FIXES
 
 - improve error handling in `drJoin()` to validate that input data sources are ddo's
+- improve logic for dealing with NULL values in key-value pairs
 
 Version 0.7.5.9
 ----------------------------------------------------------------------

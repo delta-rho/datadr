@@ -9,17 +9,17 @@
 ##' Date: \tab 2015-10-19\cr
 ##' License: \tab BSD_3_clause + file LICENSE\cr
 ##' }
-##' 
+##'
 ##' @name datadr-package
-##' 
+##'
 ##' @aliases datadr
 ##'
 ##' @docType package
-##' 
+##'
 ##' @import parallel data.table digest hexbin
-##' 
+##'
 ##' @author Ryan Hafen
-##' 
+##'
 ##' Maintainer: Ryan Hafen <rhafen@@gmail.com>
 ##'
 ##' @keywords package
