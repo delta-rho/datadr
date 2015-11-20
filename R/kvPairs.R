@@ -47,7 +47,8 @@ kvPair <- function(k, v)
 #' @export
 #' @method print kvPair
 print.kvPair <- function(x, ...) {
-  class(x[[2]]) <- c("kvValue", class(x[[2]]))
+  if(!is.null(x[[2]]))
+    class(x[[2]]) <- c("kvValue", class(x[[2]]))
   class(x) <- "list"
   print(x)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataops_join.R
 \name{drJoin}
 \alias{drJoin}
-\title{Join Two Data Sources by Key}
+\title{Join Data Sources by Key}
 \usage{
 drJoin(..., output = NULL, overwrite = FALSE, postTransFn = NULL,
   params = NULL, packages = NULL, control = NULL)
@@ -14,19 +14,22 @@ drJoin(..., output = NULL, overwrite = FALSE, postTransFn = NULL,
 
 \item{postTransFn}{an optional function to be applied to the each final key-value pair after joining}
 
-\item{params}{a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
+\item{params}{a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{packages}{a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)}
 
 \item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 
-\item{\ldots}{named lists of input objects - assumed that all are of same type (all HDFS, all localDisk, all in-memory)}
+\item{\ldots}{Input data sources: two or more named DDO objects that will be joined, separated by commas (see Examples for syntax).
+Specifically, each input object should inherit from the 'ddo' class.
+It is assumed that all input sources are of same type (all HDFS, all localDisk, all in-memory).}
 }
 \value{
-a 'ddo' object stored in the \code{output} connection, where the values are named lists with names according to the names given to the input data objects, and values are the corresponding data
+a 'ddo' object stored in the \code{output} connection, where the values are named lists with names according to the names given to the input data objects, and values are the corresponding data.
+The 'ddo' object contains the union of all the keys contained in the input 'ddo' objects specified in \code{\ldots}.
 }
 \description{
-Join two data sources by key
+Outer join of two or more distributed data object (DDO) sources by key
 }
 \examples{
 bySpecies <- divide(iris, by = "Species")

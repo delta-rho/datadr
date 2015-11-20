@@ -7,7 +7,7 @@
 #' @param combine the method to combine the results
 #' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
-#' @param params a named list of parameters external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
+#' @param params a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
@@ -24,15 +24,6 @@
 #' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}, \code{\link{drLapply}}
 #' @export
 recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, verbose = TRUE) {
-  # apply <- function(x) {
-  #   mean(x$Sepal.Length)
-  # }
-  # apply <- function(k, v) {
-  #   list(mean(v$Sepal.Length)
-  # }
-  # apply <- drBLB(statistic = function(x, w) mean(x$Sepal.Length), metric = function(x) mean(x), R = 100, n = 300)
-  # apply <- drGLM(Sepal.Length ~ Petal.Length)
-  # combine <- combCollect()
 
   if(is.null(combine)) {
     if(is.null(output)) {
@@ -73,7 +64,12 @@ recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwri
         key <- map.keys[[i]]
       }
       if(is.function(combine$mapHook)) {
-        map.values[[i]] <- combine$mapHook(map.keys[[i]], map.values[[i]])
+        tmp <- combine$mapHook(map.keys[[i]], map.values[[i]])
+        if(is.null(tmp)) {
+          map.values[i] <- list(NULL)
+        } else {
+          map.values[[i]] <- tmp
+        }
       }
       collect(key, map.values[[i]])
     }
