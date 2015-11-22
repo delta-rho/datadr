@@ -31,9 +31,14 @@
 #' # Note a tranformation is not present in the attributes
 #' names(attributes(bySpecies))
 #'
-#' # Create a function that we will test on one subset.  The calls to
-#' # 'as.data.frame()' and 't()' convert the vector output of 'apply()'
-#' # into a data.frame with a single row
+#' ############################################################
+#' # A transform that operates only on values of the key-value
+#' # pairs
+#' ############################################################
+#' 
+#' # Create a function that will calculate the mean of each variable in
+#' # in a subset. The calls to 'as.data.frame()' and 't()' convert the
+#' # vector output of 'apply()' into a data.frame with a single row
 #' colMean <- function(x) as.data.frame(t(apply(x, 2, mean)))
 #'
 #' # Test on a subset
@@ -48,23 +53,28 @@
 #' 
 #' # Note the addition of the transformation to the attributes
 #' names(attributes(bySpeciesTransformed))
+#'
+#' # We can see the result of the transformation by looking at one of
+#' # the subsets:
+#' bySpeciesTransformed[[1]]
 #' 
-#' # Now we can apply the transformation by calling recombine.  In this
+#' # We can also apply the transformation by calling 'recombine()'.  In this
 #' # case, we collapse the output into a single data.frame using the
 #' # 'combRbind' method
 #' varMeans <- recombine(bySpeciesTransformed, combine = combRbind)
 #' varMeans
 #'
+#' ############################################################
+#' # A transform that operates on both keys and values
+#' ############################################################
+#' 
 #' # We can also create a transformation that uses both the key and values
 #' # It will select the first row of the value, and append '-firstRow' to
 #' # the key
 #' aTransform <- function(key, val) {
-#'
 #'   newKey <- paste(key, "firstRow", sep = "-")
 #'   newVal <- val[1,]
-#'
 #'   kvPair(newKey, newVal)
-#' 
 #' }
 #'
 #' # Apply the transformation

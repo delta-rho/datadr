@@ -7,14 +7,14 @@
 #' NOTE: This argument is now deprecated in favor of \code{\link{addTransform}}
 #' @param combine the method to combine the results.
 #' See, for example, \code{\link{combCollect}}, \code{\link{combDdf}}, \code{\link{combDdo}}, \code{\link{combRbind}}, etc.  If \code{combine = NULL}, \code{\link{combCollect}} will be used if \code{output = NULL} and \code{\link{combDdo}} is used if \code{output} is specified.
-#' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
+#' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param params a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
 #'
-#' @return depends on \code{combine}
+#' @return Depends on \code{combine}:  this could be a distributed data object, a data frame, a key-value list, etc.  See examples.
 #'
 #' @references
 #' \itemize{
@@ -55,12 +55,10 @@
 #' # Local disk connection example with parallization
 #' ############################################################
 #'
-#' # Create a 2-node cluster that can be used to process in parallel.  In practice
-#' # you would want use a cluster with a high-speed file system that could support
-#' # multiple reads/writes to disk
+#' # Create a 2-node cluster that can be used to process in parallel
 #' cl <- parallel::makeCluster(2)
 #'
-#' # Create the control object we'll pass into divide() and recombine() to have
+#' # Create the control object we'll pass into 'divide()' and 'recombine()' to have
 #' # these operations run in parallel
 #' control <- localDiskControl(cluster = cl)
 #' 
@@ -68,25 +66,25 @@
 #' tmpDir1 <- file.path(tempdir(), "divide_example1")
 #' 
 #' # Create the local disk connection where data will be stored
-#' local1 <- localDiskConn(tmpDir1, autoYes = TRUE)
+#' loc1 <- localDiskConn(tmpDir1, autoYes = TRUE)
 #'
-#' # Now divide the data, writing data to the local disk connection.
-#' bySpecies <- divide(iris, by = "Species", output = local1, update = TRUE, control = control)
+#' # Now divide the data, writing data to the local disk connection
+#' bySpecies <- divide(iris, by = "Species", output = loc1, update = TRUE, control = control)
 #' bySpecies
 #' 
 #' # Apply the transformation
 #' bySpeciesTransformed <- addTransform(bySpecies, colMean)
 #' 
-#' # Now create another location where we can write the output
+#' # Now create another location where we can write the output of the recombination
 #' tmpDir2 <- file.path(tempdir(), "divide_example2")
-#' local2 <- localDiskConn(tmpDir2, autoYes = TRUE)
+#' loc2 <- localDiskConn(tmpDir2, autoYes = TRUE)
 #'
-#' # Recombine the data using the previous transformation
-#' bySpeciesMean <- recombine(bySpeciesTransformed, combine = combDdf, output = local2, control = control)
+#' # Recombine the data using the transformation
+#' bySpeciesMean <- recombine(bySpeciesTransformed, combine = combDdf, output = loc2, control = control)
 #' bySpeciesMean
 #' bySpeciesMean[[1]]
 #' 
-#' # Convert it to a data frame to see the results
+#' # Convert it to a data.frame to see the results
 #' as.data.frame(bySpeciesMean)
 #'
 #' # Remove temporary directories
