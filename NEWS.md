@@ -1,3 +1,12 @@
+Version 0.7.6.1
+----------------------------------------------------------------------
+
+FEATURES / CHANGES
+
+- Improve documentation for a variety of functions, including the addition of examples
+- Add `drLM()` recombination method for fitting linear models
+
+
 Version 0.7.6.0
 ----------------------------------------------------------------------
 
