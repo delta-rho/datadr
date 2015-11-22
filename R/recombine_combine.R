@@ -1,8 +1,19 @@
+# TODO:  the combMeanCoef needs tests
 #' Mean Coefficient Recombination
 #'
-#' Mean coefficient recombination
+#' Mean coefficient recombination -- Calculate the mean of parameter estimates for a model fit to each subset
 #'
-#' @param \ldots ...
+# @param \ldots Additional list elements that will be added to the returned object
+#'
+#' @usage recombine(distributed_data_object, combine = combMeanCoef, ...)
+#'
+#' @details \code{combMeanCoef} is passed to the argument \code{combine} in \code{\link{recombine}}
+#'
+#' This method is designed to calculate the mean of each model coefficient, where the same model has been fit to
+#' subsets via a transformation.  In particular, \code{\link{drLM}} and \code{\link{drGLM}} functions should be
+#' used to add the transformation to the ddo that will be recombined using \code{combMeanCoef}.
+#'
+# @return An object of class \code{combCollect}
 #'
 #' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.  It expects to be dealing with named vectors including an element \code{n} specifying the number of rows in that subset.
 #'
@@ -10,6 +21,28 @@
 #'
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{rrDiv}}, \code{\link{combCollect}}, \code{\link{combDdo}}, \code{\link{combRbind}}, \code{\link{combMean}}
 #'
+#' @examples
+#' # Create a distributed data frame using the iris data set
+#' bySpecies <- divide(iris, by = "Species")
+#'
+#' # Fit a linear model of Sepal.Length vs. Sepal.Width for each species
+#' # using 'drLM()' (or we could have used 'drGLM()' for a generlized linear model)
+#' lmTrans <- function(x) drLM(Sepal.Length ~ Sepal.Width, data = x)
+#' bySpeciesFit <- addTransform(bySpecies, lmTrans)
+#' 
+#' # Average the coefficients from the linear model fits of each species
+#' out1 <- recombine(bySpeciesFit, combine = combMeanCoef)
+#' out1
+#' 
+#' # Alternatively, we could acheive the same result using "combMean"
+#' # with a different tranformation function
+#' lmTrans2 <- function(x) coef(lm(Sepal.Length ~ Sepal.Width, data = x))
+#' out2 <- recombine(addTransform(bySpecies, lmTrans2), combine = combMean)
+#' out2
+#' 
+#' # These are the same
+#' all.equal(out1, out2)
+#' 
 #' @export
 combMeanCoef <- function(...) {
   structure(
@@ -44,18 +77,53 @@ combMeanCoef <- function(...) {
   class = "combMeanCoef")
 }
 
+# TODO:  The combMean method needs tests
 #' Mean Recombination
 #'
-#' Mean recombination
+#' Mean recombination -- Calculate the elementwise mean of a vector in each value
+#' 
+# @param \ldots Additional list elements that will be added to the returned object
 #'
-#' @param \ldots ...
+#' @usage recombine(distributed_data_object, combine = combMean, ...)
 #'
-#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' @details \code{combMean} is passed to the argument \code{combine} in \code{\link{recombine}}
+#'
+#' This method assumes that the values of the key-value pairs each consist of a numeric vector (with the same length).
+#' The mean is calculated elementwise across all the keys.
+#'
+# @return An object of class \code{combCollect}
 #'
 #' @author Ryan Hafen
 #'
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{combCollect}}, \code{\link{combDdo}}, \code{\link{combRbind}}, \code{\link{combMeanCoef}}
 #'
+#' @examples
+#' # Create a distributed data frame using the iris data set
+#' bySpecies <- divide(iris, by = "Species")
+#'
+#' # Add a transformation that returns a vector of sums for each subset, one
+#' # mean for each variable
+#' bySpeciesTrans <- addTransform(bySpecies, function(x) apply(x, 2, sum))
+#' bySpeciesTrans[[1]]
+#'
+#' # Calculate the elementwise mean of the vector of sums produced by
+#' # the transform, across the keys
+#' out1 <- recombine(bySpeciesTrans, combine = combMean)
+#' out1
+#'
+#' # This manual, non-datadr approach illustrates the above computation
+#' 
+#' # This step mimics the transformation above
+#' sums <- aggregate(. ~ Species, data = iris, sum)
+#' sums
+#' 
+#' # And this step mimics the mean recombination
+#' out2 <- apply(sums[,-1], 2, mean)
+#' out2
+#'
+#' # These are the same
+#' identical(out1, out2)
+#' 
 #' @export
 combMean <- function(...) {
   structure(
@@ -95,14 +163,33 @@ combMean <- function(...) {
 #'
 #' "DDO" recombination - simply collect the results into a "ddo" object
 #'
-#' @param \ldots ...
+# @param \ldots Additional list elements that will be added to the returned object
 #'
-#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' @usage recombine(distributed_data_object, combine = combDdo, ...)
+#'
+#' @details \code{combDdo} is passed to the argument \code{combine} in \code{\link{recombine}}
+#'
+# @return An object of class \code{combCollect}
 #'
 #' @author Ryan Hafen
 #'
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{combCollect}}, \code{\link{combMeanCoef}}, \code{\link{combRbind}}, \code{\link{combMean}}
 #'
+#' @examples
+#' # Divide the iris data
+#' bySpecies <- divide(iris, by = "Species")
+#'
+#' # Add a transform that returns a list for each subset
+#' listTrans <- function(x) {
+#'   list(meanPetalWidth = mean(x$Petal.Width),
+#'        maxPetalLength = max(x$Petal.Length))
+#' }
+#'
+#' # Apply the transform and combine using combDdo
+#' combined <- recombine(addTransform(bySpecies, listTrans), combine = combDdo)
+#' combined
+#' combined[[1]]
+#' 
 #' @export
 combDdo <- function(...) {
   structure(
@@ -118,19 +205,67 @@ combDdo <- function(...) {
   class = "combCollect")
 }
 
-
 #' "DDF" Recombination
 #'
-#' "DDF" recombination - simply results into a "ddf" object, rbinding if necessary
+#' "DDF" recombination - results into a "ddf" object, rbinding if necessary
 #'
-#' @param \ldots ...
+# @param \ldots Additional list elements that will be added to the returned object
 #'
-#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' @usage recombine(distributed_data_object, combine = combDdf, ...)
+#'
+#' @details \code{combDdf} is passed to the argument \code{combine} in \code{\link{recombine}}.
+#'
+#' If the \code{value} of the "ddo" object that will be recombined is a list, then the elements in the list will be
+#' collapsed together via \code{\link{rbind}}.
+#'
+# @return An object of class \code{combCollect}
 #'
 #' @author Ryan Hafen
 #'
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{combCollect}}, \code{\link{combMeanCoef}}, \code{\link{combRbind}}, \code{\link{combDdo}}
 #'
+#' @examples
+#' # Divide the iris data
+#' bySpecies <- divide(iris, by = "Species")
+#'
+#' ############################################################
+#' # Simple combination to form a ddf
+#' ############################################################
+#' 
+#' # Add a transform that selects the petal width and length variables
+#' selVars <- function(x) x[,c("Petal.Width", "Petal.Length")]
+#'
+#' # Apply the transform and combine using combDdo
+#' combined <- recombine(addTransform(bySpecies, selVars), combine = combDdf)
+#' combined
+#' combined[[1]]
+#'
+#' ############################################################
+#' # Combination that involves rbinding to give the ddf
+#' ############################################################
+#' 
+#' # A transformation that returns a list
+#' listTrans <- function(x) {
+#'   list(meanPetalWidth = mean(x$Petal.Width),
+#'        maxPetalLength = max(x$Petal.Length))
+#' }
+#' 
+#' # Apply the transformation and look at the result
+#' bySpeciesTran <- addTransform(bySpecies, listTrans)
+#' bySpeciesTran[[1]]
+#'
+#' # And if we rbind the "value" of the first subset:
+#' out1 <- rbind(bySpeciesTran[[1]]$value)
+#' out1
+#'
+#' # Note how the combDdf method row binds the two data frames
+#' combined <- recombine(bySpeciesTran, combine = combDdf)
+#' out2 <- combined[[1]]
+#' out2
+#'
+#' # These are equivalent
+#' identical(out1, out2$value)
+#' 
 #' @export
 combDdf <- function(...) {
   structure(
@@ -158,16 +293,32 @@ combDdf <- function(...) {
 
 #' "Collect" Recombination
 #'
-#' "Collect" recombination - simply collect the results into a local list of key-value pairs
+#' "Collect" recombination - collect the results into a local list of key-value pairs
 #'
-#' @param \ldots ...
+# @param \ldots Additional list elements that will be added to the returned object
 #'
-#' @details This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+#' @usage recombine(distributed_data_object, combine = combCollect, ...)
+#'
+#' @details \code{combCollect} is passed to the argument \code{combine} in \code{\link{recombine}}
+#'
+# @return An object of class \code{combCollect}
 #'
 #' @author Ryan Hafen
 #'
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{combDdo}}, \code{\link{combMeanCoef}}, \code{\link{combRbind}}, \code{\link{combMean}}
 #'
+#' @examples
+#' # Create a distributed data frame using the iris data set
+#' bySpecies <- divide(iris, by = "Species")
+#' 
+#' # Function to calculate the mean of the petal widths
+#' meanPetal <- function(x) mean(x$Petal.Width)
+#'
+#' # Combine the results using rbind
+#' combined <- recombine(addTransform(bySpecies, meanPetal), combine = combCollect)
+#' class(combined)
+#' combined
+#' 
 #' @export
 combCollect <- function(...) {
   structure(
@@ -190,16 +341,33 @@ combCollect <- function(...) {
 
 #' "rbind" Recombination
 #'
-#' "rbind" recombination
+#' "rbind" recombination - Combine divisions by row binding
 #'
-#' @param \ldots ...
+# @param \ldots Additional list elements that will be added to the returned object
 #'
-#' @details To combine divisions by row binding, this function (\code{combRbind}) can be passed as
-#' the \code{combine} argument of the \code{\link{recombine}} function.
+#' @usage recombine(distributed_data_object, combine = combRbind, ...)
+#'
+#' @details \code{combRbind} is passed to the argument \code{combine} in \code{\link{recombine}}
+#'
+# @return An object of class \code{combRbind}
 #'
 #' @author Ryan Hafen
 #'
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{combDdo}}, \code{\link{combCollect}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}
+#'
+#' @examples
+#' # Create a distributed data frame using the iris data set
+#' bySpecies <- divide(iris, by = "Species")
+#' 
+#' # Create a function that will calculate the standard deviation of each
+#' # variable in in a subset. The calls to 'as.data.frame()' and 't()'
+#' # convert the vector output of 'apply()' into a data.frame with a single row
+#' sdCol <- function(x) as.data.frame(t(apply(x, 2, sd)))
+#'
+#' # Combine the results using rbind
+#' combined <- recombine(addTransform(bySpecies, sdCol), combine = combRbind)
+#' class(combined)
+#' combined
 #'
 #' @export
 combRbind <- function(...) {
