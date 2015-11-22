@@ -16,7 +16,7 @@ To install this package from github, do the following from the R console:
 
 ```s
 library(devtools)
-install_github("datadr", "tesseradata")
+install_github("datadr/tesseradata")
 ```
 
 ## License
@@ -25,4 +25,9 @@ This software is currently under the BSD license.  Please read the [license](htt
 
 ## Acknowledgement
 
-datadr development is sponsored by the DARPA XDATA program.
+datadr development is sponsored by:
+
+- U.S. Department of Defense Advanced Research Projects Agency, XDATA program
+- U.S. Department of Homeland Security, Science and Technology Directorate, Homeland Security Advanced Research Projects Agency (HSARPA)
+- Pacific Northwest National Laboratory, operated by Battelle for the U.S. Department of Energy, LDRD Program, Signature Discovery and Future Power Grid Initiatives
+
