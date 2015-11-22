@@ -13,8 +13,8 @@
 #' the some action is taken with the data (e.g. a call to \code{\link{recombine}}).  See the documentation of
 #' \code{\link{addTransform}} for more information about the nature of transformations.
 #'
-#' Calling \code{drPersis()} on the ddo/ddf makes the transformation permanent (persisted).  In the case of a local disk
-#' connection (via \code{\link{localDiscConn}}) or HDFS connection (via \code{\link{hdfsConn}}), the transformed data
+#' Calling \code{drPersist()} on the ddo/ddf makes the transformation permanent (persisted).  In the case of a local disk
+#' connection (via \code{\link{localDiskConn}}) or HDFS connection (via \code{\link{hdfsConn}}), the transformed data
 #' are written to disc.
 #'
 #' @author Ryan Hafen

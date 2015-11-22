@@ -45,7 +45,7 @@ drGLM <- function(...) {
 #'
 #' @return An object of class \code{drCoef} that contains the lm coefficients and other data needed by \code{\link{combMeanCoef}}
 #' 
-#' @author Ryan Hafen
+#' @author Landon Sego
 #'
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{rrDiv}}
 #'
