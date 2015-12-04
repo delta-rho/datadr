@@ -208,10 +208,10 @@ combRbind <- function(...) {
       adata <- list()
     },
     reduce = {
-      adata[[length(adata) + 1]] <- reduce.values
+      adata[[length(adata) + 1]] <- c(reduce.values, NULL)
     },
     post = {
-      adata <- do.call(rbind, unlist(adata, recursive = FALSE))
+      adata <- data.table::rbindlist(unlist(adata, recursive = FALSE))
       collect(reduce.key, adata)
     }
   )
