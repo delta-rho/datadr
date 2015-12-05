@@ -3,16 +3,18 @@
 #' Apply an analytic recombination method to a ddo/ddf object and combine the results
 #'
 #' @param data an object of class "ddo" of "ddf"
-#' @param apply a function specifying the analytic method to apply to each subset, or a pre-defined apply function (see \code{\link{drBLB}}, \code{\link{drGLM}}, for example)
-#' @param combine the method to combine the results
-#' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.
+#' @param apply a function specifying the analytic method to apply to each subset, or a pre-defined apply function (see \code{\link{drBLB}}, \code{\link{drGLM}}, for example).
+#' NOTE: This argument is now deprecated in favor of \code{\link{addTransform}}
+#' @param combine the method to combine the results.
+#' See, for example, \code{\link{combCollect}}, \code{\link{combDdf}}, \code{\link{combDdo}}, \code{\link{combRbind}}, etc.  If \code{combine = NULL}, \code{\link{combCollect}} will be used if \code{output = NULL} and \code{\link{combDdo}} is used if \code{output} is specified.
+#' @param output a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param params a named list of objects external to the input data that are needed in the distributed computing (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param packages a vector of R package names that contain functions used in \code{fn} (most should be taken care of automatically such that this is rarely necessary to specify)
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
 #'
-#' @return depends on \code{combine}
+#' @return Depends on \code{combine}:  this could be a distributed data object, a data frame, a key-value list, etc.  See examples.
 #'
 #' @references
 #' \itemize{
@@ -22,6 +24,75 @@
 #'
 #' @author Ryan Hafen
 #' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}, \code{\link{drLapply}}
+#'
+#' @examples
+#' ############################################################
+#' # In memory example
+#' ############################################################
+#' 
+#' # Begin with an in-memory ddf (backed by kvMemory)
+#' bySpecies <- divide(iris, by = "Species")
+#'
+#' # Create a function to calculate the mean for each variable
+#' # 'as.data.frame()' and 't()' convert the vector output of 'apply()'
+#' # into a data.frame with a single row
+#' colMean <- function(x) as.data.frame(t(apply(x, 2, mean)))
+#'
+#' # Add the transform
+#' bySpeciesTransformed <- addTransform(bySpecies, colMean)
+#'
+#' # Recombination with no 'combine' argument and no argument to output
+#' # produces the key-value list produced by 'combCollect()'
+#' recombine(bySpeciesTransformed)
+#'
+#' # But we can also preserve the distributed data frame, like this:
+#' recombine(bySpeciesTransformed, combine = combDdf)
+#'
+#' # Or we could recombine using 'combRbind()' and produce a data frame:
+#' recombine(bySpeciesTransformed, combine = combRbind)
+#'
+#' ############################################################
+#' # Local disk connection example with parallization
+#' ############################################################
+#'
+#' # Create a 2-node cluster that can be used to process in parallel
+#' cl <- parallel::makeCluster(2)
+#'
+#' # Create the control object we'll pass into 'divide()' and 'recombine()' to have
+#' # these operations run in parallel
+#' control <- localDiskControl(cluster = cl)
+#' 
+#' # Create a path for a temporary directory
+#' tmpDir1 <- file.path(tempdir(), "divide_example1")
+#' 
+#' # Create the local disk connection where data will be stored
+#' loc1 <- localDiskConn(tmpDir1, autoYes = TRUE)
+#'
+#' # Now divide the data, writing data to the local disk connection
+#' bySpecies <- divide(iris, by = "Species", output = loc1, update = TRUE, control = control)
+#' bySpecies
+#' 
+#' # Apply the transformation
+#' bySpeciesTransformed <- addTransform(bySpecies, colMean)
+#' 
+#' # Now create another location where we can write the output of the recombination
+#' tmpDir2 <- file.path(tempdir(), "divide_example2")
+#' loc2 <- localDiskConn(tmpDir2, autoYes = TRUE)
+#'
+#' # Recombine the data using the transformation
+#' bySpeciesMean <- recombine(bySpeciesTransformed, combine = combDdf, output = loc2, control = control)
+#' bySpeciesMean
+#' bySpeciesMean[[1]]
+#' 
+#' # Convert it to a data.frame to see the results
+#' as.data.frame(bySpeciesMean)
+#'
+#' # Remove temporary directories
+#' unlink(c(tmpDir1, tmpDir2), recursive = TRUE)
+#'
+#' # Shut down the cluster
+#' parallel::stopCluster(cl)
+#' 
 #' @export
 recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, verbose = TRUE) {
 
