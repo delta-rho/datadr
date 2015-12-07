@@ -7,13 +7,33 @@
 combDdo(...)
 }
 \arguments{
-\item{\ldots}{...}
+\item{\ldots}{additional attributes to define the combiner (currently only used internally)}
 }
 \description{
 "DDO" recombination - simply collect the results into a "ddo" object
 }
 \details{
-This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+\code{combDdo} is passed to the argument \code{combine} in \code{\link{recombine}}
+}
+\examples{
+# Divide the iris data
+bySpecies <- divide(iris, by = "Species")
+
+# Add a transform that returns a list for each subset
+listTrans <- function(x) {
+  list(meanPetalWidth = mean(x$Petal.Width),
+       maxPetalLength = max(x$Petal.Length))
+}
+
+# Apply the transform and combine using combDdo
+combined <- recombine(addTransform(bySpecies, listTrans), combine = combDdo)
+combined
+combined[[1]]
+
+# A more concise (and readable) way to do it
+bySpecies \%>\%
+  addTransform(listTrans) \%>\%
+  recombine(combDdo)
 }
 \author{
 Ryan Hafen

@@ -7,19 +7,37 @@
 combRbind(...)
 }
 \arguments{
-\item{\ldots}{...}
+\item{\ldots}{additional attributes to define the combiner (currently only used internally)}
 }
 \description{
-"rbind" recombination
+"rbind" recombination - Combine ddf divisions by row binding
 }
 \details{
-To combine divisions by row binding, this function (\code{combRbind}) can be passed as
-the \code{combine} argument of the \code{\link{recombine}} function.
+\code{combRbind} is passed to the argument \code{combine} in \code{\link{recombine}}
+}
+\examples{
+# Create a distributed data frame using the iris data set
+bySpecies <- divide(iris, by = "Species")
+
+# Create a function that will calculate the standard deviation of each
+# variable in in a subset. The calls to 'as.data.frame()' and 't()'
+# convert the vector output of 'apply()' into a data.frame with a single row
+sdCol <- function(x) as.data.frame(t(apply(x, 2, sd)))
+
+# Combine the results using rbind
+combined <- recombine(addTransform(bySpecies, sdCol), combine = combRbind)
+class(combined)
+combined
+
+# A more concise (and readable) way to do it
+bySpecies \%>\%
+  addTransform(sdCol) \%>\%
+  recombine(combRbind)
 }
 \author{
 Ryan Hafen
 }
 \seealso{
-\code{\link{divide}}, \code{\link{recombine}}, \code{\link{combDdo}}, \code{\link{combCollect}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}
+\code{\link{divide}}, \code{\link{recombine}}, \code{\link{combDdo}}, \code{\link{combDdf}}, \code{\link{combCollect}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}
 }
 

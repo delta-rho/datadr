@@ -27,7 +27,7 @@ It is necessary to specify \code{weights} as a parameter to the \code{statistic}
 Ryan Hafen
 }
 \references{
-BLB paper
+Kleiner, Ariel, et al. "A scalable bootstrap for massive data." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 76.4 (2014): 795-816.
 }
 \seealso{
 \code{\link{divide}}, \code{\link{recombine}}

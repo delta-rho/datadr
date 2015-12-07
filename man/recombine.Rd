@@ -11,11 +11,13 @@ recombine(data, combine = NULL, apply = NULL, output = NULL,
 \arguments{
 \item{data}{an object of class "ddo" of "ddf"}
 
-\item{combine}{the method to combine the results}
+\item{combine}{the method to combine the results.
+See, for example, \code{\link{combCollect}}, \code{\link{combDdf}}, \code{\link{combDdo}}, \code{\link{combRbind}}, etc.  If \code{combine = NULL}, \code{\link{combCollect}} will be used if \code{output = NULL} and \code{\link{combDdo}} is used if \code{output} is specified.}
 
-\item{apply}{a function specifying the analytic method to apply to each subset, or a pre-defined apply function (see \code{\link{drBLB}}, \code{\link{drGLM}}, for example)}
+\item{apply}{a function specifying the analytic method to apply to each subset, or a pre-defined apply function (see \code{\link{drBLB}}, \code{\link{drGLM}}, for example).
+NOTE: This argument is now deprecated in favor of \code{\link{addTransform}}}
 
-\item{output}{a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object.}
+\item{output}{a "kvConnection" object indicating where the output data should reside (see \code{\link{localDiskConn}}, \code{\link{hdfsConn}}).  If \code{NULL} (default), output will be an in-memory "ddo" object}
 
 \item{overwrite}{logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)}
 
@@ -28,10 +30,77 @@ recombine(data, combine = NULL, apply = NULL, output = NULL,
 \item{verbose}{logical - print messages about what is being done}
 }
 \value{
-depends on \code{combine}
+Depends on \code{combine}: this could be a distributed data object, a data frame, a key-value list, etc.  See examples.
 }
 \description{
 Apply an analytic recombination method to a ddo/ddf object and combine the results
+}
+\examples{
+## In memory example
+##---------------------------------------------------------
+
+# Begin with an in-memory ddf (backed by kvMemory)
+bySpecies <- divide(iris, by = "Species")
+
+# Create a function to calculate the mean for each variable
+# 'as.data.frame()' and 't()' convert the vector output of 'apply()'
+# into a data.frame with a single row
+colMean <- function(x) as.data.frame(t(apply(x, 2, mean)))
+
+# Add the transform
+bySpeciesTransformed <- addTransform(bySpecies, colMean)
+
+# Recombination with no 'combine' argument and no argument to output
+# produces the key-value list produced by 'combCollect()'
+recombine(bySpeciesTransformed)
+
+# But we can also preserve the distributed data frame, like this:
+recombine(bySpeciesTransformed, combine = combDdf)
+
+# Or we could recombine using 'combRbind()' and produce a data frame:
+recombine(bySpeciesTransformed, combine = combRbind)
+
+## Local disk connection example with parallelization
+##---------------------------------------------------------
+
+# Create a 2-node cluster that can be used to process in parallel
+cl <- parallel::makeCluster(2)
+
+# Create the control object we'll pass into 'divide()' and 'recombine()' to have
+# these operations run in parallel
+control <- localDiskControl(cluster = cl)
+
+# Create a path for a temporary directory
+tmpDir1 <- file.path(tempdir(), "divide_example1")
+
+# Create the local disk connection where data will be stored
+loc1 <- localDiskConn(tmpDir1, autoYes = TRUE)
+
+# Now divide the data, writing data to the local disk connection
+bySpecies <- divide(iris, by = "Species", output = loc1, update = TRUE, control = control)
+bySpecies
+
+# Apply the transformation
+bySpeciesTransformed <- addTransform(bySpecies, colMean)
+
+# Now create another location where we can write the output of the recombination
+tmpDir2 <- file.path(tempdir(), "divide_example2")
+loc2 <- localDiskConn(tmpDir2, autoYes = TRUE)
+
+# Recombine the data using the transformation
+bySpeciesMean <- recombine(bySpeciesTransformed,
+  combine = combDdf, output = loc2, control = control)
+bySpeciesMean
+bySpeciesMean[[1]]
+
+# Convert it to a data.frame to see the results
+as.data.frame(bySpeciesMean)
+
+# Remove temporary directories
+unlink(c(tmpDir1, tmpDir2), recursive = TRUE)
+
+# Shut down the cluster
+parallel::stopCluster(cl)
 }
 \author{
 Ryan Hafen

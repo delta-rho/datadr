@@ -7,18 +7,35 @@
 combCollect(...)
 }
 \arguments{
-\item{\ldots}{...}
+\item{\ldots}{Additional list elements that will be added to the returned object}
 }
 \description{
-"Collect" recombination - simply collect the results into a local list of key-value pairs
+"Collect" recombination - collect the results into a local list of key-value pairs
 }
 \details{
-This is an experimental prototype.  It is to be passed as the argument \code{combine} to \code{\link{recombine}}.
+\code{combCollect} is passed to the argument \code{combine} in \code{\link{recombine}}
+}
+\examples{
+# Create a distributed data frame using the iris data set
+bySpecies <- divide(iris, by = "Species")
+
+# Function to calculate the mean of the petal widths
+meanPetal <- function(x) mean(x$Petal.Width)
+
+# Combine the results using rbind
+combined <- recombine(addTransform(bySpecies, meanPetal), combine = combCollect)
+class(combined)
+combined
+
+# A more concise (and readable) way to do it
+bySpecies \%>\%
+  addTransform(meanPetal) \%>\%
+  recombine(combCollect)
 }
 \author{
 Ryan Hafen
 }
 \seealso{
-\code{\link{divide}}, \code{\link{recombine}}, \code{\link{combDdo}}, \code{\link{combMeanCoef}}, \code{\link{combRbind}}, \code{\link{combMean}}
+\code{\link{divide}}, \code{\link{recombine}}, \code{\link{combDdo}}, \code{\link{combDdf}}, \code{\link{combMeanCoef}}, \code{\link{combRbind}}, \code{\link{combMean}}
 }
 

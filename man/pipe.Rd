@@ -3,12 +3,29 @@
 \name{\%>\%}
 \alias{\%>\%}
 \title{Pipe data}
+\usage{
+lhs \%>\% rhs
+}
 \arguments{
 \item{lhs}{a data object}
 
 \item{rhs}{a function to apply to the data}
 }
 \description{
-Pipe data
+Pipe data from one datadr operation to another
+}
+\note{
+Pipes are great if you know the exact sequence of operations you would like to perform and fully understand what the intermediate data structures will look like.  But often with very large or complex data sets it can be a good idea to do each step independently and examine the intermediate results.  This can be better for debugging, particularly when each step takes some time to evaluate.
+}
+\examples{
+# Suppose we wish to do the following:
+bySpecies <- divide(iris, by = "Species")
+bySpeciesTransformed <- addTransform(bySpecies, function(x) mean(x$Sepal.Length))
+recombine(bySpeciesTransformed, combine = combRbind)
+
+# We can do it more consely using the pipe: '\%>\%'
+divide(iris, by = "Species") \%>\%
+  addTransform(function(x) mean(x$Sepal.Length)) \%>\%
+    recombine(combRbind)
 }
 

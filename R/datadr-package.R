@@ -5,8 +5,8 @@
 ##' \tabular{ll}{
 ##' Package: \tab datadr\cr
 ##' Type: \tab Package\cr
-##' Version: \tab 0.7.6.0\cr
-##' Date: \tab 2015-10-19\cr
+##' Version: \tab 0.7.6.1\cr
+##' Date: \tab 2015-11-21\cr
 ##' License: \tab BSD_3_clause + file LICENSE\cr
 ##' }
 ##'

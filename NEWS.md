@@ -1,3 +1,16 @@
+Version 0.7.7
+----------------------------------------------------------------------
+
+FEATURES / CHANGES
+
+- Improve documentation for a variety of functions, including the addition of examples
+- Add `drLM()` recombination method for fitting linear models
+- Update versioning scheme to x.y.z
+
+FIXES
+
+- Add workaround for current RHIPE bug with `combRbind()`
+
 Version 0.7.6.0
 ----------------------------------------------------------------------
 
