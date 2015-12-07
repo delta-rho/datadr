@@ -15,7 +15,7 @@
 #'
 #' Calling \code{drPersist()} on the ddo/ddf makes the transformation permanent (persisted).  In the case of a local disk
 #' connection (via \code{\link{localDiskConn}}) or HDFS connection (via \code{\link{hdfsConn}}), the transformed data
-#' are written to disc.
+#' are written to disk.
 #'
 #' @author Ryan Hafen
 #'
@@ -24,10 +24,10 @@
 #' @examples
 #' bySpecies <- divide(iris, by = "Species")
 #'
-#' # Create the transformation and add it to bySpecies 
+#' # Create the transformation and add it to bySpecies
 #' bySpeciesSepal <- addTransform(bySpecies, function(x) x[,c("Sepal.Length", "Sepal.Width")])
 #'
-#' # Note the transformation is 'pending' a data action 
+#' # Note the transformation is 'pending' a data action
 #' bySpeciesSepal
 #'
 #' # Make the tranformation permanent (persistent)

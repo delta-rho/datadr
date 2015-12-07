@@ -14,7 +14,7 @@
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
 #'
-#' @return Depends on \code{combine}:  this could be a distributed data object, a data frame, a key-value list, etc.  See examples.
+#' @return Depends on \code{combine}: this could be a distributed data object, a data frame, a key-value list, etc.  See examples.
 #'
 #' @references
 #' \itemize{
@@ -26,10 +26,9 @@
 #' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}, \code{\link{drLapply}}
 #'
 #' @examples
-#' ############################################################
-#' # In memory example
-#' ############################################################
-#' 
+#' ## In memory example
+#' ##---------------------------------------------------------
+#'
 #' # Begin with an in-memory ddf (backed by kvMemory)
 #' bySpecies <- divide(iris, by = "Species")
 #'
@@ -51,9 +50,8 @@
 #' # Or we could recombine using 'combRbind()' and produce a data frame:
 #' recombine(bySpeciesTransformed, combine = combRbind)
 #'
-#' ############################################################
-#' # Local disk connection example with parallization
-#' ############################################################
+#' ## Local disk connection example with parallelization
+#' ##---------------------------------------------------------
 #'
 #' # Create a 2-node cluster that can be used to process in parallel
 #' cl <- parallel::makeCluster(2)
@@ -61,29 +59,30 @@
 #' # Create the control object we'll pass into 'divide()' and 'recombine()' to have
 #' # these operations run in parallel
 #' control <- localDiskControl(cluster = cl)
-#' 
+#'
 #' # Create a path for a temporary directory
 #' tmpDir1 <- file.path(tempdir(), "divide_example1")
-#' 
+#'
 #' # Create the local disk connection where data will be stored
 #' loc1 <- localDiskConn(tmpDir1, autoYes = TRUE)
 #'
 #' # Now divide the data, writing data to the local disk connection
 #' bySpecies <- divide(iris, by = "Species", output = loc1, update = TRUE, control = control)
 #' bySpecies
-#' 
+#'
 #' # Apply the transformation
 #' bySpeciesTransformed <- addTransform(bySpecies, colMean)
-#' 
+#'
 #' # Now create another location where we can write the output of the recombination
 #' tmpDir2 <- file.path(tempdir(), "divide_example2")
 #' loc2 <- localDiskConn(tmpDir2, autoYes = TRUE)
 #'
 #' # Recombine the data using the transformation
-#' bySpeciesMean <- recombine(bySpeciesTransformed, combine = combDdf, output = loc2, control = control)
+#' bySpeciesMean <- recombine(bySpeciesTransformed,
+#'   combine = combDdf, output = loc2, control = control)
 #' bySpeciesMean
 #' bySpeciesMean[[1]]
-#' 
+#'
 #' # Convert it to a data.frame to see the results
 #' as.data.frame(bySpeciesMean)
 #'
@@ -92,7 +91,7 @@
 #'
 #' # Shut down the cluster
 #' parallel::stopCluster(cl)
-#' 
+#'
 #' @export
 recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, verbose = TRUE) {
 

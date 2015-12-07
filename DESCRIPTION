@@ -1,9 +1,10 @@
 Package: datadr
 Type: Package
 Title: Divide and Recombine for Large, Complex Data
-Version: 0.7.6.1
-Date: 2015-11-21
-Authors@R: person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre"))
+Version: 0.7.7
+Date: 2015-12-04
+Authors@R: c(person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre")),
+    person("Ryan", "Hafen", role = "ctb"))
 Maintainer: Ryan Hafen <rhafen@gmail.com>
 Description: Methods for dividing data into subsets, applying analytical
     methods to the subsets, and recombining the results.  Comes with a generic
@@ -14,6 +15,7 @@ License: BSD_3_clause + file LICENSE
 URL: http://tessera.io/docs-datadr
 LazyLoad: yes
 LazyData: yes
+NeedsCompilation: no
 Imports:
     data.table,
     digest,

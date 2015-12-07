@@ -22,13 +22,14 @@
 #' bySpecies <- divide(irisD, by = "Species")
 #'
 #' # A function to fit a logistic regression model to each species
-#' logisticReg <- function(x) {
+#' logisticReg <- function(x)
 #'   drGLM(Sepal ~ Sepal.Width + Petal.Length + Petal.Width,
 #'         data = x, family = binomial())
-#' }
 #'
 #' # Apply the transform and combine using 'combMeanCoef'
-#' recombine(addTransform(bySpecies, logisticReg), combine = combMeanCoef)
+#' bySpecies %>%
+#'   addTransform(logisticReg) %>%
+#'   recombine(combMeanCoef)
 #'
 #' @export
 drGLM <- function(...) {
@@ -44,7 +45,7 @@ drGLM <- function(...) {
 #' @details This provides a transformation function to be called for each subset in a recombination MapReduce job that applies R's lm method and outputs the coefficients in a way that \code{\link{combMeanCoef}} knows how to deal with.  It can be applied to a ddf with \code{\link{addTransform}} prior to calling \code{\link{recombine}}.
 #'
 #' @return An object of class \code{drCoef} that contains the lm coefficients and other data needed by \code{\link{combMeanCoef}}
-#' 
+#'
 #' @author Landon Sego
 #'
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{rrDiv}}
@@ -54,14 +55,15 @@ drGLM <- function(...) {
 #' bySpecies <- divide(iris, by = "Species")
 #'
 #' # A function to fit a multiple linear regression model to each species
-#' linearReg <- function(x) {
+#' linearReg <- function(x)
 #'   drLM(Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width,
 #'        data = x)
-#' }
 #'
 #' # Apply the transform and combine using 'combMeanCoef'
-#' recombine(addTransform(bySpecies, linearReg), combine = combMeanCoef)
-#' 
+#' bySpecies %>%
+#'   addTransform(linearReg) %>%
+#'   recombine(combMeanCoef)
+#'
 #' @export
 drLM <- function(...) {
   drM(..., type = "lm")
@@ -94,7 +96,7 @@ drM <- function(..., type = c("lm", "glm")) {
 #' @details It is necessary to specify \code{weights} as a parameter to the \code{statistic} function because for BLB to work efficiently, it must resample each time with a sample of size \code{n}.  To make this computationally possible for very large \code{n}, we can use \code{weights} (see reference for details).  Therefore, only methods with a weights option can legitimately be used here.
 #'
 #' @references
-#' BLB paper
+#' Kleiner, Ariel, et al. "A scalable bootstrap for massive data." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 76.4 (2014): 795-816.
 #'
 #' @author Ryan Hafen
 #'
