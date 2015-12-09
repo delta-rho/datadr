@@ -15,8 +15,7 @@ This package will not be submitted to CRAN until it has matured.
 To install this package from github, do the following from the R console:
 
 ```s
-library(devtools)
-install_github("tesseradata/datadr")
+devtools::install_github("tesseradata/datadr")
 ```
 
 ## License
