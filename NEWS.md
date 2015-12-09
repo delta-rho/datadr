@@ -1,34 +1,23 @@
-Version 0.7.7
+Version 0.8
 ----------------------------------------------------------------------
 
 FEATURES / CHANGES
 
-- Improve documentation for a variety of functions, including the addition of examples
-- Add `drLM()` recombination method for fitting linear models
-- Update versioning scheme to x.y.z
+- Improve documentation for a variety of functions, including the addition of examples (0.8.0)
+- Add `drLM()` recombination method for fitting linear models (0.8.0)
+- Update versioning scheme to x.y.z (0.8.0)
 
 FIXES
 
-- Add workaround for current RHIPE bug with `combRbind()`
+- Add workaround for current RHIPE bug with `combRbind()` (0.8.0)
 
-Version 0.7.6.0
+Version 0.7.6
 ----------------------------------------------------------------------
 
 FEATURES / CHANGES
 
 - clarify and improve documentation for numerous functions
 - add `combDdf()` recombination method
-
-FIXES
-
-- improve error handling in `drJoin()` to validate that input data sources are ddo's
-- improve logic for dealing with NULL values in key-value pairs
-
-Version 0.7.5.9
-----------------------------------------------------------------------
-
-FEATURES / CHANGES
-
 - add 'by' argument to drHexbin
 - update logic of how `kvApply()` handles output
 - update `drAggregate()` so first argument is data to be consistent
@@ -45,6 +34,8 @@ FEATURES / CHANGES
 
 FIXES
 
+- improve error handling in `drJoin()` to validate that input data sources are ddo's
+- improve logic for dealing with NULL values in key-value pairs
 - fix loading of RHIPE and modifying RHIPE regex
 - make keys in drRead.table more unique
 - more meaningful error messages for drHexbin and drQuantile when dealing with transforms
