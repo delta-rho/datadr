@@ -2,6 +2,8 @@
 #'
 #' datadr: Divide and Recombine for Large, Complex Data
 #'
+#' \url{http://tessera.io/docs-datadr/}
+#'
 #' @name datadr-package
 #'
 #' @aliases datadr
