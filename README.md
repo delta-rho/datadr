@@ -16,7 +16,7 @@ To install this package from github, do the following from the R console:
 
 ```s
 library(devtools)
-install_github("datadr/tesseradata")
+install_github("tesseradata/datadr")
 ```
 
 ## License
