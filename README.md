@@ -10,9 +10,12 @@ Visualization tools based on D&R can be found [here](https://github.com/tesserad
 
 ## Installation
 
-This package will not be submitted to CRAN until it has matured.
+```s
+options(repos = c(tessera = "http://packages.tessera.io", getOption("repos")))
+install.packages("datadr")
+```
 
-To install this package from github, do the following from the R console:
+Alternatively, you can install directly from github:
 
 ```s
 devtools::install_github("tesseradata/datadr")
