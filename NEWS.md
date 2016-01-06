@@ -3,6 +3,7 @@ Version 0.8
 
 FEATURES / CHANGES
 
+- Provide information about the key when an error occurs when applying a transformation (0.8.1)
 - Improve documentation for a variety of functions, including the addition of examples (0.8.0)
 - Add `drLM()` recombination method for fitting linear models (0.8.0)
 - Update versioning scheme to x.y.z (0.8.0)
