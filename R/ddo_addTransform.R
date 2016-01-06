@@ -243,10 +243,15 @@ applyTransform <- function(transFns, x, env = NULL) {
       }
       assign("fn", curFn, envir = env)
       # message(paste("*** applying transformation", nms[i]))
-      res <- try(eval(expression({kvApply(x, fn)}), envir = env))
-      if(inherits(res, "try-error"))
-        stop("attempt to apply transformation failed with error: ", geterrmessage(), call. = FALSE)
-        # TODO: add information about key to error message
+      res <- try(eval(expression({kvApply(x, fn)}), envir = env), silent = TRUE)
+      if(inherits(res, "try-error")) {
+        if(length(x[[1]] == 1) && is.character(x[[1]])) {
+          keyStr <- x[[1]]
+        } else {
+          keyStr <- digest::digest(x[[1]])
+        }
+        stop(keyStr, ": attempt to apply transformation failed with error: ", geterrmessage(), call. = FALSE)
+      }
       # res <- kvApply(res, curFn)
     }
     if(is.null(attr(res[[2]], "split")))
