@@ -17,7 +17,7 @@ LazyLoad: yes
 LazyData: yes
 NeedsCompilation: no
 Imports:
-    data.table,
+    data.table (>= 1.9.6),
     digest,
     codetools,
     hexbin,
