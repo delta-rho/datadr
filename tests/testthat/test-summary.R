@@ -43,6 +43,15 @@ test_that("update with all NA subset", {
   expect_true(all(orig$Freq == letTab$Freq))
 })
 
+context("test update with 10k+ levels for in-memory ddf")
+
+test_that("print summary with 10k+ levels in-memory ddf", {
+  let <- expand.grid(letters, letters, letters)
+  let2 <- apply(let, 1, function(x) paste(x, collapse = ""))
+  tmp <- data.frame(x = rnorm(100000), y = sample(let2, 100000, replace = TRUE))
+  a <- ddf(tmp, update = TRUE)
+  summary(a)
+})
 
 context("test drAggregate")
 

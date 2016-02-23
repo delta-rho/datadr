@@ -254,7 +254,10 @@ updateAttributes <- function(obj, control = NULL) {
         } else if(varType == "categ") {
           class(v) <- c("ddfSummFactor", "list")
           # were there more unique levels than we could handle?
-          v$complete <- attrs[["nRow"]] == sum(v$freqTable$Freq) + v$nna
+          nRow <- attrs[["nRow"]]
+          if(is.null(nRow))
+            nRow <- nrow(obj)
+          v$complete <- nRow == sum(v$freqTable$Freq) + v$nna
           names(v$freqTable)[1] <- "value"
           summaryList[[varName]] <- v
         } else if(varType == "datetime") {

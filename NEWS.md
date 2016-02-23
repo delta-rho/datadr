@@ -10,6 +10,7 @@ FEATURES / CHANGES
 
 FIXES
 
+- Fix bug in printing summaries for in-memory ddfs with variables with 10k+ unique levels (0.8.2)
 - Add workaround for current RHIPE bug with `combRbind()` (0.8.0)
 
 Version 0.7.6
