@@ -166,7 +166,7 @@ saveAttrs.hdfsConn <- function(obj, attrs, type = "ddo") {
 }
 
 loadRhipe <- function() {
-  if(!require("Rhipe", quietly = TRUE)) {
+  if(!requireNamespace("Rhipe", quietly = TRUE)) {
     stop("Package 'Rhipe' is needed for this function to work. Please install it.",
     call. = FALSE)
   }

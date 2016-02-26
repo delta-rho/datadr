@@ -19,13 +19,15 @@ mrExecInternal.kvHDFSList <- function(data, setup = NULL, map = NULL, reduce = N
 
   params$libPaths <- .libPaths()
 
+  mkd <- getFromNamespace("mkdHDFSTempFolder", "Rhipe")
+
   if(inherits(output, "hdfsConn")) {
     if(is.expression(reduce))
       output$type <- "map" # force type = "map" if there is a reduce - why not?
   } else if(is.character(output)) {
     output <- hdfsConn(output)
   } else {
-    output <- hdfsConn(Rhipe:::mkdHDFSTempFolder(file = "tmp_output"), autoYes = TRUE)
+    output <- hdfsConn(mkd(file = "tmp_output"), autoYes = TRUE)
   }
   outFile <- rhfmt(output$loc, type = output$type)
 
