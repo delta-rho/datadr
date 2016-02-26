@@ -23,10 +23,11 @@ Imports:
     hexbin,
     parallel,
     magrittr,
-    dplyr
+    dplyr,
+    methods
 Suggests:
     testthat (>= 0.11.0),
     roxygen2 (>= 5.0.1),
-    Rhipe,
-    SparkR
+    Rhipe
 RoxygenNote: 5.0.1
+Additional_repositories: http://ml.stat.purdue.edu/packages
