@@ -4,7 +4,6 @@
 ..Rcheck
 CONTRIBUTING\.md
 LICENSE\.md
-NEWS\.md
 package.json
 protobuf-2\.4\.1/
 protobuf-2\.4\.1\.tar\.gz
