@@ -23,7 +23,7 @@
 #'
 #' @references
 #' \itemize{
-#'  \item \url{http://www.datadr.org}
+#'  \item \url{http://tessera.io}
 #'  \item \href{http://onlinelibrary.wiley.com/doi/10.1002/sta4.7/full}{Guha, S., Hafen, R., Rounds, J., Xia, J., Li, J., Xi, B., & Cleveland, W. S. (2012). Large complex data: divide and recombine (D&R) with RHIPE. \emph{Stat}, 1(1), 53-67.}
 #' }
 #'
@@ -136,7 +136,7 @@ divide <- function(data,
   map <- expression({
     for(i in seq_along(map.values)) {
       if(length(map.values[[i]]) > 0) {
-        cutDat <- dfSplit(map.values[[i]], by, seed)
+        cutDat <- dfSplit(flatten(map.values[[i]]), by, seed)
         cdn <- names(cutDat)
 
         for(j in seq_along(cutDat)) {
