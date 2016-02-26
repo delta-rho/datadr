@@ -19,4 +19,5 @@
 #'
 #' @examples
 #' help(package = datadr)
+#' @import methods
 NULL
