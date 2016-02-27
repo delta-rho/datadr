@@ -76,10 +76,12 @@ makeExtractable <- function(obj) {
   if(!inherits(obj, "kvHDFS"))
     stop("object must have an HDFS connection")
 
+  mkd <- getFromNamespace("mkdHDFSTempFolder", "Rhipe")
+
   # identity mr job
   res <- mrExec(
     obj,
-    output = hdfsConn(Rhipe:::mkdHDFSTempFolder(file = "tmp_output"), type = "map", autoYes = TRUE, verbose = FALSE)
+    output = hdfsConn(mkd(file = "tmp_output"), type = "map", autoYes = TRUE, verbose = FALSE)
   )
 
   # now move temporary over to original
