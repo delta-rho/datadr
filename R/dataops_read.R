@@ -56,8 +56,8 @@ readTextFileByChunk <- function(input, output, overwrite = FALSE, linesPerBlock 
 
     if(!is.null(recordEndRegex)) {
       cutoff <- max(which(grepl(recordEndRegex, data)))
-      extra <- tail(data, length(data) - cutoff)
-      data <- head(data, cutoff)
+      extra <- utils::tail(data, length(data) - cutoff)
+      data <- utils::head(data, cutoff)
     } else {
       extra <- NULL
     }

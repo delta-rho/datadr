@@ -76,7 +76,7 @@ makeExtractable <- function(obj) {
   if(!inherits(obj, "kvHDFS"))
     stop("object must have an HDFS connection")
 
-  mkd <- getFromNamespace("mkdHDFSTempFolder", "Rhipe")
+  mkd <- utils::getFromNamespace("mkdHDFSTempFolder", "Rhipe")
 
   # identity mr job
   res <- mrExec(

@@ -48,7 +48,7 @@ updateAttributes <- function(obj, control = NULL) {
         r <- map.values[[i]]
 
         ### ddo
-        objSize <- as.numeric(object.size(r))
+        objSize <- as.numeric(utils::object.size(r))
         if(needs["splitSizeDistn"]) collect("splitSizeDistn", objSize)
         if(needs["totObjectSize"]) collect("totObjectSize", objSize)
         if(needs["keys"]) collect("keys", k)
@@ -179,7 +179,8 @@ updateAttributes <- function(obj, control = NULL) {
         ### ddo
         if(reduce.key == "splitSizeDistn")
           collect("splitSizeDistn",
-            quantile(splitSizeDistn, probs = seq(0, 1, by = 0.01), na.rm = TRUE))
+            stats::quantile(splitSizeDistn,
+              probs = seq(0, 1, by = 0.01), na.rm = TRUE))
         if(reduce.key == "totObjectSize")
           collect("totObjectSize", totObjectSize)
         if(reduce.key == "keys")
@@ -190,7 +191,8 @@ updateAttributes <- function(obj, control = NULL) {
         ### ddf
         if(reduce.key == "splitRowDistn")
           collect("splitRowDistn",
-            quantile(splitRowDistn, probs = seq(0, 1, by = 0.01), na.rm = TRUE))
+            stats::quantile(splitRowDistn,
+              probs = seq(0, 1, by = 0.01), na.rm = TRUE))
         if(reduce.key == "nRow")
           collect("nRow", nRow)
 

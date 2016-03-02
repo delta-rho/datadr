@@ -63,11 +63,11 @@ print.kvValue <- function(x, ...) {
   attr(x, "split") <- NULL
   class(x) <- setdiff(class(x), "kvValue")
   if(inherits(x, "data.frame")) {
-    tmp <- head(x, 5)
+    tmp <- utils::head(x, 5)
     more <- NULL
     if(nrow(x) > 5)
       more <- "...\n"
-    cat(paste(c(capture.output(tmp), more), sep = "", collapse = "\n"))
+    cat(paste(c(utils::capture.output(tmp), more), sep = "", collapse = "\n"))
   } else {
     print(x)
   }

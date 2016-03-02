@@ -33,7 +33,7 @@ a data frame of the tabulations.  When "by" is specified, it is a ddf with each 
 Aggregates data by cross-classifying factors, with a formula interface similar to \code{xtabs}
 }
 \note{
-The interface is similar to \code{\link{xtabs}}, but instead of returning a full contingency table, data is returned in the form of a data frame only with rows for which there were positive counts.  This result is more similar to what is returned by \code{\link{aggregate}}.
+The interface is similar to \code{\link[stats]{xtabs}}, but instead of returning a full contingency table, data is returned in the form of a data frame only with rows for which there were positive counts.  This result is more similar to what is returned by \code{\link{aggregate}}.
 }
 \examples{
 drAggregate(Sepal.Length ~ Species, data = ddf(iris))
@@ -42,6 +42,6 @@ drAggregate(Sepal.Length ~ Species, data = ddf(iris))
 Ryan Hafen
 }
 \seealso{
-\code{\link{xtabs}}, \code{\link{updateAttributes}}
+\code{\link[stats]{xtabs}}, \code{\link{updateAttributes}}
 }
 

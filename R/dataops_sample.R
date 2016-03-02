@@ -14,7 +14,7 @@ drSample <- function(x, fraction, output = NULL, overwrite = FALSE, control = NU
   # TODO: warn if output storage is not commensurate with input?
   map <- expression({
     for(i in seq_along(map.keys)) {
-      if(runif(1) < fraction)
+      if(stats::runif(1) < fraction)
         collect(map.keys[[i]], map.values[[i]])
     }
   })

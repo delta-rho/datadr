@@ -106,8 +106,10 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
           for(i in 1:nrow(cutTab)) {
             collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), cutTab$Var1[i]), cutTab$Freq[i])
           }
-          collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "bot"), vv[head(ord, tails)])
-          collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "top"), vv[tail(ord, tails)])
+          collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "bot"),
+            vv[utils::head(ord, tails)])
+          collect(list(as.list(dat[inds[[ii]][1], by, drop = FALSE]), "top"),
+            vv[utils::tail(ord, tails)])
         }
       }
     }
@@ -122,9 +124,9 @@ drQuantile <- function(x, var, by = NULL, probs = seq(0, 1, 0.005), preTransFn =
       # if(length(reduce.key[[2]]) == 0)
       #   browser()
       if(reduce.key[[2]] == "bot") {
-        bot <- head(sort(c(bot, do.call(c, reduce.values))), tails)
+        bot <- utils::head(sort(c(bot, do.call(c, reduce.values))), tails)
       } else if(reduce.key[[2]] == "top") {
-        top <- tail(sort(c(top, do.call(c, reduce.values))), tails)
+        top <- utils::tail(sort(c(top, do.call(c, reduce.values))), tails)
       } else {
         sum <- sum + sum(unlist(reduce.values))
       }
@@ -200,7 +202,8 @@ constructQuants <- function(obj, probs, tails, mids) {
   quants$cpct <- cumsum(quants$pct)
   quants$q <- mids[quants$idx]
 
-  fn <- approxfun(quants$cpct, quants$q, method = "constant", f = 1, rule = 2)
+  fn <- stats::approxfun(quants$cpct, quants$q,
+    method = "constant", f = 1, rule = 2)
   res <- data.frame(
     fval = probs,
     q = fn(probs)

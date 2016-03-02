@@ -76,13 +76,14 @@ hdfsConn <- function(loc, type = "sequence", autoYes = FALSE, reset = FALSE, ver
       message("* Saving connection attributes")
     rhmkdir(metaDir)
     rhchmod(metaDir, "777")
-    capture.output(rhsave(conn, file = paste(metaDir, "/conn.Rdata", sep = "")), file = nullFile)
+    utils::capture.output(rhsave(conn,
+      file = paste(metaDir, "/conn.Rdata", sep = "")), file = nullFile)
     rhchmod(paste(metaDir, "/conn.Rdata", sep = ""), "777")
   } else if(!reset) {
     if(verbose)
       message("* Loading connection attributes")
     if(existsOnHDFS(connPath))
-      capture.output(rhload(connPath), file = nullFile)
+      utils::capture.output(rhload(connPath), file = nullFile)
       # TODO: message that specified parameters are overridden?
   } else {
     rhsave(conn, file = connPath)

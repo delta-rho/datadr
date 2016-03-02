@@ -75,8 +75,8 @@ drM <- function(..., type = c("lm", "glm")) {
   args <- list(...)
   fit <- do.call(type, args)
   res <- list(
-    names = names(coef(fit)),
-    coef = as.numeric(coef(fit)),
+    names = names(stats::coef(fit)),
+    coef = as.numeric(stats::coef(fit)),
     n = nrow(args$data)
   )
   class(res) <- c("drCoef", "list")
@@ -105,7 +105,7 @@ drM <- function(..., type = c("lm", "glm")) {
 #' @export
 drBLB <- function(x, statistic, metric, R, n) {
   b <- nrow(x)
-  resamples <- rmultinom(R, n, rep(1/b, b))
+  resamples <- stats::rmultinom(R, n, rep(1/b, b))
 
   res <- lapply(1:R, function(ii) {
     weights <- resamples[,ii] / max(resamples[,ii])

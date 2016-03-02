@@ -23,7 +23,7 @@ combineMultipleMoments(...)
 moments2statistics(m)
 }
 \arguments{
-\item{formula}{a formula to be used in \code{\link{xtabs}}}
+\item{formula}{a formula to be used in \code{\link[stats]{xtabs}}}
 
 \item{data}{a subset of a 'ddf' object}
 

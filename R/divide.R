@@ -74,7 +74,7 @@ divide <- function(data,
     seed <- by$seed
 
   if(is.null(seed))
-    seed <- as.integer(runif(1)*1000000)
+    seed <- as.integer(stats::runif(1)*1000000)
 
   if(!is.null(preTransFn)) {
     message("** note **: preTransFn is deprecated - please apply this transformation using 'addTransform()' to your input data prior to calling 'divide()'")

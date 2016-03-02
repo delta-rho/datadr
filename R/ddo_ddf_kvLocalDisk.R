@@ -190,16 +190,18 @@ convertKvLocalDisk.hdfsConn <- function(to, from, verbose = FALSE) {
   for(f in file.path(pr, ff)) {
     load(f)
     writeDat[[length(writeDat) + 1]] <- obj[[1]]
-    objSize <- objSize + object.size(obj)
+    objSize <- objSize + utils::object.size(obj)
     # flush it to HDFS once the list is bigger than 100MB (make this configurable?)
     if(objSize / 1024^2 > 100) {
-      rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep = ""))
+      rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_",
+        utils::object.size(writeDat), sep = ""))
       writeDat <- list()
       objSize <- 0
     }
   }
   if(length(writeDat) > 0)
-    rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep = ""))
+    rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_",
+      utils::object.size(writeDat), sep = ""))
 
   if(inherits(from, "ddf")) {
     res <- ddf(to, update = FALSE, verbose = verbose)

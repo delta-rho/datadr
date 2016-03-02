@@ -47,7 +47,7 @@ getBasicDdoAttrs.kvMemory <- function(obj, conn) {
   dat <- conn$data
   keys <- lapply(dat, "[[", 1)
   # names(keys) <- as.character(sapply(keys, digest))
-  ts <- as.numeric(object.size(dat))
+  ts <- as.numeric(utils::object.size(dat))
   list(
     conn = conn,
     keys = keys,
@@ -153,7 +153,8 @@ convertKvMemory.hdfsConn <- function(to, from, verbose = FALSE) {
   attr(writeDat, "ddo") <- NULL
   attr(writeDat, "ddf") <- NULL
   class(writeDat) <- "list"
-  rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_", object.size(writeDat), sep = ""))
+  rhwrite(writeDat, file = paste(to$loc, "/", digest(writeDat), "_",
+    utils::object.size(writeDat), sep = ""))
 
   if(inherits(from, "ddf")) {
     res <- ddf(to, update = FALSE, verbose = verbose)

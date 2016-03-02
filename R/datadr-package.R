@@ -20,4 +20,6 @@
 #' @examples
 #' help(package = datadr)
 #' @import methods
+#' @importFrom stats approxfun coef quantile rmultinom runif terms xtabs
+#' @importFrom utils capture.output getFromNamespace head object.size read.table tail
 NULL

@@ -33,7 +33,8 @@ getCuts.rrDiv <- function(by, curDF) {
 
   if(!is.null(by$seed)) set.seed(by$seed)
   # cuts <- paste("rr_", sample(1:ndiv, n, replace = TRUE), sep = "")
-  paste("rr_", cut(runif(n), seq(0, 1, length = ndiv + 1), labels = FALSE), sep = "")
+  paste("rr_", cut(stats::runif(n),
+    seq(0, 1, length = ndiv + 1), labels = FALSE), sep = "")
 }
 
 #' @export

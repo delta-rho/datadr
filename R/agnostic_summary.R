@@ -7,7 +7,7 @@
 #' Functions that are used to tabulate categorical variables and compute moments for numeric variables inside through the MapReduce framework.  Used in \code{\link{updateAttributes}}.
 #'
 #' @name mr-summary-stats
-#' @param formula a formula to be used in \code{\link{xtabs}}
+#' @param formula a formula to be used in \code{\link[stats]{xtabs}}
 #' @param data a subset of a 'ddf' object
 #' @param maxUnique the maximum number of unique combinations of variables to obtaion tabulations for.  This is meant to help against cases where a variable in the formula has a very large number of levels, to the point that it is not meaningful to tabulate and is too computationally burdonsome.  If \code{NULL}, it is ignored.  If a positive number, only the top and bottom \code{maxUnique} tabulations by frequency are kept.
 #'
@@ -15,7 +15,7 @@
 #' @rdname mr-summary-stats
 tabulateMap <- function(formula, data) {
   if(length(data) > 0) {
-    tmp <- xtabs(formula, data = data)
+    tmp <- stats::xtabs(formula, data = data)
     if(length(tmp) > 0) {
       tmp <- as.data.frame(tmp, stringsAsFactors = FALSE)
       return(tmp[tmp$Freq > 0,])
@@ -30,7 +30,7 @@ tabulateMap <- function(formula, data) {
 tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
   tmp <- data.frame(data.table::rbindlist(reduce.values))
   tmp <- rbind(result, tmp)
-  tmp <- xtabs(Freq ~ ., data = tmp)
+  tmp <- stats::xtabs(Freq ~ ., data = tmp)
   if(length(tmp) > 0) {
     tmp <- as.data.frame(tmp, stringsAsFactors = FALSE)
     tmp <- tmp[tmp$Freq > 0,]
@@ -40,7 +40,8 @@ tabulateReduce <- function(result, reduce.values, maxUnique = NULL) {
       return(tmp[idx,])
     } else {
       if(nrow(tmp) > maxUnique) {
-        return(tmp[c(head(idx, maxUnique / 2), tail(idx, maxUnique / 2)),])
+        return(tmp[c(utils::head(idx, maxUnique / 2),
+          utils::tail(idx, maxUnique / 2)),])
       } else {
         return(tmp[idx,])
       }

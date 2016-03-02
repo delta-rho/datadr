@@ -19,7 +19,7 @@ mrExecInternal.kvHDFSList <- function(data, setup = NULL, map = NULL, reduce = N
 
   params$libPaths <- .libPaths()
 
-  mkd <- getFromNamespace("mkdHDFSTempFolder", "Rhipe")
+  mkd <- utils::getFromNamespace("mkdHDFSTempFolder", "Rhipe")
 
   if(inherits(output, "hdfsConn")) {
     if(is.expression(reduce))

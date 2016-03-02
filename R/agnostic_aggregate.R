@@ -16,9 +16,9 @@
 #'
 #' @author Ryan Hafen
 #'
-#' @seealso \code{\link{xtabs}}, \code{\link{updateAttributes}}
+#' @seealso \code{\link[stats]{xtabs}}, \code{\link{updateAttributes}}
 #'
-#' @note The interface is similar to \code{\link{xtabs}}, but instead of returning a full contingency table, data is returned in the form of a data frame only with rows for which there were positive counts.  This result is more similar to what is returned by \code{\link{aggregate}}.
+#' @note The interface is similar to \code{\link[stats]{xtabs}}, but instead of returning a full contingency table, data is returned in the form of a data frame only with rows for which there were positive counts.  This result is more similar to what is returned by \code{\link{aggregate}}.
 #'
 #' @examples
 #' drAggregate(Sepal.Length ~ Species, data = ddf(iris))
@@ -37,7 +37,7 @@ drAggregate <- function(data, formula, by = NULL, output = NULL, preTransFn = NU
   # if formula does not contain the "by" variable, add it in
   if(!is.null(by)) {
     for(i in seq_along(by)) {
-      if(!by[i] %in% labels(terms(formula)))
+      if(!by[i] %in% labels(stats::terms(formula)))
         formula <- eval(parse(text = paste("update(formula, ~ . + ", by[i], ")", sep = "")))
     }
   }
@@ -51,7 +51,7 @@ drAggregate <- function(data, formula, by = NULL, output = NULL, preTransFn = NU
     }))
 
     if(length(res) > 0) {
-      tmp <- xtabs(Freq ~ ., data = res)
+      tmp <- stats::xtabs(Freq ~ ., data = res)
       # tabulation of all NAs yields empty table
       if(length(tmp) > 0) {
         tmp <- as.data.frame(tmp, stringsAsFactors = FALSE)

@@ -372,7 +372,7 @@ makeBlockIndices <- function(sz, sizePerBlock, nSlots = 1) {
   if(n == 1) {
     return(list(seq_along(sz)))
   } else {
-    qs <- quantile(cumsum(sz), seq(0, 1, length = n + 1))
+    qs <- stats::quantile(cumsum(sz), seq(0, 1, length = n + 1))
     res <- split(seq_along(sz), cut(cumsum(sz), qs, include.lowest = TRUE))
     names(res) <- NULL
     return(res)

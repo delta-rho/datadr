@@ -49,7 +49,7 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
   } else {
     data <- list(data)
   }
-  class(data) <- c(paste(tail(class(data[[1]]), 1), "List", sep = ""), "list")
+  class(data) <- c(paste(utils::tail(class(data[[1]]), 1), "List", sep = ""), "list")
 
   # assign names to each data source if missing
   nms <- names(data)
@@ -65,7 +65,7 @@ mrExec <- function(data, setup = NULL, map = NULL, reduce = NULL, output = NULL,
   names(data) <- nms
 
   if(is.character(output)) {
-    class(output) <- c("character", paste0(tail(class(data[[1]]), 1), "Char"))
+    class(output) <- c("character", paste0(utils::tail(class(data[[1]]), 1), "Char"))
     output <- charToOutput(output)
   }
 
