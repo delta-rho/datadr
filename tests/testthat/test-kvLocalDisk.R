@@ -480,7 +480,20 @@ test_that("move local disk object", {
   loc <- getAttributes(ldo, "conn")$ddo$conn$loc
   loc2 <- file.path(dirname(loc), "testloc")
   dir.create(loc2)
-  file.copy(list.files(loc, recursive = TRUE, full.names = TRUE), loc2, recursive = TRUE)
+
+  # this seems to be the best cross-platform way to copy directories
+  # if to exists it will be deleted
+  copy_dir <- function(from, to) {
+    if(file.exists(to))
+      unlink(to, recursive = TRUE)
+    ff <- list.files(from, recursive = TRUE, full.names = TRUE)
+    ff2 <- file.path(to, list.files(from, recursive = TRUE))
+    upath <- unique(dirname(ff2))
+    for(up in upath)
+      suppressWarnings(dir.create(up, recursive = TRUE))
+    all(file.copy(ff, ff2, overwrite = TRUE))
+  }
+  copy_dir(loc, loc2)
 
   ldo2 <- ddo(localDiskConn(loc2))
   expect_true(getAttributes(ldo2, "conn")$ddo$conn$loc == loc2)
