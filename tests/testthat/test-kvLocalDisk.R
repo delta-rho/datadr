@@ -135,7 +135,7 @@ test_that("update ddo - check attrs", {
   expect_true(!is.na(totObjectSize))
 
   splitSizeRange <- diff(range(splitSizeDistn(ldo)))
-  expect_true(splitSizeRange > 4800)
+  expect_true(splitSizeRange > 4000)
 
   getKeyKeys <- sort(unlist(getKeys(ldo)))
   keys <- sort(sapply(data, "[[", 1))
