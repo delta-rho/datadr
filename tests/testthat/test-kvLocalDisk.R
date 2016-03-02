@@ -496,7 +496,7 @@ test_that("move local disk object", {
   copy_dir(loc, loc2)
 
   ldo2 <- ddo(localDiskConn(loc2))
-  expect_true(getAttributes(ldo2, "conn")$ddo$conn$loc == loc2)
+  expect_true(getAttributes(ldo2, "conn")$ddo$conn$loc == normalizePath(loc2))
 
   # load(file.path(getAttributes(ldo2, "conn")$ddo$conn$loc, "_meta", "ddo.Rdata")
   # attrs$conn
