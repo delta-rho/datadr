@@ -11,3 +11,4 @@ protobuf_install/
 ^_ignore$
 \.sublime\-
 rhipe-java.log
+cran-comments.md
