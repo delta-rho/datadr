@@ -141,7 +141,7 @@ drRead.table <- function(file,
   # to ensure each subset has the same column classes,
   # set them (if not already set) based on tmp read-in
   if(is.null(readTabParams$colClasses))
-    readTabParams$colClasses <- sapply(res, class)
+    readTabParams$colClasses <- unname(sapply(res, class))
   if(!autoColClasses)
     readTabParams$colClasses <- NULL
 
