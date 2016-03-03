@@ -16,8 +16,6 @@ URL: http://tessera.io/docs-datadr
 LazyLoad: yes
 LazyData: yes
 NeedsCompilation: no
-Depends:
-    R (>= 3.2.0)
 Imports:
     data.table (>= 1.9.6),
     digest,
