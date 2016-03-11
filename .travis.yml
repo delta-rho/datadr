@@ -2,6 +2,10 @@ language: r
 sudo: false
 cache: packages
 
+env:
+  global:
+    - _R_CHECK_FORCE_SUGGESTS_=FALSE
+
 branches:
   only:
     - master
