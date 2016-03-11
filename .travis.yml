@@ -1,28 +1,6 @@
-language: c
-
-env:
-  global:
-    - _R_CHECK_FORCE_SUGGESTS_=FALSE
-
-before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
-install:
-  - ./travis-tool.sh r_binary_install data.table
-  - ./travis-tool.sh r_binary_install digest
-  - ./travis-tool.sh r_binary_install testthat
-  - ./travis-tool.sh r_binary_install hexbin
-  - ./travis-tool.sh r_binary_install magrittr
-  - ./travis-tool.sh r_binary_install dplyr
-  - ./travis-tool.sh r_binary_install testthat
-  - ./travis-tool.sh r_binary_install roxygen2
-  - ./travis-tool.sh install_deps
-
-script: ./travis-tool.sh run_tests
-
-on_failure:
-  - ./travis-tool.sh dump_logs
+language: r
+sudo: false
+cache: packages
 
 branches:
   only:
