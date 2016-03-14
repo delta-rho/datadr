@@ -23,4 +23,29 @@ ddf(conn, transFn = NULL, update = FALSE, reset = FALSE, control = NULL,
 \description{
 Instantiate a distributed data frame ('ddf')
 }
+\examples{
+# in-memory ddf
+d <- ddf(iris)
+d
+
+# local disk ddf
+conn <- localDiskConn(tempfile(), autoYes = TRUE)
+addData(conn, list(list("1", iris[1:10,])))
+addData(conn, list(list("2", iris[11:110,])))
+addData(conn, list(list("3", iris[111:150,])))
+dl <- ddf(conn)
+dl
+
+# hdfs ddf (requires RHIPE / Hadoop)
+\dontrun{
+  # connect to empty HDFS directory
+  conn <- hdfsConn("/tmp/irisSplit")
+  # add some data
+  addData(conn, list(list("1", iris[1:10,])))
+  addData(conn, list(list("2", iris[11:110,])))
+  addData(conn, list(list("3", iris[111:150,])))
+  # represent it as a distributed data frame
+  hdd <- ddf(conn)
+}
+}
 

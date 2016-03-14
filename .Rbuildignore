@@ -12,3 +12,4 @@ protobuf_install/
 \.sublime\-
 rhipe-java.log
 cran-comments.md
+man-roxygen

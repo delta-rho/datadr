@@ -29,6 +29,35 @@
 #'
 #' @author Ryan Hafen
 #' @seealso \code{\link{recombine}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{condDiv}}, \code{\link{rrDiv}}
+#' @examples
+#' # divide iris data by Species by passing in a data frame
+#' bySpecies <- divide(iris, by = "Species")
+#' bySpecies
+#'
+#' # divide iris data into random partitioning of ~30 rows per subset
+#' irisRR <- divide(iris, by = rrDiv(30))
+#' irisRR
+#'
+#' # any ddf can be passed into divide:
+#' irisRR2 <- divide(bySpecies, by = rrDiv(30))
+#' irisRR2
+#' bySpecies2 <- divide(irisRR2, by = "Species")
+#' bySpecies2
+#'
+#' # splitting on multiple columns
+#' byEdSex <- divide(adult, by = c("education", "sex"))
+#' byEdSex
+#' byEdSex[[1]]
+#'
+#' # splitting on a numeric variable
+#' bySL <- ddf(iris) %>%
+#'   addTransform(function(x) {
+#'     x$slCut <- cut(x$Sepal.Length, 10)
+#'     x
+#'   }) %>%
+#'   divide(by = "slCut")
+#' bySL
+#' bySL[[1]]
 #' @export
 divide <- function(data,
   by = NULL,
@@ -228,11 +257,17 @@ divide <- function(data,
   res
 }
 
-#' Get Between Subset Variable
+#' Get Between Subset Variable(s)
 #'
 #' For a given key-value pair, get a BSV variable value by name (if present)
 #' @param x a key-value pair or a value
 #' @param name the name of the BSV to get
+#' d <- divide(iris, by = "Species",
+#'   bsvFn = function(x)
+#'     list(msl = bsv(mean(x$Sepal.Length))))
+#' getBsvs(d[[1]]$value)
+#' getBsv(d[[1]]$value, "msl")
+#' @rdname bsv
 #' @export
 getBsv <- function(x, name) {
   res <- attr(x, "bsv")[[name]]
@@ -241,10 +276,7 @@ getBsv <- function(x, name) {
   res
 }
 
-#' Get Between Subset Variables
-#'
-#' For a given key-value pair, exract all BSVs
-#' @param x a key-value pair or a value
+#' @rdname bsv
 #' @export
 getBsvs <- function(x) {
   res <- attr(x, "bsv")
@@ -253,11 +285,17 @@ getBsvs <- function(x) {
   res
 }
 
-#' Extract "Split" Variable
+#' Extract "Split" Variable(s)
 #'
 #' For a given key-value pair or value, get a split variable value by name, if present (split variables are variables that define how the data was divided).
 #' @param x a key-value pair or a value
 #' @param name the name of the split variable to get
+#' d <- divide(iris, by = "Species",
+#'   bsvFn = function(x)
+#'     list(msl = bsv(mean(x$Sepal.Length))))
+#' getSplitVars(d[[1]]$value)
+#' getSplitVar(d[[1]]$value, "Species")
+#' @rdname splitvars
 #' @export
 getSplitVar <- function(x, name) {
   res <- attr(x, "split")[[name]]
@@ -266,10 +304,7 @@ getSplitVar <- function(x, name) {
   res
 }
 
-#' Extract "Split" Variables
-#'
-#' For a given k/v pair or value, exract all split variables (split variables are variables that define how the data was divided).
-#' @param x a key-value pair or a value
+#' @rdname splitvars
 #' @export
 getSplitVars <- function(x) {
   res <- as.list(attr(x, "split"))
@@ -285,6 +320,12 @@ getSplitVars <- function(x) {
 #' Add split variables and BSVs (if any) as columns to a subset of a ddf.
 #' @param x a value of a key-value pair
 #' @seealso \code{\link{getSplitVars}}, \code{\link{getBsvs}}
+#' @examples
+#' d <- divide(iris, by = "Species")
+#' # the column "Species" is no longer explicitly in the data
+#' d[[1]]$value
+#' # but it is preserved and can be added back in with flatten()
+#' flatten(d[[1]]$value)
 #' @export
 flatten <- function(x) {
   svs <- getSplitVars(x)

@@ -18,6 +18,11 @@ Specify conditioning variable division parameters for data division
 \details{
 Currently each unique combination of values of \code{vars} constitutes a subset.  In the future, specifying shingles for numeric conditioning variables will be implemented.
 }
+\examples{
+d <- divide(iris, by = "Species")
+# equivalent:
+d <- divide(iris, by = condDiv("Species"))
+}
 \author{
 Ryan Hafen
 }

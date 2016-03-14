@@ -16,6 +16,9 @@
 #' @return data frame
 #'
 #' @author Ryan Hafen
+#' @examples
+#' d <- divide(iris, by = "Species")
+#' drSubset(d, Sepal.Length < 5)
 #' @export
 drSubset <- function(data,
   subset = NULL,

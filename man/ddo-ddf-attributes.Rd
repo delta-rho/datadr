@@ -43,6 +43,10 @@ hasAttributes(obj, ...)
 \item{\ldots}{additional arguments}
 }
 \description{
-Managing attributes of 'ddo' or 'ddf' objects
+These are called internally in various datadr functions.  They are not meant for use outside of there, but are exported for convenience, and can be useful for better understanding ddo/ddf objects.
+}
+\examples{
+d <- divide(iris, by = "Species")
+getAttribute(d, "keys")
 }
 

@@ -26,72 +26,59 @@
 #' @seealso \code{\link{divide}}, \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{drGLM}}, \code{\link{drBLB}}, \code{\link{combMeanCoef}}, \code{\link{combMean}}, \code{\link{combCollect}}, \code{\link{combRbind}}, \code{\link{drLapply}}
 #'
 #' @examples
-#' ## In memory example
+#' ## in-memory example
 #' ##---------------------------------------------------------
 #'
-#' # Begin with an in-memory ddf (backed by kvMemory)
+#' # begin with an in-memory ddf (backed by kvMemory)
 #' bySpecies <- divide(iris, by = "Species")
 #'
-#' # Create a function to calculate the mean for each variable
-#' # 'as.data.frame()' and 't()' convert the vector output of 'apply()'
-#' # into a data.frame with a single row
-#' colMean <- function(x) as.data.frame(t(apply(x, 2, mean)))
+#' # create a function to calculate the mean for each variable
+#' colMean <- function(x) data.frame(lapply(x, mean))
 #'
-#' # Add the transform
+#' # apply the transformation
 #' bySpeciesTransformed <- addTransform(bySpecies, colMean)
 #'
-#' # Recombination with no 'combine' argument and no argument to output
+#' # recombination with no 'combine' argument and no argument to output
 #' # produces the key-value list produced by 'combCollect()'
 #' recombine(bySpeciesTransformed)
 #'
-#' # But we can also preserve the distributed data frame, like this:
+#' # but we can also preserve the distributed data frame, like this:
 #' recombine(bySpeciesTransformed, combine = combDdf)
 #'
-#' # Or we could recombine using 'combRbind()' and produce a data frame:
+#' # or we can recombine using 'combRbind()' and produce a data frame:
 #' recombine(bySpeciesTransformed, combine = combRbind)
 #'
-#' ## Local disk connection example with parallelization
+#' ## local disk connection example with parallelization
 #' ##---------------------------------------------------------
 #'
-#' # Create a 2-node cluster that can be used to process in parallel
+#' # create a 2-node cluster that can be used to process in parallel
 #' cl <- parallel::makeCluster(2)
 #'
-#' # Create the control object we'll pass into 'divide()' and 'recombine()' to have
-#' # these operations run in parallel
+#' # create the control object we'll pass into local disk datadr operations
 #' control <- localDiskControl(cluster = cl)
+#' # note that setting options(defaultLocalDiskControl = control)
+#' # will cause this to be used by default in all local disk operations
 #'
-#' # Create a path for a temporary directory
-#' tmpDir1 <- file.path(tempdir(), "divide_example1")
+#' # create local disk connection to hold bySpecies data
+#' ldPath <- file.path(tempdir(), "by_species")
+#' ldConn <- localDiskConn(ldPath, autoYes = TRUE)
 #'
-#' # Create the local disk connection where data will be stored
-#' loc1 <- localDiskConn(tmpDir1, autoYes = TRUE)
+#' # convert in-memory bySpecies to local-disk ddf
+#' bySpeciesLD <- convert(bySpecies, ldConn)
 #'
-#' # Now divide the data, writing data to the local disk connection
-#' bySpecies <- divide(iris, by = "Species", output = loc1, update = TRUE, control = control)
-#' bySpecies
+#' # apply the transformation
+#' bySpeciesTransformed <- addTransform(bySpeciesLD, colMean)
 #'
-#' # Apply the transformation
-#' bySpeciesTransformed <- addTransform(bySpecies, colMean)
-#'
-#' # Now create another location where we can write the output of the recombination
-#' tmpDir2 <- file.path(tempdir(), "divide_example2")
-#' loc2 <- localDiskConn(tmpDir2, autoYes = TRUE)
-#'
-#' # Recombine the data using the transformation
+#' # recombine the data using the transformation
 #' bySpeciesMean <- recombine(bySpeciesTransformed,
-#'   combine = combDdf, output = loc2, control = control)
+#'   combine = combRbind, control = control)
 #' bySpeciesMean
-#' bySpeciesMean[[1]]
 #'
-#' # Convert it to a data.frame to see the results
-#' as.data.frame(bySpeciesMean)
+#' # remove temporary directories
+#' unlink(ldPath, recursive = TRUE)
 #'
-#' # Remove temporary directories
-#' unlink(c(tmpDir1, tmpDir2), recursive = TRUE)
-#'
-#' # Shut down the cluster
+#' # shut down the cluster
 #' parallel::stopCluster(cl)
-#'
 #' @export
 recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwrite = FALSE, params = NULL, packages = NULL, control = NULL, verbose = TRUE) {
 
@@ -110,8 +97,8 @@ recombine <- function(data, combine = NULL, apply = NULL, output = NULL, overwri
     data <- addTransform(data, apply)
   }
 
-  if(verbose)
-    message("* Verifying suitability of 'output' for specified 'combine'...")
+  # if(verbose)
+  #   message("* Verifying suitability of 'output' for specified 'combine'...")
 
   if(is.character(output)) {
     class(output) <- c("character", paste0(tail(class(data), 1), "Char"))

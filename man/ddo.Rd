@@ -20,4 +20,9 @@ ddo(conn, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE)
 \description{
 Instantiate a distributed data object ('ddo')
 }
+\examples{
+kv <- kvPairs(kvPair(1, letters), kvPair(2, rnorm(100)))
+kvddo <- ddo(kv)
+kvddo
+}
 

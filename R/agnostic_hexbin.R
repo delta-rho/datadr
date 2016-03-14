@@ -20,6 +20,17 @@
 #' @author Ryan Hafen
 #'
 #' @seealso \code{\link{drQuantile}}
+#' @examples
+#' # create dummy data and divide it
+#' dat <- data.frame(
+#'   xx = rnorm(1000),
+#'   yy = rnorm(1000),
+#'   by = sample(letters, 1000, replace = TRUE))
+#' d <- divide(dat, by = "by", update = TRUE)
+#' # compute hexbins on divided object
+#' dhex <- drHexbin(d, xVar = "xx", yVar = "yy")
+#' # dhex is equivalent to running on undivided data:
+#' hexbin(dat$xx, dat$yy)
 #' @export
 drHexbin <- function(data, xVar, yVar, by = NULL, xTransFn = identity, yTransFn = identity, xRange = NULL, yRange = NULL, xbins = 30, shape = 1, params = NULL, packages = NULL, control = NULL) {
 

@@ -31,4 +31,13 @@ hasExtractableKV(x)
 \description{
 Accessor functions for attributes of ddo/ddf objects.  Methods also include \code{nrow} and \code{ncol} for ddf objects.
 }
+\examples{
+d <- divide(iris, by = "Species", update = TRUE)
+nrow(d)
+ncol(d)
+length(d)
+names(d)
+summary(d)
+getKeys(d)
+}
 

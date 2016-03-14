@@ -12,6 +12,9 @@
 #' @param maxUnique the maximum number of unique combinations of variables to obtaion tabulations for.  This is meant to help against cases where a variable in the formula has a very large number of levels, to the point that it is not meaningful to tabulate and is too computationally burdonsome.  If \code{NULL}, it is ignored.  If a positive number, only the top and bottom \code{maxUnique} tabulations by frequency are kept.
 #'
 #' @export
+#' @examples
+#' d <- divide(iris, by = "Species", update = TRUE)
+#' summary(d)
 #' @rdname mr-summary-stats
 tabulateMap <- function(formula, data) {
   if(length(data) > 0) {

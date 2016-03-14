@@ -17,6 +17,12 @@
 #'
 #' @author Ryan Hafen
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}, \code{\link{condDiv}}
+#' @examples
+#' # divide iris data into random subsets with ~20 records per subset
+#' irisRR <- divide(iris, by = rrDiv(20), update = TRUE)
+#' irisRR
+#' # look at the actual distribution of number of rows per subset
+#' plot(splitRowDistn(irisRR))
 #' @export
 rrDiv <- function(nrows = NULL, seed = NULL) {
   res <- list(type = "rrDiv", nrows = nrows, seed = seed)

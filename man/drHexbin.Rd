@@ -35,6 +35,18 @@ a "hexbin" object
 \description{
 Create "hexbin" object of hexagonally binned data for a distributed data frame.  This computation is division agnostic - it does not matter how the data frame is split up.
 }
+\examples{
+# create dummy data and divide it
+dat <- data.frame(
+  xx = rnorm(1000),
+  yy = rnorm(1000),
+  by = sample(letters, 1000, replace = TRUE))
+d <- divide(dat, by = "by", update = TRUE)
+# compute hexbins on divided object
+dhex <- drHexbin(d, xVar = "xx", yVar = "yy")
+# dhex is equivalent to running on undivided data:
+hexbin(dat$xx, dat$yy)
+}
 \author{
 Ryan Hafen
 }

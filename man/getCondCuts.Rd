@@ -12,6 +12,10 @@ getCondCuts(df, splitVars)
 \item{splitVars}{a vector of variable names to split by}
 }
 \description{
-Used internally for exported for certain reasons.  Do not use explicitly.
+This is used internally for conditioning variable division.  It does not have much use outside of there, but is exported for convenience.
+}
+\examples{
+# see how key names are obtained
+getCondCuts(iris, "Species")
 }
 

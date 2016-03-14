@@ -14,4 +14,7 @@
 \description{
 Print a key-value pair
 }
+\examples{
+ kvPair(1, letters)
+}
 

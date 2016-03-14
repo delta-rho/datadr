@@ -90,6 +90,22 @@ mrExecInternal.kvHDFSList <- function(data, setup = NULL, map = NULL, reduce = N
 #' Specify control parameters for a RHIPE job.  See \code{rhwatch} for details about each of the parameters.
 #'
 #' @param mapred,setup,combiner,cleanup,orderby,shared,jarfiles,zips,jobname arguments to \code{rhwatch} in RHIPE
+#' @examples
+#' \dontrun{
+#' # input data on HDFS
+#' d <- ddf(hdfsConn("/path/to/big/data/on/hdfs"))
+#'
+#' # set RHIPE / Hadoop parameters
+#' # buffer sizes control how many k/v pairs are sent to map / reduce tasks at a time
+#' # mapred.reduce.tasks is a Hadoop config parameter that controls # of reduce tasks
+#' rhctl <- rhipeControl(mapred = list(
+#'   rhipe_map_buff_size = 10000,
+#'   mapred.reduce.tasks = 72,
+#'   rhipe_reduce_buff_size = 1)
+#'
+#' # divide input data using these control parameters
+#' divide(d, by = "var", output = hdfsConn("/path/to/output"), control = rhctl)
+#' }
 #' @export
 rhipeControl <- function(mapred = NULL, setup = NULL, combiner = FALSE, cleanup = NULL, orderby = "bytes", shared = NULL, jarfiles = NULL, zips = NULL, jobname = "") {
   res <- list(mapred = mapred, setup = setup, combiner = combiner, cleanup = cleanup, orderby = orderby, shared = shared, jarfiles = jarfiles, zips = zips, jobname = jobname)

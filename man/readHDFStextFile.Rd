@@ -27,4 +27,15 @@ readHDFStextFile(input, output = NULL, overwrite = FALSE, fn = NULL,
 \description{
 Experimental helper function for reading text data on HDFS into a HDFS connection
 }
+\examples{
+\dontrun{
+res <- readHDFStextFile(
+  input = Rhipe::rhfmt("/path/to/input/text", type = "text"),
+  output = hdfsConn("/path/to/output"),
+  fn = function(x) {
+    read.csv(textConnection(paste(x, collapse = "\\n")), header = FALSE)
+  }
+)
+}
+}
 

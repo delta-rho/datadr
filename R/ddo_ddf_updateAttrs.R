@@ -14,10 +14,17 @@
 #' @references Bennett, Janine, et al. "Numerically stable, single-pass, parallel statistics algorithms.' Cluster Computing and Workshops", 2009. \emph{CLUSTER09. IEEE International Conference on.} IEEE, 2009
 #'
 #' @seealso \code{\link{ddo}}, \code{\link{ddf}}, \code{\link{divide}}
-#'
+#' @examples
+#' d <- divide(iris, by = "Species")
+#' # some attributes are missing:
+#' d
+#' summary(d)
+#' d <- updateAttributes(d)
+#' # now all attributes are available:
+#' d
+#' summary(d)
 #' @export
 updateAttributes <- function(obj, control = NULL) {
-  # obj <- ddf(iris)
 
   if(inherits(obj, "transformed")) {
     stop("Cannot run updateAttributes() on a transformed divided data object.", call. = FALSE)

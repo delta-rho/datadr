@@ -3,6 +3,8 @@ Version 0.8
 
 FEATURES / CHANGES
 
+- Add several new documentation examples (0.8.4)
+- Update `removeData()` method for local disk connections (0.8.4)
 - Remove Spark back-end files (0.8.3)
 - Updates to get CRAN-ready (0.8.3)
 - Provide information about the key when an error occurs when applying a transformation (0.8.1)

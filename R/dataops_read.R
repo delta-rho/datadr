@@ -98,6 +98,16 @@ readTextFileByChunk <- function(input, output, overwrite = FALSE, linesPerBlock 
 #' @param linesPerBlock how many lines at a time to read
 #' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param update should a MapReduce job be run to obtain additional attributes for the result data prior to returning?
+#' @examples
+#' \dontrun{
+#' res <- readHDFStextFile(
+#'   input = Rhipe::rhfmt("/path/to/input/text", type = "text"),
+#'   output = hdfsConn("/path/to/output"),
+#'   fn = function(x) {
+#'     read.csv(textConnection(paste(x, collapse = "\n")), header = FALSE)
+#'   }
+#' )
+#' }
 #' @export
 readHDFStextFile <- function(input, output = NULL, overwrite = FALSE, fn = NULL, keyFn = NULL, linesPerBlock = 10000, control = NULL, update = FALSE) {
   if(!inherits(input, "kvHDFS"))

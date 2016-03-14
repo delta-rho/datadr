@@ -389,6 +389,28 @@ makeBlockIndices <- function(sz, sizePerBlock, nSlots = 1) {
 #' @note If you have data on a shared drive that multiple nodes can access or a high performance shared file system like Lustre, you can run a local disk MapReduce job on multiple nodes by creating a multi-node cluster with \code{\link{makeCluster}}.
 #'
 #' If you are using multiple cores and the input data is very small, \code{map_buff_size_bytes} needs to be small so that the key-value pairs will be split across cores.
+#' @examples
+#' # create a 2-node cluster that can be used to process in parallel
+#' cl <- parallel::makeCluster(2)
+#' # create a local disk control object that specifies to use this cluster
+#' # these operations run in parallel
+#' control <- localDiskControl(cluster = cl)
+#' # note that setting options(defaultLocalDiskControl = control)
+#' # will cause this to be used by default in all local disk operations
+#'
+#' # convert in-memory ddf to local-disk ddf
+#' ldPath <- file.path(tempdir(), "by_species")
+#' ldConn <- localDiskConn(ldPath, autoYes = TRUE)
+#' bySpeciesLD <- convert(divide(iris, by = "Species"), ldConn)
+#'
+#' # update attributes using parallel cluster
+#' updateAttributes(bySpeciesLD, control = control)
+#'
+#' # remove temporary directories
+#' unlink(ldPath, recursive = TRUE)
+#'
+#' # shut down the cluster
+#' parallel::stopCluster(cl)
 #' @export
 localDiskControl <- function(
   cluster = NULL,

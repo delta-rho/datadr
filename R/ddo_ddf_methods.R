@@ -76,10 +76,15 @@ setObjAttributes <- function(obj, attrs, type) {
 ######################################################################
 
 #' Managing attributes of 'ddo' or 'ddf' objects
+#'
+#' These are called internally in various datadr functions.  They are not meant for use outside of there, but are exported for convenience, and can be useful for better understanding ddo/ddf objects.
 #' @param obj 'ddo' or 'ddf' object
 #' @param attrName name of the attribute to get
 #' @name ddo-ddf-attributes
 #' @rdname ddo-ddf-attributes
+#' @examples
+#' d <- divide(iris, by = "Species")
+#' getAttribute(d, "keys")
 #' @export
 getAttribute <- function(obj, attrName) {
   res <- getAttributes(obj, attrName)
@@ -251,6 +256,14 @@ getBasicDdfAttrs <- function(obj, ...)
 #' @rdname ddo-ddf-accessors
 #' @param x a 'ddf'/'ddo' object
 #'
+#' @examples
+#' d <- divide(iris, by = "Species", update = TRUE)
+#' nrow(d)
+#' ncol(d)
+#' length(d)
+#' names(d)
+#' summary(d)
+#' getKeys(d)
 #' @export
 kvExample <- function(x) {
   res <- getAttribute(x, "example")
@@ -347,6 +360,17 @@ hasExtractableKV <- function(x)
 #' @note This is generally not recommended for HDFS as it writes a new file each time it is called, and can result in more individual files than Hadoop likes to deal with.
 #' @seealso \code{\link{removeData}}, \code{\link{localDiskConn}}, \code{\link{hdfsConn}}
 #'
+#' @examples
+#' \dontrun{
+#'   # connect to empty HDFS directory
+#'   conn <- hdfsConn("/test/irisSplit")
+#'   # add some data
+#'   addData(conn, list(list("1", iris[1:10,])))
+#'   addData(conn, list(list("2", iris[11:110,])))
+#'   addData(conn, list(list("3", iris[111:150,])))
+#'   # represent it as a distributed data frame
+#'   hdd <- ddf(conn)
+#' }
 #' @export
 addData <- function(conn, data, overwrite = FALSE)
   UseMethod("addData")
@@ -363,6 +387,23 @@ addData <- function(conn, data, overwrite = FALSE)
 #' @note This is generally not recommended for HDFS as it writes a new file each time it is called, and can result in more individual files than Hadoop likes to deal with.
 #' @seealso \code{\link{removeData}}, \code{\link{localDiskConn}}, \code{\link{hdfsConn}}
 #'
+
+#' @examples
+#' # connect to empty localDisk directory
+#' conn <- localDiskConn(file.path(tempdir(), "irisSplit"), autoYes = TRUE)
+#' # add some data
+#' addData(conn, list(list("1", iris[1:10,])))
+#' addData(conn, list(list("2", iris[11:90,])))
+#' addData(conn, list(list("3", iris[91:110,])))
+#' addData(conn, list(list("4", iris[111:150,])))
+#' # represent it as a distributed data frame
+#' irisDdf <- ddf(conn, update = TRUE)
+#' irisDdf
+#' # remove data for keys "1" and "2"
+#' removeData(conn, list("1", "2"))
+#' # look at result with updated attributes (reset = TRUE removes previous attrs)
+#' irisDdf <- ddf(conn, reset = TRUE, update = TRUE)
+#' irisDdf
 #' @export
 removeData <- function(conn, keys)
   UseMethod("removeData")
@@ -384,6 +425,11 @@ charToOutput <- function(x)
 #' @param from a 'ddo' or 'ddf' object
 #' @param to a 'kvConnection' object (created with \code{\link{localDiskConn}} or \code{\link{hdfsConn}}) or \code{NULL} if an in-memory 'ddo' / 'ddf' is desired
 #' @param overwrite should the data in the location pointed to in \code{to} be overwritten?
+#' @examples
+#' d <- divide(iris, by = "Species")
+#' # convert in-memory ddf to one stored on disk
+#' dl <- convert(d, localDiskConn(tempfile(), autoYes = TRUE))
+#' dl
 #' @export
 convert <- function(from, to, overwrite = FALSE)
   UseMethod("convert")
@@ -505,6 +551,9 @@ length.ddo <- function(x) {
 #' @param splitVars should the values of the splitVars be added as variables in the resulting data frame?
 #' @param bsvs should the values of bsvs be added as variables in the resulting data frame?
 #' @param \ldots additional arguments passed to as.data.frame
+#' @examples
+#' d <- divide(iris, by = "Species")
+#' as.data.frame(d)
 #' @export
 #' @method as.data.frame ddf
 as.data.frame.ddf <- function(x, row.names = NULL, optional = FALSE, keys = TRUE, splitVars = TRUE, bsvs = FALSE, ...) {
@@ -522,8 +571,9 @@ as.data.frame.ddf <- function(x, row.names = NULL, optional = FALSE, keys = TRUE
     }
 
     if(splitVars) {
-      if(!is.null(getSplitVars(a)))
-        res <- data.frame(res, getSplitVars(a))
+      sv <- getSplitVars(a)
+      if(!is.null(sv))
+        res <- data.frame(res, sv)
     }
 
     if(bsvs) {
@@ -541,6 +591,9 @@ as.data.frame.ddf <- function(x, row.names = NULL, optional = FALSE, keys = TRUE
 #'
 #' @param x a 'ddo' / 'ddf' object
 #' @param \ldots additional arguments passed to \code{as.list}
+#' @examples
+#' d <- divide(iris, by = "Species")
+#' as.list(d)
 #' @export
 #' @method as.list ddo
 as.list.ddo <- function(x, ...) {

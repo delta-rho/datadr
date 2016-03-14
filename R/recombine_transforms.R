@@ -101,7 +101,28 @@ drM <- function(..., type = c("lm", "glm")) {
 #' @author Ryan Hafen
 #'
 #' @seealso \code{\link{divide}}, \code{\link{recombine}}
+#' @examples
+#' \dontrun{
+#' # BLB is meant to run on random replicate divisions
+#' rrAdult <- divide(adult, by = rrDiv(1000), update = TRUE)
 #'
+#' adultBlb <- rrAdult %>% addTransform(function(x) {
+#'   drBLB(x,
+#'     statistic = function(x, weights)
+#'       coef(glm(incomebin ~ educationnum + hoursperweek + sex,
+#'         data = x, weights = weights, family = binomial())),
+#'     metric = function(x)
+#'       quantile(x, c(0.05, 0.95)),
+#'     R = 100,
+#'     n = nrow(rrAdult)
+#'   )
+#' })
+#'
+#' # compute the mean of the resulting CI limits
+#' # (this will take a little bit of time because of resampling)
+#' coefs <- recombine(adultBlb, combMean)
+#' matrix(coefs, ncol = 2, byrow = TRUE)
+#' }
 #' @export
 drBLB <- function(x, statistic, metric, R, n) {
   b <- nrow(x)

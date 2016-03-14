@@ -16,4 +16,10 @@ convert(from, to, overwrite = FALSE)
 \description{
 Convert 'ddo' / 'ddf' objects between different storage backends
 }
+\examples{
+d <- divide(iris, by = "Species")
+# convert in-memory ddf to one stored on disk
+dl <- convert(d, localDiskConn(tempfile(), autoYes = TRUE))
+dl
+}
 

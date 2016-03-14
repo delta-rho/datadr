@@ -47,11 +47,11 @@ localDiskConn <- function(loc, nBins = 0, fileHashFn = NULL, autoYes = FALSE, re
     if(!tolower(substr(ans, 1, 1)) == "y")
       stop("Backing out...")
 
-    if(verbose)
-      message("* Attempting to create directory ... ", appendLF = FALSE)
+    # if(verbose)
+    #   message("* Attempting to create directory ... ", appendLF = FALSE)
     stopifnot(dir.create(loc))
-    if(verbose)
-      message("ok")
+    # if(verbose)
+    #   message("ok")
   } else {
     fi <- file.info(loc)
     if(!fi$isdir)
@@ -98,8 +98,8 @@ localDiskConn <- function(loc, nBins = 0, fileHashFn = NULL, autoYes = FALSE, re
   }
 
   if(length(list.files(loc)) <= 1) {
-   if(verbose)
-    message("* Directory is empty - use addData() to add k/v pairs to this directory")
+   # if(verbose)
+   #  message("* Directory is empty - use addData() to add k/v pairs to this directory")
   } else if(!file.exists(file.path(loc, "_meta", "ddo.Rdata"))) {
    if(verbose)
     message("* To initialize the data in this directory as a distributed data object of data frame, call ddo() or ddf()")
@@ -220,6 +220,16 @@ addData.localDiskConn <- function(conn, data, overwrite = FALSE) {
 # takes a list of keys and removes data with those keys
 #' @export
 removeData.localDiskConn <- function(conn, keys) {
+  if(!inherits(conn, "localDiskConn"))
+    stop("invalid local disk connection")
+
+  ff <- file.path(conn$loc, conn$fileHashFn(keys, conn))
+  wf <- which(file.exists(ff))
+  if(length(wf) > 0)
+    unlink(ff[wf])
+  message("* ", length(wf), " key/value pair",
+    ifelse(length(wf) == 1, "", "s")," removed")
+
   conn
 }
 

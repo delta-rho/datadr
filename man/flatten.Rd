@@ -12,6 +12,13 @@ flatten(x)
 \description{
 Add split variables and BSVs (if any) as columns to a subset of a ddf.
 }
+\examples{
+d <- divide(iris, by = "Species")
+# the column "Species" is no longer explicitly in the data
+d[[1]]$value
+# but it is preserved and can be added back in with flatten()
+flatten(d[[1]]$value)
+}
 \seealso{
 \code{\link{getSplitVars}}, \code{\link{getBsvs}}
 }

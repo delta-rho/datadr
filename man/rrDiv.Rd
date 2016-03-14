@@ -20,6 +20,13 @@ Specify random replicate division parameters for data division
 \details{
 The random replicate division method currently gets the total number of rows of the input data and divides it by \code{nrows} to get the number of subsets.  Then it randomly assigns each row of the input data to one of the subsets, resulting in subsets with approximately \code{nrows} rows.  A future implementation will make each subset have exactly \code{nrows} rows.
 }
+\examples{
+# divide iris data into random subsets with ~20 records per subset
+irisRR <- divide(iris, by = rrDiv(20), update = TRUE)
+irisRR
+# look at the actual distribution of number of rows per subset
+plot(splitRowDistn(irisRR))
+}
 \author{
 Ryan Hafen
 }

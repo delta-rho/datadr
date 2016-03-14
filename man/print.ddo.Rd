@@ -14,6 +14,11 @@
 \description{
 Print an overview of attributes of distributed data objects (ddo) or distributed data frames (ddf)
 }
+\examples{
+kv <- kvPairs(kvPair(1, letters), kvPair(2, rnorm(100)))
+kvddo <- ddo(kv)
+kvddo
+}
 \author{
 Ryan Hafen
 }

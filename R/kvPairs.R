@@ -44,6 +44,8 @@ kvPair <- function(k, v)
 #'
 #' @param x object to be printed
 #' @param \ldots additional arguments
+#' @examples
+#'  kvPair(1, letters)
 #' @export
 #' @method print kvPair
 print.kvPair <- function(x, ...) {
@@ -57,6 +59,8 @@ print.kvPair <- function(x, ...) {
 #'
 #' @param x object to be printed
 #' @param \ldots additional arguments
+#' @examples
+#'  kvPair(1, letters)
 #' @export
 #' @method print kvValue
 print.kvValue <- function(x, ...) {

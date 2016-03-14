@@ -14,4 +14,8 @@
 \description{
 Turn 'ddo' / 'ddf' Object into a list
 }
+\examples{
+d <- divide(iris, by = "Species")
+as.list(d)
+}
 

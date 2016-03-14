@@ -23,6 +23,29 @@ Bag of little bootstraps transformation method
 \details{
 It is necessary to specify \code{weights} as a parameter to the \code{statistic} function because for BLB to work efficiently, it must resample each time with a sample of size \code{n}.  To make this computationally possible for very large \code{n}, we can use \code{weights} (see reference for details).  Therefore, only methods with a weights option can legitimately be used here.
 }
+\examples{
+\dontrun{
+# BLB is meant to run on random replicate divisions
+rrAdult <- divide(adult, by = rrDiv(1000), update = TRUE)
+
+adultBlb <- rrAdult \%>\% addTransform(function(x) {
+  drBLB(x,
+    statistic = function(x, weights)
+      coef(glm(incomebin ~ educationnum + hoursperweek + sex,
+        data = x, weights = weights, family = binomial())),
+    metric = function(x)
+      quantile(x, c(0.05, 0.95)),
+    R = 100,
+    n = nrow(rrAdult)
+  )
+})
+
+# compute the mean of the resulting CI limits
+# (this will take a little bit of time because of resampling)
+coefs <- recombine(adultBlb, combMean)
+matrix(coefs, ncol = 2, byrow = TRUE)
+}
+}
 \author{
 Ryan Hafen
 }

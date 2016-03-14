@@ -47,6 +47,36 @@ Divide a ddo/ddf object into subsets based on different criteria
 \details{
 The division methods this function will support include conditioning variable division for factors (implemented -- see \code{\link{condDiv}}), conditioning variable division for numerical variables through shingles, random replicate (implemented -- see \code{\link{rrDiv}}), and near-exact replicate.  If \code{by} is a vector of variable names, the data will be divided by these variables.  Alternatively, this can be specified by e.g.  \code{condDiv(c("var1", "var2"))}.
 }
+\examples{
+# divide iris data by Species by passing in a data frame
+bySpecies <- divide(iris, by = "Species")
+bySpecies
+
+# divide iris data into random partitioning of ~30 rows per subset
+irisRR <- divide(iris, by = rrDiv(30))
+irisRR
+
+# any ddf can be passed into divide:
+irisRR2 <- divide(bySpecies, by = rrDiv(30))
+irisRR2
+bySpecies2 <- divide(irisRR2, by = "Species")
+bySpecies2
+
+# splitting on multiple columns
+byEdSex <- divide(adult, by = c("education", "sex"))
+byEdSex
+byEdSex[[1]]
+
+# splitting on a numeric variable
+bySL <- ddf(iris) \%>\%
+  addTransform(function(x) {
+    x$slCut <- cut(x$Sepal.Length, 10)
+    x
+  }) \%>\%
+  divide(by = "slCut")
+bySL
+bySL[[1]]
+}
 \author{
 Ryan Hafen
 }

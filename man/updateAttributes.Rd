@@ -20,6 +20,16 @@ Update attributes of a 'ddo' or 'ddf' object
 \details{
 This function looks for missing attributes related to a ddo or ddf (distributed data object or data frame) object and runs MapReduce to update them.  These attributes include "splitSizeDistn", "keys", "nDiv", "nRow", and "splitRowDistn".  These attributes are useful for subsequent computations that might rely on them.  The result is the input modified to reflect the updated attributes, and thus it should be used as \code{obj <- updateAttributes(obj)}.
 }
+\examples{
+d <- divide(iris, by = "Species")
+# some attributes are missing:
+d
+summary(d)
+d <- updateAttributes(d)
+# now all attributes are available:
+d
+summary(d)
+}
 \author{
 Ryan Hafen
 }

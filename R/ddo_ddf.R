@@ -12,6 +12,30 @@
 #' @param reset should all persistent metadata about this object be removed and the object created from scratch?  This setting does not effect data stored in the connection location.
 #' @param control parameters specifying how the backend should handle things if attributes are updated (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
+#' @examples
+#' # in-memory ddf
+#' d <- ddf(iris)
+#' d
+#'
+#' # local disk ddf
+#' conn <- localDiskConn(tempfile(), autoYes = TRUE)
+#' addData(conn, list(list("1", iris[1:10,])))
+#' addData(conn, list(list("2", iris[11:110,])))
+#' addData(conn, list(list("3", iris[111:150,])))
+#' dl <- ddf(conn)
+#' dl
+#'
+#' # hdfs ddf (requires RHIPE / Hadoop)
+#' \dontrun{
+#'   # connect to empty HDFS directory
+#'   conn <- hdfsConn("/tmp/irisSplit")
+#'   # add some data
+#'   addData(conn, list(list("1", iris[1:10,])))
+#'   addData(conn, list(list("2", iris[11:110,])))
+#'   addData(conn, list(list("3", iris[111:150,])))
+#'   # represent it as a distributed data frame
+#'   hdd <- ddf(conn)
+#' }
 #' @export
 ddf <- function(conn, transFn = NULL, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE) {
   if(inherits(conn, "ddo")) {
@@ -71,6 +95,10 @@ ddf <- function(conn, transFn = NULL, update = FALSE, reset = FALSE, control = N
 #' @param reset should all persistent metadata about this object be removed and the object created from scratch?  This setting does not effect data stored in the connection location.
 #' @param control parameters specifying how the backend should handle things if attributes are updated (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @param verbose logical - print messages about what is being done
+#' @examples
+#' kv <- kvPairs(kvPair(1, letters), kvPair(2, rnorm(100)))
+#' kvddo <- ddo(kv)
+#' kvddo
 #' @export
 ddo <- function(conn, update = FALSE, reset = FALSE, control = NULL, verbose = TRUE) {
   # ddoInit should attach the conn attribute and add the ddo class to the object

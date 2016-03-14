@@ -35,6 +35,10 @@ data frame
 \description{
 Return a subset of a "ddf" object to memory
 }
+\examples{
+d <- divide(iris, by = "Species")
+drSubset(d, Sepal.Length < 5)
+}
 \author{
 Ryan Hafen
 }
