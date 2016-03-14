@@ -520,10 +520,19 @@ setMethod("NCOL", "ddf", function(x) {
 
 # names and length are primitives
 
-#' Accessor methods for 'ddo' and 'ddf' objects
+#' Accessor methods for 'ddf' objects
 #' @export
 #' @method names ddf
 #' @name ddf-accessors
+#' @examples
+#' d <- divide(iris, by = "Species", update = TRUE)
+#' nrow(d)
+#' ncol(d)
+#' length(d)
+#' names(d)
+#' summary(d)
+#' getKeys(d)
+#' @export
 #' @rdname ddf-accessors
 names.ddf <- function(x) {
   if(inherits(x, "transformed")) {

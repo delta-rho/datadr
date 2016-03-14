@@ -146,6 +146,7 @@ loadTransformPkgs <- function(transFns) {
 #'
 #' @param transFns from the "transforms" attribute of a ddo object
 #' @param env the environment in which to evaluate the transformations
+#' @example man-roxygen/transform.R
 #' @export
 setupTransformEnv <- function(transFns, env = NULL) {
   if(is.null(env))

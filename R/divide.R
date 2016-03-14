@@ -290,6 +290,7 @@ getBsvs <- function(x) {
 #' For a given key-value pair or value, get a split variable value by name, if present (split variables are variables that define how the data was divided).
 #' @param x a key-value pair or a value
 #' @param name the name of the split variable to get
+#' @examples
 #' d <- divide(iris, by = "Species",
 #'   bsvFn = function(x)
 #'     list(msl = bsv(mean(x$Sepal.Length))))

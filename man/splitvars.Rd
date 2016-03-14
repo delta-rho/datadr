@@ -12,14 +12,16 @@ getSplitVars(x)
 \arguments{
 \item{x}{a key-value pair or a value}
 
-\item{name}{the name of the split variable to get
+\item{name}{the name of the split variable to get}
+}
+\description{
+For a given key-value pair or value, get a split variable value by name, if present (split variables are variables that define how the data was divided).
+}
+\examples{
 d <- divide(iris, by = "Species",
   bsvFn = function(x)
     list(msl = bsv(mean(x$Sepal.Length))))
 getSplitVars(d[[1]]$value)
-getSplitVar(d[[1]]$value, "Species")}
-}
-\description{
-For a given key-value pair or value, get a split variable value by name, if present (split variables are variables that define how the data was divided).
+getSplitVar(d[[1]]$value, "Species")
 }
 

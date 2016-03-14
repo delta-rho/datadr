@@ -15,7 +15,7 @@
 \alias{splitRowDistn}
 \alias{summary.ddf}
 \alias{summary.ddo}
-\title{Accessor methods for 'ddo' and 'ddf' objects}
+\title{Accessor methods for 'ddf' objects}
 \usage{
 splitRowDistn(x)
 
@@ -49,6 +49,15 @@ NCOL(x)
 \item{\ldots}{additional arguments}
 }
 \description{
-Accessor methods for 'ddo' and 'ddf' objects
+Accessor methods for 'ddf' objects
+}
+\examples{
+d <- divide(iris, by = "Species", update = TRUE)
+nrow(d)
+ncol(d)
+length(d)
+names(d)
+summary(d)
+getKeys(d)
 }
 
