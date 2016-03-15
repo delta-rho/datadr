@@ -41,17 +41,17 @@ ldd <- ddf(conn, update = TRUE)
 test_that("result matches quantile()", {
   ### compare drQuantile output to default quantile() method
   sq <- drQuantile(ldd, var = "Sepal.Length", tails = 0)
-  qq <- quantile(tmp$Sepal.Length, probs = seq(0, 1, by = 0.005), type=1)
+  qq <- quantile(tmp$Sepal.Length, probs = seq(0, 1, by = 0.005), type = 1)
 
   # plot(sq$fval, sq$q)
-  # plot(seq(0, 1, by=0.005), qq)
+  # plot(seq(0, 1, by = 0.005), qq)
 
-  expect_true(mean(abs(qq - sq$q)) < 0.0001)
+  expect_true(mean(abs(qq - sq$q)) < 0.002)
 })
 
 test_that("tails check", {
   sls <- sort(tmp$Sepal.Length)
-  sq <- drQuantile(ldd, var="Sepal.Length", tails = 200)
+  sq <- drQuantile(ldd, var = "Sepal.Length", tails = 200)
   expect_true(all(head(sls, 200) == head(sq$q, 200)))
 })
 
@@ -70,7 +70,7 @@ test_that("by=TRUE", {
   # xyplot(q ~ fval, groups = Species, data = tmp2, auto.key = TRUE, type = c("p", "g"))
   # plot(sq2$q - tmp2$q)
 
-  expect_true(mean(abs(sq2$q - tmp2$q)) < 0.001)
+  expect_true(mean(abs(sq2$q - tmp2$q)) < 0.002)
 })
 
 test_that("map is cleaned up for mulitple blocks", {
@@ -92,7 +92,7 @@ test_that("varTransFn", {
         probs = seq(0, 1, by = 0.005), type = 3)))
   tmp2 <- recombine(tmpd2, combRbind)
 
-  expect_true(mean(abs(sq$q - tmp2$q)) < 0.0001)
+  expect_true(mean(abs(sq$q - tmp2$q)) < 0.0002)
   # xyplot(q ~ fval | group, data = sq)
   # xyplot(q ~ fval | Species, data = tmp2)
 })
@@ -108,7 +108,7 @@ test_that("preTransFn", {
           probs = seq(0, 1, by = 0.005), type = 3)),
     combine = combRbind())
 
-  expect_true(mean(abs(sq$q - tmp2$q)) < 0.0001)
+  expect_true(mean(abs(sq$q - tmp2$q)) < 0.0002)
   # xyplot(q ~ fval | group, data = sq)
   # xyplot(q ~ fval | Species, data = tmp2)
 })
@@ -122,7 +122,7 @@ test_that("multiple conditioning", {
   # xyplot(q ~ fval | Species * let, data = res)
   res <- subset(res, Species == "setosa" & let == "a")
   qres <- quantile(subset(tmp2, let == "a" & Species == "setosa")$Sepal.Length, probs = res$fval, type = 3)
-  expect_true(mean(abs(res$q - qres)) < 0.002)
+  expect_true(mean(abs(res$q - qres)) < 0.0025)
 })
 
 if(TEST_HDFS) {
@@ -144,6 +144,6 @@ tmpd2 <- addTransform(tmpd, function(x)
       probs = seq(0, 1, by = 0.005), type = 3)))
 tmp2 <- recombine(tmpd2, combRbind)
 
-expect_true(mean(abs(sq2$q - tmp2$q)) < 0.001)
+expect_true(mean(abs(sq2$q - tmp2$q)) < 0.002)
 
 }
