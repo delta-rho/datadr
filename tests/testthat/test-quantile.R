@@ -4,8 +4,8 @@ if(TEST_HDFS == "")
 
 # set up data
 path <- file.path(tempdir(), "ldd_test")
-unlink(path, recursive=TRUE)
-conn <- localDiskConn(path, nBins=3, reset=TRUE, autoYes=TRUE)
+unlink(path, recursive = TRUE)
+conn <- localDiskConn(path, nBins = 3, reset = TRUE, autoYes = TRUE)
 
 for(i in 1:25) {
   kk <- paste(c("a", "b", "c"), i, sep="")
