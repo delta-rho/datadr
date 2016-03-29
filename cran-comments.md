@@ -1,13 +1,12 @@
 ## Resubmission
 
-This is a resubmission. In this version I have:
-
-* Added documentation examples to all exported functions.
+This is a resubmission.  I was asked to fix an issue that arose when tested on r-solaris-sparc with the tolerance of a few of my unit tests being too strict.  I built R with --disable-long-double and flags -ffloat-store -fexcess-precision=standard and empirically obtained robust tolerances for the unit tests.  A formal tolerance analysis was not feasible given the nature of the routines, but the result of the empirical analysis was satisfactory.
 
 ## Test environments
 
 * local OS X install, R 3.2.4
 * ubuntu 12.04 (on travis-ci), R 3.2.3
+* ubuntu 12.04 (VM), R 3.2.4 with --disable-long-double
 * win-builder (devel and release)
 
 ## R CMD check results
@@ -18,7 +17,8 @@ There were 2 NOTEs:
 
     * checking CRAN incoming feasibility ... NOTE
     Maintainer: 'Ryan Hafen <rhafen@gmail.com>'
-    New submission
+
+    Days since last update: 1
 
     License components with restrictions and base license permitting such:
       BSD_3_clause + file LICENSE
@@ -39,9 +39,6 @@ There were 2 NOTEs:
 
     Availability using Additional_repositories specification:
       Rhipe   yes   http://ml.stat.purdue.edu/packages
-
-    * checking package dependencies ... NOTE
-    Package suggested but not available for checking: 'Rhipe'
 
 All words are spelled correctly.
 
