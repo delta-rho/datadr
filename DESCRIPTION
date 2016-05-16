@@ -2,7 +2,7 @@ Package: datadr
 Type: Package
 Title: Divide and Recombine for Large, Complex Data
 Version: 0.8.5
-Date: 2016-03-15
+Date: 2016-05-16
 Authors@R: c(person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre")),
     person("Landon", "Sego", role = "ctb"))
 Maintainer: Ryan Hafen <rhafen@gmail.com>

@@ -71,6 +71,7 @@ hasExtractableKV.kvHDFS <- function(x) {
 
 #' Take a ddo/ddf HDFS data object and turn it into a mapfile
 #' @param obj object of class 'ddo' or 'ddf' with an HDFS connection
+#' @param control parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}
 #' @examples
 #' \dontrun{
 #'   conn <- hdfsConn("/test/irisSplit")
@@ -89,7 +90,7 @@ hasExtractableKV.kvHDFS <- function(x) {
 #'   hdd[["3"]]
 #' }
 #' @export
-makeExtractable <- function(obj) {
+makeExtractable <- function(obj, control = NULL) {
   if(!inherits(obj, "kvHDFS"))
     stop("object must have an HDFS connection")
 
@@ -98,6 +99,7 @@ makeExtractable <- function(obj) {
   # identity mr job
   res <- mrExec(
     obj,
+    control = control,
     output = hdfsConn(mkd(file = "tmp_output"), type = "map", autoYes = TRUE, verbose = FALSE)
   )
 

@@ -4,10 +4,12 @@
 \alias{makeExtractable}
 \title{Take a ddo/ddf HDFS data object and turn it into a mapfile}
 \usage{
-makeExtractable(obj)
+makeExtractable(obj, control = NULL)
 }
 \arguments{
 \item{obj}{object of class 'ddo' or 'ddf' with an HDFS connection}
+
+\item{control}{parameters specifying how the backend should handle things (most-likely parameters to \code{rhwatch} in RHIPE) - see \code{\link{rhipeControl}} and \code{\link{localDiskControl}}}
 }
 \description{
 Take a ddo/ddf HDFS data object and turn it into a mapfile
