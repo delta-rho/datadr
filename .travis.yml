@@ -10,10 +10,11 @@ branches:
   only:
     - master
     - dev
+    - travis
 
 notifications:
   email:
     recipients:
-    - rhafen@gmail.com
+    - schloerke@gmail.com
     on_success: change
     on_failure: change
