@@ -7,7 +7,6 @@ env:
   global:
     - _R_CHECK_FORCE_SUGGESTS_=FALSE
 
-
 before_install:
   - pwd
   - ORIGINAL_PWD=`pwd`
@@ -22,6 +21,7 @@ before_install:
   - make
   - make check
   - make install
+  - LD_LIBRARY_PATH=$HOME/protobuf/lib:$LD_LIBRARY_PATH
   - cd ../
   - ls
   - cd $ORIGINAL_PWD
