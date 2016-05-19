@@ -11,8 +11,13 @@ env:
 before_install:
   - wget https://github.com/google/protobuf/archive/v2.5.0.tar.gz
   - tar -zxvf v2.5.0.tar.gz
+  - ls
   - cd protobuf-2.5.0
-  - ./configure --prefix=~/protobuf; make; make check; make install
+  - ls
+  - ./configure --prefix=~/protobuf
+  - make
+  - make check
+  - make install
 
 
 branches:
