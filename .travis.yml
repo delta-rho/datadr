@@ -19,6 +19,9 @@ before_install:
   - make
   - make check
   - make install
+  - cd ../
+  - ls
+  - cd datadr 
 
 
 branches:
