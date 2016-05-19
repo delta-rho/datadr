@@ -14,7 +14,8 @@ before_install:
   - ls
   - cd protobuf-2.5.0
   - ls
-  - ./configure --prefix=~/protobuf
+  - echo $HOME/protobuf
+  - ./configure --prefix=$HOME/protobuf
   - make
   - make check
   - make install
