@@ -7,25 +7,42 @@ env:
   global:
     - _R_CHECK_FORCE_SUGGESTS_=FALSE
 
-before_install:
-  - pwd
-  - ORIGINAL_PWD=`pwd`
-  - cd $HOME
-  - wget https://github.com/google/protobuf/releases/download/v2.5.0/protobuf-2.5.0.tar.gz
-  - tar -zxvf protobuf-2.5.0.tar.gz
-  - ls
-  - cd protobuf-2.5.0
-  - ls
-  - echo $HOME/protobuf
-  - ./configure --prefix=$HOME/protobuf
-  - make
-  - make check
-  - make install
-  - LD_LIBRARY_PATH=$HOME/protobuf/lib:$LD_LIBRARY_PATH
-  - cd ../
-  - ls
-  - cd $ORIGINAL_PWD
+r_github_packages:
+  - schloerke/RHIPE_dummy # fake the RHIPE requirement
 
+# before_install:
+#   - pwd
+#   - ORIGINAL_PWD=`pwd`
+#   - cd $HOME
+#   - wget https://github.com/google/protobuf/releases/download/v2.5.0/protobuf-2.5.0.tar.gz
+#   - tar -zxvf protobuf-2.5.0.tar.gz
+#   - ls
+#   - cd protobuf-2.5.0
+#   - ls
+#   - echo $HOME/protobuf
+#   - ./configure --prefix=$HOME/protobuf
+#   - make
+#   - make check
+#   - make install
+#   - LD_LIBRARY_PATH=$HOME/protobuf/lib:$LD_LIBRARY_PATH
+#   - cd ../
+#   - ls
+#   - cd $ORIGINAL_PWD
+
+# * DONE (dplyr)
+# * installing *source* package ‘Rhipe’ ...
+# ** libs
+# g++ -I/home/travis/R-bin/lib/R/include -DNDEBUG  -I/home/travis/R-bin/include    -fpic  -g -O2  -I.  -g -O2  -DUSEAUTOSHORT -DHAVE_UINTPTR_T    `/home/travis/R-bin/lib/R/bin/R CMD config --cppflags` `pkg-config --cflags protobuf` -c rexp.pb.cc -o rexp.pb.o
+# R was not built as a library
+# Package protobuf was not found in the pkg-config search path.
+# Perhaps you should add the directory containing `protobuf.pc'
+# to the PKG_CONFIG_PATH environment variable
+# No package 'protobuf' found
+# In file included from rexp.pb.cc:5:0:
+# rexp.pb.h:9:42: fatal error: google/protobuf/stubs/common.h: No such file or directory
+# compilation terminated.
+# make: *** [rexp.pb.o] Error 1
+# ERROR: compilation failed for package ‘Rhipe’
 
 branches:
   only:
