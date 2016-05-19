@@ -7,10 +7,13 @@ env:
   global:
     - _R_CHECK_FORCE_SUGGESTS_=FALSE
 
-addons:
-  apt:
-    packages:
-      - libprotobuf9
+
+before_install:
+  - wget https://github.com/google/protobuf/archive/v2.5.0.tar.gz
+  - tar -zxvf v2.5.0.tar.gz
+  - cd protobuf-2.5.0
+  - ./configure; make; make check; make install --prefix=~/protobuf
+
 
 branches:
   only:
