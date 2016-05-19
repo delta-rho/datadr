@@ -9,6 +9,7 @@ env:
 
 
 before_install:
+  - cd $HOME
   - wget https://github.com/google/protobuf/releases/download/v2.5.0/protobuf-2.5.0.tar.gz
   - tar -zxvf protobuf-2.5.0.tar.gz
   - ls
@@ -21,7 +22,7 @@ before_install:
   - make install
   - cd ../
   - ls
-  - cd datadr 
+  - cd schloerke/datadr
 
 
 branches:
