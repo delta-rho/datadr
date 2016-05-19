@@ -9,6 +9,8 @@ env:
 
 
 before_install:
+  - pwd
+  - ORIGINAL_PWD=`pwd`
   - cd $HOME
   - wget https://github.com/google/protobuf/releases/download/v2.5.0/protobuf-2.5.0.tar.gz
   - tar -zxvf protobuf-2.5.0.tar.gz
@@ -22,7 +24,7 @@ before_install:
   - make install
   - cd ../
   - ls
-  - cd schloerke/datadr
+  - cd $ORIGINAL_PWD
 
 
 branches:
