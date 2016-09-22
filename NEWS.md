@@ -3,6 +3,7 @@ Version 0.8
 
 FEATURES / CHANGES
 
+- Fix for compatibility with `data.table` (0.8.6)
 - Add `control` option to `makeExtractable()` (0.8.5)
 - Add several new documentation examples (0.8.4)
 - Update `removeData()` method for local disk connections (0.8.4)
