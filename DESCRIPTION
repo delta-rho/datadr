@@ -12,7 +12,7 @@ Description: Methods for dividing data into subsets, applying analytical
     on local disk, or on HDFS, in the latter case using the R and Hadoop
     Integrated Programming Environment (RHIPE).
 License: BSD_3_clause + file LICENSE
-URL: http://tessera.io/docs-datadr
+URL: http://deltarho.org/docs-datadr
 LazyLoad: yes
 LazyData: yes
 NeedsCompilation: no

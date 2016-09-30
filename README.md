@@ -1,13 +1,13 @@
 # datadr: Divide and Recombine in R
 
-[![Build Status](https://travis-ci.org/tesseradata/datadr.svg?branch=master)](https://travis-ci.org/tesseradata/datadr)
+[![Build Status](https://travis-ci.org/delta-rho/datadr.svg?branch=master)](https://travis-ci.org/delta-rho/datadr)
 [![CRAN](http://www.r-pkg.org/badges/version/datadr)](https://cran.r-project.org/package=datadr)
 
-datadr is an R package that leverages [RHIPE](https://github.com/tesseradata/RHIPE) to provide a simple interface to division and recombination (D&R) methods for large complex data.
+datadr is an R package that leverages [RHIPE](https://github.com/delta-rho/RHIPE) to provide a simple interface to division and recombination (D&R) methods for large complex data.
 
-To get started, see the package documentation and function reference located [here](http://tesseradata.github.com/datadr).
+To get started, see the package documentation and function reference located [here](http://delta-rho.github.com/datadr).
 
-Visualization tools based on D&R can be found [here](https://github.com/tesseradata/trelliscope).
+Visualization tools based on D&R can be found [here](https://github.com/delta-rho/trelliscope).
 
 ## Installation
 
@@ -15,17 +15,13 @@ Visualization tools based on D&R can be found [here](https://github.com/tesserad
 # from CRAN:
 install.packages("datadr")
 
-# from packages.tessera.io:
-options(repos = c(tessera = "http://packages.tessera.io", getOption("repos")))
-install.packages("datadr")
-
 # from github:
-devtools::install_github("tesseradata/datadr")
+devtools::install_github("delta-rho/datadr")
 ```
 
 ## License
 
-This software is currently under the BSD license.  Please read the [license](https://github.com/tesseradata/datadr/blob/master/LICENSE.md) document.
+This software is currently under the BSD license.  Please read the [license](https://github.com/delta-rho/datadr/blob/master/LICENSE.md) document.
 
 ## Acknowledgement
 
