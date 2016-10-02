@@ -3,6 +3,9 @@ Version 0.8
 
 FEATURES / CHANGES
 
+- Update references point to DeltaRho (0.8.6)
+- Fix for compatibility with `data.table` (0.8.6)
+- Add `control` option to `makeExtractable()` (0.8.5)
 - Add several new documentation examples (0.8.4)
 - Update `removeData()` method for local disk connections (0.8.4)
 - Remove Spark back-end files (0.8.3)
@@ -100,7 +103,7 @@ FEATURES / CHANGES
 
 - add `addTransform()` method to specify transformations to be applied to
   ddo/ddf objects with deferred evaluation (see
-  https://github.com/tesseradata/datadr/issues/24 for more information)
+  https://github.com/delta-rho/datadr/issues/24 for more information)
 - revamp `drGetGlobals()` to properly traverse environments of user-defined
   transformation functions and find all global variables and all package
   dependencies

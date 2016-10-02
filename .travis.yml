@@ -2,14 +2,18 @@ language: r
 sudo: false
 cache: packages
 
-env:
-  global:
-    - _R_CHECK_FORCE_SUGGESTS_=FALSE
+# env:
+#   global:
+#     - _R_CHECK_FORCE_SUGGESTS_=FALSE
+
+r_github_packages:
+  - schloerke/RHIPE_dummy # fake the RHIPE requirement
 
 branches:
   only:
     - master
     - dev
+    - travis
 
 notifications:
   email:

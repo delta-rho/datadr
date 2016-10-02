@@ -9,7 +9,7 @@
 datadr: Divide and Recombine for Large, Complex Data
 }
 \details{
-\url{http://tessera.io/docs-datadr/}
+\url{http://deltarho.org/docs-datadr/}
 }
 \examples{
 help(package = datadr)

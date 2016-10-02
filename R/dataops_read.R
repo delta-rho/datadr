@@ -90,7 +90,7 @@ readTextFileByChunk <- function(input, output, overwrite = FALSE, linesPerBlock 
 #' Experimental HDFS text reader helper function
 #'
 #' Experimental helper function for reading text data on HDFS into a HDFS connection
-#' @param input a RHIPE input text handle created with \code{rhfmt}
+#' @param input a ddo / ddf connection to a text input directory on HDFS, created with \code{\link{hdfsConn}} - ensure the text files are within a directory and that type = "text" is specified
 #' @param output an output connection such as those created with \code{\link{localDiskConn}}, and \code{\link{hdfsConn}}
 #' @param overwrite logical; should existing output location be overwritten? (also can specify \code{overwrite = "backup"} to move the existing output to _bak)
 #' @param fn function to be applied to each chunk of lines (input to function is a vector of strings)
@@ -143,7 +143,6 @@ readHDFStextFile <- function(input, output = NULL, overwrite = FALSE, fn = NULL,
   suppressMessages(output <- output)
 
   mrExec(input,
-    setup    = setup,
     map     = map,
     reduce   = reduce,
     output   = output,

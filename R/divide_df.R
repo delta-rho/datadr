@@ -11,7 +11,8 @@ getDivideDF <- function(data, by, postTransFn, bsvFn, update = FALSE) {
   # d$i <- seq_len(nrow(b))
   setkeyv(d, by$vars)
 
-  keyCols <- format(as.matrix(data.frame(unique(d))[,by$vars,drop = FALSE]), scientific = FALSE, trim = TRUE, justify = "none")
+  keyCols <- format(as.matrix(unique(d, by = key(d))[, by$vars, with = FALSE]),
+    scientific = FALSE, trim = TRUE, justify = "none")
   keys <- apply(keyCols, 1, function(x) paste(paste(by$vars, "=", x, sep = ""), collapse = "|"))
 
   res <- vector("list", length(keys))
