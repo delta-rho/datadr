@@ -3,6 +3,7 @@ Version 0.8
 
 FEATURES / CHANGES
 
+- Update references point to DeltaRho (0.8.6)
 - Fix for compatibility with `data.table` (0.8.6)
 - Add `control` option to `makeExtractable()` (0.8.5)
 - Add several new documentation examples (0.8.4)
