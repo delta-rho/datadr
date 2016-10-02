@@ -1,6 +1,6 @@
 # datadr: Divide and Recombine in R
 
-[![Join the chat at https://gitter.im/delta-rho/users](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crossfilter/reductio?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/delta-rho/users](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/delta-rho/users?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/delta-rho/datadr.svg?branch=master)](https://travis-ci.org/delta-rho/datadr)
 [![CRAN](http://www.r-pkg.org/badges/version/datadr)](https://cran.r-project.org/package=datadr)
 
