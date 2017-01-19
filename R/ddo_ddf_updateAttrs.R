@@ -85,7 +85,7 @@ updateAttributes <- function(obj, control = NULL) {
               if(inherits(var, quantTypes)) {
                 if(all(is.na(var)) || length(var) == 0) {
                   minVal <- NA
-                  maxval <- NA
+                  maxVal <- NA
                 } else {
                   minVal <- min(var, na.rm = TRUE)
                   maxVal <- max(var, na.rm = TRUE)
