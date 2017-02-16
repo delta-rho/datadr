@@ -6,7 +6,7 @@
 
 datadr is an R package that leverages [RHIPE](https://github.com/delta-rho/RHIPE) to provide a simple interface to division and recombination (D&R) methods for large complex data.
 
-To get started, see the package documentation and function reference located [here](http://deltarho.org/datadr).
+To get started, see the package documentation and function reference located [here](http://deltarho.org/docs-datadr/).
 
 Visualization tools based on D&R can be found [here](https://github.com/delta-rho/trelliscope).
 
